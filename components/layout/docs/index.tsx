@@ -53,6 +53,7 @@ import {
 	type LinkItemType,
 } from "../shared/index";
 import { LayoutBody, LayoutTabs, Navbar, NavbarSidebarTrigger } from "./client";
+import { HeaderLLMCopyButton } from "@/components/page-actions";
 import { PageBreadcrumb } from "./page";
 
 export interface DocsLayoutProps extends BaseLayoutProps {
@@ -369,7 +370,7 @@ function DocsNavbar({
 						{nav.title}
 					</Link>
 				</div>
-				<div className={cn("min-w-0 flex-1 my-auto max-md:hidden")}> 
+				<div className={cn("min-w-0 flex-1 my-auto max-md:hidden")}>
 					<PageBreadcrumb includeRoot />
 				</div>
 				<div className="flex flex-1 items-center justify-end md:gap-2">
@@ -402,6 +403,7 @@ function DocsNavbar({
 						))}
 
 					<div className="flex items-center md:hidden">
+						<HeaderLLMCopyButton />
 						{searchToggle.enabled !== false &&
 							(searchToggle.components?.sm ?? (
 								<SearchToggle hideIfDisabled className="p-2" />
@@ -415,6 +417,7 @@ function DocsNavbar({
 								<Languages className="size-4.5 text-fd-muted-foreground" />
 							</LanguageToggle>
 						) : null}
+						<HeaderLLMCopyButton />
 						{searchToggle.enabled !== false && (
 							<SearchToggle hideIfDisabled className="p-2" />
 						)}

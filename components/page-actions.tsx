@@ -16,6 +16,7 @@ import {
   PopoverTrigger,
 } from 'fumadocs-ui/components/ui/popover';
 import { cva } from 'class-variance-authority';
+import { usePathname } from 'fumadocs-core/framework';
 
 const cache = new Map<string, string>();
 
@@ -244,4 +245,9 @@ export function ViewOptions({
       </PopoverContent>
     </Popover>
   );
+}
+
+export function HeaderLLMCopyButton(): React.ReactElement {
+  const pathname = usePathname();
+  return <LLMCopyButton markdownUrl={`${pathname}.mdx`} />;
 }
