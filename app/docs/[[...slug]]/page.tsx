@@ -26,7 +26,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 			: undefined;
 
 	return (
-		<DocsPage toc={page.data.toc} full={page.data.full}>
+		<DocsPage toc={page.data.toc} full={page.data.full} breadcrumb={{ enabled: false }}>
 			<div className="flex flex-row gap-2 items-center border-b pt-2 pb-6">
 				<LLMCopyButton markdownUrl={`${page.url}.mdx`} />
 				{githubUrl ? (
