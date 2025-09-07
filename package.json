@@ -1,31 +1,48 @@
 {
-  "name": "docs.recurse.cc",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "build": "next build",
-    "dev": "next dev --turbo",
-    "start": "next start",
-    "postinstall": "fumadocs-mdx"
-  },
-  "dependencies": {
-    "next": "15.5.2",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "fumadocs-ui": "15.7.10",
-    "fumadocs-core": "15.7.10",
-    "fumadocs-mdx": "11.9.0"
-  },
-  "devDependencies": {
-    "@types/node": "24.3.1",
-    "@types/react": "^19.1.12",
-    "@types/react-dom": "^19.1.9",
-    "typescript": "^5.9.2",
-    "@types/mdx": "^2.0.13",
-    "@tailwindcss/postcss": "^4.1.13",
-    "tailwindcss": "^4.1.13",
-    "postcss": "^8.5.6",
-    "eslint": "^8",
-    "eslint-config-next": "15.5.2"
-  }
+	"name": "docs.recurse.cc",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"build": "next build",
+		"dev": "next dev --turbo",
+		"start": "next start",
+		"postinstall": "fumadocs-mdx",
+		"generate:openapi": "node ./scripts/generate-docs.mjs",
+		"clean:openapi": "node ./scripts/clean-openapi.mjs",
+		"regen:openapi": "pnpm clean:openapi && pnpm generate:openapi"
+	},
+	"dependencies": {
+		"class-variance-authority": "^0.7.1",
+		"fumadocs-core": "15.7.10",
+		"fumadocs-mdx": "11.9.0",
+		"fumadocs-openapi": "^9.3.7",
+		"fumadocs-ui": "15.7.10",
+		"gray-matter": "^4.0.3",
+		"lucide-react": "^0.542.0",
+		"next": "15.5.2",
+		"react": "^19.1.1",
+		"react-dom": "^19.1.1",
+		"remark": "^15.0.1",
+		"remark-gfm": "^4.0.1",
+		"remark-parse": "^11.0.0",
+		"remark-mdx": "^3.1.1",
+		"shiki": "^3.12.2",
+		"tailwind-merge": "^3.3.1",
+		"tw-animate-css": "^1.3.8"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.2",
+		"@tailwindcss/postcss": "^4.1.13",
+		"@types/mdx": "^2.0.13",
+		"@types/node": "24.3.1",
+		"@types/react": "^19.1.12",
+		"@types/react-dom": "^19.1.9",
+		"eslint": "^8",
+		"eslint-config-next": "15.5.2",
+		"postcss": "^8.5.6",
+		"tailwindcss": "^4.1.13",
+		"tsx": "^4.20.5",
+		"typescript": "^5.9.2",
+		"ultracite": "5.3.3"
+	}
 }
