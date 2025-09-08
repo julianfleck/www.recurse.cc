@@ -1,9 +1,4 @@
 {
-  "title": "Applications",
-  "pages": [
-    "context-transfer",
-    "chatbots",
-    "ai-agents",
-    "reasoning"
-  ]
+	"title": "Applications",
+	"pages": ["use-cases", "context-transfer", "chatbots", "ai-agents", "reasoning"]
 }

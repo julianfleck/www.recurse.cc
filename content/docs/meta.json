@@ -2,11 +2,11 @@
 	"pages": [
 		"introduction",
 		"quickstart",
-		"---Guides---",
+		"---[Book]Guides---",
 		"...(Guide)",
-		"---About---",
+		"---[Info]About---",
 		"...About",
-		"---API Documentation---",
+		"---[FileText]API Documentation---",
 		"...(API Documentation)"
 	]
 }
