@@ -1,4 +1,11 @@
 {
 	"title": "Applications",
-	"pages": ["use-cases", "context-transfer", "chatbots", "ai-agents", "reasoning"]
+	"icon": "code",
+	"pages": [
+		"use-cases",
+		"context-transfer",
+		"chatbots",
+		"ai-agents",
+		"reasoning"
+	]
 }

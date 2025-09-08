@@ -1,6 +1,18 @@
 import { loader } from "fumadocs-core/source";
 import { transformerOpenAPI } from "fumadocs-openapi/server";
-import { Book, Bot, Brain, FileText, FolderPlus, Info, Rocket, Share2, UserPlus, Download } from "lucide-react";
+import {
+	Book,
+	Bot,
+	Brain,
+	Download,
+	FileText,
+	FolderPlus,
+	Info,
+	Rocket,
+	Share2,
+	UserPlus,
+	Code,
+} from "lucide-react";
 import { createElement } from "react";
 import { docs } from "@/.source";
 
@@ -35,6 +47,8 @@ export const source = loader({
 					return createElement(FolderPlus, { className: "size-4" });
 				case "download":
 					return createElement(Download, { className: "size-4" });
+				case "code":
+					return createElement(Code, { className: "size-4" });
 				default:
 					return undefined;
 			}

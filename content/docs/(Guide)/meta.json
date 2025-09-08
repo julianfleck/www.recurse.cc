@@ -1,12 +1,10 @@
 {
 	"title": "Guide",
 	"defaultOpen": true,
-	"icon": "book",
 	"pages": [
-		"use-cases",
 		"registration",
 		"Adding Content",
-		"retrieving-content",
+		"Retrieving Content",
 		"Applications"
 	]
 }
