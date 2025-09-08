@@ -2,9 +2,5 @@
 	"title": "Guide",
 	"defaultOpen": true,
 	"icon": "book",
-	"pages": [
-		"introduction",
-		"quickstart",
-		"Applications"
-	]
+	"pages": ["introduction", "quickstart", "Applications"]
 }

@@ -1,0 +1,9 @@
+{
+  "title": "Adding Content",
+  "pages": [
+    "manual-ingestion",
+    "automatic-ingestion",
+    "browser-extension",
+    "messagers"
+  ]
+}

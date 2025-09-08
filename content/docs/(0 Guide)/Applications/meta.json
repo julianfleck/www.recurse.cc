@@ -1,9 +1,9 @@
 {
   "title": "Applications",
-  "icon": "rocket",
   "pages": [
-    "ai-agents",
     "context-transfer",
+    "chatbots",
+    "ai-agents",
     "reasoning"
   ]
 }
