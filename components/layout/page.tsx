@@ -115,7 +115,7 @@ export function PageSidebarFooter(props: ComponentProps<"div">) {
 		<div
 			{...props}
 			className={cn(
-				"mt-auto border-t pt-3 text-xs text-fd-muted-foreground",
+				"mt-auto border-t border-t-muted pt-3 text-xs text-fd-muted-foreground",
 				props.className,
 			)}
 		>
@@ -151,10 +151,9 @@ export function DocsPage({
 }: DocsPageProps) {
 	// disable TOC on full mode, you can still enable it with `enabled` option.
 	tocEnabled ??=
-		!full &&
-		(toc.length > 0 ||
-			tocOptions.footer !== undefined ||
-			tocOptions.header !== undefined);
+		(!full && toc.length > 0) ||
+		tocOptions.footer !== undefined ||
+		tocOptions.header !== undefined;
 
 	tocPopoverEnabled ??=
 		toc.length > 0 ||
@@ -164,7 +163,7 @@ export function DocsPage({
 	return (
 		<PageRoot
 			toc={
-				(tocEnabled || tocPopoverEnabled || !!lastUpdate)
+				tocEnabled || tocPopoverEnabled || !!lastUpdate
 					? {
 							toc,
 							single: tocOptions.single,
@@ -211,7 +210,7 @@ export function DocsPage({
 						<PageSidebarFooter>
 							{lastUpdate && (
 								<PageLastUpdate
-									className="rounded-md bg-fd-card/60 p-2 text-[13px]"
+									className="p-2 pb-4 text-xs"
 									date={new Date(lastUpdate)}
 								/>
 							)}

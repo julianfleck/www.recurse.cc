@@ -2,4 +2,93 @@
 title: Quickstart
 ---
 
-Get started quickly.
+<div className='fd-steps [&_h3]:fd-step'>
+### 1) Register / Sign in
+Open the login URL in your browser to authenticate:
+
+```bash
+open http://localhost:8000/oauth/login
+```
+
+After success, the app will create a session. Verify your session token:
+
+```bash
+curl -H "Authorization: Bearer <SESSION_TOKEN>" http://localhost:8000/oauth/me
+```
+
+### 2) Create an API key
+Use your session token to create a key. Save the `key` value immediately (shown once):
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer <SESSION_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Quickstart Key"}' \
+  http://localhost:8000/api-keys
+```
+
+Check usage/quotas with the API key:
+
+```bash
+curl -H "X-API-KEY: <API_KEY>" http://localhost:8000/api-keys/usage
+```
+
+### 3) Ingest your first document
+Send raw text (or a file you’ve read client-side) to `/ingest` to create frames and embeddings.
+
+```bash
+curl -X POST \
+  -H "X-API-KEY: <API_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Sample",
+    "text": "Ephemeral interfaces enable fluid cognition."
+  }' \
+  http://localhost:8000/ingest
+```
+
+### 4) Search your graph
+Use the unified `/search` endpoint. Combine semantic terms and filters; control payload with `field_set` and traversal with `depth`.
+
+Basic structural search:
+
+```bash
+curl "http://localhost:8000/search/?query=type:claim&field_set=basic&limit=5"
+```
+
+Semantic search:
+
+```bash
+curl "http://localhost:8000/search/?query=semantic:%5C"ephemeral interfaces%5C"&field_set=content&limit=10"
+```
+
+Filter + depth traversal:
+
+```bash
+curl "http://localhost:8000/search/?query=type:Frame%20tag:*ai*%20semantic:algorithms&field_set=metadata&depth=2&limit=10"
+```
+
+Direct ID lookup:
+
+```bash
+curl "http://localhost:8000/search/?id=<NODE_ID>&field_set=metadata&depth=1"
+```
+</div>
+
+### Headers and conventions
+- Authentication: `X-API-KEY: <API_KEY>` or `Authorization: Bearer <API_KEY|SESSION_TOKEN>`
+- Content type: `application/json`
+- Field sets: `basic`, `content`, `metadata`, `all`
+- Depth: `0` (default) to `5`
+
+### Helpful tips
+- Prefer ID parameters when you know node IDs — they bypass query parsing
+- Start with `field_set=basic` for speed; expand as needed
+- Deeper `depth` increases response size and latency
+
+### See also
+- Introduction
+- Search API reference
+- Authentication guide
+
+

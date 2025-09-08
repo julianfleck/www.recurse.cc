@@ -2,4 +2,64 @@
 title: Introduction
 ---
 
-Welcome to the docs.
+## What is RAGE?
+RAGE (Recursive, Agentic Graph Embeddings) is a web API that turns your documents into a hierarchical knowledge graph (frames like claims, evidence, methods) and lets you query it semantically and structurally. You interact with RAGE over HTTP using JSON.
+
+## API
+### Base URL
+- Local development: `http://localhost:8000`
+
+### Authentication
+Use either of the following for authenticated endpoints:
+- Session token (OAuth): `Authorization: Bearer <SESSION_TOKEN>`
+- API key: `X-API-KEY: <API_KEY>` (recommended) or `Authorization: Bearer <API_KEY>`
+
+To obtain a session token or create an API key, see the Quickstart.
+
+### Core endpoints
+- POST `/ingest` — Ingest a document (extract frames, embed, store)
+- GET `/search/` — Unified search (semantic + filters + depth traversal)
+- GET `/api-keys` — List your API keys (session token required)
+- POST `/api-keys` — Create a new API key (session token required)
+- DELETE `/api-keys/{key_id}` — Revoke an API key
+- GET `/api-keys/usage` — View usage and quotas
+
+### Request and response format
+- Content type: `application/json`
+- Error responses use standard HTTP codes and a JSON body like `{ "detail": "Not authenticated" }`
+
+### Example: Search by filters
+```bash
+curl "http://localhost:8000/search/?query=type:claim&field_set=basic&limit=5"
+```
+
+Example response (truncated):
+```json
+{
+  "query": "type:claim",
+  "nodes": [
+    { "id": "abc123", "title": "Ephemeral Interfaces Enable Fluid Thinking", "type": "Frame:claim" }
+  ],
+  "total_found": 1,
+  "pagination": { "page": 1, "limit": 5, "total_count": 1, "total_pages": 1 }
+}
+```
+
+### Example: Semantic search
+```bash
+curl "http://localhost:8000/search/?query=semantic:%5C"ephemeral interfaces%5C"&field_set=content&limit=10"
+```
+
+### Field sets and depth
+- `field_set`: `basic` | `content` | `metadata` | `all`
+- `depth`: include children: `0` (default) … `5`
+
+### Best practices
+- Prefer ID lookup (`id=` or `ids=`) when you know exact nodes
+- Start with `field_set=basic` for fast lists; expand as needed
+- Use `depth` thoughtfully — deeper traversal increases payload size
+
+### Next steps
+Follow the Quickstart to: register/login → create an API key → ingest your first document → search your knowledge graph.
+
+

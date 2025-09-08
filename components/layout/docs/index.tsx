@@ -20,6 +20,7 @@ import {
 	type ReactNode,
 	useMemo,
 } from "react";
+import { HeaderLLMCopyButton } from "@/components/page-actions";
 import { cn } from "../../../lib/cn";
 import { LanguageToggle } from "../../language-toggle";
 import { type Option, RootToggle } from "../../root-toggle";
@@ -53,7 +54,6 @@ import {
 	type LinkItemType,
 } from "../shared/index";
 import { LayoutBody, LayoutTabs, Navbar, NavbarSidebarTrigger } from "./client";
-import { HeaderLLMCopyButton } from "@/components/page-actions";
 import { PageBreadcrumb } from "./page";
 
 export interface DocsLayoutProps extends BaseLayoutProps {
@@ -370,8 +370,8 @@ function DocsNavbar({
 						{nav.title}
 					</Link>
 				</div>
-				<div className={cn("min-w-0 flex-1 my-auto max-md:hidden")}>
-					<PageBreadcrumb includeRoot />
+				<div className={cn("min-w-0 flex-1 my-auto max-md:hidden px-2")}>
+					<PageBreadcrumb includePage />
 				</div>
 				<div className="flex flex-1 items-center justify-end md:gap-2">
 					<div className="flex items-center gap-6 empty:hidden max-lg:hidden">
@@ -403,11 +403,11 @@ function DocsNavbar({
 						))}
 
 					<div className="flex items-center md:hidden">
-						<HeaderLLMCopyButton />
 						{searchToggle.enabled !== false &&
 							(searchToggle.components?.sm ?? (
 								<SearchToggle hideIfDisabled className="p-2" />
 							))}
+						<HeaderLLMCopyButton />
 						<NavbarSidebarTrigger className="p-2 -me-1.5" />
 					</div>
 
@@ -417,10 +417,10 @@ function DocsNavbar({
 								<Languages className="size-4.5 text-fd-muted-foreground" />
 							</LanguageToggle>
 						) : null}
-						<HeaderLLMCopyButton />
 						{searchToggle.enabled !== false && (
 							<SearchToggle hideIfDisabled className="p-2" />
 						)}
+						<HeaderLLMCopyButton />
 						{themeSwitch.enabled !== false &&
 							(themeSwitch.component ?? (
 								<ThemeToggle mode={themeSwitch.mode ?? "light-dark-system"} />
