@@ -150,20 +150,14 @@ export function DocsPage({
 	children,
 }: DocsPageProps) {
 	// disable TOC on full mode, you can still enable it with `enabled` option.
-	tocEnabled ??=
-		(!full && toc.length > 0) ||
-		tocOptions.footer !== undefined ||
-		tocOptions.header !== undefined;
+	tocEnabled ??= !full && toc.length > 0;
 
-	tocPopoverEnabled ??=
-		toc.length > 0 ||
-		tocPopoverOptions.header !== undefined ||
-		tocPopoverOptions.footer !== undefined;
+	tocPopoverEnabled ??= toc.length > 0;
 
 	return (
 		<PageRoot
 			toc={
-				tocEnabled || tocPopoverEnabled || !!lastUpdate
+				tocEnabled || tocPopoverEnabled
 					? {
 							toc,
 							single: tocOptions.single,
@@ -172,7 +166,7 @@ export function DocsPage({
 			}
 			{...container}
 			className={cn(
-				!tocEnabled && !lastUpdate && "[--fd-toc-width:0px]",
+				!tocEnabled && "[--fd-toc-width:0px]",
 				container?.className,
 			)}
 		>
@@ -198,10 +192,9 @@ export function DocsPage({
 						/>
 					)}
 				</div>
-				{footer.enabled !== false &&
-					(footer.component ?? <PageFooter items={footer.items} />)}
+				{footer.enabled !== false && (footer.component ?? <PageFooter />)}
 			</PageArticle>
-			{(tocEnabled || lastUpdate) &&
+			{tocEnabled &&
 				(tocReplace ?? (
 					<PageTOC>
 						{tocOptions.header}
