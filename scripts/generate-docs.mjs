@@ -11,7 +11,8 @@ import {
 import * as path from "node:path";
 import { generateFilesOnly } from "fumadocs-openapi";
 
-const GENERATED_HEADER = "<!-- AUTO-GENERATED: fumadocs-openapi (safe to overwrite) -->";
+const GENERATED_HEADER =
+	"{/* AUTO-GENERATED: fumadocs-openapi (safe to overwrite) */}";
 
 const options = {
 	input: ["http://localhost:8000/openapi.json"],
