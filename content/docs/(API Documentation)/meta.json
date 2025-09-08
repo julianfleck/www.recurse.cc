@@ -1,3 +1,4 @@
 {
-  "title": "API Documentation"
+	"title": "API Documentation",
+	"pages": ["documents", "search", "auth", "users", "health", "api-keys"]
 }
