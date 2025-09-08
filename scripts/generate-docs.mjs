@@ -11,8 +11,7 @@ import {
 import * as path from "node:path";
 import { generateFilesOnly } from "fumadocs-openapi";
 
-const GENERATED_HEADER =
-	"<!-- AUTO-GENERATED: fumadocs-openapi (safe to overwrite) -->\n\n";
+const GENERATED_HEADER = "<!-- AUTO-GENERATED: fumadocs-openapi (safe to overwrite) -->";
 
 const options = {
 	input: ["http://localhost:8000/openapi.json"],
@@ -67,13 +66,36 @@ for (const file of files) {
 		existing = await readFile(targetPath, "utf8");
 	} catch {}
 
-	if (existing != null && !existing.startsWith("<!-- AUTO-GENERATED:")) {
+	if (
+		existing != null &&
+		!existing.includes("AUTO-GENERATED: fumadocs-openapi")
+	) {
 		// manual edit detected; skip overwriting
 		skipped++;
 		continue;
 	}
 
-	const content = `${GENERATED_HEADER}${file.content}`;
+	// Insert header after frontmatter if present
+	let content = file.content;
+	if (content.startsWith("---")) {
+		const lines = content.split(/\r?\n/);
+		let endIdx = -1;
+		for (let i = 1; i < lines.length; i++) {
+			if (lines[i].trim() === "---") {
+				endIdx = i;
+				break;
+			}
+		}
+		if (endIdx !== -1) {
+			const frontmatter = lines.slice(0, endIdx + 1).join("\n");
+			const rest = lines.slice(endIdx + 1).join("\n");
+			content = `${frontmatter}\n\n${GENERATED_HEADER}\n\n${rest}`;
+		} else {
+			content = `${GENERATED_HEADER}\n\n${content}`;
+		}
+	} else {
+		content = `${GENERATED_HEADER}\n\n${content}`;
+	}
 	await writeFile(targetPath, content, "utf8");
 	written++;
 }
