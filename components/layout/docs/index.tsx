@@ -371,7 +371,7 @@ function DocsNavbar({
 					</Link>
 				</div>
 				<div className={cn("min-w-0 flex-1 my-auto max-md:hidden px-2")}>
-					<PageBreadcrumb includePage />
+					<PageBreadcrumb includeSeparator includePage />
 				</div>
 				<div className="flex flex-1 items-center justify-end md:gap-2">
 					<div className="flex items-center gap-6 empty:hidden max-lg:hidden">
