@@ -1,8 +1,8 @@
 import type { PageTreeTransformer } from "fumadocs-core/source";
 import { loader } from "fumadocs-core/source";
-import { createElement } from "react";
-import { Book, Rocket, Bot, Share2, Brain } from "lucide-react";
 import { transformerOpenAPI } from "fumadocs-openapi/server";
+import { Book, Bot, Brain, Rocket, Share2 } from "lucide-react";
+import { createElement } from "react";
 import { docs } from "@/.source";
 
 // See https://fumadocs.vercel.app/docs/headless/source-api for more info
@@ -15,15 +15,34 @@ export const source = loader({
 		transformers: [
 			transformerOpenAPI(),
 			{
-				name: "flatten-folders-into-separators",
+				name: "flatten-and-hoist-guide-intro-quickstart",
 				root(root) {
 					const namesToFlatten = new Set(["Guide", "API Documentation"]);
+					const hoistUrls = new Set(["/docs/introduction", "/docs/quickstart"]);
 					const children: typeof root.children = [];
 					for (const node of root.children) {
 						if (
 							node.type === "folder" &&
 							namesToFlatten.has(String(node.name))
 						) {
+							if (String(node.name) === "Guide") {
+								const hoisted: typeof root.children = [];
+								const remaining: typeof root.children = [];
+								if (node.index) {
+									if (node.index.type === "page" && hoistUrls.has(node.index.url)) hoisted.push(node.index);
+									else remaining.push(node.index);
+								}
+								for (const child of node.children) {
+									if (child.type === "page" && hoistUrls.has(child.url)) hoisted.push(child);
+									else if (child.type !== "separator") remaining.push(child);
+								}
+
+								children.push(...hoisted);
+								children.push({ type: "separator", name: node.name });
+								children.push(...remaining);
+								continue;
+							}
+
 							children.push({ type: "separator", name: node.name });
 							if (node.index) children.push(node.index);
 							for (const child of node.children)
