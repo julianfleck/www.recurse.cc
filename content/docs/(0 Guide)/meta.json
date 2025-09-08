@@ -2,5 +2,11 @@
 	"title": "Guide",
 	"defaultOpen": true,
 	"icon": "book",
-	"pages": ["introduction", "quickstart", "Applications"]
+	"pages": [
+		"use-cases",
+		"registration",
+		"Adding Content",
+		"retrieving-content",
+		"Applications"
+	]
 }

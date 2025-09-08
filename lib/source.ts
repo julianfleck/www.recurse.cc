@@ -17,7 +17,7 @@ export const source = loader({
 			{
 				name: "flatten-and-hoist-guide-intro-quickstart",
 				root(root) {
-					const namesToFlatten = new Set(["Guide", "API Documentation"]);
+					const namesToFlatten = new Set(["Guide", "API Documentation", "About"]);
 					const hoistUrls = new Set(["/docs/introduction", "/docs/quickstart"]);
 					const children: typeof root.children = [];
 					for (const node of root.children) {
