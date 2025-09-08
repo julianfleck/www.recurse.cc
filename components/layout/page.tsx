@@ -110,6 +110,20 @@ type TableOfContentOptions = Pick<AnchorProviderProps, "single"> & {
 
 type TableOfContentPopoverOptions = Omit<TableOfContentOptions, "single">;
 
+export function PageSidebarFooter(props: ComponentProps<"div">) {
+	return (
+		<div
+			{...props}
+			className={cn(
+				"mt-auto border-t pt-3 text-xs text-fd-muted-foreground",
+				props.className,
+			)}
+		>
+			{props.children}
+		</div>
+	);
+}
+
 export function DocsPage({
 	editOnGithub,
 	breadcrumb: {
@@ -152,9 +166,9 @@ export function DocsPage({
 			toc={
 				(tocEnabled || tocPopoverEnabled || !!lastUpdate)
 					? {
-							 toc,
-							 single: tocOptions.single,
-						 }
+							toc,
+							single: tocOptions.single,
+						}
 					: false
 			}
 			{...container}
@@ -194,9 +208,14 @@ export function DocsPage({
 						{tocOptions.header}
 						<PageTOCTitle />
 						<PageTOCItems variant={tocOptions.style} />
-						{lastUpdate && (
-							<PageLastUpdate className="mt-4" date={new Date(lastUpdate)} />
-						)}
+						<PageSidebarFooter>
+							{lastUpdate && (
+								<PageLastUpdate
+									className="rounded-md bg-fd-card/60 p-2 text-[13px]"
+									date={new Date(lastUpdate)}
+								/>
+							)}
+						</PageSidebarFooter>
 						{tocOptions.footer}
 					</PageTOC>
 				))}
