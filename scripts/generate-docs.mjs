@@ -22,13 +22,22 @@ const options = {
 	name: { algorithm: "v2" },
 };
 
-// Clean previously generated files while preserving ONLY root meta.json
+// Clean previously generated files while preserving ANY meta.json files (deep)
 async function cleanOutput(root) {
 	try {
 		const entries = await readdir(root, { withFileTypes: true });
 		for (const entry of entries) {
 			const full = path.join(root, entry.name);
-			// keep root meta.json, remove everything else recursively
+			if (entry.isDirectory()) {
+				await cleanOutput(full);
+				// After cleaning children, remove dir if empty
+				try {
+					const remaining = await readdir(full);
+					if (remaining.length === 0) await rm(full, { recursive: true, force: true });
+				} catch {}
+				continue;
+			}
+			// keep any meta.json file
 			if (entry.isFile() && entry.name.toLowerCase() === "meta.json") continue;
 			await rm(full, { recursive: true, force: true });
 		}
