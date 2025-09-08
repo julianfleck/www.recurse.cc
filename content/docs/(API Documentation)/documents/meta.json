@@ -1,0 +1,15 @@
+{
+	"title": "Documents",
+	"pages": [
+		"get",
+		"post",
+		"upload-post",
+		"list-post",
+		"doc_id-get",
+		"doc_id-delete",
+		"doc_id-processing-status-get",
+		"doc_id-resume-processing-post"
+	]
+}
+
+
