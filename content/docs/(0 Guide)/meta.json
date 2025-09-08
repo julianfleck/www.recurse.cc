@@ -1,9 +1,10 @@
 {
-  "title": "Guide",
-  "defaultOpen": true,
-  "icon": "book",
-  "pages": [
-    "introduction",
-    "quickstart"
-  ]
+	"title": "Guide",
+	"defaultOpen": true,
+	"icon": "book",
+	"pages": [
+		"introduction",
+		"quickstart",
+		"Applications"
+	]
 }
