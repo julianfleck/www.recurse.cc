@@ -1,5 +1,5 @@
 import { constants as fsConstants } from "node:fs";
-import { access, mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, readdir, rm, stat, unlink, writeFile } from "node:fs/promises";
 import * as path from "node:path";
 import { generateFilesOnly } from "fumadocs-openapi";
 
@@ -13,6 +13,33 @@ const options = {
 	groupBy: "route",
 	name: { algorithm: "v2" },
 };
+
+// Clean previously generated files while preserving meta.json files
+async function cleanOutputExceptMeta(root) {
+    try {
+        const entries = await readdir(root, { withFileTypes: true });
+        for (const entry of entries) {
+            const full = path.join(root, entry.name);
+            if (entry.isDirectory()) {
+                await cleanOutputExceptMeta(full);
+                // remove dir if empty after cleaning
+                try {
+                    await rm(full, { recursive: false });
+                } catch {}
+                continue;
+            }
+
+            // Preserve meta.json files
+            if (entry.name.toLowerCase() === "meta.json") continue;
+
+            await unlink(full);
+        }
+    } catch (err) {
+        // ignore when folder doesn't exist
+    }
+}
+
+await cleanOutputExceptMeta(options.output);
 
 const files = await generateFilesOnly(options);
 
