@@ -1,8 +1,4 @@
 {
-  "title": "About",
-  "pages": [
-    "why-rage",
-    "about-us",
-    "pricing"
-  ]
+	"title": "About",
+	"pages": ["why-rage", "about-us", "pricing"]
 }

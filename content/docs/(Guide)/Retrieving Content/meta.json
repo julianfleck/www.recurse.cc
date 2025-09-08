@@ -1,11 +1,5 @@
 {
-  "title": "Retrieving Content",
-  "icon": "download",
-  "pages": [
-    "via-api",
-    "via-mcp",
-    "via-proxy"
-  ]
+	"title": "Retrieving Content",
+	"icon": "download",
+	"pages": ["via-api", "via-mcp", "via-proxy"]
 }
-
-

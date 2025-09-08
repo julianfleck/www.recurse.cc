@@ -4,6 +4,7 @@ import {
 	Book,
 	Bot,
 	Brain,
+	Code,
 	Download,
 	FileText,
 	FolderPlus,
@@ -11,7 +12,6 @@ import {
 	Rocket,
 	Share2,
 	UserPlus,
-	Code,
 } from "lucide-react";
 import { createElement } from "react";
 import { docs } from "@/.source";
