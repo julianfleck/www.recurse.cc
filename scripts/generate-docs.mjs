@@ -1,5 +1,13 @@
 import { constants as fsConstants } from "node:fs";
-import { access, mkdir, readFile, readdir, rm, stat, unlink, writeFile } from "node:fs/promises";
+import {
+	access,
+	mkdir,
+	readdir,
+	readFile,
+	rm,
+	unlink,
+	writeFile,
+} from "node:fs/promises";
 import * as path from "node:path";
 import { generateFilesOnly } from "fumadocs-openapi";
 
@@ -14,57 +22,42 @@ const options = {
 	name: { algorithm: "v2" },
 };
 
-// Clean previously generated files while preserving meta.json files
-async function cleanOutputExceptMeta(root) {
-    try {
-        const entries = await readdir(root, { withFileTypes: true });
-        for (const entry of entries) {
-            const full = path.join(root, entry.name);
-            if (entry.isDirectory()) {
-                await cleanOutputExceptMeta(full);
-                // remove dir if empty after cleaning
-                try {
-                    await rm(full, { recursive: false });
-                } catch {}
-                continue;
-            }
-
-            // Preserve meta.json files
-            if (entry.name.toLowerCase() === "meta.json") continue;
-
-            await unlink(full);
-        }
-    } catch (err) {
-        // ignore when folder doesn't exist
-    }
+// Clean previously generated files while preserving ONLY root meta.json
+async function cleanOutput(root) {
+	try {
+		const entries = await readdir(root, { withFileTypes: true });
+		for (const entry of entries) {
+			const full = path.join(root, entry.name);
+			// keep root meta.json, remove everything else recursively
+			if (entry.isFile() && entry.name.toLowerCase() === "meta.json") continue;
+			await rm(full, { recursive: true, force: true });
+		}
+	} catch (err) {
+		// ignore when folder doesn't exist
+	}
 }
 
-await cleanOutputExceptMeta(options.output);
+await cleanOutput(options.output);
 
 const files = await generateFilesOnly(options);
 
-function flattenPathForSearch(originalPath) {
-	// Only flatten under the Search group directory
-	const groupRoot = path.join(options.output, "search");
+function flattenPathAllGroups(originalPath) {
+	// Flatten any nested path inside any first-level group under options.output
 	const normalized = path.normalize(originalPath);
-	if (!normalized.startsWith(groupRoot + path.sep)) return originalPath;
-
-	// Compute path inside search folder (relative subpath after search/)
-	const inside = path.relative(groupRoot, normalized);
-	if (!inside.includes(path.sep)) return originalPath;
-
-	// Replace nested segments with dashes to create a flat filename
-	// e.g. frames/status/job_id/get.mdx -> frames-status-job_id-get.mdx
-	const flatName = inside.split(path.sep).join("-");
-	return path.join(groupRoot, flatName);
+	const rel = path.relative(options.output, normalized);
+	const parts = rel.split(path.sep);
+	if (parts.length <= 2) return originalPath; // already flat (group/file)
+	const group = parts[0];
+	const tail = parts.slice(1).join("-");
+	return path.join(options.output, group, tail);
 }
 
 let written = 0;
 let skipped = 0;
 
 for (const file of files) {
-	// Optionally rewrite paths to flatten search/* subtrees
-	const targetPath = flattenPathForSearch(file.path);
+	// Flatten nested subfolders for all groups
+	const targetPath = flattenPathAllGroups(file.path);
 	const dir = path.dirname(targetPath);
 	await mkdir(dir, { recursive: true });
 
