@@ -4,7 +4,7 @@ import {
 	DocsDescription,
 	DocsPage,
 	DocsTitle,
-} from "fumadocs-ui/page";
+} from "@/components/layout/page";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { ViewOptions } from "@/components/page-actions";
