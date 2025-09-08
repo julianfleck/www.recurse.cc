@@ -1,4 +1,9 @@
 {
   "title": "Guide",
-  "defaultOpen": true
+  "defaultOpen": true,
+  "icon": "book",
+  "pages": [
+    "introduction",
+    "quickstart"
+  ]
 }
