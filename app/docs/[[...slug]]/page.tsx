@@ -13,7 +13,7 @@ import { getMDXComponents } from "@/mdx-components";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 	const params = await props.params;
-	// Redirect /docs to the introduction page
+	// Redirect /docs to introduction
 	if (!params.slug || params.slug.length === 0) {
 		redirect("/docs/introduction");
 	}
@@ -29,11 +29,16 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 			? `https://github.com/${githubOwner}/${githubRepo}/blob/${githubBranch}/content/docs/${page.path}`
 			: undefined;
 
+	// Last modified time (enabled via source.config.ts lastModifiedTime: 'git')
+	const lastModifiedRaw = (page.data as any).lastModified as number | undefined;
+	const lastUpdate = lastModifiedRaw ? new Date(lastModifiedRaw) : undefined;
+
 	return (
 		<DocsPage
 			toc={page.data.toc}
 			full={page.data.full}
 			breadcrumb={{ enabled: false }}
+			lastUpdate={lastUpdate}
 		>
 			{githubUrl ? (
 				<div className="flex flex-row gap-2 items-center border-b pt-2 pb-6">
