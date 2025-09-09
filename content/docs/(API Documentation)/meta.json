@@ -1,4 +1,13 @@
 {
 	"title": "API Documentation",
-	"pages": ["documents", "search", "auth", "users", "health", "api-keys"]
+	"pages": [
+		"health",
+		"documents",
+		"search",
+		"writing",
+		"auth",
+		"users",
+		"api-keys",
+		"extract"
+	]
 }

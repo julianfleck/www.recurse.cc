@@ -33,7 +33,8 @@ async function cleanOutput(root) {
 				// After cleaning children, remove dir if empty
 				try {
 					const remaining = await readdir(full);
-					if (remaining.length === 0) await rm(full, { recursive: true, force: true });
+					if (remaining.length === 0)
+						await rm(full, { recursive: true, force: true });
 				} catch {}
 				continue;
 			}

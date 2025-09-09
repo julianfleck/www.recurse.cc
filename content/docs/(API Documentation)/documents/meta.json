@@ -1,9 +1,9 @@
 {
 	"title": "Documents",
 	"pages": [
-		"get",
-		"post",
 		"upload-post",
+		"post",
+		"get",
 		"list-post",
 		"doc_id-get",
 		"doc_id-delete",
@@ -11,5 +11,3 @@
 		"doc_id-resume-processing-post"
 	]
 }
-
-

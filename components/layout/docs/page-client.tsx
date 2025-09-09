@@ -350,7 +350,7 @@ export type BreadcrumbProps = BreadcrumbOptions & ComponentProps<"div">;
 export function PageBreadcrumb({
 	includeRoot = false,
 	includeSeparator,
-	includePage = false,
+	includePage = true,
 	...props
 }: BreadcrumbProps) {
 	const path = useTreePath();
