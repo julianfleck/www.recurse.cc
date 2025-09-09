@@ -72,7 +72,7 @@ const itemVariants = cva(
 	{
 		variants: {
 			active: {
-				true: "bg-fd-primary/10 text-fd-primary",
+				true: "bg-accent text-accent-foreground",
 				false:
 					"transition-colors hover:bg-fd-accent/50 hover:text-fd-accent-foreground/80 hover:transition-none",
 			},
@@ -125,7 +125,7 @@ export function SidebarContent(props: ComponentProps<"aside">) {
 			{...props}
 			data-collapsed={collapsed}
 			className={cn(
-				"fixed left-0 rtl:left-auto rtl:right-(--removed-body-scroll-bar-size,0) flex flex-col items-end top-(--fd-sidebar-top) bottom-(--fd-sidebar-margin) z-20 bg-sidebar text-sm border-e transition-[top,opacity,translate,width] duration-200 max-md:hidden *:w-(--fd-sidebar-width)",
+				"fixed left-0 rtl:left-auto rtl:right-(--removed-body-scroll-bar-size,0) flex flex-col items-end top-(--fd-sidebar-top) bottom-(--fd-sidebar-margin) z-20 bg-sidebar text-sm border-e transition-[top,opacity,translate,width] duration-200 max-md:hidden *:w-(--fd-sidebar-width) opacity-70 hover:opacity-100",
 				collapsed && [
 					"rounded-xl border translate-x-(--fd-sidebar-offset) rtl:-translate-x-(--fd-sidebar-offset)",
 					hover ? "z-50 shadow-lg" : "opacity-0",

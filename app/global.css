@@ -15,11 +15,11 @@
 	--popover-foreground: oklch(0 0 0);
 	--primary: oklch(0.439 0 0);
 	--primary-foreground: oklch(0.97 0 0);
-	--secondary: oklch(0.98 0.03 122.328);
+	--secondary: oklch(0.97 0 0);
 	--secondary-foreground: oklch(0 0 0);
 	--muted: oklch(0.95 0 0);
 	--muted-foreground: oklch(0.556 0 0);
-	--accent: oklch(0.97 0 0);
+	--accent: oklch(0.98 0.03 122.328);
 	--accent-foreground: oklch(0 0 0);
 	--destructive: oklch(0.837 0.128 66.29);
 	--destructive-foreground: oklch(0.269 0 0);
@@ -98,9 +98,9 @@
 	--sidebar-accent-foreground: oklch(1 0 0);
 	--sidebar-border: oklch(0.24 0 0);
 	--sidebar-ring: oklch(0.7187 0 0);
-	--font-sans: Geist, sans-serif;
+	--font-sans: var(--font-geist-sans), sans-serif;
 	--font-serif: Georgia, serif;
-	--font-mono: Geist Mono, monospace;
+	--font-mono: var(--font-geist-mono), monospace;
 	--radius: 0.2rem;
 	--shadow-2xs: 0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.05);
 	--shadow-xs: 0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.05);
@@ -188,7 +188,7 @@ body {
 
 /* Prose typography overrides (Fumadocs fork consumes these variables) */
 .prose {
-	--tw-prose-body: color-mix(in oklch, var(--foreground) 80%, transparent);
+	--tw-prose-body: var(--foreground);
 	--tw-prose-headings: var(--foreground);
 	--tw-prose-lead: color-mix(in oklch, var(--foreground) 80%, transparent);
 	--tw-prose-links: var(--primary);
@@ -256,6 +256,41 @@ body {
 }
 .prose :where(ol > li)::marker {
 	color: var(--tw-prose-counters);
+}
+
+/* Global styles (apply outside prose as well) */
+html:not(.prose) {
+	font-family: var(--font-sans);
+	font-weight: 420;
+	letter-spacing: -0.04em;
+	line-height: 1.2;
+}
+
+h1,
+h2 {
+	font-weight: 420;
+	color: var(--accent-foreground);
+	letter-spacing: -0.04em;
+	line-height: 1.2;
+}
+
+h3,
+h4,
+h5,
+h6 {
+	font-weight: 440;
+	letter-spacing: 0.01em;
+	line-height: 1.2;
+}
+
+/* fumadocs-openapi overrides */
+
+.fd-openapi {
+	@apply mt-12 border-t border-fd-border pt-8;
+}
+
+.fd-scroll-container {
+	@apply bg-card;
 }
 
 /* Class-level overrides from fumadocs-openapi badgeVariants */
@@ -658,28 +693,4 @@ body {
 .dark #nd-page a:focus-visible :where(.dark\:text-red-400),
 .dark #nd-page a[data-active="true"] :where(.dark\:text-red-400) {
 	color: #e57637;
-}
-
-/* Global styles (apply outside prose as well) */
-html:not(.prose) {
-	font-family: var(--font-sans);
-	font-weight: 420;
-	letter-spacing: -0.04em;
-	line-height: 1.2;
-}
-
-h1,
-h2 {
-	font-weight: 420;
-	letter-spacing: -0.04em;
-	line-height: 1.2;
-}
-
-h3,
-h4,
-h5,
-h6 {
-	font-weight: 440;
-	letter-spacing: 0.01em;
-	line-height: 1.2;
 }
