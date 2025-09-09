@@ -1,6 +1,14 @@
 import { createOpenAPI } from "fumadocs-openapi/server";
+import minimalAccentDark from "../styles/minimal-accent-dark.json";
+import minimalAccentLight from "../styles/minimal-accent-light.json";
 
 export const openapi = createOpenAPI({
 	// the OpenAPI schema, you can also give it an external URL.
 	input: ["http://localhost:8000/openapi.json"],
+	shikiOptions: {
+		themes: {
+			light: minimalAccentLight as unknown as any,
+			dark: minimalAccentDark as unknown as any,
+		},
+	},
 });
