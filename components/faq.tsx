@@ -1,6 +1,8 @@
 import React from 'react';
 import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
-import { getFAQsByIds, FAQItem } from '@/lib/faq-data';
+import { getFAQsByIds } from '@/lib/faq-data';
+import { remark } from 'remark';
+import remarkHtml from 'remark-html';
 
 interface FAQProps {
   items: string; // Comma-separated string of FAQ item IDs
@@ -17,7 +19,7 @@ export function FAQ({ items, className }: FAQProps) {
   // Get the FAQ items from our data
   const faqItems = getFAQsByIds(itemIds);
 
-  if (faqItems.length === 0) {
+  if (faqItems.length === 0 && itemIds.length > 0) {
     return (
       <div className={`text-muted-foreground ${className || ''}`}>
         No FAQ items found for the specified IDs: {items}
@@ -33,21 +35,15 @@ export function FAQ({ items, className }: FAQProps) {
             key={item.id}
             title={item.title}
           >
-            <div className="prose prose-sm max-w-none">
-              {item.content}
-            </div>
+            <div
+              className="prose prose-sm max-w-none"
+              dangerouslySetInnerHTML={{
+                __html: remark().use(remarkHtml).processSync(item.content).toString()
+              }}
+            />
           </Accordion>
         ))}
       </Accordions>
-    </div>
-  );
-}
-
-// Helper component for rendering FAQ content with custom formatting
-export function FAQContent({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="prose prose-sm max-w-none">
-      {children}
     </div>
   );
 }

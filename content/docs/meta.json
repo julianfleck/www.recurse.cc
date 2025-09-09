@@ -1,8 +1,8 @@
 {
 	"pages": [
 		"introduction",
-		"faq",
 		"quickstart",
+		"faq",
 		"---Guides---",
 		"...guide",
 		"---About---",

@@ -12,6 +12,7 @@ import {
 	FolderPlus,
 	Globe,
 	HandMetal,
+	HelpCircle,
 	Info,
 	Lightbulb,
 	Rocket,
@@ -101,6 +102,8 @@ export const source = loader({
 					return createElement(Globe, { className: "size-4" });
 				case "lightbulb":
 					return createElement(Lightbulb, { className: "size-4" });
+				case "help-circle":
+					return createElement(HelpCircle, { className: "size-4" });
 
 				// Tabler icons
 				case "api":
