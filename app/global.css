@@ -259,16 +259,59 @@ body {
 }
 
 /* Class-level overrides from fumadocs-openapi badgeVariants */
-.fd-openapi :where(.text-green-600) { color: #A6C82E; }
-.dark .fd-openapi :where(.dark\:text-green-400) { color: #BDC122; }
-.fd-openapi :where(.text-yellow-600) { color: #E57637; }
-.dark .fd-openapi :where(.dark\:text-yellow-400) { color: #E57637; }
-.fd-openapi :where(.text-red-600) { color: #cc3333; }
-.dark .fd-openapi :where(.dark\:text-red-400) { color: #ff6666; }
-.fd-openapi :where(.text-blue-600) { color: #8D87CF; }
-.dark .fd-openapi :where(.dark\:text-blue-400) { color: #B98EFF; }
-.fd-openapi :where(.text-orange-600) { color: #E57637; }
-.dark .fd-openapi :where(.dark\:text-orange-400) { color: #E57637; }
+.fd-openapi :where(.text-green-600) {
+	color: #a6c82e;
+}
+.dark .fd-openapi :where(.dark\:text-green-400) {
+	color: #bdc122;
+}
+.fd-openapi :where(.text-yellow-600) {
+	color: #e57637;
+}
+.dark .fd-openapi :where(.dark\:text-yellow-400) {
+	color: #e57637;
+}
+.fd-openapi :where(.text-red-600) {
+	color: #cc3333;
+}
+.dark .fd-openapi :where(.dark\:text-red-400) {
+	color: #ff6666;
+}
+.fd-openapi :where(.text-blue-600) {
+	color: #8d87cf;
+}
+.dark .fd-openapi :where(.dark\:text-blue-400) {
+	color: #b98eff;
+}
+.fd-openapi :where(.text-orange-600) {
+	color: #e57637;
+}
+.dark .fd-openapi :where(.dark\:text-orange-400) {
+	color: #e57637;
+}
+
+/* Sidebar/breadcrumb method label overrides */
+#nd-sidebar :where(.text-green-600) { color: #a6c82e; }
+.dark #nd-sidebar :where(.dark\:text-green-400) { color: #bdc122; }
+#nd-sidebar :where(.text-yellow-600) { color: #e57637; }
+.dark #nd-sidebar :where(.dark\:text-yellow-400) { color: #e57637; }
+#nd-sidebar :where(.text-red-600) { color: #cc3333; }
+.dark #nd-sidebar :where(.dark\:text-red-400) { color: #ff6666; }
+#nd-sidebar :where(.text-blue-600) { color: #8d87cf; }
+.dark #nd-sidebar :where(.dark\:text-blue-400) { color: #b98eff; }
+#nd-sidebar :where(.text-orange-600) { color: #e57637; }
+.dark #nd-sidebar :where(.dark\:text-orange-400) { color: #e57637; }
+
+#nd-tocnav :where(.text-green-600) { color: #a6c82e; }
+.dark #nd-tocnav :where(.dark\:text-green-400) { color: #bdc122; }
+#nd-tocnav :where(.text-yellow-600) { color: #e57637; }
+.dark #nd-tocnav :where(.dark\:text-yellow-400) { color: #e57637; }
+#nd-tocnav :where(.text-red-600) { color: #cc3333; }
+.dark #nd-tocnav :where(.dark\:text-red-400) { color: #ff6666; }
+#nd-tocnav :where(.text-blue-600) { color: #8d87cf; }
+.dark #nd-tocnav :where(.dark\:text-blue-400) { color: #b98eff; }
+#nd-tocnav :where(.text-orange-600) { color: #e57637; }
+.dark #nd-tocnav :where(.dark\:text-orange-400) { color: #e57637; }
 
 /* Global styles (apply outside prose as well) */
 html:not(.prose) {
