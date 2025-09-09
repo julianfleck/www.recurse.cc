@@ -3,10 +3,10 @@
 		"introduction",
 		"quickstart",
 		"---Guides---",
-		"...(Guide)",
+		"...guide",
 		"---About---",
 		"...About",
 		"---[FileText]API Documentation---",
-		"...(API Documentation)"
+		"...api-documentation"
 	]
 }

@@ -1,0 +1,227 @@
+---
+description: Fumadocs MDX Formatting Reference
+globs: *.md,*.mdx
+alwaysApply: false
+---
+# Fumadocs MDX Formatting Reference
+
+## Available Components
+
+Based on the existing codebase, these Fumadocs components are available:
+
+### Cards Layout
+```jsx
+<Cards>
+  <Card href="/link" title="Card Title">
+    Card description text here
+  </Card>
+  <Card href="/another-link" title="Another Card">
+    Another description
+  </Card>
+</Cards>
+```
+
+### Steps Component
+```jsx
+<div className='fd-steps [&_h4]:fd-step'>
+#### Step 1: Do Something
+Description of what to do in step 1
+
+#### Step 2: Do Next Thing
+Description of what to do in step 2
+
+#### Step 3: Final Step
+Description of the final action
+</div>
+```
+
+### API Documentation
+```jsx
+<APIPage
+  document={"http://localhost:8000/openapi.json"}
+  operations={[{"path":"/endpoint","method":"get"}]}
+  webhooks={[]}
+  hasHead={false}
+/>
+```
+
+### Image Zoom
+```jsx
+<img src="/path/to/image.jpg" alt="Description" />
+```
+(Note: Images automatically get zoom functionality via ImageZoom component)
+
+## Standard MDX Features
+
+### Frontmatter
+```yaml
+---
+title: Page Title
+description: Brief description for SEO and previews
+icon: icon-name (optional)
+---
+```
+
+**Icon Usage in Frontmatter:**
+- Add `icon: "icon-name"` to display an icon next to the page title
+- Icons must be registered in `lib/source.ts`
+- Available icons: `book`, `rocket`, `bot`, `brain`, `code`, `share2`, `hand-metal`, and others
+
+### Headings
+```markdown
+# Main Title (avoid in body, use frontmatter)
+## Section Header
+### Subsection Header
+#### Step Header (for steps)
+```
+
+### Text Formatting
+```markdown
+**Bold text** for UI elements
+*Italic text* for emphasis
+`inline code` for parameters, commands
+```
+
+### Lists
+```markdown
+- Unordered list item
+- Another item
+  - Nested item
+
+1. Numbered list item
+2. Another numbered item
+```
+
+### Links
+```markdown
+[Link text](./relative-path.mdx)
+[External link](https://example.com)
+```
+
+### Code Blocks
+```bash
+# Command examples
+curl -X GET "https://api.example.com"
+```
+
+```json
+// JSON examples
+{
+  "key": "value"
+}
+```
+
+### Blockquotes
+```markdown
+> Important note or tip
+```
+
+### Typography Best Practices
+```markdown
+# Correct usage:
+- Use real apostrophes: "It's working" (not "It's working")
+- Use smart quotes: "Hello world" (not "Hello world")
+- Use en-dashes for ranges: 5–10 minutes (not 5-10 minutes)
+- Use em-dashes sparingly: The feature—while powerful—is optional
+```
+
+### Tables (Preferred over lists)
+Tables are easier to scan and read than bullet lists. Use them for comparisons, features, and structured information.
+
+```markdown
+| Technology | Approach | What You Get |
+|------------|----------|--------------|
+| **Standard RAG** | Flat text chunks | Basic retrieval, loses context |
+| **GraphRAG** | Predefined relationships | Structured but rigid connections |
+| **RAGE** | Living knowledge substrate | Automatic semantic extraction, nested relationships |
+```
+
+### Horizontal Rules
+Use horizontal rules (`---`) to divide major sections visually:
+
+```markdown
+## Section 1
+Content here
+
+---
+
+## Section 2
+More content here
+```
+
+## Content Structure Patterns
+
+### Standard Page Structure
+```markdown
+---
+title: Page Title
+description: What this page helps users accomplish
+---
+
+## Opening Hook
+Brief, compelling introduction to the topic
+
+## Main Content Section
+### Subsection
+Content here
+
+## Getting Started
+<div className='fd-steps [&_h4]:fd-step'>
+#### Step 1
+Instructions
+
+#### Step 2
+More instructions
+</div>
+
+## Use Cases
+<Cards>
+  <Card href="/example" title="Use Case 1">
+    Description
+  </Card>
+</Cards>
+
+## Next Steps
+Links to related content
+```
+
+### Navigation Cards Pattern
+```jsx
+<Cards>
+  <Card href="/getting-started" title="Getting Started" icon="rocket">
+    Quick setup and first steps
+  </Card>
+  <Card href="/api-reference" title="API Reference" icon="code">
+    Complete API documentation
+  </Card>
+  <Card href="/examples" title="Examples" icon="book">
+    Code samples and tutorials
+  </Card>
+</Cards>
+```
+
+**Card Icon Usage:**
+- Add `icon="icon-name"` prop to enhance visual hierarchy
+- Icons must be registered in `lib/source.ts`
+- Available: `book`, `rocket`, `bot`, `brain`, `code`, `share2`, `hand-metal`, and others
+
+## Best Practices
+
+### Component Usage
+- Use `<Cards>` for navigation and feature overviews
+- Use `<div className='fd-steps [&_h4]:fd-step'>` for procedural instructions
+- Use `<APIPage>` only for auto-generated API documentation
+- Keep component usage consistent across similar pages
+
+### Content Guidelines
+- Start each major section with a clear heading
+- Use short paragraphs (3-5 sentences max)
+- Include practical examples wherever possible
+- Link to related content at the end of sections
+- Use consistent terminology throughout
+
+### File Organization
+- Place images in appropriate directories
+- Use relative paths for internal links
+- Follow the established directory structure
+- Name files consistently (kebab-case.mdx)

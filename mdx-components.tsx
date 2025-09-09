@@ -1,5 +1,7 @@
 import { APIPage } from "fumadocs-openapi/ui";
 import { ImageZoom } from "fumadocs-ui/components/image-zoom";
+import * as TabsComponents from "fumadocs-ui/components/tabs";
+import { TypeTable } from "fumadocs-ui/components/type-table";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import type { MDXComponents } from "mdx/types";
 import { openapi } from "@/lib/openapi";
@@ -8,6 +10,8 @@ import { openapi } from "@/lib/openapi";
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
 	return {
 		...defaultMdxComponents,
+		...TabsComponents,
+		TypeTable,
 		APIPage: (props) => (
 			<div className="fd-openapi">
 				<APIPage {...openapi.getAPIPageProps(props)} />

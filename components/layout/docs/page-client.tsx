@@ -73,7 +73,7 @@ export function PageTOCPopoverTrigger(props: ComponentProps<"button">) {
 				<span
 					className={cn(
 						"truncate transition-all",
-						open && "text-fd-foreground !text-red-200",
+						open && "text-fd-foreground",
 						showItem && "opacity-0 -translate-y-full pointer-events-none",
 					)}
 				>

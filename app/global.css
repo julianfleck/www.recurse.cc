@@ -227,6 +227,11 @@ body {
 	letter-spacing: -0.02em;
 }
 
+.prose :where(strong) {
+	font-weight: 440;
+	color: var(--accent-foreground);
+}
+
 .prose :where(code) {
 	font-family: var(--font-mono);
 	letter-spacing: 0em;

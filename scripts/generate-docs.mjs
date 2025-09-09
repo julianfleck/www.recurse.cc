@@ -16,7 +16,7 @@ const GENERATED_HEADER =
 
 const options = {
 	input: ["http://localhost:8000/openapi.json"],
-	output: "./content/docs/(API Documentation)",
+	output: "./content/docs/api-documentation",
 	includeDescription: true,
 	groupBy: "route",
 	name: { algorithm: "v2" },

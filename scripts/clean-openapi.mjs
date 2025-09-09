@@ -1,7 +1,7 @@
 import { readdir, readFile, rm } from "node:fs/promises";
 import * as path from "node:path";
 
-const ROOT = "content/docs/(API Documentation)";
+const ROOT = "content/docs/api-documentation";
 const HEADER_PREFIX = "<!-- AUTO-GENERATED:";
 
 async function walk(dir) {

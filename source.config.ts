@@ -4,14 +4,20 @@ import {
 	frontmatterSchema,
 	metaSchema,
 } from "fumadocs-mdx/config";
+import { z } from "zod";
 import minimalAccentDark from "./styles/minimal-accent-dark.json";
 import minimalAccentLight from "./styles/minimal-accent-light.json";
+
+// Extend the frontmatter schema to include sidebar_label
+const extendedFrontmatterSchema = frontmatterSchema.extend({
+	sidebar_label: z.string().optional(),
+});
 
 // You can customise Zod schemas for frontmatter and `meta.json` here
 // see https://fumadocs.dev/docs/mdx/collections#define-docs
 export const docs = defineDocs({
 	docs: {
-		schema: frontmatterSchema,
+		schema: extendedFrontmatterSchema,
 	},
 	meta: {
 		schema: metaSchema,

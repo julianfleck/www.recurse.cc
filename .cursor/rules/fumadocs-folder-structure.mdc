@@ -1,0 +1,449 @@
+---
+description: How to work with meta.json files and folder structure in Fumadocs
+globs: *.json,*.mdx
+alwaysApply: false
+---
+
+# Meta.json and Folder Structure Guide
+
+## Overview
+
+This guide explains how to work with `meta.json` files and folder structure in Fumadocs to organize your documentation effectively.
+
+## Basic File Structure
+
+### Content Directory Structure
+```
+content/docs/
+├── introduction.mdx
+├── quickstart/
+│   ├── meta.json
+│   ├── api.mdx
+│   └── ui.mdx
+├── guide/
+│   ├── meta.json
+│   ├── setup.mdx
+│   └── Adding Content/
+│       ├── meta.json
+│       └── manual-ingestion.mdx
+├── api-documentation/
+│   ├── meta.json
+│   └── documents/
+│       ├── post.mdx
+│       └── get.mdx
+├── About/
+│   ├── meta.json
+│   └── about-us.mdx
+└── meta.json (root)
+```
+
+## Root meta.json
+
+The root `content/docs/meta.json` controls the overall documentation structure:
+
+```json
+{
+  "pages": [
+    "introduction",
+    "quickstart",
+    "---Guides---",
+    "...guide",
+    "---About---",
+    "...About",
+    "---[FileText]API Documentation---",
+    "...api-documentation"
+  ]
+}
+```
+
+### Page Types
+
+| Type | Format | Description |
+|------|--------|-------------|
+| **File** | `"filename"` | Direct reference to a file (without extension) |
+| **Folder** | `"foldername"` | Reference to a folder |
+| **Extract Folder** | `"...folder"` | Extract all items from a folder |
+| **Separator** | `"---Label---"` | Visual separator with label |
+| **Icon Separator** | `"---[Icon]Label---"` | Separator with icon |
+| **External Link** | `"[Text](url)"` | Link to external URL |
+| **Icon Link** | `"[Icon][Text](url)"` | External link with icon |
+| **Rest** | `"..."` | Include remaining unlisted items alphabetically |
+| **Reversed Rest** | `"z...a"` | Include remaining items in reverse alphabetical order |
+| **Extract** | `"...folder"` | Extract items from specific folder |
+| **Except** | `"!item"` | Exclude specific item from rest |
+
+## Folder meta.json
+
+Each folder can have its own `meta.json` to control its internal structure:
+
+```json
+{
+  "title": "Display Name",
+  "description": "Optional description shown in UI",
+  "icon": "icon-name",
+  "pages": ["page1", "page2", "---Separator---", "page3"],
+  "defaultOpen": true
+}
+```
+
+### Folder Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `title` | string | Display name for the folder |
+| `description` | string | Optional description |
+| `icon` | string | Icon name (must be registered in source.ts) |
+| `pages` | array | Ordered list of items in the folder |
+| `defaultOpen` | boolean | Whether folder expands by default |
+| `root` | boolean | Mark as root folder (affects sidebar display) |
+
+## Folder Types
+
+### Regular Folders
+```
+content/docs/
+├── quickstart/
+│   ├── meta.json
+│   ├── dashboard.mdx
+│   └── api.mdx
+```
+
+**meta.json:**
+```json
+{
+  "title": "Quickstart",
+  "pages": ["dashboard", "api"],
+  "defaultOpen": true
+}
+```
+
+### Folder Organization
+```
+content/docs/
+├── guide/
+│   ├── meta.json
+│   ├── setup.mdx
+│   └── Adding Content/
+```
+
+**meta.json:**
+```json
+{
+  "title": "Guide",
+  "defaultOpen": true,
+  "pages": ["setup", "Adding Content", "Retrieving Content", "Applications"]
+}
+```
+
+### Root Folders
+Root folders create separate sidebar tabs:
+
+```json
+{
+  "title": "Framework",
+  "root": true,
+  "pages": ["index", "getting-started"]
+}
+```
+
+## Page Organization Best Practices
+
+### 1. Logical Grouping
+```json
+{
+  "pages": [
+    "introduction",
+    "quickstart",
+    "---Core Features---",
+    "authentication",
+    "documents",
+    "search",
+    "---Advanced---",
+    "integrations",
+    "api-reference"
+  ]
+}
+```
+
+### 2. Auto-Expansion for Important Sections
+```json
+{
+  "title": "Quickstart",
+  "defaultOpen": true,
+  "pages": ["dashboard", "api"]
+}
+```
+
+### 2b. Custom Sidebar Titles
+Sidebar titles can be customized using the `sidebar_label` field in frontmatter, allowing different titles for sidebar vs page:
+
+**Example frontmatter:**
+```yaml
+---
+title: "Dashboard Quickstart"          # Full title shown on the page
+sidebar_label: "with dashboard"        # Short title shown in sidebar
+description: "Get started with Recurse using the web interface"
+icon: "rocket"
+---
+```
+
+**Implementation:** A custom transformer in `lib/source.ts` reads the `sidebar_label` from the MDX file and uses it for the sidebar display name.
+
+**Resulting display:**
+- **Sidebar shows:** "with dashboard"
+- **Page title shows:** "Dashboard Quickstart"
+- **Same URL:** `/docs/quickstart/dashboard`
+
+### 3. Progressive Disclosure
+```json
+{
+  "pages": [
+    "getting-started",
+    "---Basics---",
+    "documents",
+    "search",
+    "export",
+    "---Advanced---",
+    "integrations",
+    "customization",
+    "troubleshooting"
+  ]
+}
+```
+
+### 4. External Resources
+```json
+{
+  "pages": [
+    "introduction",
+    "quickstart",
+    "---Resources---",
+    "[GitHub](https://github.com/your-org/project)",
+    "[Discord][Community](https://discord.gg/your-server)",
+    "[Twitter][Updates](https://twitter.com/your-handle)"
+  ]
+}
+```
+
+## Icon Usage in Meta Files
+
+### Page Icons
+```json
+{
+  "pages": [
+    "[Rocket]quickstart",
+    "[Code]api-reference",
+    "[Book]guides"
+  ]
+}
+```
+
+### Folder Icons
+```json
+{
+  "title": "API Documentation",
+  "icon": "code",
+  "pages": ["introduction", "endpoints", "examples"]
+}
+```
+
+### Separator Icons
+```json
+{
+  "pages": [
+    "---[FileText]API Documentation---",
+    "...api-documentation"
+  ]
+}
+```
+
+## Common Patterns
+
+### Getting Started Flow
+```json
+{
+  "pages": [
+    "introduction",
+    "quickstart",
+    "---Learn More---",
+    "guides",
+    "examples",
+    "api-reference"
+  ]
+}
+```
+
+### Feature Documentation
+```json
+{
+  "pages": [
+    "overview",
+    "---Core Features---",
+    "documents",
+    "search",
+    "export",
+    "---Integrations---",
+    "api",
+    "webhooks",
+    "plugins"
+  ]
+}
+```
+
+### Multi-Product Documentation
+```json
+{
+  "pages": [
+    "introduction",
+    "...product-a",
+    "...product-b",
+    "---Resources---",
+    "changelog",
+    "roadmap"
+  ]
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**Pages not appearing:**
+- Check that filenames match exactly in `pages` array
+- Ensure files exist in the correct folder
+- Verify file extensions are omitted
+
+**Icons not showing:**
+- Check icon name is registered in `lib/source.ts`
+- Verify icon library import is correct
+- Ensure icon resolver function handles the name
+
+**Folders not expanding:**
+- Add `"defaultOpen": true` to folder's meta.json
+- Check folder structure is correct
+- Verify meta.json is in the right location
+
+**Wrong order:**
+- Explicitly list pages in desired order in `pages` array
+- Use separators to create visual groupings
+- Consider alphabetical ordering for large lists
+
+## Migration from Single Files to Folders
+
+### Before (Single File)
+```
+content/docs/
+├── quickstart.mdx
+└── meta.json
+```
+
+### After (Folder Structure)
+```
+content/docs/
+├── quickstart/
+│   ├── meta.json
+│   ├── dashboard.mdx
+│   └── api.mdx
+└── meta.json (updated)
+```
+
+**Steps to migrate:**
+1. Create folder with same name as original file
+2. Move content into separate files within folder
+3. Create `meta.json` in the folder
+4. Update root `meta.json` to reference folder instead of file
+5. Test navigation and links
+
+## Advanced Usage
+
+### Dynamic Content
+```json
+{
+  "pages": [
+    "introduction",
+    "...",
+    "!draft-article"
+  ]
+}
+```
+
+### Conditional Sections
+```json
+{
+  "pages": [
+    "getting-started",
+    "---For Developers---",
+    "api",
+    "integrations",
+    "---For Users---",
+    "dashboard",
+    "mobile-app"
+  ]
+}
+```
+
+### Multi-language Support
+```json
+{
+  "pages": [
+    "introduction",
+    "getting-started.en",
+    "getting-started.es",
+    "api-reference"
+  ]
+}
+```
+
+## Frontmatter Customization
+
+### Page Frontmatter Options
+
+Each MDX file can include frontmatter to customize its appearance and behavior:
+
+```yaml
+---
+title: "Page Title"                    # Main page title (shown on page)
+sidebar_label: "Sidebar Title"         # Custom sidebar title (optional)
+description: "Page description for SEO"
+icon: "icon-name"                      # Icon for sidebar and page
+---
+```
+
+### Sidebar Label Support
+
+Fumadocs supports `sidebar_label` in frontmatter to customize sidebar titles without affecting the page title:
+
+```yaml
+---
+title: "Dashboard Quickstart"          # Full title shown on the page
+sidebar_label: "with dashboard"        # Short title shown in sidebar
+description: "Get started with Recurse using the web interface"
+icon: "rocket"
+---
+```
+
+**Result:**
+- **Sidebar shows:** "with dashboard"
+- **Page title shows:** "Dashboard Quickstart"
+- **URL remains:** `/docs/quickstart/dashboard`
+
+This allows for more concise sidebar navigation while maintaining descriptive page titles.
+
+### Icon Registration
+
+Icons used in frontmatter must be registered in `lib/source.ts`:
+
+```typescript
+case "new-icon":
+    return createElement(NewIcon, { className: "size-4" });
+```
+
+### Available Icons
+
+**Lucide Icons:**
+- `book`, `rocket`, `bot`, `share2`, `brain`, `info`, `filetext`, `userplus`, `folderplus`, `download`, `code`, `hand-metal`
+
+**Tabler Icons:**
+- `api`, `user-screen`
+
+This guide covers the essential patterns for organizing Fumadocs documentation. The key is to create logical hierarchies that match user mental models and provide clear navigation paths through your content.
