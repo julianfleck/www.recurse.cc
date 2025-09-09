@@ -68,13 +68,13 @@ interface InternalContext {
 }
 
 const itemVariants = cva(
-	"relative flex flex-row items-center gap-2 rounded-lg p-2 ps-(--sidebar-item-offset) text-start text-fd-muted-foreground [overflow-wrap:anywhere] [&_svg]:size-4 [&_svg]:shrink-0",
+	"relative flex flex-row items-center gap-3 rounded-lg p-1.5 ps-(--sidebar-item-offset) text-start text-fd-muted-foreground [overflow-wrap:anywhere] [&_svg]:size-4 [&_svg]:shrink-0 my-[1px]",
 	{
 		variants: {
 			active: {
-				true: "bg-accent text-accent-foreground",
+				true: "bg-accent/40 text-accent-foreground border border-muted/40",
 				false:
-					"transition-colors hover:bg-fd-accent/50 hover:text-fd-accent-foreground/80 hover:transition-none",
+					"transition-colors hover:bg-fd-accent/50 hover:text-fd-accent-foreground/80 hover:border-muted/40 hover:transition-none border border-transparent",
 			},
 		},
 	},

@@ -57,8 +57,9 @@ export function LLMCopyButton({
 			className={cn(
 				buttonVariants({
 					color: "outline",
-					size: "sm",
-					className: "gap-2 [&_svg]:size-3.5 [&_svg]:text-fd-muted-foreground",
+					size: "icon",
+					className:
+						"gap-2 [&_svg]:size-3.5 pl-2 py-2 pr-3 [&_svg]:text-fd-muted-foreground",
 				}),
 			)}
 			onClick={onClick}

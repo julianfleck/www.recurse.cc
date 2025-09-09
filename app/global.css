@@ -206,6 +206,7 @@ body {
 	--tw-prose-kbd-shadows: color-mix(in oklch, var(--primary) 50%, transparent);
 
 	font-family: var(--font-sans);
+	font-weight: 350;
 	line-height: 1.45;
 }
 
@@ -237,14 +238,13 @@ body {
 
 .prose :where(blockquote, blockquote *) {
 	font-style: normal;
-	font-weight: 320;
-	font-size: 1.2rem;
+	font-weight: 350;
 	line-height: 1.1;
-	color: var(--muted-foreground);
+	color: var(--foreground);
 }
 
 .prose :where(blockquote) {
-	border-left: 0.1rem solid var(--tw-prose-quote-borders);
+	border-left: 0.1rem solid color-mix(in oklch, var(--primary) 40%, transparent);
 	padding-left: 3rem;
 	padding-right: 4rem;
 	padding-top: 0.6rem;
@@ -261,7 +261,7 @@ body {
 /* Global styles (apply outside prose as well) */
 html:not(.prose) {
 	font-family: var(--font-sans);
-	font-weight: 420;
+	font-weight: 380;
 	letter-spacing: -0.04em;
 	line-height: 1.2;
 }
@@ -693,4 +693,17 @@ h6 {
 .dark #nd-page a:focus-visible :where(.dark\:text-red-400),
 .dark #nd-page a[data-active="true"] :where(.dark\:text-red-400) {
 	color: #e57637;
+}
+
+.fd-steps > ::before {
+	@apply bg-accent border border-accent-foreground/10;
+}
+
+.fd-steps > h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	@apply text-accent-foreground;
 }
