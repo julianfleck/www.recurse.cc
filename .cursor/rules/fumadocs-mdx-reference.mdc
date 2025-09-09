@@ -35,6 +35,26 @@ Description of the final action
 </div>
 ```
 
+### Accordions for Progressive Disclosure
+```jsx
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+<Accordions type="single">
+  <Accordion title="Question or Topic">
+    Answer or detailed explanation here
+  </Accordion>
+  <Accordion title="Another Question">
+    Another detailed answer
+  </Accordion>
+</Accordions>
+```
+
+**When to use Accordions:**
+- FAQs and troubleshooting sections
+- Optional advanced details
+- Complex explanations that users can explore
+- Reducing visual clutter on main content
+
 ### API Documentation
 ```jsx
 <APIPage

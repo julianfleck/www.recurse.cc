@@ -183,6 +183,8 @@ Instead of blacklisted words, use:
 
 ### Formatting Preferences
 - **Favor tables over lists**: Tables are easier to scan and read than bullet lists
+- **Use accordions for progressive disclosure**: Break complex information into expandable sections using Accordions. Perfect for FAQs, detailed explanations, and optional advanced content
+- **Use cards for feature comparisons**: Replace bullet lists with Cards components for better visual hierarchy
 - **Use horizontal rules**: `---` to divide major sections visually
 - **Text flow over fragmentation**: Prefer paragraphs to bullet points when explaining concepts
 - **Visual hierarchy**: Use proper heading levels and spacing
@@ -239,7 +241,7 @@ You can use icons from either:
 
 ### Currently Registered Icons
 **Lucide Icons:**
-- `book`, `rocket`, `bot`, `share2`, `brain`, `info`, `filetext`, `userplus`, `folderplus`, `download`, `code`, `hand-metal`
+- `book`, `rocket`, `bot`, `share2`, `brain`, `info`, `filetext`, `userplus`, `folderplus`, `download`, `code`, `hand-metal`, `edit`, `globe`, `lightbulb`
 
 **Tabler Icons:**
 - `api`, `user-screen`
@@ -275,6 +277,27 @@ Description of what to do in this step
 Description of what to do in this step
 </div>
 ```
+
+#### Accordions for Progressive Disclosure
+```jsx
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+<Accordions type="single">
+  <Accordion title="FAQ Question">
+    Answer or detailed explanation here
+  </Accordion>
+  <Accordion title="Advanced Details">
+    Optional advanced information
+  </Accordion>
+</Accordions>
+```
+
+**Use accordions for:**
+- Troubleshooting sections
+- FAQs
+- Optional advanced details
+- Complex explanations that users can explore at their own pace
+- Reducing visual clutter on main content
 
 #### Code Examples
 ```bash

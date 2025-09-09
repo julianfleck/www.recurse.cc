@@ -441,7 +441,7 @@ case "new-icon":
 ### Available Icons
 
 **Lucide Icons:**
-- `book`, `rocket`, `bot`, `share2`, `brain`, `info`, `filetext`, `userplus`, `folderplus`, `download`, `code`, `hand-metal`
+- `book`, `rocket`, `bot`, `share2`, `brain`, `info`, `filetext`, `userplus`, `folderplus`, `download`, `code`, `hand-metal`, `edit`, `globe`, `lightbulb`
 
 **Tabler Icons:**
 - `api`, `user-screen`

@@ -12,6 +12,7 @@
 		"regen:openapi": "pnpm clean:openapi && pnpm generate:openapi"
 	},
 	"dependencies": {
+		"@radix-ui/react-accordion": "^1.2.12",
 		"@radix-ui/react-collapsible": "^1.1.12",
 		"@radix-ui/react-popover": "^1.1.15",
 		"@radix-ui/react-presence": "^1.1.5",

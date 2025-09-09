@@ -7,10 +7,13 @@ import {
 	Brain,
 	Code,
 	Download,
+	Edit,
 	FileText,
 	FolderPlus,
+	Globe,
 	HandMetal,
 	Info,
+	Lightbulb,
 	Rocket,
 	Share2,
 	UserPlus,
@@ -92,6 +95,12 @@ export const source = loader({
 					return createElement(Code, { className: "size-4" });
 				case "hand-metal":
 					return createElement(HandMetal, { className: "size-4" });
+				case "edit":
+					return createElement(Edit, { className: "size-4" });
+				case "globe":
+					return createElement(Globe, { className: "size-4" });
+				case "lightbulb":
+					return createElement(Lightbulb, { className: "size-4" });
 
 				// Tabler icons
 				case "api":
