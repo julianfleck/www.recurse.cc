@@ -8,7 +8,11 @@ import { openapi } from "@/lib/openapi";
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
 	return {
 		...defaultMdxComponents,
-		APIPage: (props) => <APIPage {...openapi.getAPIPageProps(props)} />,
+		APIPage: (props) => (
+			<div className="fd-openapi">
+				<APIPage {...openapi.getAPIPageProps(props)} />
+			</div>
+		),
 		img: (props) => <ImageZoom {...(props as any)} />,
 		...components,
 	};

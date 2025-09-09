@@ -258,6 +258,18 @@ body {
 	color: var(--tw-prose-counters);
 }
 
+/* Class-level overrides from fumadocs-openapi badgeVariants */
+.fd-openapi :where(.text-green-600) { color: #A6C82E; }
+.dark .fd-openapi :where(.dark\:text-green-400) { color: #BDC122; }
+.fd-openapi :where(.text-yellow-600) { color: #E57637; }
+.dark .fd-openapi :where(.dark\:text-yellow-400) { color: #E57637; }
+.fd-openapi :where(.text-red-600) { color: #cc3333; }
+.dark .fd-openapi :where(.dark\:text-red-400) { color: #ff6666; }
+.fd-openapi :where(.text-blue-600) { color: #8D87CF; }
+.dark .fd-openapi :where(.dark\:text-blue-400) { color: #B98EFF; }
+.fd-openapi :where(.text-orange-600) { color: #E57637; }
+.dark .fd-openapi :where(.dark\:text-orange-400) { color: #E57637; }
+
 /* Global styles (apply outside prose as well) */
 html:not(.prose) {
 	font-family: var(--font-sans);
