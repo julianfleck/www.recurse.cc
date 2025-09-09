@@ -4,7 +4,7 @@ icon: rocket
 ---
 
 <div className='fd-steps [&_h3]:fd-step'>
-### 1) Register / Sign in
+### Register / Sign in
 Open the login URL in your browser to authenticate:
 
 ```bash
@@ -17,7 +17,7 @@ After success, the app will create a session. Verify your session token:
 curl -H "Authorization: Bearer <SESSION_TOKEN>" http://localhost:8000/oauth/me
 ```
 
-### 2) Create an API key
+### Create an API key
 Use your session token to create a key. Save the `key` value immediately (shown once):
 
 ```bash
@@ -34,7 +34,7 @@ Check usage/quotas with the API key:
 curl -H "X-API-KEY: <API_KEY>" http://localhost:8000/api-keys/usage
 ```
 
-### 3) Ingest your first document
+### Ingest your first document
 Send raw text (or a file you’ve read client-side) to `/ingest` to create frames and embeddings.
 
 ```bash
@@ -48,7 +48,7 @@ curl -X POST \
   http://localhost:8000/ingest
 ```
 
-### 4) Search your graph
+### Search your graph
 Use the unified `/search` endpoint. Combine semantic terms and filters; control payload with `field_set` and traversal with `depth`.
 
 Basic structural search:
