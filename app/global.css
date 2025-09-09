@@ -322,6 +322,148 @@ body {
 	color: #e57637;
 }
 
+/* Sidebar method labels: muted by default, colored on hover/focus */
+#nd-sidebar
+	:where(
+		.text-green-600,
+		.text-blue-600,
+		.text-yellow-600,
+		.text-orange-600,
+		.text-red-600
+	) {
+	color: var(--color-fd-muted-foreground);
+}
+.dark
+	#nd-sidebar
+	:where(
+		.dark\:text-green-400,
+		.dark\:text-blue-400,
+		.dark\:text-yellow-400,
+		.dark\:text-orange-400,
+		.dark\:text-red-400
+	) {
+	color: var(--color-fd-muted-foreground);
+}
+
+/* Hover/focus/active brings back accent palette */
+#nd-sidebar a:hover :where(.text-green-600),
+#nd-sidebar a:focus-visible :where(.text-green-600),
+#nd-sidebar a[data-active="true"] :where(.text-green-600) {
+	color: #a6c82e;
+}
+.dark #nd-sidebar a:hover :where(.dark\:text-green-400),
+.dark #nd-sidebar a:focus-visible :where(.dark\:text-green-400),
+.dark #nd-sidebar a[data-active="true"] :where(.dark\:text-green-400) {
+	color: #bdc122;
+}
+
+#nd-sidebar a:hover :where(.text-blue-600),
+#nd-sidebar a:focus-visible :where(.text-blue-600),
+#nd-sidebar a[data-active="true"] :where(.text-blue-600) {
+	color: #8d87cf;
+}
+.dark #nd-sidebar a:hover :where(.dark\:text-blue-400),
+.dark #nd-sidebar a:focus-visible :where(.dark\:text-blue-400),
+.dark #nd-sidebar a[data-active="true"] :where(.dark\:text-blue-400) {
+	color: #b98eff;
+}
+
+#nd-sidebar a:hover :where(.text-yellow-600),
+#nd-sidebar a:focus-visible :where(.text-yellow-600),
+#nd-sidebar a[data-active="true"] :where(.text-yellow-600) {
+	color: #e57637;
+}
+.dark #nd-sidebar a:hover :where(.dark\:text-yellow-400),
+.dark #nd-sidebar a:focus-visible :where(.dark\:text-yellow-400),
+.dark #nd-sidebar a[data-active="true"] :where(.dark\:text-yellow-400) {
+	color: #e57637;
+}
+
+#nd-sidebar a:hover :where(.text-orange-600),
+#nd-sidebar a:focus-visible :where(.text-orange-600),
+#nd-sidebar a[data-active="true"] :where(.text-orange-600) {
+	color: #e57637;
+}
+.dark #nd-sidebar a:hover :where(.dark\:text-orange-400),
+.dark #nd-sidebar a:focus-visible :where(.dark\:text-orange-400),
+.dark #nd-sidebar a[data-active="true"] :where(.dark\:text-orange-400) {
+	color: #e57637;
+}
+
+#nd-sidebar a:hover :where(.text-red-600),
+#nd-sidebar a:focus-visible :where(.text-red-600),
+#nd-sidebar a[data-active="true"] :where(.text-red-600) {
+	color: #e57637;
+}
+.dark #nd-sidebar a:hover :where(.dark\:text-red-400),
+.dark #nd-sidebar a:focus-visible :where(.dark\:text-red-400),
+.dark #nd-sidebar a[data-active="true"] :where(.dark\:text-red-400) {
+	color: #e57637;
+}
+
+/* Breadcrumb: muted by default, colored on hover */
+.fd-openapi
+:where(
+	.text-green-600,
+	.text-blue-600,
+	.text-yellow-600,
+	.text-orange-600,
+	.text-red-600
+) {
+	color: var(--color-fd-muted-foreground);
+}
+.dark
+	.fd-openapi
+	:where(
+		.dark\:text-green-400,
+		.dark\:text-blue-400,
+		.dark\:text-yellow-400,
+		.dark\:text-orange-400,
+		.dark\:text-red-400
+	) {
+	color: var(--color-fd-muted-foreground);
+}
+.fd-openapi a:hover :where(.text-green-600),
+.fd-openapi a:focus-visible :where(.text-green-600) {
+	color: #a6c82e;
+}
+.dark .fd-openapi a:hover :where(.dark\:text-green-400),
+.dark .fd-openapi a:focus-visible :where(.dark\:text-green-400) {
+	color: #bdc122;
+}
+.fd-openapi a:hover :where(.text-blue-600),
+.fd-openapi a:focus-visible :where(.text-blue-600) {
+	color: #8d87cf;
+}
+.dark .fd-openapi a:hover :where(.dark\:text-blue-400),
+.dark .fd-openapi a:focus-visible :where(.dark\:text-blue-400) {
+	color: #b98eff;
+}
+.fd-openapi a:hover :where(.text-yellow-600),
+.fd-openapi a:focus-visible :where(.text-yellow-600) {
+	color: #e57637;
+}
+.dark .fd-openapi a:hover :where(.dark\:text-yellow-400),
+.dark .fd-openapi a:focus-visible :where(.dark\:text-yellow-400) {
+	color: #e57637;
+}
+.fd-openapi a:hover :where(.text-orange-600),
+.fd-openapi a:focus-visible :where(.text-orange-600) {
+	color: #e57637;
+}
+.dark .fd-openapi a:hover :where(.dark\:text-orange-400),
+.dark .fd-openapi a:focus-visible :where(.dark\:text-orange-400) {
+	color: #e57637;
+}
+.fd-openapi a:hover :where(.text-red-600),
+.fd-openapi a:focus-visible :where(.text-red-600) {
+	color: #e57637;
+}
+.dark .fd-openapi a:hover :where(.dark\:text-red-400),
+.dark .fd-openapi a:focus-visible :where(.dark\:text-red-400) {
+	color: #e57637;
+}
+
 #nd-tocnav :where(.text-green-600) {
 	color: #a6c82e;
 }
@@ -350,6 +492,171 @@ body {
 	color: #e57637;
 }
 .dark #nd-tocnav :where(.dark\:text-orange-400) {
+	color: #e57637;
+}
+
+/* Subnav method labels: colored by default (no muted base) */
+#nd-subnav :where(.text-green-600) {
+	color: #a6c82e;
+}
+.dark #nd-subnav :where(.dark\:text-green-400) {
+	color: #bdc122;
+}
+#nd-subnav :where(.text-blue-600) {
+	color: #8d87cf;
+}
+.dark #nd-subnav :where(.dark\:text-blue-400) {
+	color: #b98eff;
+}
+#nd-subnav :where(.text-yellow-600) {
+	color: #e57637;
+}
+.dark #nd-subnav :where(.dark\:text-yellow-400) {
+	color: #e57637;
+}
+#nd-subnav :where(.text-orange-600) {
+	color: #e57637;
+}
+.dark #nd-subnav :where(.dark\:text-orange-400) {
+	color: #e57637;
+}
+#nd-subnav :where(.text-red-600) {
+	color: #e57637;
+}
+.dark #nd-subnav :where(.dark\:text-red-400) {
+	color: #e57637;
+}
+
+#nd-subnav a:hover :where(.text-green-600),
+#nd-subnav a:focus-visible :where(.text-green-600),
+#nd-subnav a[data-active="true"] :where(.text-green-600) {
+	color: #a6c82e;
+}
+.dark #nd-subnav a:hover :where(.dark\:text-green-400),
+.dark #nd-subnav a:focus-visible :where(.dark\:text-green-400),
+.dark #nd-subnav a[data-active="true"] :where(.dark\:text-green-400) {
+	color: #bdc122;
+}
+
+#nd-subnav a:hover :where(.text-blue-600),
+#nd-subnav a:focus-visible :where(.text-blue-600),
+#nd-subnav a[data-active="true"] :where(.text-blue-600) {
+	color: #8d87cf;
+}
+.dark #nd-subnav a:hover :where(.dark\:text-blue-400),
+.dark #nd-subnav a:focus-visible :where(.dark\:text-blue-400),
+.dark #nd-subnav a[data-active="true"] :where(.dark\:text-blue-400) {
+	color: #b98eff;
+}
+
+#nd-subnav a:hover :where(.text-yellow-600),
+#nd-subnav a:focus-visible :where(.text-yellow-600),
+#nd-subnav a[data-active="true"] :where(.text-yellow-600) {
+	color: #e57637;
+}
+.dark #nd-subnav a:hover :where(.dark\:text-yellow-400),
+.dark #nd-subnav a:focus-visible :where(.dark\:text-yellow-400),
+.dark #nd-subnav a[data-active="true"] :where(.dark\:text-yellow-400) {
+	color: #e57637;
+}
+
+#nd-subnav a:hover :where(.text-orange-600),
+#nd-subnav a:focus-visible :where(.text-orange-600),
+#nd-subnav a[data-active="true"] :where(.text-orange-600) {
+	color: #e57637;
+}
+.dark #nd-subnav a:hover :where(.dark\:text-orange-400),
+.dark #nd-subnav a:focus-visible :where(.dark\:text-orange-400),
+.dark #nd-subnav a[data-active="true"] :where(.dark\:text-orange-400) {
+	color: #e57637;
+}
+
+#nd-subnav a:hover :where(.text-red-600),
+#nd-subnav a:focus-visible :where(.text-red-600),
+#nd-subnav a[data-active="true"] :where(.text-red-600) {
+	color: #e57637;
+}
+.dark #nd-subnav a:hover :where(.dark\:text-red-400),
+.dark #nd-subnav a:focus-visible :where(.dark\:text-red-400),
+.dark #nd-subnav a[data-active="true"] :where(.dark\:text-red-400) {
+	color: #e57637;
+}
+
+/* Page (nd-page) method labels: muted by default, colored on hover/focus/active */
+#nd-page
+	:where(
+		.text-green-600,
+		.text-blue-600,
+		.text-yellow-600,
+		.text-orange-600,
+		.text-red-600
+	) {
+	color: var(--color-fd-muted-foreground);
+}
+.dark
+	#nd-page
+	:where(
+		.dark\:text-green-400,
+		.dark\:text-blue-400,
+		.dark\:text-yellow-400,
+		.dark\:text-orange-400,
+		.dark\:text-red-400
+	) {
+	color: var(--color-fd-muted-foreground);
+}
+
+#nd-page a:hover :where(.text-green-600),
+#nd-page a:focus-visible :where(.text-green-600),
+#nd-page a[data-active="true"] :where(.text-green-600) {
+	color: #a6c82e;
+}
+.dark #nd-page a:hover :where(.dark\:text-green-400),
+.dark #nd-page a:focus-visible :where(.dark\:text-green-400),
+.dark #nd-page a[data-active="true"] :where(.dark\:text-green-400) {
+	color: #bdc122;
+}
+
+#nd-page a:hover :where(.text-blue-600),
+#nd-page a:focus-visible :where(.text-blue-600),
+#nd-page a[data-active="true"] :where(.text-blue-600) {
+	color: #8d87cf;
+}
+.dark #nd-page a:hover :where(.dark\:text-blue-400),
+.dark #nd-page a:focus-visible :where(.dark\:text-blue-400),
+.dark #nd-page a[data-active="true"] :where(.dark\:text-blue-400) {
+	color: #b98eff;
+}
+
+#nd-page a:hover :where(.text-yellow-600),
+#nd-page a:focus-visible :where(.text-yellow-600),
+#nd-page a[data-active="true"] :where(.text-yellow-600) {
+	color: #e57637;
+}
+.dark #nd-page a:hover :where(.dark\:text-yellow-400),
+.dark #nd-page a:focus-visible :where(.dark\:text-yellow-400),
+.dark #nd-page a[data-active="true"] :where(.dark\:text-yellow-400) {
+	color: #e57637;
+}
+
+#nd-page a:hover :where(.text-orange-600),
+#nd-page a:focus-visible :where(.text-orange-600),
+#nd-page a[data-active="true"] :where(.text-orange-600) {
+	color: #e57637;
+}
+.dark #nd-page a:hover :where(.dark\:text-orange-400),
+.dark #nd-page a:focus-visible :where(.dark\:text-orange-400),
+.dark #nd-page a[data-active="true"] :where(.dark\:text-orange-400) {
+	color: #e57637;
+}
+
+#nd-page a:hover :where(.text-red-600),
+#nd-page a:focus-visible :where(.text-red-600),
+#nd-page a[data-active="true"] :where(.text-red-600) {
+	color: #e57637;
+}
+.dark #nd-page a:hover :where(.dark\:text-red-400),
+.dark #nd-page a:focus-visible :where(.dark\:text-red-400),
+.dark #nd-page a[data-active="true"] :where(.dark\:text-red-400) {
 	color: #e57637;
 }
 
