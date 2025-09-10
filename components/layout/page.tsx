@@ -115,7 +115,7 @@ export function PageSidebarFooter(props: ComponentProps<"div">) {
 		<div
 			{...props}
 			className={cn(
-				"mt-auto border-t border-t-border pt-3 text-xs text-fd-muted-foreground",
+				"mt-auto pt-3 text-xs text-fd-muted-foreground",
 				props.className,
 			)}
 		>

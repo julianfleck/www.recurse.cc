@@ -1,6 +1,6 @@
 "use client";
 
-import { IconApi } from "@tabler/icons-react";
+import { IconActivity } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { Status as KiboStatus } from "@/components/ui/kibo-ui/status";
 
@@ -81,7 +81,7 @@ export function Status() {
 	return (
 		<KiboStatus
 			status={status}
-			icon={IconApi}
+			icon={IconActivity}
 			title={`Last checked: ${lastUpdated?.toLocaleTimeString()}`}
 		/>
 	);

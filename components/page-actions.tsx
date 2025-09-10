@@ -55,17 +55,12 @@ export function LLMCopyButton({
 		<button
 			disabled={isLoading}
 			className={cn(
-				buttonVariants({
-					color: "outline",
-					size: "icon",
-					className:
-						"gap-2 [&_svg]:size-3.5 pl-2 py-2 pr-3 [&_svg]:text-fd-muted-foreground",
-				}),
+				"inline-flex items-center gap-2 rounded-lg border bg-fd-secondary/50 p-1.5 ps-2 text-xs text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground [&_svg]:size-3.5",
 			)}
 			onClick={onClick}
 		>
 			{checked ? <Check /> : <Copy />}
-			Copy Markdown
+			<span className="text-xs">Copy Markdown</span>
 		</button>
 	);
 }
@@ -219,11 +214,7 @@ export function ViewOptions({
 		<Popover>
 			<PopoverTrigger
 				className={cn(
-					buttonVariants({
-						color: "secondary",
-						size: "sm",
-						className: "gap-2",
-					}),
+					"inline-flex items-center gap-2 rounded-lg border bg-fd-secondary/50 p-1.5 ps-2 text-xs text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground [&_svg]:size-3.5",
 				)}
 			>
 				Open
@@ -251,4 +242,21 @@ export function ViewOptions({
 export function HeaderLLMCopyButton(): React.ReactElement {
 	const pathname = usePathname();
 	return <LLMCopyButton markdownUrl={`${pathname}.mdx`} />;
+}
+
+export function HeaderViewOptions(): React.ReactElement {
+	const pathname = usePathname();
+
+	// Generate GitHub URL
+	const githubOwner = process.env.NEXT_PUBLIC_GITHUB_OWNER;
+	const githubRepo = process.env.NEXT_PUBLIC_GITHUB_REPO;
+	const githubBranch = process.env.NEXT_PUBLIC_GITHUB_BRANCH ?? "main";
+	const githubUrl =
+		githubOwner && githubRepo
+			? `https://github.com/${githubOwner}/${githubRepo}/blob/${githubBranch}/content/docs${pathname}.mdx`
+			: undefined;
+
+	if (!githubUrl) return <></>;
+
+	return <ViewOptions markdownUrl={`${pathname}.mdx`} githubUrl={githubUrl} />;
 }

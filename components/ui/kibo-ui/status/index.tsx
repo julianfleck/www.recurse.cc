@@ -1,7 +1,7 @@
 import { IconApi } from "@tabler/icons-react";
 import type { ComponentProps, HTMLAttributes } from "react";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/cn";
+import { cn } from "@/lib/utils";
 
 // Use consistent colors regardless of theme for SSR compatibility
 const getStatusColor = (status: string): string => {

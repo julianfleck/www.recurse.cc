@@ -20,7 +20,10 @@ import {
 	type ReactNode,
 	useMemo,
 } from "react";
-import { HeaderLLMCopyButton } from "@/components/page-actions";
+import {
+	HeaderLLMCopyButton,
+	HeaderViewOptions,
+} from "@/components/page-actions";
 import { cn } from "../../../lib/cn";
 import { LanguageToggle } from "../../language-toggle";
 import { type Option, RootToggle } from "../../root-toggle";
@@ -405,8 +408,9 @@ function DocsNavbar({
 					<div className="flex items-center md:hidden">
 						{searchToggle.enabled !== false &&
 							(searchToggle.components?.sm ?? (
-								<SearchToggle hideIfDisabled className="p-2" />
+								<LargeSearchToggle hideIfDisabled />
 							))}
+						<HeaderViewOptions />
 						<HeaderLLMCopyButton />
 						<NavbarSidebarTrigger className="p-2 -me-1.5" />
 					</div>
@@ -418,8 +422,9 @@ function DocsNavbar({
 							</LanguageToggle>
 						) : null}
 						{searchToggle.enabled !== false && (
-							<SearchToggle hideIfDisabled className="p-2" />
+							<LargeSearchToggle hideIfDisabled />
 						)}
+						<HeaderViewOptions />
 						<HeaderLLMCopyButton />
 						{themeSwitch.enabled !== false &&
 							(themeSwitch.component ?? (

@@ -1,5 +1,6 @@
 "use client";
 
+import { IconCalendar, IconCalendarWeek } from "@tabler/icons-react";
 import {
 	type BreadcrumbOptions,
 	getBreadcrumbItemsFromPath,
@@ -29,6 +30,7 @@ import {
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from "../../ui/collapsible";
+import { Pill, PillIcon, PillStatus } from "../../ui/kibo-ui/pill";
 import { useTOCItems } from "../../ui/toc";
 
 const TocPopoverContext = createContext<{
@@ -239,12 +241,16 @@ export function PageLastUpdate({
 	}, [value]);
 
 	return (
-		<p
+		<Pill
 			{...props}
-			className={cn("text-sm text-fd-muted-foreground", props.className)}
+			className="w-fit bg-card border border-border opacity-50 hover:opacity-100 transition-opacity"
 		>
-			{text.lastUpdate} {date}
-		</p>
+			<PillStatus>
+				<IconCalendarWeek size={14} className="text-muted-foreground" />
+				Last Update
+			</PillStatus>
+			<span className="text-xs">{date}</span>
+		</Pill>
 	);
 }
 

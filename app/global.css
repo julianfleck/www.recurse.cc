@@ -723,9 +723,9 @@ h6 {
 	@apply mt-2 mb-4;
 }
 
-[data-state="open"][role="region"] .prose p,
-[data-state="open"][role="region"] .prose li,
-[data-state="open"][role="region"] .prose ul,
-[data-state="open"][role="region"] .prose ol {
+[role="region"] .prose p,
+[role="region"] .prose li,
+[role="region"] .prose ul,
+[role="region"] .prose ol {
 	@apply text-foreground max-w-lg;
 }

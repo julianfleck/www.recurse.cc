@@ -151,7 +151,7 @@ Tables are easier to scan and read than bullet lists. Use them for comparisons, 
 ```markdown
 | Technology | Approach | What You Get |
 |------------|----------|--------------|
-| **Standard RAG** | Flat text chunks | Basic retrieval, loses context |
+| **RAG** | Flat text chunks | Basic retrieval, loses context |
 | **GraphRAG** | Predefined relationships | Structured but rigid connections |
 | **RAGE** | Living knowledge substrate | Automatic semantic extraction, nested relationships |
 ```

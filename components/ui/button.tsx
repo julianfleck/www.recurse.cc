@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority";
+import type * as React from "react";
 
 const variants = {
 	primary: "bg-fd-primary text-fd-primary-foreground hover:bg-fd-primary/80",
@@ -26,3 +27,22 @@ export const buttonVariants = cva(
 );
 
 export type ButtonProps = VariantProps<typeof buttonVariants>;
+
+export function Button({
+	className,
+	variant,
+	color,
+	size,
+	...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps) {
+	return (
+		<button
+			className={buttonVariants({
+				variant: variant || color,
+				size,
+				className,
+			})}
+			{...props}
+		/>
+	);
+}
