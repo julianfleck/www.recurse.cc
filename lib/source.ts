@@ -1,4 +1,4 @@
-import { IconApi, IconUserScreen } from "@tabler/icons-react";
+import { IconApi, IconRun, IconUserScreen } from "@tabler/icons-react";
 import { loader } from "fumadocs-core/source";
 import { transformerOpenAPI } from "fumadocs-openapi/server";
 import {
@@ -110,6 +110,8 @@ export const source = loader({
 					return createElement(IconApi, { className: "size-4" });
 				case "user-screen":
 					return createElement(IconUserScreen, { className: "size-4" });
+				case "run":
+					return createElement(IconRun, { className: "size-4" });
 
 				default:
 					return undefined;
