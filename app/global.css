@@ -264,6 +264,10 @@ body {
 	color: var(--tw-prose-counters);
 }
 
+.prose td {
+	line-height: 1.4;
+}
+
 /* Global styles (apply outside prose as well) */
 html:not(.prose) {
 	font-family: var(--font-sans);
