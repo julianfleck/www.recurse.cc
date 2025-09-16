@@ -129,6 +129,8 @@ export interface GraphViewProps {
   depth?: number | string;
   // When true, hides the fullscreen button/control (used for nested fullscreen view)
   disableFullscreenControl?: boolean;
+  // Optional modifier required for wheel zoom (trackpad). When 'cmd', only meta/ctrl + wheel zooms
+  zoomModifier?: '' | 'cmd';
 }
 
 export function GraphView({
@@ -138,6 +140,7 @@ export function GraphView({
   withSidebar = false,
   depth,
   disableFullscreenControl = false,
+  zoomModifier = '',
 }: GraphViewProps) {
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   // Graph state management
@@ -957,10 +960,21 @@ export function GraphView({
     const surfaceSel = select(zoomSurfaceRef.current as Element);
     selectionRef.current = surfaceSel;
     const behavior = zoom<Element, unknown>()
-      .filter(() => {
+      .filter((event: any) => {
         // Disable zoom/pan while dragging a node
         if (isDraggingRef.current) {
           return false;
+        }
+        // If a modifier is required for zoom, allow pan but require meta/ctrl for wheel/dblclick zoom
+        if (zoomModifier === 'cmd' && event && !isFullscreenOpen) {
+          const type = event.type as string | undefined;
+          // Only restrict wheel-based zoom; allow double-click zoom regardless
+          if (type === 'wheel') {
+            const hasCmd = !!(event.metaKey || event.ctrlKey);
+            if (!hasCmd) {
+              return false;
+            }
+          }
         }
         return true;
       })
@@ -1007,6 +1021,8 @@ export function GraphView({
     pinAllSimulationNodes,
     unpinAllSimulationNodes,
     layoutMode,
+    zoomModifier,
+    isFullscreenOpen,
   ]);
 
   // Fit selected ids into view with padding
@@ -1532,8 +1548,11 @@ export function GraphView({
       // Ignore when typing in inputs or contenteditable
       const t = event.target as HTMLElement | null;
       if (t) {
-        const tag = t.tagName.toLowerCase();
-        const isEditable = t.isContentEditable;
+        const tagNameRaw = (t as unknown as { tagName?: string }).tagName;
+        const tag =
+          typeof tagNameRaw === 'string' ? tagNameRaw.toLowerCase() : '';
+        const isEditable =
+          t.isContentEditable || !!t.closest?.('[contenteditable="true"]');
         if (
           isEditable ||
           tag === 'input' ||

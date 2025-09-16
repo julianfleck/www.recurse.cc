@@ -406,6 +406,7 @@ export function AnimatedGraphExample() {
             data={data}
             depth={4}
             withSidebar={false}
+            zoomModifier="cmd"
           />
         </div>
 
