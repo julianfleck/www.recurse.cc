@@ -8,6 +8,7 @@ import {
   DocsTitle,
 } from "@/components/layout/page";
 import { Cards, Card } from "fumadocs-ui/components/card";
+import { Share2, Brain, Bot, FileText, Code, Edit } from "lucide-react";
 import { dashboardSource } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
 
@@ -18,29 +19,32 @@ export default async function Page(props: PageProps<"/dashboard/[[...slug]]">) {
   // Root shell
   if (slug.length === 0) {
     return (
-      <DocsPage footer={{ enabled: false }}>
+      <DocsPage
+        breadcrumb={{ enabled: true, component: <div className="font-semibold text-sm">Dashboard</div> }}
+        footer={{ enabled: false }}
+      >
         <DocsTitle>Dashboard</DocsTitle>
         <DocsDescription>
           Overview of your knowledge base and account.
         </DocsDescription>
         <DocsBody>
           <Cards>
-            <Card href="/dashboard/graph" title="Graph" icon="share2">
+            <Card href="/dashboard/graph" title="Graph" icon={<Share2 className="size-4" />}>
               Visualize relationships across your knowledge.
             </Card>
-            <Card href="/dashboard/context" title="Context" icon="brain">
+            <Card href="/dashboard/context" title="Context" icon={<Brain className="size-4" />}>
               Build and manage reusable context.
             </Card>
-            <Card href="/dashboard/chat" title="Chat" icon="bot">
+            <Card href="/dashboard/chat" title="Chat" icon={<Bot className="size-4" />}>
               Converse with your knowledge.
             </Card>
-            <Card href="/dashboard/usage" title="Usage" icon="filetext">
+            <Card href="/dashboard/usage" title="Usage" icon={<FileText className="size-4" />}>
               Monitor API usage and limits.
             </Card>
-            <Card href="/dashboard/api-keys" title="API Keys" icon="code">
+            <Card href="/dashboard/api-keys" title="API Keys" icon={<Code className="size-4" />}>
               Manage programmatic access.
             </Card>
-            <Card href="/dashboard/settings" title="Settings" icon="edit">
+            <Card href="/dashboard/settings" title="Settings" icon={<Edit className="size-4" />}>
               Configure your account preferences.
             </Card>
           </Cards>
