@@ -13,7 +13,7 @@ import { getMDXComponents } from "@/mdx-components";
 
 export default async function Page(props: PageProps<"/dashboard/[[...slug]]">) {
   const params = await props.params;
-  let slug = !params.slug || params.slug.length === 0 ? [] : params.slug;
+  const slug = !params.slug || params.slug.length === 0 ? [] : params.slug;
 
   // Root route now uses MDX index.mdx to seed breadcrumb; let fallback render it
   if (slug.length === 0) {
@@ -41,7 +41,7 @@ export default async function Page(props: PageProps<"/dashboard/[[...slug]]">) {
     };
 
     return (
-      <DocsPage footer={{ enabled: false }}>
+      <DocsPage breadcrumb={{ enabled: false }} footer={{ enabled: false }}>
         <DocsTitle>{titleMap[section]}</DocsTitle>
         <DocsDescription>
           {section === "graph" &&

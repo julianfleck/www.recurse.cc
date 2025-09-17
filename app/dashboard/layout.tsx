@@ -8,6 +8,7 @@ export default function Layout({ children }: LayoutProps<"/dashboard">) {
     <DocsLayout
       {...docsOptions()}
       disableDocActions
+      // Render children pages directly; page content controls header/footer via DocsPage
       sidebar={{
         tabs: [
           {
