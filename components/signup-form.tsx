@@ -66,34 +66,16 @@ export function SignupForm({
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      return;
+    }
 
     setSubmitting(true);
     try {
-      const connection =
-        process.env.NEXT_PUBLIC_AUTH0_DB_CONNECTION ||
-        "Username-Password-Authentication";
-      const res = await fetch(
-        `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/dbconnections/signup`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            client_id: process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID,
-            email,
-            password,
-            connection,
-            user_metadata: name ? { name } : undefined,
-          }),
-        }
-      );
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data?.description || data?.error || "Signup failed");
-      }
+      // Delegate signup to Universal Login with signup hint
       await loginWithRedirect({
         authorizationParams: {
-          screen_hint: "login",
+          screen_hint: "signup",
           login_hint: email,
         },
       });
