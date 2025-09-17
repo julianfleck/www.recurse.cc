@@ -1,0 +1,15 @@
+{
+  "title": "Dashboard",
+  "description": "Manage your RAGE knowledge infrastructure",
+  "root": true,
+  "icon": "brain",
+  "pages": [
+    "overview",
+    "---Knowledge Base---",
+    "graph",
+    "content",
+    "usage",
+    "---Account---",
+    "settings"
+  ]
+}

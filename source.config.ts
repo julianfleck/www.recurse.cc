@@ -16,6 +16,18 @@ const extendedFrontmatterSchema = frontmatterSchema.extend({
 // You can customise Zod schemas for frontmatter and `meta.json` here
 // see https://fumadocs.dev/docs/mdx/collections#define-docs
 export const docs = defineDocs({
+	dir: "content/docs",
+	docs: {
+		schema: extendedFrontmatterSchema,
+	},
+	meta: {
+		schema: metaSchema,
+	},
+});
+
+// Dashboard collection
+export const dashboard = defineDocs({
+	dir: "content/dashboard",
 	docs: {
 		schema: extendedFrontmatterSchema,
 	},

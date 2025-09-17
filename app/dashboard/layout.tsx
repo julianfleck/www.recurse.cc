@@ -2,11 +2,11 @@ import { DocsLayout } from "@/components/layout/docs";
 import { docsOptions } from "@/lib/layout.shared";
 import { docsSource, dashboardSource } from "@/lib/source";
 
-export default function Layout({ children }: LayoutProps<"/docs">) {
+export default function Layout({ children }: LayoutProps<"/dashboard">) {
 	return (
 		<DocsLayout
 			{...docsOptions()}
-			tree={docsSource.pageTree}
+			tree={dashboardSource.pageTree}
 			sidebar={{
 				tabs: [
 					{
