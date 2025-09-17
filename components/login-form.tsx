@@ -1,18 +1,70 @@
 "use client";
 
 // Auth0 provider is globally configured; no direct hook needed here
+import { useState } from "react";
 import Particles from "@/components/backgrounds/Particles";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 // no direct usage now; keep connections centralized in hook
 import { useSocialLogin } from "./auth/use-social-login";
+import { useAuthStore } from "./auth/auth-store";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { isLoading, loginWithGoogle, loginWithGithub } = useSocialLogin();
+  const { loginWithGoogle, loginWithGithub } = useSocialLogin();
+  const setAuth = useAuthStore((s) => s.setAuth);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleEmailLogin(e: React.FormEvent) {
+    e.preventDefault();
+    setSubmitting(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/oauth/token`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            grant_type: "password",
+            username: email,
+            password,
+            client_id: process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID,
+            scope: "openid profile email",
+          }),
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error_description || data.error || "Login failed");
+      }
+      const userResponse = await fetch(
+        `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/userinfo`,
+        {
+          headers: {
+            Authorization: `Bearer ${data.access_token}`,
+          },
+        }
+      );
+      const userInfo = await userResponse.json();
+      setAuth(data.access_token, "auth0", userInfo);
+      setEmail("");
+      setPassword("");
+      window.location.assign("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Login failed");
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -26,28 +78,49 @@ export function LoginForm({
                   Login to your recurse.cc account
                 </p>
               </div>
-              <Button
-                className="w-full"
-                disabled={isLoading}
-                onClick={loginWithGoogle}
-                type="button"
-                variant="outline"
-              >
-                {isLoading ? "Redirecting..." : "Continue with Google"}
-              </Button>
+              {error ? (
+                <div className="rounded-md bg-red-50 p-3 text-red-600 text-sm">
+                  {error}
+                </div>
+              ) : null}
+              <form className="grid gap-3" onSubmit={handleEmailLogin}>
+                <label className="text-sm" htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm outline-hidden ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                />
+                <div className="grid gap-2">
+                  <div className="flex items-center">
+                    <label className="text-sm" htmlFor="password">Password</label>
+                    <a className="ml-auto text-sm underline-offset-2 hover:underline" href="/forgot-password">Forgot your password?</a>
+                  </div>
+                  <input
+                    id="password"
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
+                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm outline-hidden ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  />
+                </div>
+                <Button className="w-full" disabled={submitting} type="submit" variant="outline">
+                  {submitting ? "Logging in..." : "Login"}
+                </Button>
+              </form>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-border after:border-t">
                 <span className="relative z-10 bg-card px-2 text-muted-foreground">
                   Or continue with
                 </span>
               </div>
-              <div className="grid grid-cols-3 gap-4">
-                {/* Removed Apple for now */}
-                <Button
-                  className="w-full"
-                  onClick={loginWithGoogle}
-                  type="button"
-                  variant="outline"
-                >
+              <div className="grid grid-cols-2 gap-4">
+                <Button className="w-full" onClick={loginWithGoogle} type="button" variant="outline">
                   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <title>Google logo</title>
                     <path
@@ -57,12 +130,7 @@ export function LoginForm({
                   </svg>
                   <span className="sr-only">Login with Google</span>
                 </Button>
-                <Button
-                  className="w-full"
-                  onClick={loginWithGithub}
-                  type="button"
-                  variant="outline"
-                >
+                <Button className="w-full" onClick={loginWithGithub} type="button" variant="outline">
                   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <title>GitHub logo</title>
                     <path

@@ -9,7 +9,7 @@ export function AuthInit() {
   const clear = useAuthStore((s) => s.clear);
 
   useEffect(() => {
-    // Prefer SDK-based login. Embedded flow will be added later if needed.
+    // Prefer SDK-based login only; email login will set the store directly
 
     if (isAuthenticated && !isLoading) {
       // Get access token silently
