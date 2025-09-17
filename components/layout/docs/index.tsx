@@ -64,6 +64,8 @@ export interface DocsLayoutProps extends BaseLayoutProps {
 	tabMode?: "sidebar" | "navbar";
     /** Disable header doc actions (LLM copy, open in ...) */
     disableDocActions?: boolean;
+    /** Optional custom breadcrumb renderer in the header navbar */
+    headerBreadcrumb?: ReactNode;
 
 	nav?: BaseLayoutProps["nav"] & {
 		mode?: "top" | "auto";
@@ -375,9 +377,11 @@ function DocsNavbar({
 						{nav.title}
 					</Link>
 				</div>
-				<div className={cn("min-w-0 flex-1 my-auto max-md:hidden px-2")}>
-					<PageBreadcrumb includeSeparator includePage />
-				</div>
+                <div className={cn("min-w-0 flex-1 my-auto max-md:hidden px-2")}>
+                    {props.headerBreadcrumb ?? (
+                        <PageBreadcrumb includeSeparator includePage />
+                    )}
+                </div>
 				<div className="flex flex-1 items-center justify-end md:gap-2">
 					<div className="flex items-center gap-6 empty:hidden max-lg:hidden">
 						{links
