@@ -1,4 +1,5 @@
 import { Book, Brain } from "lucide-react";
+import { AuthGate } from "@/components/auth/auth-gate";
 import { DocsLayout } from "@/components/layout/docs";
 import { docsOptions } from "@/lib/layout.shared";
 import { dashboardSource } from "@/lib/source";
@@ -25,6 +26,7 @@ export default function Layout({ children }: LayoutProps<"/dashboard">) {
       }}
       tree={dashboardSource.pageTree}
     >
+      <AuthGate />
       {children}
     </DocsLayout>
   );

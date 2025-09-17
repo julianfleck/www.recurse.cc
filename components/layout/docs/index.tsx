@@ -47,6 +47,7 @@ import {
 	SidebarViewport,
 } from "../../sidebar";
 import { ThemeToggle } from "../../theme-toggle";
+import { UserProfile } from "@/components/user-profile";
 import { buttonVariants } from "../../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import {
@@ -432,10 +433,11 @@ function DocsNavbar({
 						)}
                     {props.disableDocActions ? null : <HeaderViewOptions />}
                     {props.disableDocActions ? null : <HeaderLLMCopyButton />}
-						{themeSwitch.enabled !== false &&
-							(themeSwitch.component ?? (
-								<ThemeToggle mode={themeSwitch.mode ?? "light-dark-system"} />
-							))}
+					{themeSwitch.enabled !== false &&
+						(themeSwitch.component ?? (
+							<ThemeToggle mode={themeSwitch.mode ?? "light-dark-system"} />
+						))}
+					<UserProfile />
 						{sidebarCollapsible && navMode === "top" && (
 							<SidebarCollapseTrigger
 								className={cn(

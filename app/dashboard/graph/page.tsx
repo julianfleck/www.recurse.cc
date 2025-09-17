@@ -12,7 +12,7 @@ export default function Page() {
         className="h-full w-full"
         data={codeDocumentationData}
         withSidebar={false}
-        zoomModifier="cmd"
+        zoomModifier=""
       />
     </div>
   );
