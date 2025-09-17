@@ -7,50 +7,17 @@ import {
   DocsPage,
   DocsTitle,
 } from "@/components/layout/page";
-import { Cards, Card } from "fumadocs-ui/components/card";
-import { Share2, Brain, Bot, FileText, Code, Edit } from "lucide-react";
+// no Cards on TSX root; MDX index handles overview cards
 import { dashboardSource } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
 
 export default async function Page(props: PageProps<"/dashboard/[[...slug]]">) {
   const params = await props.params;
-  const slug = !params.slug || params.slug.length === 0 ? [] : params.slug;
+  let slug = !params.slug || params.slug.length === 0 ? [] : params.slug;
 
-  // Root shell
+  // Root route now uses MDX index.mdx to seed breadcrumb; let fallback render it
   if (slug.length === 0) {
-    return (
-      <DocsPage
-        breadcrumb={{ enabled: true, component: <div className="font-semibold text-sm">Dashboard</div> }}
-        footer={{ enabled: false }}
-      >
-        <DocsTitle>Dashboard</DocsTitle>
-        <DocsDescription>
-          Overview of your knowledge base and account.
-        </DocsDescription>
-        <DocsBody>
-          <Cards>
-            <Card href="/dashboard/graph" title="Graph" icon={<Share2 className="size-4" />}>
-              Visualize relationships across your knowledge.
-            </Card>
-            <Card href="/dashboard/context" title="Context" icon={<Brain className="size-4" />}>
-              Build and manage reusable context.
-            </Card>
-            <Card href="/dashboard/chat" title="Chat" icon={<Bot className="size-4" />}>
-              Converse with your knowledge.
-            </Card>
-            <Card href="/dashboard/usage" title="Usage" icon={<FileText className="size-4" />}>
-              Monitor API usage and limits.
-            </Card>
-            <Card href="/dashboard/api-keys" title="API Keys" icon={<Code className="size-4" />}>
-              Manage programmatic access.
-            </Card>
-            <Card href="/dashboard/settings" title="Settings" icon={<Edit className="size-4" />}>
-              Configure your account preferences.
-            </Card>
-          </Cards>
-        </DocsBody>
-      </DocsPage>
-    );
+    slug = ["index"];
   }
 
   // Section shells
