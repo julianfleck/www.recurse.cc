@@ -62,6 +62,8 @@ import { PageBreadcrumb } from "./page";
 export interface DocsLayoutProps extends BaseLayoutProps {
 	tree: PageTree.Root;
 	tabMode?: "sidebar" | "navbar";
+    /** Disable header doc actions (LLM copy, open in ...) */
+    disableDocActions?: boolean;
 
 	nav?: BaseLayoutProps["nav"] & {
 		mode?: "top" | "auto";
@@ -405,13 +407,13 @@ function DocsNavbar({
 							</BaseLinkItem>
 						))}
 
-					<div className="flex items-center md:hidden">
+                <div className="flex items-center md:hidden">
 						{searchToggle.enabled !== false &&
 							(searchToggle.components?.sm ?? (
 								<LargeSearchToggle hideIfDisabled />
 							))}
-						<HeaderViewOptions />
-						<HeaderLLMCopyButton />
+                    {props.disableDocActions ? null : <HeaderViewOptions />}
+                    {props.disableDocActions ? null : <HeaderLLMCopyButton />}
 						<NavbarSidebarTrigger className="p-2 -me-1.5" />
 					</div>
 
@@ -421,11 +423,11 @@ function DocsNavbar({
 								<Languages className="size-4.5 text-fd-muted-foreground" />
 							</LanguageToggle>
 						) : null}
-						{searchToggle.enabled !== false && (
+                    {searchToggle.enabled !== false && (
 							<LargeSearchToggle hideIfDisabled />
 						)}
-						<HeaderViewOptions />
-						<HeaderLLMCopyButton />
+                    {props.disableDocActions ? null : <HeaderViewOptions />}
+                    {props.disableDocActions ? null : <HeaderLLMCopyButton />}
 						{themeSwitch.enabled !== false &&
 							(themeSwitch.component ?? (
 								<ThemeToggle mode={themeSwitch.mode ?? "light-dark-system"} />

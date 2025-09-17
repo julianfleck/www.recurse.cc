@@ -75,10 +75,10 @@ export interface DocsPageProps {
 	 */
 	breadcrumb?: Partial<BreadcrumbOptions>;
 
-	/**
-	 * Footer navigation, you can disable it by passing `false`
-	 */
-	footer?: Partial<FooterOptions>;
+    /**
+     * Footer navigation, you can disable it by passing `false`
+     */
+    footer?: Partial<FooterOptions>;
 
 	editOnGithub?: EditOnGitHubOptions;
 	lastUpdate?: Date | string | number;
@@ -131,7 +131,7 @@ export function DocsPage({
 		component: breadcrumb,
 		...breadcrumbProps
 	} = {},
-	footer = {},
+    footer = {},
 	lastUpdate,
 	container,
 	full = false,
@@ -192,7 +192,7 @@ export function DocsPage({
 						/>
 					)}
 				</div>
-				{footer.enabled !== false && (footer.component ?? <PageFooter />)}
+                {footer.enabled !== false && (footer.component ?? <PageFooter />)}
 			</PageArticle>
 			{tocEnabled &&
 				(tocReplace ?? (

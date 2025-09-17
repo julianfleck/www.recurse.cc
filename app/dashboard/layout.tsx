@@ -7,6 +7,7 @@ export default function Layout({ children }: LayoutProps<"/dashboard">) {
   return (
     <DocsLayout
       {...docsOptions()}
+      disableDocActions
       sidebar={{
         tabs: [
           {

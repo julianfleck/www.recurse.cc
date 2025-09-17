@@ -17,25 +17,57 @@ export default async function Page(props: PageProps<"/dashboard/[[...slug]]">) {
   // Root shell
   if (slug.length === 0) {
     return (
-      <DocsPage breadcrumb={{ enabled: false }}>
+      <DocsPage footer={{ enabled: false }}>
         <DocsTitle>Dashboard</DocsTitle>
-        <DocsDescription>Overview of your knowledge base and account.</DocsDescription>
+        <DocsDescription>
+          Overview of your knowledge base and account.
+        </DocsDescription>
         <DocsBody>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <section>
               <h3 className="font-semibold text-base">Knowledge Base</h3>
               <ul className="mt-2 space-y-2">
-                <li><a href="/dashboard/graph" className="underline">Graph</a> – Visualize relationships</li>
-                <li><a href="/dashboard/context" className="underline">Context</a> – Build reusable context</li>
-                <li><a href="/dashboard/chat" className="underline">Chat</a> – Converse with your knowledge</li>
+                <li>
+                  <a className="underline" href="/dashboard/graph">
+                    Graph
+                  </a>{" "}
+                  – Visualize relationships
+                </li>
+                <li>
+                  <a className="underline" href="/dashboard/context">
+                    Context
+                  </a>{" "}
+                  – Build reusable context
+                </li>
+                <li>
+                  <a className="underline" href="/dashboard/chat">
+                    Chat
+                  </a>{" "}
+                  – Converse with your knowledge
+                </li>
               </ul>
             </section>
             <section>
               <h3 className="font-semibold text-base">Account</h3>
               <ul className="mt-2 space-y-2">
-                <li><a href="/dashboard/usage" className="underline">Usage</a> – Monitor your activity</li>
-                <li><a href="/dashboard/api-keys" className="underline">API Keys</a> – Manage access</li>
-                <li><a href="/dashboard/settings" className="underline">Settings</a> – Configure your account</li>
+                <li>
+                  <a className="underline" href="/dashboard/usage">
+                    Usage
+                  </a>{" "}
+                  – Monitor your activity
+                </li>
+                <li>
+                  <a className="underline" href="/dashboard/api-keys">
+                    API Keys
+                  </a>{" "}
+                  – Manage access
+                </li>
+                <li>
+                  <a className="underline" href="/dashboard/settings">
+                    Settings
+                  </a>{" "}
+                  – Configure your account
+                </li>
               </ul>
             </section>
           </div>
@@ -46,7 +78,14 @@ export default async function Page(props: PageProps<"/dashboard/[[...slug]]">) {
 
   // Section shells
   const section = slug[0];
-  if (section === "graph" || section === "context" || section === "chat" || section === "usage" || section === "api-keys" || section === "settings") {
+  if (
+    section === "graph" ||
+    section === "context" ||
+    section === "chat" ||
+    section === "usage" ||
+    section === "api-keys" ||
+    section === "settings"
+  ) {
     const titleMap: Record<string, string> = {
       graph: "Graph",
       context: "Context",
@@ -57,18 +96,23 @@ export default async function Page(props: PageProps<"/dashboard/[[...slug]]">) {
     };
 
     return (
-      <DocsPage breadcrumb={{ enabled: false }}>
+      <DocsPage footer={{ enabled: false }}>
         <DocsTitle>{titleMap[section]}</DocsTitle>
         <DocsDescription>
-          {section === "graph" && "Visualize and explore your knowledge relationships."}
-          {section === "context" && "Create and manage reusable context for AI systems."}
+          {section === "graph" &&
+            "Visualize and explore your knowledge relationships."}
+          {section === "context" &&
+            "Create and manage reusable context for AI systems."}
           {section === "chat" && "Converse with your knowledge base."}
           {section === "usage" && "Monitor your API usage and limits."}
           {section === "api-keys" && "Manage API keys for programmatic access."}
           {section === "settings" && "Configure your account preferences."}
         </DocsDescription>
         <DocsBody>
-          <p>This is a shell page. Replace with the actual {titleMap[section]} UI when ready.</p>
+          <p>
+            This is a shell page. Replace with the actual {titleMap[section]} UI
+            when ready.
+          </p>
         </DocsBody>
       </DocsPage>
     );
@@ -86,7 +130,7 @@ export default async function Page(props: PageProps<"/dashboard/[[...slug]]">) {
 
   return (
     <DocsPage
-      breadcrumb={{ enabled: false }}
+      footer={{ enabled: false }}
       full={page.data.full}
       lastUpdate={lastUpdate}
       toc={page.data.toc}
@@ -105,20 +149,66 @@ export default async function Page(props: PageProps<"/dashboard/[[...slug]]">) {
 }
 
 export function generateStaticParams() {
-  return dashboardSource.generateParams();
+  const sectionParams = [
+    { slug: ["graph"] },
+    { slug: ["context"] },
+    { slug: ["chat"] },
+    { slug: ["usage"] },
+    { slug: ["api-keys"] },
+    { slug: ["settings"] },
+  ];
+  return [...sectionParams, ...dashboardSource.generateParams()];
 }
 
 export async function generateMetadata(
   props: PageProps<"/dashboard/[[...slug]]">
 ): Promise<Metadata> {
   const params = await props.params;
-  const slug =
-    !params.slug || params.slug.length === 0 ? ["overview"] : params.slug;
+  const slug = !params.slug || params.slug.length === 0 ? [] : params.slug;
+
+  if (slug.length === 0) {
+    return {
+      title: "Dashboard",
+      description: "Overview of your knowledge base and account.",
+    };
+  }
+
+  const section = slug[0];
+  const titleMap: Record<string, { title: string; description: string }> = {
+    graph: {
+      title: "Graph",
+      description: "Visualize and explore your knowledge relationships.",
+    },
+    context: {
+      title: "Context",
+      description: "Create and manage reusable context for AI systems.",
+    },
+    chat: {
+      title: "Chat",
+      description: "Converse with your knowledge base.",
+    },
+    usage: {
+      title: "Usage",
+      description: "Monitor your API usage and limits.",
+    },
+    "api-keys": {
+      title: "API Keys",
+      description: "Manage API keys for programmatic access.",
+    },
+    settings: {
+      title: "Settings",
+      description: "Configure your account preferences.",
+    },
+  };
+
+  if (titleMap[section]) {
+    return titleMap[section];
+  }
+
   const page = dashboardSource.getPage(slug);
   if (!page) {
     notFound();
   }
-
   return {
     title: page.data.title,
     description: page.data.description,
