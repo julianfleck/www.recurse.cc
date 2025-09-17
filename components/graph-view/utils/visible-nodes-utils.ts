@@ -1,11 +1,14 @@
-import type { GraphNode as DataNode, GraphLink as DataLink } from './data/data-manager';
+import type {
+  GraphLink as DataLink,
+  GraphNode as DataNode,
+} from './data/data-manager';
 import { buildTreeFromNodes, isMetadata } from './data/relationship-utils';
 
 export interface VisibleNodesParams {
   allNodes: DataNode[];
   allLinks: DataLink[];
   expandedNodes: Set<string>;
-  filteredNodeIds?: Set<string>;
+  filteredNodeIds?: Set<string> | null;
   collapsingChildIds?: Set<string>;
 }
 
@@ -37,8 +40,13 @@ export function calculateVisibleNodeIds({
   const localTree = buildTreeFromNodes(allNodes, allLinks);
   walkTreeVisible(Array.isArray(localTree) ? localTree : []);
 
-  // Apply filtered nodes if any
-  if (filteredNodeIds && filteredNodeIds.size > 0) {
+  // Apply filtered nodes when a filter is active.
+  // - null/undefined: no filter
+  // - empty set: explicit "no matches" => show nothing
+  if (filteredNodeIds !== null && filteredNodeIds !== undefined) {
+    if (filteredNodeIds.size === 0) {
+      return new Set<string>();
+    }
     for (const id of Array.from(contentVisible)) {
       if (!filteredNodeIds.has(id)) {
         contentVisible.delete(id);

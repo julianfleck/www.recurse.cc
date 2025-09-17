@@ -304,7 +304,7 @@ export function AnimatedGraphExample() {
   // Initial fit to view when component mounts
   useEffect(() => {
     const timer = setTimeout(() => {
-      const fitEvent = new KeyboardEvent("keydown", { key: "f" });
+      const fitEvent = new KeyboardEvent("keydown", { key: "0" });
       document.dispatchEvent(fitEvent);
     }, INITIAL_FIT_DELAY_MS);
 
@@ -337,7 +337,7 @@ export function AnimatedGraphExample() {
 
       // Fit to view after a brief delay to let the graph render
       setTimeout(() => {
-        const fitEvent = new KeyboardEvent("keydown", { key: "f" });
+        const fitEvent = new KeyboardEvent("keydown", { key: "0" });
         document.dispatchEvent(fitEvent);
       }, STEP_CHANGE_FIT_DELAY_MS);
     }
@@ -370,7 +370,7 @@ export function AnimatedGraphExample() {
 
     // Fit to view after reset
     setTimeout(() => {
-      const fitEvent = new KeyboardEvent("keydown", { key: "f" });
+      const fitEvent = new KeyboardEvent("keydown", { key: "0" });
       document.dispatchEvent(fitEvent);
     }, RELOAD_FIT_DELAY_MS);
   };

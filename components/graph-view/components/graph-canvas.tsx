@@ -211,11 +211,12 @@ export function GraphView({
   // This avoids referencing treeData before its declaration below.
 
   // Graph data management
+  const [filteredIds, setFilteredIds] = useState<Set<string> | null>(null);
   const graphData = useGraphData({
     nodesById,
     edges,
     expandedNodes,
-    filteredNodeIds: new Set<string>(),
+    filteredNodeIds: filteredIds,
     collapsingChildIds: collapsingChildIdsRef.current,
     allNodes: [], // Will be computed by the hook
     allLinks: [], // Will be computed by the hook
@@ -1570,7 +1571,7 @@ export function GraphView({
         }
         event.preventDefault();
         fitAll();
-      } else if (event.key === 'f') {
+      } else if ((event.shiftKey && event.key.toLowerCase() === 'f') || event.key === 'F') {
         const ae = document.activeElement as HTMLElement | null;
         if (ae && containerRef.current && containerRef.current.contains(ae)) {
           ae.blur();
@@ -1677,11 +1678,15 @@ export function GraphView({
       >
         {showSidebar && (
           <GraphTreeSidebar
+            allLinks={allLinks}
+            // Provide links so search can include metadata linked by edges
+            allNodes={allNodes}
             expandedIds={graphExpandedToSidebarExpandedWithTree(
               expandedNodes,
               buildTreeIndex(treeData)
             )}
             highlightedNodeId={highlightedNodeId}
+            mode={data || dataUrl ? 'json' : 'api'}
             onExpandedIdsChange={(expandedIds) => {
               // Build a quick children map from current tree data
               const childrenById = new Map<string, string[]>();
@@ -1841,6 +1846,9 @@ export function GraphView({
                 }
               }
             }}
+            onFilterIdsChange={(ids) => {
+              setFilteredIds(ids);
+            }}
             setHighlightedNodeId={(id) => {
               if (id && suppressSidebarSelectRef.current.has(id)) {
                 return;
@@ -1947,7 +1955,7 @@ export function GraphView({
     return (
       <Dialog onOpenChange={setIsFullscreenOpen} open={true}>
         <DialogContent
-          className="p-0"
+          className="p-0 outline-none outline-offset-0 focus:outline-none focus-visible:outline-none"
           style={{ width: '90vw', maxWidth: '90vw', height: '90vh' }}
         >
           <DialogTitle className="sr-only">Graph visualization</DialogTitle>

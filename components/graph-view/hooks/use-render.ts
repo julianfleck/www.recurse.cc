@@ -61,6 +61,17 @@ export function renderEdges(deps: RenderDeps): void {
     return { s, t };
   });
 
+  // Defensive cleanup: remove any stale edge paths that no longer exist
+  // according to the current visibleLinks key set. This avoids orphaned
+  // edges after filter/collapse transitions.
+  const currentKeySet = new Set(mappedData.map(({ s, t }) => `${s}->${t}`));
+  g.selectAll<SVGPathElement, unknown>('path.edge').each(function onEach() {
+    const key = this.getAttribute('data-edge') || '';
+    if (!currentKeySet.has(key)) {
+      this.remove();
+    }
+  });
+
   const parentMapForEdges = buildParentMapFromLinks();
   const edgeData = mappedData.map(({ s, t }) => {
     let a = positionsRef.current.get(s) as RenderPoint | undefined;
