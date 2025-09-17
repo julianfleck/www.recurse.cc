@@ -1,6 +1,7 @@
 import { DocsLayout } from "@/components/layout/docs";
 import { docsOptions } from "@/lib/layout.shared";
-import { docsSource, dashboardSource } from "@/lib/source";
+import { docsSource } from "@/lib/source";
+import { Book, Brain } from "lucide-react";
 
 export default function Layout({ children }: LayoutProps<"/docs">) {
 	return (
@@ -12,12 +13,12 @@ export default function Layout({ children }: LayoutProps<"/docs">) {
 					{
 						title: "Documentation",
 						url: "/docs",
-						icon: "book",
+						icon: <Book className="size-4" />,
 					},
 					{
 						title: "Dashboard",
 						url: "/dashboard",
-						icon: "brain",
+						icon: <Brain className="size-4" />,
 					},
 				],
 			}}
