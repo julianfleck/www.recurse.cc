@@ -6,9 +6,9 @@ import Particles from "@/components/backgrounds/Particles";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "./auth/auth-store";
 // no direct usage now; keep connections centralized in hook
 import { useSocialLogin } from "./auth/use-social-login";
-import { useAuthStore } from "./auth/auth-store";
 
 export function LoginForm({
   className,
@@ -84,33 +84,47 @@ export function LoginForm({
                 </div>
               ) : null}
               <form className="grid gap-3" onSubmit={handleEmailLogin}>
-                <label className="text-sm" htmlFor="email">Email</label>
+                <label className="text-sm" htmlFor="email">
+                  Email
+                </label>
                 <input
-                  id="email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   autoComplete="email"
-                  placeholder="you@example.com"
                   className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm outline-hidden ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  id="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  required
+                  type="email"
+                  value={email}
                 />
                 <div className="grid gap-2">
                   <div className="flex items-center">
-                    <label className="text-sm" htmlFor="password">Password</label>
-                    <a className="ml-auto text-sm underline-offset-2 hover:underline" href="/forgot-password">Forgot your password?</a>
+                    <label className="text-sm" htmlFor="password">
+                      Password
+                    </label>
+                    <a
+                      className="ml-auto text-sm underline-offset-2 hover:underline"
+                      href="/forgot-password"
+                    >
+                      Forgot your password?
+                    </a>
                   </div>
                   <input
-                    id="password"
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
                     autoComplete="current-password"
                     className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm outline-hidden ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    id="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    type="password"
+                    value={password}
                   />
                 </div>
-                <Button className="w-full" disabled={submitting} type="submit" variant="outline">
+                <Button
+                  className="w-full"
+                  disabled={submitting}
+                  type="submit"
+                  variant="outline"
+                >
                   {submitting ? "Logging in..." : "Login"}
                 </Button>
               </form>
@@ -120,7 +134,12 @@ export function LoginForm({
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <Button className="w-full" onClick={loginWithGoogle} type="button" variant="outline">
+                <Button
+                  className="w-full"
+                  onClick={loginWithGoogle}
+                  type="button"
+                  variant="outline"
+                >
                   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <title>Google logo</title>
                     <path
@@ -130,7 +149,12 @@ export function LoginForm({
                   </svg>
                   <span className="sr-only">Login with Google</span>
                 </Button>
-                <Button className="w-full" onClick={loginWithGithub} type="button" variant="outline">
+                <Button
+                  className="w-full"
+                  onClick={loginWithGithub}
+                  type="button"
+                  variant="outline"
+                >
                   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <title>GitHub logo</title>
                     <path
@@ -149,7 +173,7 @@ export function LoginForm({
               </div>
             </div>
           </div>
-          <div className="relative hidden overflow-hidden bg-accent md:block">
+          <div className="relative hidden overflow-hidden border-l bg-chart-1/20 bg-blend-multiply md:block">
             <div className="absolute inset-0 flex items-center justify-center font-bold text-2xl">
               recurse.cc
             </div>
