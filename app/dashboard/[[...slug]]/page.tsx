@@ -7,6 +7,7 @@ import {
   DocsPage,
   DocsTitle,
 } from "@/components/layout/page";
+import { Cards, Card } from "fumadocs-ui/components/card";
 import { dashboardSource } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
 
@@ -23,54 +24,26 @@ export default async function Page(props: PageProps<"/dashboard/[[...slug]]">) {
           Overview of your knowledge base and account.
         </DocsDescription>
         <DocsBody>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <section>
-              <h3 className="font-semibold text-base">Knowledge Base</h3>
-              <ul className="mt-2 space-y-2">
-                <li>
-                  <a className="underline" href="/dashboard/graph">
-                    Graph
-                  </a>{" "}
-                  – Visualize relationships
-                </li>
-                <li>
-                  <a className="underline" href="/dashboard/context">
-                    Context
-                  </a>{" "}
-                  – Build reusable context
-                </li>
-                <li>
-                  <a className="underline" href="/dashboard/chat">
-                    Chat
-                  </a>{" "}
-                  – Converse with your knowledge
-                </li>
-              </ul>
-            </section>
-            <section>
-              <h3 className="font-semibold text-base">Account</h3>
-              <ul className="mt-2 space-y-2">
-                <li>
-                  <a className="underline" href="/dashboard/usage">
-                    Usage
-                  </a>{" "}
-                  – Monitor your activity
-                </li>
-                <li>
-                  <a className="underline" href="/dashboard/api-keys">
-                    API Keys
-                  </a>{" "}
-                  – Manage access
-                </li>
-                <li>
-                  <a className="underline" href="/dashboard/settings">
-                    Settings
-                  </a>{" "}
-                  – Configure your account
-                </li>
-              </ul>
-            </section>
-          </div>
+          <Cards>
+            <Card href="/dashboard/graph" title="Graph" icon="share2">
+              Visualize relationships across your knowledge.
+            </Card>
+            <Card href="/dashboard/context" title="Context" icon="brain">
+              Build and manage reusable context.
+            </Card>
+            <Card href="/dashboard/chat" title="Chat" icon="bot">
+              Converse with your knowledge.
+            </Card>
+            <Card href="/dashboard/usage" title="Usage" icon="filetext">
+              Monitor API usage and limits.
+            </Card>
+            <Card href="/dashboard/api-keys" title="API Keys" icon="code">
+              Manage programmatic access.
+            </Card>
+            <Card href="/dashboard/settings" title="Settings" icon="edit">
+              Configure your account preferences.
+            </Card>
+          </Cards>
         </DocsBody>
       </DocsPage>
     );
