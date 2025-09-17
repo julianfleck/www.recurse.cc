@@ -17,7 +17,8 @@ export default async function Page(props: PageProps<"/dashboard/[[...slug]]">) {
 
   // Root route now uses MDX index.mdx to seed breadcrumb; let fallback render it
   if (slug.length === 0) {
-    slug = ["index"];
+    // Let the loader resolve the root via empty slugs (mapped to index)
+    // Keeping empty array allows dashboardSource.getPage to fetch index
   }
 
   // Section shells

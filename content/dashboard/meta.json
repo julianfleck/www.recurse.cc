@@ -4,6 +4,7 @@
   "root": true,
   "icon": "brain",
   "pages": [
+    "[Brain][Dashboard](/dashboard)",
     "---Knowledge Base---",
     "[Share2][Graph](/dashboard/graph)",
     "[Brain][Context](/dashboard/context)",
