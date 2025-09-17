@@ -4,12 +4,13 @@
   "root": true,
   "icon": "brain",
   "pages": [
-    "overview",
     "---Knowledge Base---",
     "graph",
-    "content",
-    "usage",
+    "context",
+    "chat",
     "---Account---",
+    "usage",
+    "api-keys",
     "settings"
   ]
 }
