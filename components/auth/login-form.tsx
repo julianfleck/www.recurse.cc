@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { loginWithPassword } from "@/lib/auth-api";
 import { cn } from "@/lib/utils";
 import { AuthDivider, SocialButtons } from "./auth-shared";
@@ -66,21 +67,25 @@ export function LoginForm({
           >
             {submitting ? "Logging in..." : "Login"}
           </Button>
-          <div className="mt-6">
-            <AuthDivider />
-          </div>
-          <div className="mt-4">
-            <SocialButtons
-              onGithub={loginWithGithub}
-              onGoogle={loginWithGoogle}
-            />
-          </div>
-          <div className="mt-6 text-center text-sm">
-            Don&apos;t have an account?{" "}
-            <a className="underline underline-offset-4" href="/signup">
-              Sign up
-            </a>
-          </div>
+          {!submitting && (
+            <>
+              <div className="mt-6">
+                <AuthDivider />
+              </div>
+              <div className="mt-4">
+                <SocialButtons
+                  onGithub={loginWithGithub}
+                  onGoogle={loginWithGoogle}
+                />
+              </div>
+              <div className="mt-6 text-center text-sm">
+                Don&apos;t have an account?{" "}
+                <a className="underline underline-offset-4" href="/signup">
+                  Sign up
+                </a>
+              </div>
+            </>
+          )}
         </>
       }
       header={
@@ -105,43 +110,51 @@ export function LoginForm({
           {error}
         </div>
       ) : null}
-      <form className="grid gap-3" id="login-form" onSubmit={handleEmailLogin}>
-        <label className="text-sm" htmlFor="email">
-          Email
-        </label>
-        <input
-          autoComplete="email"
-          className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm outline-hidden ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          id="email"
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
-          required
-          type="email"
-          value={email}
-        />
-        <div className="grid gap-2">
-          <div className="flex items-center">
-            <label className="text-sm" htmlFor="password">
-              Password
-            </label>
-            <a
-              className="ml-auto text-sm underline-offset-2 hover:underline"
-              href="/forgot-password"
-            >
-              Forgot your password?
-            </a>
-          </div>
-          <input
-            autoComplete="current-password"
-            className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm outline-hidden ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            id="password"
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            type="password"
-            value={password}
-          />
+
+      {submitting ? (
+        <div className="flex flex-col items-center justify-center gap-4 py-8">
+          <Spinner size={32} />
+          <p className="text-muted-foreground text-sm">Signing you in...</p>
         </div>
-      </form>
+      ) : (
+        <form className="grid gap-3" id="login-form" onSubmit={handleEmailLogin}>
+          <label className="text-sm" htmlFor="email">
+            Email
+          </label>
+          <input
+            autoComplete="email"
+            className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm outline-hidden ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            id="email"
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            required
+            type="email"
+            value={email}
+          />
+          <div className="grid gap-2">
+            <div className="flex items-center">
+              <label className="text-sm" htmlFor="password">
+                Password
+              </label>
+              <a
+                className="ml-auto text-xs underline-offset-2 hover:underline"
+                href="/forgot-password"
+              >
+                Forgot your password?
+              </a>
+            </div>
+            <input
+              autoComplete="current-password"
+              className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm outline-hidden ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              id="password"
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              type="password"
+              value={password}
+            />
+          </div>
+        </form>
+      )}
     </AuthShell>
   );
 }
