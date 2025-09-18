@@ -1,8 +1,8 @@
 "use client";
 
 import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useAuthStore } from "@/components/auth/auth-store";
 
 export default function LogoutPage() {
@@ -30,5 +30,3 @@ export default function LogoutPage() {
 
   return isLoading ? null : null;
 }
-
-
