@@ -1,6 +1,5 @@
 "use client";
 
-import { IconActivity } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
 import { Status as KiboStatus } from "@/components/ui/kibo-ui/status";
 import { apiService } from "@/lib/api";
