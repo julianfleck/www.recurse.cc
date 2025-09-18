@@ -47,6 +47,9 @@ function Button({
   tooltip,
   tooltipSide = "top",
   tooltipSideOffset = 0,
+  icon,
+  iconSide = "left",
+  showIconOnHover = false,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
@@ -54,15 +57,70 @@ function Button({
     tooltip?: string;
     tooltipSide?: "top" | "right" | "bottom" | "left";
     tooltipSideOffset?: number;
+    icon?: React.ReactNode;
+    iconSide?: "left" | "right";
+    showIconOnHover?: boolean;
   }) {
   const Comp = asChild ? Slot : "button";
 
   const button = (
     <Comp
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        showIconOnHover && "group relative overflow-hidden"
+      )}
       data-slot="button"
       {...props}
-    />
+    >
+      {icon ? (
+        showIconOnHover ? (
+          <div className="flex w-full items-center">
+            {iconSide === "left" && (
+              <>
+                <span className="-translate-x-4 flex-shrink-0 opacity-0 transition-all duration-300 ease-in-out group-hover:translate-x-0 group-hover:opacity-100">
+                  {icon}
+                </span>
+                <span className="group-hover:-translate-x-1 flex-1 text-center transition-transform duration-300 ease-in-out">
+                  {props.children}
+                </span>
+              </>
+            )}
+            {iconSide === "right" && (
+              <>
+                <span className="flex-1 text-center transition-transform duration-300 ease-in-out group-hover:translate-x-1">
+                  {props.children}
+                </span>
+                <span className="flex-shrink-0 translate-x-4 opacity-0 transition-all duration-300 ease-in-out group-hover:translate-x-0 group-hover:opacity-100">
+                  {icon}
+                </span>
+              </>
+            )}
+          </div>
+        ) : (
+          <div className="flex w-full items-center">
+            {iconSide === "left" && (
+              <span className="mr-2 flex-shrink-0">{icon}</span>
+            )}
+            {props.children && (
+              <span
+                className={
+                  iconSide === "right"
+                    ? "flex-1 text-left"
+                    : "flex-1 text-right"
+                }
+              >
+                {props.children}
+              </span>
+            )}
+            {iconSide === "right" && (
+              <span className="ml-2 flex-shrink-0">{icon}</span>
+            )}
+          </div>
+        )
+      ) : (
+        props.children
+      )}
+    </Comp>
   );
 
   if (!tooltip) {
