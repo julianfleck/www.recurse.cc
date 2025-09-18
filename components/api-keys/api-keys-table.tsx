@@ -14,7 +14,15 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDownIcon, ChevronUpIcon, EditIcon, MoreHorizontalIcon, PlusIcon, SearchIcon, TrashIcon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  EditIcon,
+  MoreHorizontalIcon,
+  PlusIcon,
+  SearchIcon,
+  TrashIcon,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -84,17 +92,15 @@ const columns: ColumnDef<ApiKey>[] = [
   },
   {
     accessorKey: "is_active",
-    header: "Status",
+    header: "",
     cell: ({ row }) => (
       <Tooltip>
         <TooltipTrigger>
-          <div className="flex items-center justify-center">
+          <div className="ml-2 flex items-center justify-center pb-2">
             <div
               className={cn(
-                "h-2 w-2 rounded-full",
-                row.getValue("is_active")
-                  ? "animate-pulse bg-primary"
-                  : "bg-muted-foreground"
+                "size-1.5 rounded-full ring-2 ring-chart-2/90",
+                row.getValue("is_active") ? "bg-chart-2" : "bg-muted-foreground"
               )}
             />
           </div>
@@ -119,7 +125,7 @@ const columns: ColumnDef<ApiKey>[] = [
     cell: ({ row }) => {
       const id = row.getValue("id") as string;
       return (
-        <div className="font-mono text-sm">
+        <div className="font-mono text-xs">
           {id.substring(0, SECRET_KEY_VISIBLE_CHARS)}...
           {id.substring(id.length - SECRET_KEY_END_CHARS)}
         </div>
@@ -153,7 +159,7 @@ const columns: ColumnDef<ApiKey>[] = [
     accessorKey: "total_requests",
     header: "Total Requests",
     cell: ({ row }) => (
-      <div className="font-mono text-sm">
+      <div className="font-mono text-xs">
         {(row.getValue("total_requests") as number).toLocaleString()}
       </div>
     ),
@@ -172,13 +178,12 @@ const columns: ColumnDef<ApiKey>[] = [
           <TooltipTrigger>
             <Badge
               className={cn(
-                "text-xs",
-                isApiKey && "border-primary/20 text-primary",
-                isUser && "border-green-600/20 text-green-600"
+                "border-border text-[8px] text-muted-foreground uppercase tracking-wider"
               )}
               variant="outline"
             >
-              {scope}
+              {isApiKey && "API Key"}
+              {isUser && "User"}
             </Badge>
           </TooltipTrigger>
           <TooltipContent>
@@ -198,14 +203,30 @@ const columns: ColumnDef<ApiKey>[] = [
     header: "Permissions",
     cell: ({ row }) => {
       const scopes = row.getValue("scopes") as string[];
+
       if (!scopes || scopes.length === 0) {
-        return <div className="text-muted-foreground text-sm">Read only</div>;
+        return (
+          <Badge
+            className={cn(
+              "border-border text-[8px] text-muted-foreground uppercase tracking-wider"
+            )}
+            variant="outline"
+          >
+            All
+          </Badge>
+        );
       }
 
       return (
         <div className="flex flex-wrap gap-1">
           {scopes.map((scope) => (
-            <Badge className="text-xs" key={scope} variant="secondary">
+            <Badge
+              className={cn(
+                "border-border text-[8px] text-muted-foreground uppercase tracking-wider"
+              )}
+              key={scope}
+              variant="outline"
+            >
               {scope}
             </Badge>
           ))}
@@ -220,7 +241,7 @@ const columns: ColumnDef<ApiKey>[] = [
     cell: () => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <Button className="h-8 w-8 p-0" size="sm" variant="ghost">
             <MoreHorizontalIcon className="h-4 w-4" />
             <span className="sr-only">Open menu</span>
           </Button>
@@ -230,7 +251,7 @@ const columns: ColumnDef<ApiKey>[] = [
             <EditIcon className="mr-2 h-4 w-4" />
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem className="text-destructive">
+          <DropdownMenuItem className="hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground">
             <TrashIcon className="mr-2 h-4 w-4" />
             Delete
           </DropdownMenuItem>
@@ -240,6 +261,76 @@ const columns: ColumnDef<ApiKey>[] = [
     enableSorting: false,
   },
 ];
+
+// Helper function to render sortable table header
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const SortableTableHead = ({ header }: { header: any }) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sortState = header.column.getIsSorted();
+  let ariaSort: "ascending" | "descending" | "none" = "none";
+  if (sortState === "asc") ariaSort = "ascending";
+  else if (sortState === "desc") ariaSort = "descending";
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const canSort = header.column.getCanSort();
+
+  const handleClick = () => {
+    if (canSort) {
+      header.column.getToggleSortingHandler()(undefined);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (canSort && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      header.column.getToggleSortingHandler()(e);
+    }
+  };
+
+  if (!canSort) {
+    return (
+      <TableHead key={header.id}>
+        {header.isPlaceholder ? null : (
+          <span className="truncate">
+            {flexRender(header.column.columnDef.header, header.getContext())}
+          </span>
+        )}
+      </TableHead>
+    );
+  }
+
+  return (
+    <TableHead aria-sort={ariaSort} key={header.id}>
+      {header.isPlaceholder ? null : (
+        <button
+          className="flex h-full w-full cursor-pointer select-none items-center justify-between gap-2 text-left"
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
+          type="button"
+        >
+          <span className="truncate">
+            {flexRender(header.column.columnDef.header, header.getContext())}
+          </span>
+          {{
+            asc: (
+              <ChevronUpIcon
+                aria-hidden="true"
+                className="shrink-0 opacity-60"
+                size={16}
+              />
+            ),
+            desc: (
+              <ChevronDownIcon
+                aria-hidden="true"
+                className="shrink-0 opacity-60"
+                size={16}
+              />
+            ),
+          }[sortState as string] ?? null}
+        </button>
+      )}
+    </TableHead>
+  );
+};
 
 export function ApiKeysTable() {
   const [data, setData] = useState<ApiKey[]>([]);
@@ -289,7 +380,7 @@ export function ApiKeysTable() {
   const selectedCount = Object.keys(rowSelection).length;
 
   return (
-    <div className="w-full">
+    <div className="mt-12 w-full">
       {/* Header with search and actions */}
       <div className="flex items-center justify-between pb-4">
         <div className="flex items-center gap-4">
@@ -310,13 +401,21 @@ export function ApiKeysTable() {
 
         <div className="flex items-center gap-2">
           {selectedCount > 0 && (
-            <Button size="sm" variant="destructive">
-              <TrashIcon className="mr-2 h-4 w-4" />
+            <Button
+              icon={<TrashIcon className="h-4 w-4" />}
+              iconSide="left"
+              size="sm"
+              variant="destructive"
+            >
               Delete {selectedCount} key{selectedCount > 1 ? "s" : ""}
             </Button>
           )}
-          <Button size="sm">
-            <PlusIcon className="mr-2 h-4 w-4" />
+          <Button
+            icon={<PlusIcon className="h-4 w-4" />}
+            iconSide="right"
+            showIconOnHover={true}
+            size="sm"
+          >
             Add new key
           </Button>
         </div>
@@ -328,61 +427,9 @@ export function ApiKeysTable() {
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  const getAriaSort = () => {
-                    const sortState = header.column.getIsSorted();
-                    if (sortState === "asc") return "ascending";
-                    if (sortState === "desc") return "descending";
-                    return "none";
-                  };
-
-                  return (
-                    <TableHead
-                      aria-sort={getAriaSort()}
-                      key={header.id}
-                    >
-                      {header.isPlaceholder ? null : (
-                        <div
-                          className={cn(
-                            header.column.getCanSort() &&
-                              "flex h-full cursor-pointer select-none items-center justify-between gap-2"
-                          )}
-                          onClick={header.column.getCanSort() ? header.column.getToggleSortingHandler() : undefined}
-                          onKeyDown={header.column.getCanSort() ? (e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              e.preventDefault();
-                              header.column.getToggleSortingHandler()?.(e);
-                            }
-                          } : undefined}
-                          tabIndex={header.column.getCanSort() ? 0 : undefined}
-                        >
-                          <span className="truncate">
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                          </span>
-                          {{
-                            asc: (
-                              <ChevronUpIcon
-                                aria-hidden="true"
-                                className="shrink-0 opacity-60"
-                                size={16}
-                              />
-                            ),
-                            desc: (
-                              <ChevronDownIcon
-                                aria-hidden="true"
-                                className="shrink-0 opacity-60"
-                                size={16}
-                              />
-                            ),
-                          }[header.column.getIsSorted() as string] ?? null}
-                        </div>
-                      )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <SortableTableHead header={header} key={header.id} />
+                ))}
               </TableRow>
             ))}
           </TableHeader>
