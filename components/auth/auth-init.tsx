@@ -4,7 +4,8 @@ import { useEffect } from "react";
 import { useAuthStore } from "./auth-store";
 
 export function AuthInit() {
-  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
+    useAuth0();
   const setAuth = useAuthStore((s) => s.setAuth);
   const clear = useAuthStore((s) => s.clear);
   const accessTokenFromStore = useAuthStore((s) => s.accessToken);

@@ -41,7 +41,7 @@ export const useAuthStore = create<AuthState>((set) => ({
           "auth_store",
           JSON.stringify({ accessToken, provider, user })
         );
-      } catch (e) {
+      } catch (_e) {
         // ignore storage failures
       }
     }
@@ -51,7 +51,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     if (typeof window !== "undefined") {
       try {
         window.localStorage.removeItem("auth_store");
-      } catch (e) {
+      } catch (_e) {
         // ignore storage failures
       }
     }
