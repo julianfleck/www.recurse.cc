@@ -7,7 +7,6 @@ import {
   CheckIcon,
   ChevronsUpDownIcon,
   Copy,
-  Key,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { z } from "zod";
@@ -35,12 +34,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 // Constants
-const ANIMATION_OFFSET = 300;
 const COPY_TIMEOUT_MS = 2000;
 const COMBOBOX_WIDTH = "w-full";
 const MIN_NAME_LENGTH = 1;
@@ -54,6 +51,11 @@ const SCOPES = [
   { value: "read", label: "Read" },
   { value: "write", label: "Write" },
   { value: "export", label: "Export" },
+] as const;
+
+const DATA_SCOPES = [
+  { value: "user", label: "User Scope" },
+  { value: "api_key", label: "API Key Scope" },
 ] as const;
 
 const apiKeySchema = z
@@ -130,40 +132,33 @@ function StepProgress({
 type StepContentProps = {
   step: number;
   children: React.ReactNode;
-  direction: number; // 1 for forward, -1 for backward
 };
 
 function StepContent({
   step,
   children,
-  direction: animationDirection,
 }: StepContentProps) {
   const variants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? ANIMATION_OFFSET : -ANIMATION_OFFSET,
+    enter: {
       opacity: 0,
-    }),
+    },
     center: {
-      x: 0,
       opacity: 1,
     },
-    exit: (direction: number) => ({
-      x: direction < 0 ? ANIMATION_OFFSET : -ANIMATION_OFFSET,
+    exit: {
       opacity: 0,
-    }),
+    },
   };
 
   return (
-    <AnimatePresence custom={animationDirection} mode="wait">
+    <AnimatePresence mode="wait">
       <motion.div
         animate="center"
         className="w-full"
-        custom={animationDirection}
         exit="exit"
         initial="enter"
         key={step}
         transition={{
-          x: { type: "spring", stiffness: 300, damping: 30 },
           opacity: { duration: 0.2 },
         }}
         variants={variants}
@@ -322,142 +317,166 @@ export function ApiKeyDialog({
     <Dialog onOpenChange={onOpenChange} open={open}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <div className="flex items-center gap-2">
-            <Key className="h-5 w-5 text-primary" />
-            <DialogTitle>Create New API Key</DialogTitle>
-          </div>
+          <DialogTitle>Create New API Key</DialogTitle>
           <DialogDescription>
             Generate a new API key for programmatic access to your account.
           </DialogDescription>
         </DialogHeader>
 
-        <StepProgress currentStep={currentStep} onStepClick={goToStep} />
-
         <div className="min-h-[400px] py-6">
           {currentStep === STEP_SETTINGS && (
-            <StepContent direction={direction} step={1}>
+            <StepContent step={1}>
               <div className="space-y-6">
-                {/* Name */}
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="My API Key"
-                    value={name}
-                  />
-                  {fieldErrors.name && (
-                    <div className="text-destructive text-xs">
-                      {fieldErrors.name}
-                    </div>
-                  )}
-                </div>
+                {/* Name and Expiration Date Row */}
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Name */}
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Name</Label>
+                    <Input
+                      id="name"
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="My API Key"
+                      value={name}
+                    />
+                    {fieldErrors.name && (
+                      <div className="text-destructive text-xs">
+                        {fieldErrors.name}
+                      </div>
+                    )}
+                  </div>
 
-                {/* Expires At */}
-                <div className="space-y-2">
-                  <Label>Expiration Date (Optional)</Label>
-                  <CalendarNaturalLanguage
-                    onChange={setExpiresAt}
-                    placeholder="never, in 1 month, 2024-12-31..."
-                    value={expiresAt}
-                  />
-                </div>
-
-                {/* Scopes */}
-                <div className="space-y-2">
-                  <Label>Permissions</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        className={`${COMBOBOX_WIDTH} justify-between`}
-                        role="combobox"
-                        variant="outline"
-                      >
-                        {getScopeButtonText()}
-                        <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-full p-0">
-                      <Command>
-                        <CommandInput placeholder="Search permissions..." />
-                        <CommandList>
-                          <CommandEmpty>No permissions found.</CommandEmpty>
-                          <CommandGroup>
-                            {SCOPES.map((scope) => (
-                              <CommandItem
-                                key={scope.value}
-                                onSelect={() => {
-                                  if (scope.value === "all") {
-                                    setScopes(["all"]);
-                                  } else {
-                                    const newScopes = scopes.includes(
-                                      scope.value
-                                    )
-                                      ? scopes.filter((s) => s !== scope.value)
-                                      : [
-                                          ...scopes.filter((s) => s !== "all"),
-                                          scope.value,
-                                        ];
-                                    setScopes(
-                                      newScopes.length === 0
-                                        ? ["all"]
-                                        : newScopes
-                                    );
-                                  }
-                                }}
-                              >
-                                <CheckIcon
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    scopes.includes(scope.value)
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                                {scope.label}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                  {fieldErrors.scopes && (
-                    <div className="text-destructive text-xs">
-                      {fieldErrors.scopes}
-                    </div>
-                  )}
-                </div>
-
-                {/* Data Scope */}
-                <div className="space-y-3">
-                  <Label>Data Scope</Label>
-                  <RadioGroup
-                    onValueChange={(value: "user" | "api_key") =>
-                      setDataScope(value)
-                    }
-                    value={dataScope}
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem id="user" value="user" />
-                      <Label className="font-normal" htmlFor="user">
-                        User Scope
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem id="api_key" value="api_key" />
-                      <Label className="font-normal" htmlFor="api_key">
-                        API Key Scope
-                      </Label>
-                    </div>
-                  </RadioGroup>
-                  <div className="rounded-lg bg-muted/50 p-3 text-sm">
-                    {getScopeDescription(dataScope)}
+                  {/* Expires At */}
+                  <div className="space-y-2">
+                    <Label>Expiration Date (Optional)</Label>
+                    <CalendarNaturalLanguage
+                      onChange={setExpiresAt}
+                      placeholder="never, in 1 month..."
+                      value={expiresAt}
+                    />
                   </div>
                 </div>
 
+                {/* Permissions and Data Scope Row */}
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Scopes */}
+                  <div className="space-y-2">
+                    <Label>Permissions</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          className={`${COMBOBOX_WIDTH} justify-between`}
+                          role="combobox"
+                          variant="outline"
+                        >
+                          {getScopeButtonText()}
+                          <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full p-0">
+                        <Command>
+                          <CommandInput placeholder="Search permissions..." />
+                          <CommandList>
+                            <CommandEmpty>No permissions found.</CommandEmpty>
+                            <CommandGroup>
+                              {SCOPES.map((scope) => (
+                                <CommandItem
+                                  key={scope.value}
+                                  onSelect={() => {
+                                    if (scope.value === "all") {
+                                      setScopes(["all"]);
+                                    } else {
+                                      const newScopes = scopes.includes(
+                                        scope.value
+                                      )
+                                        ? scopes.filter((s) => s !== scope.value)
+                                        : [
+                                            ...scopes.filter((s) => s !== "all"),
+                                            scope.value,
+                                          ];
+                                      setScopes(
+                                        newScopes.length === 0
+                                          ? ["all"]
+                                          : newScopes
+                                      );
+                                    }
+                                  }}
+                                >
+                                  <CheckIcon
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      scopes.includes(scope.value)
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {scope.label}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    {fieldErrors.scopes && (
+                      <div className="text-destructive text-xs">
+                        {fieldErrors.scopes}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Data Scope */}
+                  <div className="space-y-2">
+                    <Label>Data Scope</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          className={`${COMBOBOX_WIDTH} justify-between`}
+                          role="combobox"
+                          variant="outline"
+                        >
+                          {DATA_SCOPES.find(scope => scope.value === dataScope)?.label || "Select scope..."}
+                          <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full p-0">
+                        <Command>
+                          <CommandInput placeholder="Search scopes..." />
+                          <CommandList>
+                            <CommandEmpty>No scopes found.</CommandEmpty>
+                            <CommandGroup>
+                              {DATA_SCOPES.map((scope) => (
+                                <CommandItem
+                                  key={scope.value}
+                                  onSelect={() => {
+                                    setDataScope(scope.value as "user" | "api_key");
+                                  }}
+                                >
+                                  <CheckIcon
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      dataScope === scope.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {scope.label}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+
+                {/* Data Scope Description */}
+                <div className="rounded-lg bg-muted/50 p-3 text-sm">
+                  {getScopeDescription(dataScope)}
+                </div>
+
                 {/* Security Notice */}
-                <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm dark:border-amber-800 dark:bg-amber-950/30">
+                <div className="text-sm text-muted-foreground">
                   <p>
                     Do not share your API key with others or expose it in the
                     browser or other client-side code. To protect your account's
@@ -483,7 +502,7 @@ export function ApiKeyDialog({
           )}
 
           {currentStep === STEP_SUCCESS && (
-            <StepContent direction={direction} step={2}>
+            <StepContent step={2}>
               <div className="space-y-6 text-center">
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
                   <Check className="h-6 w-6 text-green-600 dark:text-green-400" />
@@ -563,10 +582,10 @@ export function ApiKeyDialog({
         </div>
 
         {/* Footer */}
-        <div className="flex justify-between">
+        <div className="w-full">
           {currentStep === STEP_SETTINGS && (
             <Button
-              className="h-11 bg-primary shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
+              className="w-full h-11 bg-primary shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
               disabled={creating}
               icon={<ArrowRight className="size-4" />}
               iconSide="right"
@@ -578,7 +597,7 @@ export function ApiKeyDialog({
           )}
 
           {currentStep === STEP_SUCCESS && (
-            <Button className="h-11" onClick={() => onOpenChange(false)}>
+            <Button className="w-full h-11" onClick={() => onOpenChange(false)}>
               Done
             </Button>
           )}
