@@ -31,8 +31,8 @@ export function ForgotPasswordForm({ className }: { className?: string }) {
     <div className={className}>
       <Card className="z-10 min-h-[520px] overflow-hidden p-0">
         <CardContent className="grid h-full p-0 md:grid-cols-2">
-          <div className="flex h-full p-6 md:p-8">
-            <div className="flex min-h-0 flex-1 flex-col gap-6">
+          <div className="p-6 md:p-8 flex h-full">
+            <div className="flex flex-1 flex-col gap-6">
               <div className="flex flex-col gap-2">
                 <h1 className="font-bold text-xl">Reset your password</h1>
                 <p className="text-base text-muted-foreground">
@@ -56,7 +56,7 @@ export function ForgotPasswordForm({ className }: { className?: string }) {
                   </Button>
                 </div>
               ) : (
-                <form className="flex min-h-0 flex-1 flex-col gap-3" onSubmit={onSubmit}>
+                <form className="grid gap-3" onSubmit={onSubmit}>
                   <label className="text-sm" htmlFor="email">
                     Email
                   </label>
@@ -80,7 +80,6 @@ export function ForgotPasswordForm({ className }: { className?: string }) {
                   </Button>
                 </form>
               )}
-              <div className="flex-1" />
             </div>
           </div>
           <div className="relative hidden h-full overflow-hidden border-l bg-chart-1/20 bg-blend-multiply md:block">

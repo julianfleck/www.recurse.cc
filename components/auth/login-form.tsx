@@ -71,7 +71,7 @@ export function LoginForm({
                   {error}
                 </div>
               ) : null}
-              <form className="flex min-h-0 flex-1 flex-col gap-3" onSubmit={handleEmailLogin}>
+              <form className="grid gap-3" onSubmit={handleEmailLogin}>
                 <label className="text-sm" htmlFor="email">
                   Email
                 </label>
@@ -116,7 +116,6 @@ export function LoginForm({
                   {submitting ? "Logging in..." : "Login"}
                 </Button>
               </form>
-              <div className="flex-1" />
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-border after:border-t">
                 <span className="relative z-10 bg-card px-2 text-muted-foreground">
                   Or continue with
