@@ -48,6 +48,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ApiKeyDialog } from "@/components/api-keys/api-key-dialog";
 import { apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -343,6 +344,9 @@ export function ApiKeysTable() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
+  // Dialog state
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   const fetchApiKeys = useCallback(async () => {
     try {
       setLoading(true);
@@ -384,7 +388,7 @@ export function ApiKeysTable() {
     <div className="mt-12 w-full">
       {/* Header with search and actions */}
       <div className="flex items-center justify-between gap-6 pb-4">
-        <div className="flex items-center min-w-0 flex-1 max-w-md">
+        <div className="flex min-w-0 max-w-md flex-1 items-center">
           <div className="relative w-full">
             <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
             <Input
@@ -400,7 +404,7 @@ export function ApiKeysTable() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex flex-shrink-0 items-center gap-2">
           {selectedCount > 0 && (
             <Button
               icon={<TrashIcon className="h-4 w-4" />}
@@ -415,9 +419,10 @@ export function ApiKeysTable() {
             className="w-40"
             icon={<PlusIcon className="h-4 w-4" />}
             iconSide="right"
+            onClick={() => setDialogOpen(true)}
             showIconOnHover={true}
             size="sm"
-            variant="default"
+            variant="outline"
           >
             Add new key
           </Button>
@@ -492,6 +497,16 @@ export function ApiKeysTable() {
           {table.getFilteredRowModel().rows.length !== 1 ? "s" : ""}
         </div>
       </div>
+
+      {/* API Key Dialog */}
+      <ApiKeyDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onSuccess={() => {
+          // Refresh the table data after creating a new key
+          fetchApiKeys();
+        }}
+      />
     </div>
   );
 }
