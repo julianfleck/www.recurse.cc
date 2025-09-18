@@ -117,7 +117,7 @@ function StepProgress({
               )}
               disabled={!isClickable}
               key={step.id}
-              onClick={() => isClickable && onStepClick(step.id)}
+              onClick={() => isClickable && onStepClick(step.id as typeof STEP_SETTINGS | typeof STEP_SUCCESS)}
               type="button"
             />
           );
@@ -357,7 +357,7 @@ export function ApiKeyDialog({
                 <div className="space-y-2">
                   <Label>Expiration Date (Optional)</Label>
                   <CalendarNaturalLanguage
-                    onChange={(date) => setExpiresAt(typeof date === 'object' && 'from' in date ? date : { from: date })}
+                    onChange={setExpiresAt}
                     placeholder="never, in 1 month, 2024-12-31..."
                     value={expiresAt}
                   />

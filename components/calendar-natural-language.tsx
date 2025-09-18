@@ -14,9 +14,9 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 
-interface CalendarNaturalLanguageProps {
-  value?: Date | { from?: Date; to?: Date };
-  onChange?: (date: Date | { from?: Date; to?: Date }) => void;
+type CalendarNaturalLanguageProps = {
+  value?: { from?: Date; to?: Date };
+  onChange?: (date: { from?: Date; to?: Date }) => void;
   placeholder?: string;
   className?: string;
 }
@@ -30,16 +30,59 @@ export function CalendarNaturalLanguage({
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [naturalInput, setNaturalInput] = useState('');
 
-  // Handle both single date and range
-  const dateRange = typeof value === 'object' && 'from' in value ? value : { from: value };
+  // Handle date range
+  const dateRange = value || {};
   const timeRange = { start: '', end: '' };
 
   const setDateRange = (range: { from?: Date; to?: Date }) => {
     onChange?.(range);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const setTimeRange = (range: { start: string; end: string }) => {
     // For now, just handle date, time can be added later if needed
+    // Time range functionality can be implemented later
+  };
+
+  const getPlaceholderText = () => {
+    const hasFilters =
+      (dateRange.from instanceof Date) ||
+      (dateRange.to instanceof Date) ||
+      timeRange.start ||
+      timeRange.end ||
+      naturalInput;
+
+    if (!hasFilters) {
+      return placeholder;
+    }
+
+    if (naturalInput) {
+      return; // Show the actual natural input value
+    }
+
+    const parts: string[] = [];
+
+    // Date part
+    if (dateRange.from instanceof Date && dateRange.to instanceof Date) {
+      parts.push(
+        `${dateRange.from.toLocaleDateString()} - ${dateRange.to.toLocaleDateString()}`
+      );
+    } else if (dateRange.from instanceof Date) {
+      parts.push(`From ${dateRange.from.toLocaleDateString()}`);
+    } else if (dateRange.to instanceof Date) {
+      parts.push(`Until ${dateRange.to.toLocaleDateString()}`);
+    }
+
+    // Time part
+    if (timeRange.start && timeRange.end) {
+      parts.push(`${timeRange.start} - ${timeRange.end}`);
+    } else if (timeRange.start) {
+      parts.push(`From ${timeRange.start}`);
+    } else if (timeRange.end) {
+      parts.push(`Until ${timeRange.end}`);
+    }
+
+    return parts.join(' • ') || 'filters active...';
   };
 
   return (
@@ -81,46 +124,7 @@ export function CalendarNaturalLanguage({
             setDatePickerOpen(true);
           }
         }}
-        placeholder={(() => {
-          const hasFilters =
-            dateRange.from ||
-            dateRange.to ||
-            timeRange.start ||
-            timeRange.end ||
-            naturalInput;
-
-          if (!hasFilters) {
-            return placeholder;
-          }
-
-          if (naturalInput) {
-            return; // Show the actual natural input value
-          }
-
-          const parts = [];
-
-          // Date part
-          if (dateRange.from && dateRange.to) {
-            parts.push(
-              `${dateRange.from.toLocaleDateString()} - ${dateRange.to.toLocaleDateString()}`
-            );
-          } else if (dateRange.from) {
-            parts.push(`From ${dateRange.from.toLocaleDateString()}`);
-          } else if (dateRange.to) {
-            parts.push(`Until ${dateRange.to.toLocaleDateString()}`);
-          }
-
-          // Time part
-          if (timeRange.start && timeRange.end) {
-            parts.push(`${timeRange.start} - ${timeRange.end}`);
-          } else if (timeRange.start) {
-            parts.push(`From ${timeRange.start}`);
-          } else if (timeRange.end) {
-            parts.push(`Until ${timeRange.end}`);
-          }
-
-          return parts.join(' • ') || 'filters active...';
-        })()}
+        placeholder={getPlaceholderText()}
         value={naturalInput}
       />
       {/* Show X button when there's text (left side) */}
@@ -168,7 +172,7 @@ export function CalendarNaturalLanguage({
                       setDatePickerOpen(false);
                     }
                   }}
-                  selected={dateRange.from}
+                  selected={dateRange.from instanceof Date ? dateRange.from : undefined}
                 />
               </div>
 
@@ -182,10 +186,10 @@ export function CalendarNaturalLanguage({
                     <Input
                       className="h-8 w-full appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                       onChange={(event) =>
-                        setTimeRange((prev) => ({
-                          ...prev,
+                        setTimeRange({
                           start: event.target.value,
-                        }))
+                          end: timeRange.end,
+                        })
                       }
                       type="time"
                       value={timeRange.start}

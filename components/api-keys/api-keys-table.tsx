@@ -24,7 +24,7 @@ import {
   TrashIcon,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-
+import { ApiKeyDialog } from "@/components/api-keys/api-key-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -48,7 +48,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ApiKeyDialog } from "@/components/api-keys/api-key-dialog";
 import { apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -500,12 +499,12 @@ export function ApiKeysTable() {
 
       {/* API Key Dialog */}
       <ApiKeyDialog
-        open={dialogOpen}
         onOpenChange={setDialogOpen}
         onSuccess={() => {
           // Refresh the table data after creating a new key
           fetchApiKeys();
         }}
+        open={dialogOpen}
       />
     </div>
   );
