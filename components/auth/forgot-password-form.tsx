@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { requestPasswordReset } from "@/lib/auth-api";
@@ -40,10 +40,12 @@ export function ForgotPasswordForm({ className }: { className?: string }) {
             className="h-11 w-full"
             disabled={submitting}
             form="reset-form"
+            icon={<ArrowRight className="size-4" />}
+            iconSide="right"
+            showIconOnHover={true}
             type="submit"
           >
             {submitting ? "Sending…" : "Send reset link"}
-            <ChevronRight className="ml-2 size-4" />
           </Button>
         )
       }

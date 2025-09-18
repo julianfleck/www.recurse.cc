@@ -2,7 +2,7 @@
 
 import { useAuth0 } from "@auth0/auth0-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -51,7 +51,7 @@ function StepProgress({
   return (
     <div className={cn("w-full", className)}>
       {/* Progress bar */}
-      <div className="mb-4 flex h-2 w-full gap-1">
+      <div className="mt-4 flex h-1 w-full gap-1">
         {STEPS.map((step, _index) => {
           const isActive = step.id <= currentStep;
           const isClickable = step.id < currentStep;
@@ -328,15 +328,17 @@ export function SignupForm({ className }: { className?: string }) {
           {currentStep === STEP_EMAIL && (
             <Button
               className="h-11 w-full bg-primary shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
+              icon={<ArrowRight className="size-4" />}
+              iconSide="right"
               onClick={() => {
                 if (validateNameAndEmail()) {
                   goToStep(STEP_PASSWORD);
                 }
               }}
+              showIconOnHover={true}
               type="button"
             >
               Continue
-              <ChevronRight className="ml-2 size-4" />
             </Button>
           )}
 
@@ -344,21 +346,25 @@ export function SignupForm({ className }: { className?: string }) {
             <div className="flex gap-3">
               <Button
                 className="h-11 flex-1 transition-all duration-200 hover:bg-muted"
+                icon={<ArrowLeft className="size-4" />}
+                iconSide="left"
                 onClick={() => goToStep(STEP_EMAIL)}
+                showIconOnHover={true}
                 type="button"
                 variant="outline"
               >
-                <ChevronLeft className="mr-2 size-4" />
                 Back
               </Button>
               <Button
                 className="h-11 flex-1 bg-primary shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
                 disabled={submitting}
                 form="signup-form"
+                icon={<ArrowRight className="size-4" />}
+                iconSide="right"
+                showIconOnHover={true}
                 type="submit"
               >
                 {submitting ? "Creating…" : "Sign up"}
-                <ChevronRight className="ml-2 size-4" />
               </Button>
             </div>
           )}
@@ -367,6 +373,8 @@ export function SignupForm({ className }: { className?: string }) {
             <div className="flex flex-col gap-3">
               <Button
                 disabled={resending}
+                icon={<ChevronRight className="size-4" />}
+                iconSide="right"
                 onClick={async () => {
                   setResending(true);
                   try {
@@ -379,6 +387,7 @@ export function SignupForm({ className }: { className?: string }) {
                     setResending(false);
                   }
                 }}
+                showIconOnHover={true}
                 type="button"
                 variant="outline"
               >
@@ -425,9 +434,6 @@ export function SignupForm({ className }: { className?: string }) {
         </>
       }
     >
-      {/* Step Progress */}
-      <StepProgress currentStep={currentStep} onStepClick={goToStep} />
-
       {error ? (
         <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-destructive text-sm shadow-sm">
           <div className="flex items-center gap-2">
@@ -529,6 +535,9 @@ export function SignupForm({ className }: { className?: string }) {
           </div>
         </StepContent>
       )}
+
+      {/* Step Progress */}
+      <StepProgress currentStep={currentStep} onStepClick={goToStep} />
     </AuthShell>
   );
 }

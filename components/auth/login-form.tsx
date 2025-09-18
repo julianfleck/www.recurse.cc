@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -59,17 +60,20 @@ export function LoginForm({
       footer={
         <>
           <Button
-            className="w-full"
+            className="h-11 w-full"
             disabled={submitting}
             form="login-form"
+            icon={<ArrowRight className="size-4" />}
+            iconSide="right"
+            showIconOnHover={true}
             type="submit"
-            variant="outline"
+            variant="default"
           >
             {submitting ? "Logging in..." : "Login"}
           </Button>
           {!submitting && (
             <>
-              <div className="mt-6">
+              <div className="mt-8">
                 <AuthDivider />
               </div>
               <div className="mt-4">
@@ -123,7 +127,7 @@ export function LoginForm({
           </label>
           <input
             autoComplete="email"
-            className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm outline-hidden ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-10 w-full rounded-lg border border-input bg-background px-4 py-2 text-sm shadow-sm outline-hidden ring-offset-background transition-all duration-200 placeholder:text-muted-foreground focus-visible:shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             id="email"
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
@@ -145,7 +149,7 @@ export function LoginForm({
             </div>
             <input
               autoComplete="current-password"
-              className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm outline-hidden ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-10 w-full rounded-lg border border-input bg-background px-4 py-2 text-sm shadow-sm outline-hidden ring-offset-background transition-all duration-200 placeholder:text-muted-foreground focus-visible:shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               id="password"
               onChange={(e) => setPassword(e.target.value)}
               required
