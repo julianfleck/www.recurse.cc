@@ -1,4 +1,4 @@
-import { LoginForm } from "@/components/login-form";
+import { LoginForm } from "@/components/auth/login-form";
 
 export default function LoginPage() {
   // Server components can't use hooks; this is a client-only guard via middleware.

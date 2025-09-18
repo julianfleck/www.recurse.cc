@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { ChevronRight } from "lucide-react";
+import { useState } from "react";
+import Particles from "@/components/backgrounds/Particles";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { requestPasswordReset } from "@/lib/auth-api";
-import Particles from "@/components/backgrounds/Particles";
 
 export function ForgotPasswordForm({ className }: { className?: string }) {
   const [email, setEmail] = useState("");
@@ -29,7 +29,7 @@ export function ForgotPasswordForm({ className }: { className?: string }) {
 
   return (
     <div className={className}>
-      <Card className="z-10 overflow-hidden p-0">
+      <Card className="z-10 overflow-hidden p-0 min-h-[520px]">
         <CardContent className="grid p-0 md:grid-cols-2">
           <div className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
@@ -48,7 +48,8 @@ export function ForgotPasswordForm({ className }: { className?: string }) {
               {sent ? (
                 <div className="grid gap-3">
                   <div className="rounded-lg border border-border bg-card p-4 text-sm shadow-sm">
-                    If an account exists for {email}, you’ll receive a reset email shortly.
+                    If an account exists for {email}, you’ll receive a reset
+                    email shortly.
                   </div>
                   <Button asChild type="button" variant="default">
                     <a href="/login">Back to login</a>
@@ -69,7 +70,11 @@ export function ForgotPasswordForm({ className }: { className?: string }) {
                     type="email"
                     value={email}
                   />
-                  <Button className="h-11 w-full" disabled={submitting} type="submit">
+                  <Button
+                    className="h-11 w-full"
+                    disabled={submitting}
+                    type="submit"
+                  >
                     {submitting ? "Sending…" : "Send reset link"}
                     <ChevronRight className="ml-2 size-4" />
                   </Button>
@@ -92,7 +97,7 @@ export function ForgotPasswordForm({ className }: { className?: string }) {
           </div>
         </CardContent>
       </Card>
-      <div className="text-balance text-center text-muted-foreground text-xs *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-primary">
+      <div className="mt-4 text-balance text-center text-muted-foreground text-xs *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-primary">
         Remembered it? <a href="/login">Log in</a>
       </div>
       <Particles
@@ -105,5 +110,3 @@ export function ForgotPasswordForm({ className }: { className?: string }) {
     </div>
   );
 }
-
-

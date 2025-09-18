@@ -300,7 +300,7 @@ export function SignupForm({ className }: { className?: string }) {
 
   return (
     <div className={cn("flex flex-col gap-6", className)}>
-      <Card className="z-10 overflow-hidden p-0">
+      <Card className="z-10 overflow-hidden p-0 min-h-[520px]">
         <CardContent className="grid p-0 md:grid-cols-2">
           <div className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
@@ -540,7 +540,7 @@ export function SignupForm({ className }: { className?: string }) {
               </div>
             </div>
           </div>
-          <div className="relative hidden overflow-hidden bg-accent md:block">
+          <div className="relative hidden overflow-hidden border-l bg-chart-1/20 bg-blend-multiply md:block">
             <div className="absolute inset-0 flex items-center justify-center font-bold text-2xl">
               recurse.cc
             </div>
