@@ -57,7 +57,6 @@ function initialsFromName(name?: string, email?: string) {
   return source.slice(0, 2).toUpperCase();
 }
 
-
 export function UserProfile({
   showDashboardLink = false,
 }: {
@@ -130,40 +129,42 @@ export function UserProfile({
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-64">
-          <DropdownMenuLabel>
-            <div className="flex items-center gap-3">
-              <Avatar className="size-8">
-                {showImage ? (
-                  <AvatarImage
-                    alt={displayUser?.name ?? "User"}
-                    src={displayUser?.picture}
-                  />
-                ) : null}
-                <AvatarFallback className="bg-accent text-accent-foreground">
-                  {avatarFallback}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex min-w-0 flex-col">
-                {userProfile?.role && userProfile.role !== "user" && (
-                  <div className="mb-1">
-                    <Badge
-                      variant="secondary"
-                      className="capitalize text-xs px-1.5 py-0.5"
-                    >
-                      {userProfile.role}
-                    </Badge>
-                  </div>
-                )}
-                <span className="font-medium text-sm truncate">
-                  {userProfile?.display_name || displayUser?.name || "Account"}
-                </span>
-                <span className="text-fd-muted-foreground text-xs truncate">
-                  {displayUser?.email}
-                </span>
+      <DropdownMenuContent align="end" className="w-64">
+        <DropdownMenuLabel>
+          <div className="flex items-center gap-3">
+            <Avatar className="size-8">
+              {showImage ? (
+                <AvatarImage
+                  alt={displayUser?.name ?? "User"}
+                  src={displayUser?.picture}
+                />
+              ) : null}
+              <AvatarFallback className="bg-accent text-accent-foreground">
+                {avatarFallback}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex min-w-0 flex-col">
+              <div className="flex items-center gap-1">
+              <span className="truncate font-medium text-sm">
+                {displayUser?.name || userProfile?.display_name|| "Account"}
+              </span>
+              {userProfile?.role && userProfile.role !== "user" && (
+                <div className="mb-1">
+                  <Badge
+                    className="ml-1 px-1.5 py-0.5 text-[8px] uppercase tracking-wider"
+                    variant="secondary"
+                  >
+                    {userProfile.role}
+                  </Badge>
+                </div>
+              )}
               </div>
+              <span className="truncate text-fd-muted-foreground text-xs">
+                {displayUser?.email}
+              </span>
             </div>
-          </DropdownMenuLabel>
+          </div>
+        </DropdownMenuLabel>
         {showDashboardLink ? (
           <>
             <DropdownMenuSeparator />
