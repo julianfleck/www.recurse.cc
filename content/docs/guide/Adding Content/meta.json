@@ -5,6 +5,7 @@
     "manual-ingestion",
     "automatic-ingestion",
     "browser-extension",
-    "messagers"
+    "messagers",
+    "proxy-ingestion"
   ]
 }

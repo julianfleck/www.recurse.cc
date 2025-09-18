@@ -2,7 +2,7 @@
 
 import { useAuth0 } from "@auth0/auth0-react";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { useAuthStore } from "./auth/auth-store";
 
 function initialsFromName(name?: string, email?: string) {
@@ -22,6 +23,75 @@ function initialsFromName(name?: string, email?: string) {
     return (parts[0][0] + parts[1][0]).toUpperCase();
   }
   return source.slice(0, 2).toUpperCase();
+}
+
+const COPY_FEEDBACK_MS = 1500;
+
+function DevTokenViewer({ token }: { token: string }) {
+  const [copied, setCopied] = useState(false);
+  const segments = token.split(".");
+  const segmentsCount = segments.length;
+  const JWS_SEGMENTS = 3;
+  const JWE_SEGMENTS = 5;
+  let tokenKind = "Unknown";
+  if (segmentsCount === JWS_SEGMENTS) {
+    tokenKind = "JWS (signed)";
+  } else if (segmentsCount === JWE_SEGMENTS) {
+    tokenKind = "JWE (encrypted)";
+  }
+  let headerAlg = "";
+  let headerEnc = "";
+  if (segments[0]) {
+    try {
+      const base64 = segments[0].replace(/-/g, "+").replace(/_/g, "/");
+      const json = atob(base64);
+      const headerJson = JSON.parse(json) as { alg?: string; enc?: string };
+      headerAlg = headerJson.alg || "";
+      headerEnc = headerJson.enc || "";
+    } catch {
+      // ignore header parse failures
+    }
+  }
+  const headerParts: string[] = [];
+  if (headerAlg.length > 0) {
+    headerParts.push(`alg: ${headerAlg}`);
+  }
+  if (headerEnc.length > 0) {
+    headerParts.push(`enc: ${headerEnc}`);
+  }
+  const headerDetail = headerParts.length > 0 ? `, ${headerParts.join(", ")}` : "";
+  return (
+    <>
+      <DropdownMenuLabel>
+        Access Token (dev only) — {tokenKind}
+        {headerDetail}
+      </DropdownMenuLabel>
+      <div className="px-2 pb-2">
+        <div className="flex items-center gap-2">
+          <Input className="font-mono text-xs" readOnly value={token} />
+          <Button
+            onClick={() => {
+              navigator.clipboard
+                .writeText(token)
+                .then(() => {
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), COPY_FEEDBACK_MS);
+                })
+                .catch(() => {
+                  setCopied(false);
+                });
+            }}
+            size="sm"
+            type="button"
+            variant="secondary"
+          >
+            {copied ? "Copied" : "Copy"}
+          </Button>
+        </div>
+      </div>
+      <DropdownMenuSeparator />
+    </>
+  );
 }
 
 export function UserProfile({
@@ -38,6 +108,7 @@ export function UserProfile({
   const isClientAuthenticated = Boolean(
     isAuthenticated || storeToken || storeUser
   );
+  const canShowToken = process.env.NODE_ENV !== "production";
 
   const avatarFallback = useMemo(
     () => initialsFromName(displayUser?.name, displayUser?.email),
@@ -101,6 +172,9 @@ export function UserProfile({
           </DropdownMenuItem>
         ) : null}
         {showDashboardLink ? <DropdownMenuSeparator /> : null}
+        {canShowToken && storeToken ? (
+          <DevTokenViewer token={storeToken} />
+        ) : null}
         <DropdownMenuItem asChild>
           <Link href="/dashboard/settings">Settings</Link>
         </DropdownMenuItem>

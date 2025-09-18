@@ -9,12 +9,17 @@ export function AuthInit() {
   const setAuth = useAuthStore((s) => s.setAuth);
   const clear = useAuthStore((s) => s.clear);
   const accessTokenFromStore = useAuthStore((s) => s.accessToken);
+  const audience = process.env.NEXT_PUBLIC_AUTH0_AUDIENCE;
+  const scopes = "openid profile email";
 
   useEffect(() => {
     // Prefer SDK-based login when available; otherwise respect a client-side token set via email/password flow
     const isReady = !isLoading;
     if (isReady && isAuthenticated) {
-      getAccessTokenSilently()
+      const options = audience
+        ? { authorizationParams: { audience, scope: scopes } }
+        : undefined;
+      getAccessTokenSilently(options as never)
         .then((token) => {
           setAuth(token, "auth0", user);
         })
@@ -32,6 +37,7 @@ export function AuthInit() {
     setAuth,
     clear,
     accessTokenFromStore,
+    audience,
   ]);
 
   return null;

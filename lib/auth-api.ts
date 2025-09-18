@@ -2,6 +2,7 @@
 
 const AUTH0_DOMAIN = process.env.NEXT_PUBLIC_AUTH0_DOMAIN;
 const AUTH0_CLIENT_ID = process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID;
+const AUTH0_AUDIENCE = process.env.NEXT_PUBLIC_AUTH0_AUDIENCE;
 const AUTH0_DB_REALM =
   process.env.NEXT_PUBLIC_AUTH0_DB_CONNECTION ||
   "Username-Password-Authentication";
@@ -18,8 +19,12 @@ export async function loginWithPassword(
   username: string,
   password: string
 ): Promise<PasswordLoginResult> {
-  if (!AUTH0_DOMAIN) throw new Error("Auth0 domain not configured");
-  if (!AUTH0_CLIENT_ID) throw new Error("Auth0 clientId not configured");
+  if (!AUTH0_DOMAIN) {
+    throw new Error("Auth0 domain not configured");
+  }
+  if (!AUTH0_CLIENT_ID) {
+    throw new Error("Auth0 clientId not configured");
+  }
 
   const tokenRes = await fetch(`https://${AUTH0_DOMAIN}/oauth/token`, {
     method: "POST",
@@ -27,6 +32,7 @@ export async function loginWithPassword(
     body: JSON.stringify({
       grant_type: "http://auth0.com/oauth/grant-type/password-realm",
       client_id: AUTH0_CLIENT_ID,
+      ...(AUTH0_AUDIENCE ? { audience: AUTH0_AUDIENCE } : {}),
       username,
       password,
       realm: AUTH0_DB_REALM,
@@ -67,7 +73,9 @@ export async function signupUser(payload: {
     body: JSON.stringify(payload),
   });
   const json = (await res.json()) as ApiJson;
-  if (!res.ok) throw new Error(json.error || "Signup failed");
+  if (!res.ok) {
+    throw new Error(json.error || "Signup failed");
+  }
   return json;
 }
 
@@ -80,10 +88,11 @@ export async function resendVerificationEmail(email: string): Promise<void> {
   if (!res.ok) {
     let error = "Resend verification failed";
     try {
-      const json = (await res.json()) as ApiJson;
+      const text = await res.text();
+      const json = JSON.parse(text) as ApiJson;
       error = json.error || error;
     } catch {
-      // ignore json parse errors
+      // non-JSON body, keep default error
     }
     throw new Error(error);
   }
@@ -97,10 +106,13 @@ export async function requestPasswordReset(email: string): Promise<void> {
   });
   if (!res.ok) {
     let error = "Password reset request failed";
+    const text = await res.text();
     try {
-      const json = (await res.json()) as ApiJson;
+      const json = JSON.parse(text) as ApiJson;
       error = json.error || error;
-    } catch {}
+    } catch {
+      // non-JSON body, keep default error
+    }
     throw new Error(error);
   }
 }

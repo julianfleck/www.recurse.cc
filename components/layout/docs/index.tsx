@@ -163,7 +163,8 @@ export function DocsLayout(props: DocsLayoutProps) {
               buttonVariants({
                 color: "ghost",
                 size: "icon-sm",
-                className: "mt-px mb-auto text-fd-muted-foreground",
+                className:
+                  "mt-1 mb-auto bg-transparent text-fd-muted-foreground hover:bg-transparent hover:text-foreground",
               })
             )}
           >
@@ -362,7 +363,7 @@ function DocsNavbar({
                   color: "ghost",
                   size: "icon-sm",
                 }),
-                "text-fd-muted-foreground data-[collapsed=false]:hidden max-md:hidden"
+                "bg-transparent text-fd-muted-foreground hover:bg-transparent hover:text-foreground data-[collapsed=false]:hidden max-md:hidden"
               )}
             >
               <SidebarIcon />
