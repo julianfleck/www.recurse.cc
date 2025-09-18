@@ -302,8 +302,8 @@ export function SignupForm({ className }: { className?: string }) {
     <div className={cn("flex flex-col gap-6", className)}>
       <Card className="z-10 min-h-[520px] overflow-hidden p-0">
         <CardContent className="grid h-full p-0 md:grid-cols-2">
-          <div className="p-6 md:p-8 flex h-full">
-            <div className="flex flex-1 flex-col gap-6">
+          <div className="flex h-full p-6 md:p-8">
+            <div className="flex min-h-0 flex-1 flex-col gap-6">
               {/* Progress Indicator */}
               <StepProgress
                 className="mb-8"
@@ -327,7 +327,7 @@ export function SignupForm({ className }: { className?: string }) {
               {/* Step content */}
               {currentStep === 1 && (
                 <StepContent direction={direction} step={1}>
-                  <div className="grid h-40 content-start gap-3">
+                  <div className="flex min-h-0 flex-1 flex-col content-start gap-3">
                     <label className="text-sm" htmlFor="name">
                       Full Name
                     </label>
@@ -382,8 +382,8 @@ export function SignupForm({ className }: { className?: string }) {
 
               {currentStep === 2 && (
                 <StepContent direction={direction} step={2}>
-                  <div className="grid h-40 content-start gap-3">
-                    <form className="grid gap-3" onSubmit={handleSignup}>
+                  <div className="flex min-h-0 flex-1 flex-col content-start gap-3">
+                    <form className="flex min-h-0 flex-1 flex-col gap-3" onSubmit={handleSignup}>
                       <label className="text-sm" htmlFor="password">
                         Password
                       </label>
@@ -444,7 +444,7 @@ export function SignupForm({ className }: { className?: string }) {
 
               {currentStep === 3 && (
                 <StepContent direction={direction} step={3}>
-                  <div className="grid h-40 content-start gap-4">
+                  <div className="flex min-h-0 flex-1 flex-col content-start gap-4">
                     <div className="rounded-lg border border-border bg-card p-4 text-sm shadow-sm">
                       Thanks! We've sent you a verification email. Please check
                       your email and click the verification link to finish
