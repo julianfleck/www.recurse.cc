@@ -2,8 +2,9 @@
 
 import { useAuth0 } from "@auth0/auth0-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,8 +14,39 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+import { apiService } from "@/lib/api";
 import { useAuthStore } from "./auth/auth-store";
+
+// Constants
+const AUTH_INIT_DELAY_MS = 1000; // 1 second delay for auth initialization
+
+type UserProfile = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  email: string;
+  role: string;
+  is_active: boolean;
+  primary_identity_id: string;
+  username: string;
+  profile_picture_url: string | null;
+  display_name: string;
+  custom_api_rate_limit: number | null;
+  custom_auth_rate_limit: number | null;
+  custom_max_documents: number | null;
+  custom_max_storage_mb: number | null;
+  custom_max_daily_query_requests: number | null;
+  custom_max_daily_add_requests: number | null;
+  current_document_count: number;
+  current_storage_mb: number;
+  daily_query_request_count: number;
+  daily_add_request_count: number;
+  daily_reset_date: string;
+  last_api_request: string | null;
+  api_request_count_window: number;
+  last_auth_request: string | null;
+  auth_request_count_window: number;
+};
 
 function initialsFromName(name?: string, email?: string) {
   const source = name || email || "?";
@@ -25,73 +57,6 @@ function initialsFromName(name?: string, email?: string) {
   return source.slice(0, 2).toUpperCase();
 }
 
-const COPY_FEEDBACK_MS = 1500;
-
-function DevTokenViewer({ token }: { token: string }) {
-  const [copied, setCopied] = useState(false);
-  const segments = token.split(".");
-  const segmentsCount = segments.length;
-  const JWS_SEGMENTS = 3;
-  const JWE_SEGMENTS = 5;
-  let tokenKind = "Unknown";
-  if (segmentsCount === JWS_SEGMENTS) {
-    tokenKind = "JWS (signed)";
-  } else if (segmentsCount === JWE_SEGMENTS) {
-    tokenKind = "JWE (encrypted)";
-  }
-  let headerAlg = "";
-  let headerEnc = "";
-  if (segments[0]) {
-    try {
-      const base64 = segments[0].replace(/-/g, "+").replace(/_/g, "/");
-      const json = atob(base64);
-      const headerJson = JSON.parse(json) as { alg?: string; enc?: string };
-      headerAlg = headerJson.alg || "";
-      headerEnc = headerJson.enc || "";
-    } catch {
-      // ignore header parse failures
-    }
-  }
-  const headerParts: string[] = [];
-  if (headerAlg.length > 0) {
-    headerParts.push(`alg: ${headerAlg}`);
-  }
-  if (headerEnc.length > 0) {
-    headerParts.push(`enc: ${headerEnc}`);
-  }
-  const headerDetail = headerParts.length > 0 ? `, ${headerParts.join(", ")}` : "";
-  return (
-    <>
-      <DropdownMenuLabel>
-        Access Token (dev only) — {tokenKind}
-        {headerDetail}
-      </DropdownMenuLabel>
-      <div className="px-2 pb-2">
-        <div className="flex items-center gap-2">
-          <Input className="font-mono text-xs" readOnly value={token} />
-          <Button
-            onClick={() => {
-              navigator.clipboard
-                .writeText(token)
-                .then(() => {
-                  setCopied(true);
-                  setTimeout(() => setCopied(false), COPY_FEEDBACK_MS);
-                })
-                .catch(() => {
-                  setCopied(false);
-                });
-            }}
-            size="sm"
-            type="button"
-            variant="secondary"
-          >
-            {copied ? "Copied" : "Copy"}
-          </Button>
-        </div>
-      </div>
-    </>
-  );
-}
 
 export function UserProfile({
   showDashboardLink = false,
@@ -101,13 +66,14 @@ export function UserProfile({
   const { user: sdkUser, isAuthenticated, isLoading } = useAuth0();
   const storeUser = useAuthStore((s) => s.user);
   const storeToken = useAuthStore((s) => s.accessToken);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
   const displayUser = (isAuthenticated ? sdkUser : storeUser) as
     | { name?: string; email?: string; picture?: string }
     | undefined;
   const isClientAuthenticated = Boolean(
     isAuthenticated || storeToken || storeUser
   );
-  const canShowToken = process.env.NODE_ENV !== "production";
 
   const avatarFallback = useMemo(
     () => initialsFromName(displayUser?.name, displayUser?.email),
@@ -118,6 +84,30 @@ export function UserProfile({
     displayUser?.picture?.includes("googleusercontent.com")
   );
   const showImage = Boolean(displayUser?.picture && !isLikelyGoogleDefault);
+
+  const fetchUserProfile = useCallback(async () => {
+    if (!isClientAuthenticated) {
+      return;
+    }
+
+    try {
+      const response = await apiService.get<UserProfile>("/users/me");
+      setUserProfile(response.data);
+    } catch {
+      // Silently handle profile fetch errors
+    }
+  }, [isClientAuthenticated]);
+
+  useEffect(() => {
+    if (isClientAuthenticated && !isLoading) {
+      // Add a small delay to allow auth to initialize
+      const timer = setTimeout(() => {
+        fetchUserProfile();
+      }, AUTH_INIT_DELAY_MS);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isClientAuthenticated, isLoading, fetchUserProfile]);
 
   if (isLoading || !isClientAuthenticated) {
     return null;
@@ -140,30 +130,40 @@ export function UserProfile({
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-64">
-        <DropdownMenuLabel>
-          <div className="flex items-center gap-3">
-            <Avatar className="size-8">
-              {showImage ? (
-                <AvatarImage
-                  alt={displayUser?.name ?? "User"}
-                  src={displayUser?.picture}
-                />
-              ) : null}
-              <AvatarFallback className="bg-accent text-accent-foreground">
-                {avatarFallback}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex min-w-0 flex-col">
-              <span className="truncate font-medium text-sm">
-                {displayUser?.name || "Account"}
-              </span>
-              <span className="truncate text-fd-muted-foreground text-xs">
-                {displayUser?.email}
-              </span>
+        <DropdownMenuContent align="end" className="w-64">
+          <DropdownMenuLabel>
+            <div className="flex items-center gap-3">
+              <Avatar className="size-8">
+                {showImage ? (
+                  <AvatarImage
+                    alt={displayUser?.name ?? "User"}
+                    src={displayUser?.picture}
+                  />
+                ) : null}
+                <AvatarFallback className="bg-accent text-accent-foreground">
+                  {avatarFallback}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex min-w-0 flex-col">
+                {userProfile?.role && userProfile.role !== "user" && (
+                  <div className="mb-1">
+                    <Badge
+                      variant="secondary"
+                      className="capitalize text-xs px-1.5 py-0.5"
+                    >
+                      {userProfile.role}
+                    </Badge>
+                  </div>
+                )}
+                <span className="font-medium text-sm truncate">
+                  {userProfile?.display_name || displayUser?.name || "Account"}
+                </span>
+                <span className="text-fd-muted-foreground text-xs truncate">
+                  {displayUser?.email}
+                </span>
+              </div>
             </div>
-          </div>
-        </DropdownMenuLabel>
+          </DropdownMenuLabel>
         {showDashboardLink ? (
           <>
             <DropdownMenuSeparator />
