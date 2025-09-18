@@ -5,7 +5,7 @@ import { DocsLayout } from "@/components/layout/docs";
 import { docsOptions } from "@/lib/layout.shared";
 import { dashboardSource } from "@/lib/source";
 
-export default function Layout({ children }: LayoutProps<"/dashboard">) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <DocsLayout
       {...docsOptions()}

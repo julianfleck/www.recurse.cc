@@ -7,24 +7,31 @@ export function AuthInit() {
   const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
   const setAuth = useAuthStore((s) => s.setAuth);
   const clear = useAuthStore((s) => s.clear);
+  const accessTokenFromStore = useAuthStore((s) => s.accessToken);
 
   useEffect(() => {
-    // Prefer SDK-based login only; email login will set the store directly
-
-    if (isAuthenticated && !isLoading) {
-      // Get access token silently
+    // Prefer SDK-based login when available; otherwise respect a client-side token set via email/password flow
+    const isReady = !isLoading;
+    if (isReady && isAuthenticated) {
       getAccessTokenSilently()
         .then((token) => {
           setAuth(token, "auth0", user);
         })
         .catch(() => {
-          // Still authenticated; set user without access token
           setAuth(undefined, "auth0", user);
         });
-    } else if (!isLoading) {
+    } else if (isReady && !accessTokenFromStore) {
       clear();
     }
-  }, [isAuthenticated, isLoading, getAccessTokenSilently, user, setAuth, clear]);
+  }, [
+    isAuthenticated,
+    isLoading,
+    getAccessTokenSilently,
+    user,
+    setAuth,
+    clear,
+    accessTokenFromStore,
+  ]);
 
   return null;
 }

@@ -16,14 +16,47 @@ type AuthState = {
   clear: () => void;
 };
 
+function loadPersisted(): Partial<AuthState> {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = window.localStorage.getItem("auth_store");
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as Partial<AuthState>;
+    return parsed ?? {};
+  } catch {
+    return {};
+  }
+}
+
 export const useAuthStore = create<AuthState>((set) => ({
   accessToken: undefined,
   provider: undefined,
   user: undefined,
-  setAuth: (accessToken, provider, user) =>
-    set({ accessToken, provider, user }),
-  clear: () =>
-    set({ accessToken: undefined, provider: undefined, user: undefined }),
+  setAuth: (accessToken, provider, user) => {
+    const next = { accessToken, provider, user } as AuthState;
+    set(next);
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.setItem(
+          "auth_store",
+          JSON.stringify({ accessToken, provider, user })
+        );
+      } catch (e) {
+        // ignore storage failures
+      }
+    }
+  },
+  clear: () => {
+    set({ accessToken: undefined, provider: undefined, user: undefined });
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.removeItem("auth_store");
+      } catch (e) {
+        // ignore storage failures
+      }
+    }
+  },
+  ...loadPersisted(),
 }));
 
 type LoginState = {

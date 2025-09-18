@@ -1,10 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 // Auth0 provider is globally configured; no direct hook needed here
 import { useState } from "react";
 import Particles from "@/components/backgrounds/Particles";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { loginWithPassword } from "@/lib/auth-api";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "./auth/auth-store";
 // no direct usage now; keep connections centralized in hook
@@ -14,6 +16,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter();
   const { loginWithGoogle, loginWithGithub } = useSocialLogin();
   const setAuth = useAuthStore((s) => s.setAuth);
   const [email, setEmail] = useState("");
@@ -26,39 +29,24 @@ export function LoginForm({
     setSubmitting(true);
     setError(null);
     try {
-      const response = await fetch(
-        `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/oauth/token`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            grant_type: "password",
-            username: email,
-            password,
-            client_id: process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID,
-            scope: "openid profile email",
-          }),
-        }
+      const { accessToken, userInfo } = await loginWithPassword(
+        email,
+        password
       );
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error_description || data.error || "Login failed");
-      }
-      const userResponse = await fetch(
-        `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/userinfo`,
-        {
-          headers: {
-            Authorization: `Bearer ${data.access_token}`,
-          },
-        }
-      );
-      const userInfo = await userResponse.json();
-      setAuth(data.access_token, "auth0", userInfo);
+      const typedUser = userInfo as {
+        sub: string;
+        name?: string;
+        email?: string;
+        picture?: string;
+      };
+      setAuth(accessToken, "auth0", typedUser);
       setEmail("");
       setPassword("");
-      window.location.assign("/dashboard");
+      // Allow store propagation before navigating
+      const STORE_PROPAGATION_DELAY_MS = 50;
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, STORE_PROPAGATION_DELAY_MS);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {

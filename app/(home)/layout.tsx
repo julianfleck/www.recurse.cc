@@ -3,7 +3,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { UserProfile } from "@/components/user-profile";
 import { baseOptions } from "@/lib/layout.shared";
 
-export default function Layout({ children }: LayoutProps<"/">) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   const options = baseOptions();
   return (
     <HomeLayout
