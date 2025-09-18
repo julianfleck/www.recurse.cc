@@ -88,3 +88,19 @@ export async function resendVerificationEmail(email: string): Promise<void> {
     throw new Error(error);
   }
 }
+
+export async function requestPasswordReset(email: string): Promise<void> {
+  const res = await fetch("/api/auth/forgot-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  if (!res.ok) {
+    let error = "Password reset request failed";
+    try {
+      const json = (await res.json()) as ApiJson;
+      error = json.error || error;
+    } catch {}
+    throw new Error(error);
+  }
+}

@@ -1,0 +1,89 @@
+"use client";
+
+import { useState } from "react";
+import { ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { requestPasswordReset } from "@/lib/auth-api";
+
+export function ForgotPasswordForm({ className }: { className?: string }) {
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    try {
+      await requestPasswordReset(email);
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Request failed");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className={className}>
+      <Card className="z-10 overflow-hidden p-0">
+        <CardContent className="grid p-0 md:grid-cols-2">
+          <div className="p-6 md:p-8">
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-2">
+                <h1 className="font-bold text-xl">Reset your password</h1>
+                <p className="text-base text-muted-foreground">
+                  Enter your email to receive a reset link
+                </p>
+              </div>
+              {error ? (
+                <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-destructive text-sm shadow-sm">
+                  {error}
+                </div>
+              ) : null}
+
+              {sent ? (
+                <div className="grid gap-3">
+                  <div className="rounded-lg border border-border bg-card p-4 text-sm shadow-sm">
+                    If an account exists for {email}, you’ll receive a reset email shortly.
+                  </div>
+                  <Button asChild type="button" variant="default">
+                    <a href="/login">Back to login</a>
+                  </Button>
+                </div>
+              ) : (
+                <form className="grid gap-3" onSubmit={onSubmit}>
+                  <label className="text-sm" htmlFor="email">
+                    Email
+                  </label>
+                  <input
+                    autoComplete="email"
+                    className="flex h-10 w-full rounded-lg border border-input bg-background px-4 py-2 text-sm shadow-sm outline-hidden ring-offset-background transition-all duration-200 placeholder:text-muted-foreground focus-visible:shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    id="email"
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    required
+                    type="email"
+                    value={email}
+                  />
+                  <Button className="h-11 w-full" disabled={submitting} type="submit">
+                    {submitting ? "Sending…" : "Send reset link"}
+                    <ChevronRight className="ml-2 size-4" />
+                  </Button>
+                </form>
+              )}
+            </div>
+          </div>
+          <div className="relative hidden overflow-hidden bg-accent md:block" />
+        </CardContent>
+      </Card>
+      <div className="text-balance text-center text-muted-foreground text-xs *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-primary">
+        Remembered it? <a href="/login">Log in</a>
+      </div>
+    </div>
+  );
+}
+
+

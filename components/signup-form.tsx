@@ -269,6 +269,18 @@ export function SignupForm({ className }: { className?: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
+      // Clear persisted state so future visits start fresh, but keep email in-memory for resending
+      try {
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("signup_email");
+          localStorage.removeItem("signup_name");
+          localStorage.removeItem("signup_step");
+        }
+      } catch {}
+      setName("");
+      setPassword("");
+      setConfirmPassword("");
+      setFieldErrors({});
       setDirection(1);
       setCurrentStep(3);
     } catch (err) {
