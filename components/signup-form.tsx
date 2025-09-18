@@ -300,10 +300,10 @@ export function SignupForm({ className }: { className?: string }) {
 
   return (
     <div className={cn("flex flex-col gap-6", className)}>
-      <Card className="z-10 overflow-hidden p-0 min-h-[520px]">
-        <CardContent className="grid p-0 md:grid-cols-2">
-          <div className="p-6 md:p-8">
-            <div className="flex flex-col gap-6">
+      <Card className="z-10 min-h-[520px] overflow-hidden p-0">
+        <CardContent className="grid h-full p-0 md:grid-cols-2">
+          <div className="p-6 md:p-8 flex h-full">
+            <div className="flex flex-1 flex-col gap-6">
               {/* Progress Indicator */}
               <StepProgress
                 className="mb-8"
@@ -446,8 +446,9 @@ export function SignupForm({ className }: { className?: string }) {
                 <StepContent direction={direction} step={3}>
                   <div className="grid h-40 content-start gap-4">
                     <div className="rounded-lg border border-border bg-card p-4 text-sm shadow-sm">
-                      Thanks! We've sent you a verification email. Please check your email and click the verification
-                      link to finish setting up your account.
+                      Thanks! We've sent you a verification email. Please check
+                      your email and click the verification link to finish
+                      setting up your account.
                     </div>
                     <div className="mt-auto flex flex-col gap-3">
                       <Button
@@ -540,7 +541,7 @@ export function SignupForm({ className }: { className?: string }) {
               </div>
             </div>
           </div>
-          <div className="relative hidden overflow-hidden border-l bg-chart-1/20 bg-blend-multiply md:block">
+          <div className="relative hidden h-full overflow-hidden border-l bg-chart-1/20 bg-blend-multiply md:block">
             <div className="absolute inset-0 flex items-center justify-center font-bold text-2xl">
               recurse.cc
             </div>
