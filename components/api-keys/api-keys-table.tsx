@@ -264,7 +264,8 @@ const columns: ColumnDef<ApiKey>[] = [
 
 // Helper function to render sortable table header
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SortableTableHead = ({ header }: { header: any }) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+const SortableTableHead = ({ header }: { header: any }) => {
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sortState = header.column.getIsSorted();
   let ariaSort: "ascending" | "descending" | "none" = "none";
@@ -290,7 +291,7 @@ const SortableTableHead = ({ header }: { header: any }) => { // eslint-disable-l
     return (
       <TableHead key={header.id}>
         {header.isPlaceholder ? null : (
-          <span className="truncate">
+          <span className="truncate text-xs">
             {flexRender(header.column.columnDef.header, header.getContext())}
           </span>
         )}
@@ -307,7 +308,7 @@ const SortableTableHead = ({ header }: { header: any }) => { // eslint-disable-l
           onKeyDown={handleKeyDown}
           type="button"
         >
-          <span className="truncate">
+          <span className="truncate text-xs">
             {flexRender(header.column.columnDef.header, header.getContext())}
           </span>
           {{
@@ -411,10 +412,12 @@ export function ApiKeysTable() {
             </Button>
           )}
           <Button
+            className="w-40"
             icon={<PlusIcon className="h-4 w-4" />}
             iconSide="right"
             showIconOnHover={true}
             size="sm"
+            variant="default"
           >
             Add new key
           </Button>
