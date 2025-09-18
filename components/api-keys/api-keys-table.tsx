@@ -349,9 +349,12 @@ export function ApiKeysTable() {
   const fetchApiKeys = useCallback(async () => {
     try {
       setLoading(true);
+      console.log("Fetching API keys...");
       const response = await apiService.get<ApiKey[]>("/users/me/api-keys");
+      console.log("API keys response:", response);
       setData(response.data);
-    } catch {
+    } catch (error) {
+      console.error("Failed to fetch API keys:", error);
       // Silently handle API key fetch errors
     } finally {
       setLoading(false);

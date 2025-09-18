@@ -119,7 +119,12 @@ function StepProgress({
               )}
               disabled={!isClickable}
               key={step.id}
-              onClick={() => isClickable && onStepClick(step.id as typeof STEP_SETTINGS | typeof STEP_SUCCESS)}
+              onClick={() =>
+                isClickable &&
+                onStepClick(
+                  step.id as typeof STEP_SETTINGS | typeof STEP_SUCCESS
+                )
+              }
               type="button"
             />
           );
@@ -134,10 +139,7 @@ type StepContentProps = {
   children: React.ReactNode;
 };
 
-function StepContent({
-  step,
-  children,
-}: StepContentProps) {
+function StepContent({ step, children }: StepContentProps) {
   const variants = {
     enter: {
       opacity: 0,
@@ -329,11 +331,11 @@ export function ApiKeyDialog({
               <div className="space-y-6">
                 {/* Name and Expiration Date Row */}
                 <div className="grid grid-cols-2 gap-4">
-                  {/* Name */}
+                  {/* Key Name */}
                   <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
+                    <Label htmlFor="key-name">Key Name</Label>
                     <Input
-                      id="name"
+                      id="key-name"
                       onChange={(e) => setName(e.target.value)}
                       placeholder="My API Key"
                       value={name}
@@ -388,9 +390,13 @@ export function ApiKeyDialog({
                                       const newScopes = scopes.includes(
                                         scope.value
                                       )
-                                        ? scopes.filter((s) => s !== scope.value)
+                                        ? scopes.filter(
+                                            (s) => s !== scope.value
+                                          )
                                         : [
-                                            ...scopes.filter((s) => s !== "all"),
+                                            ...scopes.filter(
+                                              (s) => s !== "all"
+                                            ),
                                             scope.value,
                                           ];
                                       setScopes(
@@ -434,7 +440,9 @@ export function ApiKeyDialog({
                           role="combobox"
                           variant="outline"
                         >
-                          {DATA_SCOPES.find(scope => scope.value === dataScope)?.label || "Select scope..."}
+                          {DATA_SCOPES.find(
+                            (scope) => scope.value === dataScope
+                          )?.label || "Select scope..."}
                           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </PopoverTrigger>
@@ -448,7 +456,9 @@ export function ApiKeyDialog({
                                 <CommandItem
                                   key={scope.value}
                                   onSelect={() => {
-                                    setDataScope(scope.value as "user" | "api_key");
+                                    setDataScope(
+                                      scope.value as "user" | "api_key"
+                                    );
                                   }}
                                 >
                                   <CheckIcon
@@ -476,7 +486,7 @@ export function ApiKeyDialog({
                 </div>
 
                 {/* Security Notice */}
-                <div className="text-sm text-muted-foreground">
+                <div className="text-muted-foreground text-sm">
                   <p>
                     Do not share your API key with others or expose it in the
                     browser or other client-side code. To protect your account's
@@ -585,7 +595,7 @@ export function ApiKeyDialog({
         <div className="w-full">
           {currentStep === STEP_SETTINGS && (
             <Button
-              className="w-full h-11 bg-primary shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
+              className="h-11 w-full bg-primary shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
               disabled={creating}
               icon={<ArrowRight className="size-4" />}
               iconSide="right"
@@ -597,7 +607,7 @@ export function ApiKeyDialog({
           )}
 
           {currentStep === STEP_SUCCESS && (
-            <Button className="w-full h-11" onClick={() => onOpenChange(false)}>
+            <Button className="h-11 w-full" onClick={() => onOpenChange(false)}>
               Done
             </Button>
           )}

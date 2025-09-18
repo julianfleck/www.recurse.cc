@@ -86,7 +86,7 @@ export function CalendarNaturalLanguage({
   };
 
   return (
-    <div className={`relative flex gap-2 ${className || ''}`}>
+    <div className={`relative ${className || ''}`}>
       <Input
         className="h-9 w-[240px] pr-16 placeholder:text-muted-foreground/40"
         onChange={(e) => {
@@ -116,6 +116,12 @@ export function CalendarNaturalLanguage({
               // For specific dates, use just that date
               setDateRange({ from: parsed, to: parsed });
             }
+          } else {
+            // Try parsing as a direct date string
+            const directDate = new Date(e.target.value);
+            if (!isNaN(directDate.getTime())) {
+              setDateRange({ from: directDate, to: directDate });
+            }
           }
         }}
         onKeyDown={(e) => {
@@ -127,30 +133,15 @@ export function CalendarNaturalLanguage({
         placeholder={getPlaceholderText()}
         value={naturalInput}
       />
-      {/* Show X button when there's text (left side) */}
-      {naturalInput.trim() && (
-        <Button
-          className="-translate-y-1/2 absolute top-1/2 right-8 size-6"
-          onClick={() => {
-            setNaturalInput('');
-            setDateRange({});
-            setTimeRange({ start: '', end: '' });
-          }}
-          size="sm"
-          variant="ghost"
-        >
-          <X className="size-3.5" />
-          <span className="sr-only">Clear</span>
-        </Button>
-      )}
 
-      {/* Always show calendar icon (right side) */}
+      {/* Calendar icon inside the input */}
       <Popover onOpenChange={setDatePickerOpen} open={datePickerOpen}>
         <PopoverTrigger asChild>
           <Button
             className="-translate-y-1/2 absolute top-1/2 right-2 size-6"
             size="sm"
             variant="ghost"
+            onClick={() => setDatePickerOpen(true)}
           >
             <CalendarIcon className="size-3.5" />
             <span className="sr-only">Open calendar</span>
