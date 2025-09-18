@@ -1,6 +1,6 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 import type { ReactNode } from "react";
-import { Status } from "../components/status";
+import { HealthStatus } from "../components/status-components";
 
 /**
  * Shared layout configurations
@@ -40,7 +40,7 @@ export function docsOptions(): BaseLayoutProps & {
   return {
     ...baseOptions(),
     sidebar: {
-      footer: <Status />,
+      footer: <HealthStatus />,
     },
   };
 }

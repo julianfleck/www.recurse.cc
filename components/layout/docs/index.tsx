@@ -438,7 +438,7 @@ function DocsNavbar({
               (themeSwitch.component ?? (
                 <ThemeToggle mode={themeSwitch.mode ?? "light-dark-system"} />
               ))}
-            <UserProfile />
+            <UserProfile showDashboardLink />
             {sidebarCollapsible && navMode === "top" && (
               <SidebarCollapseTrigger
                 className={cn(

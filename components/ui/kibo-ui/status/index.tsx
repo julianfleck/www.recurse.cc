@@ -1,6 +1,12 @@
-import { IconApi } from "@tabler/icons-react";
+"use client";
+
 import type { ComponentProps, HTMLAttributes } from "react";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 // Use consistent colors regardless of theme for SSR compatibility
@@ -19,30 +25,63 @@ const getStatusColor = (status: string): string => {
   }
 };
 
+const getStatusLabel = (status: string): string => {
+  switch (status) {
+    case "online":
+      return "All systems normal";
+    case "maintenance":
+      return "Maintenance";
+    case "degraded":
+      return "Degraded";
+    case "offline":
+      return "Offline";
+    default:
+      return "Offline";
+  }
+};
+
 export type StatusProps = ComponentProps<typeof Badge> & {
   status: "online" | "offline" | "maintenance" | "degraded";
   icon?: React.ComponentType<{ className?: string }>;
+  showTooltip?: boolean;
+  title?: string;
 };
 
 export const Status = ({
   className,
   status,
   icon: Icon,
+  showTooltip = false,
+  title,
   ...props
 }: StatusProps) => {
   const IconComponent = Icon;
+  const tooltipTitle = title || getStatusLabel(status);
+
+  const badge = (
+    <Badge
+      className={cn("flex items-center gap-2 px-2", "group", status)}
+      variant="secondary"
+      {...props}
+    >
+      <StatusIndicator status={status} />
+      <StatusLabel />
+    </Badge>
+  );
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
       {IconComponent && <IconComponent className="h-5 w-5" />}
-      <Badge
-        className={cn("flex items-center gap-2", "group", status)}
-        variant="secondary"
-        {...props}
-      >
-        <StatusIndicator status={status} />
-        <StatusLabel />
-      </Badge>
+      {showTooltip ? (
+        <Tooltip>
+          <TooltipTrigger asChild>{badge}</TooltipTrigger>
+          <TooltipContent>
+            <p>{tooltipTitle}</p>
+          </TooltipContent>
+        </Tooltip>
+      ) : (
+        badge
+      )}
     </div>
   );
 };
@@ -82,7 +121,10 @@ export const StatusLabel = ({
   children,
   ...props
 }: StatusLabelProps) => (
-  <span className={cn("text-muted-foreground", className)} {...props}>
+  <span
+    className={cn("cursor-default text-muted-foreground text-xs", className)}
+    {...props}
+  >
     {children ?? (
       <>
         <span className="hidden group-[.online]:block">Online</span>
@@ -93,3 +135,4 @@ export const StatusLabel = ({
     )}
   </span>
 );
+

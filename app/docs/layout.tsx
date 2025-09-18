@@ -4,10 +4,12 @@ import { docsOptions } from "@/lib/layout.shared";
 import { docsSource } from "@/lib/source";
 
 export default function Layout({ children }: LayoutProps<"/docs">) {
+  const options = docsOptions();
   return (
     <DocsLayout
-      {...docsOptions()}
+      {...options}
       sidebar={{
+        ...(options.sidebar ?? {}),
         tabs: [
           {
             title: "Documentation",

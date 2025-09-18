@@ -89,7 +89,6 @@ function DevTokenViewer({ token }: { token: string }) {
           </Button>
         </div>
       </div>
-      <DropdownMenuSeparator />
     </>
   );
 }
@@ -165,20 +164,21 @@ export function UserProfile({
             </div>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
         {showDashboardLink ? (
-          <DropdownMenuItem asChild>
-            <Link href="/dashboard">Dashboard</Link>
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/dashboard">Dashboard</Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
         ) : null}
-        {showDashboardLink ? <DropdownMenuSeparator /> : null}
-        {canShowToken && storeToken ? (
+        {/* {canShowToken && storeToken ? (
           <DevTokenViewer token={storeToken} />
-        ) : null}
+          ) : null} */}
         <DropdownMenuItem asChild>
           <Link href="/dashboard/settings">Settings</Link>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/logout">Log out</Link>
         </DropdownMenuItem>
