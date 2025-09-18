@@ -383,12 +383,12 @@ export function ApiKeysTable() {
   return (
     <div className="mt-12 w-full">
       {/* Header with search and actions */}
-      <div className="flex items-center justify-between pb-4">
-        <div className="flex items-center gap-4">
-          <div className="relative">
+      <div className="flex items-center justify-between gap-6 pb-4">
+        <div className="flex items-center min-w-0 flex-1 max-w-md">
+          <div className="relative w-full">
             <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
             <Input
-              className="w-[300px] pl-9"
+              className="w-full pl-9"
               onChange={(event) =>
                 table.getColumn("name")?.setFilterValue(event.target.value)
               }
@@ -400,7 +400,7 @@ export function ApiKeysTable() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0">
           {selectedCount > 0 && (
             <Button
               icon={<TrashIcon className="h-4 w-4" />}
