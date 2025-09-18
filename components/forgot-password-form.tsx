@@ -5,6 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { requestPasswordReset } from "@/lib/auth-api";
+import Particles from "@/components/backgrounds/Particles";
 
 export function ForgotPasswordForm({ className }: { className?: string }) {
   const [email, setEmail] = useState("");
@@ -76,12 +77,31 @@ export function ForgotPasswordForm({ className }: { className?: string }) {
               )}
             </div>
           </div>
-          <div className="relative hidden overflow-hidden bg-accent md:block" />
+          <div className="relative hidden overflow-hidden border-l bg-chart-1/20 bg-blend-multiply md:block">
+            <div className="absolute inset-0 flex items-center justify-center font-bold text-2xl">
+              recurse.cc
+            </div>
+            <Particles
+              className="absolute inset-0"
+              isViewportSized={false}
+              particleColor="#000000"
+              particleCount={20}
+              particleSize={2}
+              zIndex={1}
+            />
+          </div>
         </CardContent>
       </Card>
       <div className="text-balance text-center text-muted-foreground text-xs *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-primary">
         Remembered it? <a href="/login">Log in</a>
       </div>
+      <Particles
+        className="size-full opacity-60"
+        isViewportSized={true}
+        particleColor="#000000"
+        particleCount={40}
+        zIndex={-1}
+      />
     </div>
   );
 }
