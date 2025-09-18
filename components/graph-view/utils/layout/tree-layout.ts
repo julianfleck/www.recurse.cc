@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 export interface HierarchicalNode {
   id: string;
@@ -129,7 +129,7 @@ export class HierarchicalLayout {
         const aMeta = this.isMetadataLike(a);
         const bMeta = this.isMetadataLike(b);
         if (aMeta !== bMeta) return aMeta ? 1 : -1; // content first
-        return (a.title || '').localeCompare(b.title || '');
+        return (a.title || "").localeCompare(b.title || "");
       });
       levels.set(lvl, arr);
     }
@@ -185,7 +185,7 @@ export class HierarchicalLayout {
 
     for (const node of nodes) {
       const parentLink = this.links.find((link) => link.target === node.id);
-      const parentId = parentLink?.source || 'root';
+      const parentId = parentLink?.source || "root";
 
       const siblings = nodesByParent.get(parentId) || [];
       siblings.push(node);
@@ -196,7 +196,7 @@ export class HierarchicalLayout {
     for (const [parentId, children] of nodesByParent.entries()) {
       let parentX = 0;
 
-      if (parentId !== 'root') {
+      if (parentId !== "root") {
         const parentNode = this.nodes.find((n) => n.id === parentId);
         parentX = parentNode?.x || 0;
       }
@@ -242,18 +242,18 @@ export class HierarchicalLayout {
   }
 
   private isMetadataLike(n: HierarchicalNode): boolean {
-    const t = (n.type || '').toLowerCase();
+    const t = (n.type || "").toLowerCase();
     return (
-      t === 'tag' ||
-      t === 'hyponym' ||
-      t === 'hypernym' ||
-      t === 'metadata' ||
-      n.id.startsWith('tag:') ||
-      n.id.startsWith('hyponym:') ||
-      n.id.startsWith('hypernym:') ||
-      n.id.startsWith('tag_') ||
-      n.id.startsWith('hyponym_') ||
-      n.id.startsWith('hypernym_')
+      t === "tag" ||
+      t === "hyponym" ||
+      t === "hypernym" ||
+      t === "metadata" ||
+      n.id.startsWith("tag:") ||
+      n.id.startsWith("hyponym:") ||
+      n.id.startsWith("hypernym:") ||
+      n.id.startsWith("tag_") ||
+      n.id.startsWith("hyponym_") ||
+      n.id.startsWith("hypernym_")
     );
   }
 

@@ -1,30 +1,30 @@
-import { isMetadataType, normalizeTypeLabel } from '../../config/visual-config';
+import { isMetadataType, normalizeTypeLabel } from "../../config/visual-config";
 import type {
   GraphLink as DataLink,
   GraphNode as DataNode,
-} from './data-manager';
+} from "./data-manager";
 
 /**
  * Check if a node is metadata based on its type or ID
  */
 export const isMetadata = (idOrNode: string | DataNode): boolean => {
-  const id = typeof idOrNode === 'string' ? idOrNode : idOrNode.id;
-  const node = typeof idOrNode === 'string' ? null : idOrNode;
+  const id = typeof idOrNode === "string" ? idOrNode : idOrNode.id;
+  const node = typeof idOrNode === "string" ? null : idOrNode;
   const type = node?.type?.toLowerCase();
 
-  if (type && (type === 'tag' || type === 'hyponym' || type === 'hypernym')) {
+  if (type && (type === "tag" || type === "hyponym" || type === "hypernym")) {
     return true;
   }
 
   const lower = id.toLowerCase();
   return (
-    lower.startsWith('tag:') ||
-    lower.startsWith('hyponym:') ||
-    lower.startsWith('hypernym:') ||
-    lower.startsWith('tag_') ||
-    lower.startsWith('hyponym_') ||
-    lower.startsWith('hypernym_') ||
-    lower.includes(':metadata')
+    lower.startsWith("tag:") ||
+    lower.startsWith("hyponym:") ||
+    lower.startsWith("hypernym:") ||
+    lower.startsWith("tag_") ||
+    lower.startsWith("hyponym_") ||
+    lower.startsWith("hypernym_") ||
+    lower.includes(":metadata")
   );
 };
 
@@ -42,9 +42,9 @@ export const buildParentChildMaps = (links: DataLink[]) => {
     }
 
     const sourceId =
-      typeof link.source === 'string' ? link.source : link.source.id;
+      typeof link.source === "string" ? link.source : link.source.id;
     const targetId =
-      typeof link.target === 'string' ? link.target : link.target.id;
+      typeof link.target === "string" ? link.target : link.target.id;
 
     // Add to childrenByParent
     if (!childrenByParent.has(sourceId)) {
@@ -77,9 +77,9 @@ export const findRootDocumentIds = (
     }
 
     const sourceId =
-      typeof link.source === 'string' ? link.source : link.source.id;
+      typeof link.source === "string" ? link.source : link.source.id;
     const targetId =
-      typeof link.target === 'string' ? link.target : link.target.id;
+      typeof link.target === "string" ? link.target : link.target.id;
 
     const sourceNode = nodes.find((n) => n.id === sourceId);
     if (sourceNode && !isMetadata(sourceNode)) {
@@ -134,7 +134,7 @@ export const hasChildrenInGraph = (
       return false;
     }
     const sourceId =
-      typeof link.source === 'string' ? link.source : link.source.id;
+      typeof link.source === "string" ? link.source : link.source.id;
     return sourceId === nodeId;
   });
 };
@@ -162,9 +162,9 @@ export const getDescendantIds = (
       }
 
       const sourceId =
-        typeof link.source === 'string' ? link.source : link.source.id;
+        typeof link.source === "string" ? link.source : link.source.id;
       const targetId =
-        typeof link.target === 'string' ? link.target : link.target.id;
+        typeof link.target === "string" ? link.target : link.target.id;
 
       if (sourceId === currentId) {
         descendants.push(targetId);
@@ -197,10 +197,10 @@ const sortChildren = (
   }
 
   // Sort content nodes alphabetically
-  contentNodes.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+  contentNodes.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
 
   // Sort metadata nodes: first by category, then alphabetically
-  const categoryOrder = ['tag', 'hypernym', 'hyponym', 'metadata'];
+  const categoryOrder = ["tag", "hypernym", "hyponym", "metadata"];
   metadataNodes.sort((a, b) => {
     const aType = normalizeTypeLabel(a.type);
     const bType = normalizeTypeLabel(b.type);
@@ -209,7 +209,7 @@ const sortChildren = (
 
     // If types are the same, sort alphabetically by title
     if (aIndex === bIndex) {
-      return (a.title || '').localeCompare(b.title || '');
+      return (a.title || "").localeCompare(b.title || "");
     }
 
     // Otherwise sort by category order
@@ -245,7 +245,7 @@ export const buildTreeFromNodes = (
     // Check if this node has a parent
     const hasParent = links.some((link) => {
       const targetId =
-        typeof link.target === 'string' ? link.target : link.target.id;
+        typeof link.target === "string" ? link.target : link.target.id;
       return targetId === node.id;
     });
 
@@ -253,13 +253,13 @@ export const buildTreeFromNodes = (
       // Find parent and add as child
       const parentLink = links.find((link) => {
         const targetId =
-          typeof link.target === 'string' ? link.target : link.target.id;
+          typeof link.target === "string" ? link.target : link.target.id;
         return targetId === node.id;
       });
 
       if (parentLink) {
         const parentId =
-          typeof parentLink.source === 'string'
+          typeof parentLink.source === "string"
             ? parentLink.source
             : parentLink.source.id;
         const parentNode = nodeMap.get(parentId);

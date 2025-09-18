@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useCallback } from 'react';
+import { useCallback } from "react";
 import type {
   GraphLink as DataLink,
   GraphNode as DataNode,
-} from '../utils/data/data-manager';
+} from "../utils/data/data-manager";
 
 interface UseGraphInteractionsProps {
   visibleNodes: DataNode[];
   allNodes: DataNode[];
   allLinks: DataLink[];
   expandedNodes: Set<string>;
-  layoutMode: 'force' | 'hierarchical';
+  layoutMode: "force" | "hierarchical";
   isDraggingRef: React.MutableRefObject<boolean>;
   dragEndedRef: React.MutableRefObject<boolean>;
   hoverHideTimeoutRef: React.MutableRefObject<number | null>;
@@ -50,7 +50,7 @@ export function useGraphInteractions({
   const onNodeClick = useCallback(
     (id: string) => {
       window.dispatchEvent(
-        new CustomEvent('graph:nodeClick', { detail: { id } })
+        new CustomEvent("graph:nodeClick", { detail: { id } })
       );
       // Don't trigger expand/collapse if user was dragging
       if (isDraggingRef.current || dragEndedRef.current) {
@@ -74,7 +74,7 @@ export function useGraphInteractions({
         // Check if node has any children to collapse
         const hasChildren = allLinks.some((link) => {
           const sourceId =
-            typeof link.source === 'string' ? link.source : link.source.id;
+            typeof link.source === "string" ? link.source : link.source.id;
           return sourceId === id;
         });
 
@@ -90,8 +90,8 @@ export function useGraphInteractions({
 
           if (isRoot) {
             window.dispatchEvent(
-              new CustomEvent('graph:batchExpansionComplete', {
-                detail: { reason: 'collapse-root' },
+              new CustomEvent("graph:batchExpansionComplete", {
+                detail: { reason: "collapse-root" },
               })
             );
           } else {
@@ -180,10 +180,10 @@ export function useGraphInteractions({
         movedDistance = Math.sqrt(dx * dx + dy * dy);
         hasMoved = movedDistance > 3; // Threshold for considering it a drag
 
-        if (layoutMode === 'force') {
-          simulationRef.current?.force('x', null);
-          simulationRef.current?.force('y', null);
-          simulationRef.current?.force('center', null);
+        if (layoutMode === "force") {
+          simulationRef.current?.force("x", null);
+          simulationRef.current?.force("y", null);
+          simulationRef.current?.force("center", null);
           simulationRef.current?.alpha(0.3).restart();
         }
 
@@ -202,20 +202,20 @@ export function useGraphInteractions({
           // Ignore errors if element is already removed or pointer capture is already released
         }
 
-        window.removeEventListener('pointermove', onMove);
-        window.removeEventListener('pointerup', onEnd);
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onEnd);
 
         // Re-enable forces after dragging in force mode
-        if (layoutMode === 'force') {
-          simulationRef.current?.force('x', null);
-          simulationRef.current?.force('y', null);
-          simulationRef.current?.force('center', null);
+        if (layoutMode === "force") {
+          simulationRef.current?.force("x", null);
+          simulationRef.current?.force("y", null);
+          simulationRef.current?.force("center", null);
           simulationRef.current?.alpha(0.3).restart();
         }
       };
 
-      window.addEventListener('pointermove', onMove);
-      window.addEventListener('pointerup', onEnd);
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onEnd);
     },
     [
       isDraggingRef,

@@ -1,12 +1,12 @@
 // API client for the graph-standalone component
-import type { ApiResponse, GraphApiConfig, GraphDataPayload } from './types';
+import type { ApiResponse, GraphApiConfig, GraphDataPayload } from "./types";
 
 export class GraphApiClient {
   private config: Required<GraphApiConfig>;
 
   constructor(config: GraphApiConfig = {}) {
     this.config = {
-      baseUrl: config.baseUrl || '',
+      baseUrl: config.baseUrl || "",
       timeout: config.timeout || 10_000,
       retries: config.retries || 3,
     };
@@ -46,14 +46,14 @@ export class GraphApiClient {
       return {
         data: null as T,
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
 
   async fetchGraphData(url: string): Promise<ApiResponse<GraphDataPayload>> {
     return this.request<GraphDataPayload>(url, {
-      method: 'GET',
+      method: "GET",
     });
   }
 
@@ -62,9 +62,9 @@ export class GraphApiClient {
     payload: GraphDataPayload
   ): Promise<ApiResponse<any>> {
     return this.request(endpoint, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     });

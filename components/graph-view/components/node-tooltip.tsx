@@ -1,7 +1,7 @@
-import { Badge } from '@/components/ui/badge';
-import { getNodeIcon } from '../config/icon-config';
-import type { GraphLink, GraphNode } from '../utils/data/data-manager';
-import { getTypeDisplayName } from '../utils/type-display';
+import { Badge } from "@/components/ui/badge";
+import { getNodeIcon } from "../config/icon-config";
+import type { GraphLink, GraphNode } from "../utils/data/data-manager";
+import { getTypeDisplayName } from "../utils/type-display";
 
 // Generic tooltip layout component for consistent styling across the app
 interface GenericTooltipLayoutProps {
@@ -19,7 +19,7 @@ export function GenericTooltipLayout({
   type,
   summary,
   metadata = [],
-  className = '',
+  className = "",
   showTypeBadge = true,
   showIcon = true,
 }: GenericTooltipLayoutProps) {
@@ -39,7 +39,7 @@ export function GenericTooltipLayout({
             {/* Icon */}
             {showIcon && type && (
               <div className="h-4 w-4 flex-shrink-0">
-                {getNodeIcon(type, { size: 'h-4 w-4', strokeWidth: 2 }).icon}
+                {getNodeIcon(type, { size: "h-4 w-4", strokeWidth: 2 }).icon}
               </div>
             )}
 
@@ -60,7 +60,7 @@ export function GenericTooltipLayout({
       {summary && (
         <div className="my-4 pr-4 text-muted-foreground text-xs leading-tight">
           {summary.slice(0, 400)}
-          {summary.length > 400 && '…'}
+          {summary.length > 400 && "…"}
         </div>
       )}
 
@@ -93,7 +93,7 @@ interface GraphTooltipLayoutProps {
 export function GraphTooltipLayout({
   nodeData,
   connectedMetadataTitles,
-  className = '',
+  className = "",
 }: GraphTooltipLayoutProps) {
   return (
     <GenericTooltipLayout
@@ -109,17 +109,17 @@ export function GraphTooltipLayout({
 
 // Helper function to check if a node is metadata
 function isMetadataNode(node: GraphNode): boolean {
-  const type = (node.type || '').toLowerCase();
+  const type = (node.type || "").toLowerCase();
   return (
-    type === 'tag' ||
-    type === 'hyponym' ||
-    type === 'hypernym' ||
-    node.id.startsWith('tag:') ||
-    node.id.startsWith('hyponym:') ||
-    node.id.startsWith('hypernym:') ||
-    node.id.startsWith('tag_') ||
-    node.id.startsWith('hyponym_') ||
-    node.id.startsWith('hypernym_')
+    type === "tag" ||
+    type === "hyponym" ||
+    type === "hypernym" ||
+    node.id.startsWith("tag:") ||
+    node.id.startsWith("hyponym:") ||
+    node.id.startsWith("hypernym:") ||
+    node.id.startsWith("tag_") ||
+    node.id.startsWith("hyponym_") ||
+    node.id.startsWith("hypernym_")
   );
 }
 
@@ -133,8 +133,8 @@ export function deriveConnectedMetadataTitles(
 
   for (const e of edges) {
     // Extract source and target IDs
-    const sourceId = typeof e.source === 'string' ? e.source : e.source.id;
-    const targetId = typeof e.target === 'string' ? e.target : e.target.id;
+    const sourceId = typeof e.source === "string" ? e.source : e.source.id;
+    const targetId = typeof e.target === "string" ? e.target : e.target.id;
 
     // Find the other node in this edge
     const otherId = sourceId === nodeData.id ? targetId : sourceId;

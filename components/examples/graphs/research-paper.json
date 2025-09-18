@@ -110,7 +110,11 @@
               "summary": "Deep learning approaches demonstrate significant potential for improving diagnostic accuracy in medical imaging applications",
               "children": [],
               "metadata": {
-                "tags": ["Clinical Applications", "Future Research", "Medical Imaging"],
+                "tags": [
+                  "Clinical Applications",
+                  "Future Research",
+                  "Medical Imaging"
+                ],
                 "hypernyms": ["Healthcare Innovation", "Technology Adoption"]
               }
             }
@@ -122,7 +126,12 @@
         }
       ],
       "metadata": {
-        "tags": ["Neural Networks", "Medical Diagnosis", "Machine Learning", "Computer Vision"],
+        "tags": [
+          "Neural Networks",
+          "Medical Diagnosis",
+          "Machine Learning",
+          "Computer Vision"
+        ],
         "hypernyms": ["Artificial Intelligence", "Healthcare Technology"]
       }
     }

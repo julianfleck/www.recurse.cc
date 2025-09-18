@@ -1,7 +1,7 @@
-import { type HTMLAttributes, type RefObject, useEffect, useRef } from 'react';
-import * as Primitive from 'fumadocs-core/toc';
-import { useOnChange } from 'fumadocs-core/utils/use-on-change';
-import { useEffectEvent } from 'fumadocs-core/utils/use-effect-event';
+import * as Primitive from "fumadocs-core/toc";
+import { useEffectEvent } from "fumadocs-core/utils/use-effect-event";
+import { useOnChange } from "fumadocs-core/utils/use-on-change";
+import { type HTMLAttributes, type RefObject, useEffect, useRef } from "react";
 
 export type TOCThumb = [top: number, height: number];
 
@@ -18,12 +18,15 @@ function calc(container: HTMLElement, active: string[]): TOCThumb {
     if (!element) continue;
 
     const styles = getComputedStyle(element);
-    upper = Math.min(upper, element.offsetTop + parseFloat(styles.paddingTop));
+    upper = Math.min(
+      upper,
+      element.offsetTop + Number.parseFloat(styles.paddingTop)
+    );
     lower = Math.max(
       lower,
       element.offsetTop +
         element.clientHeight -
-        parseFloat(styles.paddingBottom),
+        Number.parseFloat(styles.paddingBottom)
     );
   }
 
@@ -31,8 +34,8 @@ function calc(container: HTMLElement, active: string[]): TOCThumb {
 }
 
 function update(element: HTMLElement, info: TOCThumb): void {
-  element.style.setProperty('--fd-top', `${info[0]}px`);
-  element.style.setProperty('--fd-height', `${info[1]}px`);
+  element.style.setProperty("--fd-top", `${info[0]}px`);
+  element.style.setProperty("--fd-height", `${info[1]}px`);
 }
 
 export function TocThumb({
@@ -45,7 +48,7 @@ export function TocThumb({
   const thumbRef = useRef<HTMLDivElement>(null);
 
   const onResize = useEffectEvent(() => {
-    if (!containerRef.current || !thumbRef.current) return;
+    if (!(containerRef.current && thumbRef.current)) return;
 
     update(thumbRef.current, calc(containerRef.current, active));
   });
@@ -64,7 +67,7 @@ export function TocThumb({
   }, [containerRef, onResize]);
 
   useOnChange(active, () => {
-    if (!containerRef.current || !thumbRef.current) return;
+    if (!(containerRef.current && thumbRef.current)) return;
 
     update(thumbRef.current, calc(containerRef.current, active));
   });

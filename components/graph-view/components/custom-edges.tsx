@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
 import {
   BaseEdge,
   type EdgeProps,
   getSmoothStepPath,
   getStraightPath,
-} from '@xyflow/react';
+} from "@xyflow/react";
 
 // Step Edge Component
 export function StepEdge({
@@ -145,7 +145,7 @@ export function CurvedTerminalEdge({
       `Q ${sourceControlX} ${sourceControlY} ${startCurveX} ${startCurveY}`, // Curve from source
       `L ${endCurveX} ${endCurveY}`, // Straight line in middle
       `Q ${targetControlX} ${targetControlY} ${targetX} ${targetY}`, // Curve to target
-    ].join(' ');
+    ].join(" ");
 
     return path;
   };

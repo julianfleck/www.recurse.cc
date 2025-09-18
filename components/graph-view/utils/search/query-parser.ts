@@ -15,26 +15,26 @@ type TokenMatch = { key?: string; value?: string; term?: string };
 
 function tokenize(input: string): TokenMatch[] {
   const tokens: TokenMatch[] = [];
-  const text = (input || '').trim();
-  if (text === '') {
+  const text = (input || "").trim();
+  if (text === "") {
     return tokens;
   }
   const regex = /(\w+):("([^"]*)"|(\S+))|"([^"]+)"|(\S+)/g;
   const processMatch = (res: RegExpMatchArray): void => {
-    const key = (res[1] || '').toLowerCase();
+    const key = (res[1] || "").toLowerCase();
     if (key) {
-      const val = (res[3] || res[4] || '').toLowerCase();
+      const val = (res[3] || res[4] || "").toLowerCase();
       if (val) {
         tokens.push({ key, value: val });
       }
       return;
     }
-    const qt = (res[5] || '').toLowerCase();
+    const qt = (res[5] || "").toLowerCase();
     if (qt) {
       tokens.push({ term: qt });
       return;
     }
-    const bare = (res[6] || '').toLowerCase();
+    const bare = (res[6] || "").toLowerCase();
     if (bare) {
       tokens.push({ term: bare });
     }
@@ -46,7 +46,7 @@ function tokenize(input: string): TokenMatch[] {
 }
 
 function applyToken(
-  acc: { terms: string[]; fields: ParsedQuery['fields'] },
+  acc: { terms: string[]; fields: ParsedQuery["fields"] },
   token: TokenMatch
 ): void {
   if (token.term) {
@@ -62,25 +62,25 @@ function applyToken(
   const key = token.key;
   const value = token.value;
   switch (key) {
-    case 'title':
+    case "title":
       acc.fields.title.push(value);
       return;
-    case 'summary':
+    case "summary":
       acc.fields.summary.push(value);
       return;
-    case 'tag':
+    case "tag":
       acc.fields.tag.push(value);
       return;
-    case 'hyponym':
+    case "hyponym":
       acc.fields.hyponym.push(value);
       return;
-    case 'hypernym':
+    case "hypernym":
       acc.fields.hypernym.push(value);
       return;
-    case 'metadata':
+    case "metadata":
       acc.fields.metadata.push(value);
       return;
-    case 'type':
+    case "type":
       acc.fields.type.push(value);
       return;
     default:

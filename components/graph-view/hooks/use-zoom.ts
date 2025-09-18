@@ -1,6 +1,6 @@
-import type { Selection } from 'd3-selection';
-import { zoomIdentity } from 'd3-zoom';
-import type React from 'react';
+import type { Selection } from "d3-selection";
+import { zoomIdentity } from "d3-zoom";
+import type React from "react";
 
 export type ZoomPoint = { x: number; y: number };
 
@@ -24,7 +24,7 @@ export function applyTransform(deps: ZoomDeps): void {
   const { x, y, k } = transformRef.current;
   if (edgesGroupRef.current) {
     edgesGroupRef.current.setAttribute(
-      'transform',
+      "transform",
       `translate(${x}, ${y}) scale(${k})`
     );
   }

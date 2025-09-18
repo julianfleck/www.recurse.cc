@@ -1,4 +1,4 @@
-import type React from 'react';
+import type React from "react";
 
 export type FocusDeps = {
   // Inputs/state
@@ -54,7 +54,7 @@ export function applyFocusChange(deps: FocusDeps): void {
       ? Array.from(computeSubgraphIds([focusedNodeId]))
       : [focusedNodeId],
     isExpanded ? 140 : 80,
-    'focus-change'
+    "focus-change"
   );
 }
 
@@ -82,11 +82,11 @@ export function createBackgroundClickHandler(
       return;
     }
     const target =
-      e && typeof e === 'object' && e !== null
+      e && typeof e === "object" && e !== null
         ? (e as { target?: unknown }).target
         : null;
     const el = (target as Element | null) ?? null;
-    if (el?.closest('[data-node-id]')) {
+    if (el?.closest("[data-node-id]")) {
       return;
     }
     suppressFocusRef.current = true;

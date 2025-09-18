@@ -10,12 +10,12 @@ import {
   forceManyBody,
   forceSimulation,
   type Simulation,
-} from 'd3-force';
-import type { Selection } from 'd3-selection';
-import 'd3-transition';
-import type { Transition } from 'd3-transition';
-import { type ZoomBehavior, zoom, zoomIdentity } from 'd3-zoom';
-import type { GraphLink, GraphNode } from '../utils/data/data-manager';
+} from "d3-force";
+import type { Selection } from "d3-selection";
+import "d3-transition";
+import type { Transition } from "d3-transition";
+import { type ZoomBehavior, zoom, zoomIdentity } from "d3-zoom";
+import type { GraphLink, GraphNode } from "../utils/data/data-manager";
 
 export class GraphRenderer {
   private svg: Selection<SVGSVGElement, unknown, null, undefined>;
@@ -42,15 +42,15 @@ export class GraphRenderer {
     // Setup zoom behavior
     this.zoomBehavior = zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.1, 3])
-      .on('zoom', (event) => {
-        this.g.attr('transform', event.transform);
+      .on("zoom", (event) => {
+        this.g.attr("transform", event.transform);
         this.updateZoomLevel(event.transform.k);
       });
 
     this.svg.call(this.zoomBehavior);
 
     // Create main group
-    this.g = this.svg.append('g').attr('class', 'graph-content');
+    this.g = this.svg.append("g").attr("class", "graph-content");
 
     // Setup event listeners
     this.setupEventListeners();
@@ -58,7 +58,7 @@ export class GraphRenderer {
 
   private setupEventListeners(): void {
     // Clear hover when mouse leaves the SVG
-    this.svg.on('mouseleave', () => {
+    this.svg.on("mouseleave", () => {
       this.onNodeHover(null);
     });
   }
@@ -72,11 +72,11 @@ export class GraphRenderer {
     // Update link distance based on zoom level
     if (this.simulation) {
       const dynamicDistance = this.calculateDynamicDistance();
-      const linkForce = this.simulation.force('link');
+      const linkForce = this.simulation.force("link");
       if (
         linkForce &&
-        'distance' in linkForce &&
-        typeof linkForce.distance === 'function'
+        "distance" in linkForce &&
+        typeof linkForce.distance === "function"
       ) {
         linkForce.distance(dynamicDistance);
         // Restart simulation with low alpha to apply new distances smoothly
@@ -117,31 +117,31 @@ export class GraphRenderer {
     // Create new simulation
     this.simulation = forceSimulation(nodes)
       .force(
-        'link',
+        "link",
         forceLink(links)
           .id((d) => (d as GraphNode).id)
           .distance(this.calculateDynamicDistance())
       )
-      .force('charge', forceManyBody().strength(-300))
-      .force('collide', forceCollide().radius(30))
-      .force('center', forceCenter(0, 0));
+      .force("charge", forceManyBody().strength(-300))
+      .force("collide", forceCollide().radius(30))
+      .force("center", forceCenter(0, 0));
 
     // Render elements
     this.renderLinks(links);
     this.renderNodes(nodes);
 
     // Start simulation
-    this.simulation.on('tick', () => this.tick());
+    this.simulation.on("tick", () => this.tick());
     this.simulation.alpha(0.3).restart();
   }
 
   private renderLinks(links: GraphLink[]): void {
     const linkSelection = this.g
-      .selectAll<SVGLineElement, GraphLink>('.link')
+      .selectAll<SVGLineElement, GraphLink>(".link")
       .data(
         links,
         (d) =>
-          `${typeof d.source === 'string' ? d.source : d.source.id}-${typeof d.target === 'string' ? d.target : d.target.id}`
+          `${typeof d.source === "string" ? d.source : d.source.id}-${typeof d.target === "string" ? d.target : d.target.id}`
       );
 
     // Remove old links
@@ -150,17 +150,17 @@ export class GraphRenderer {
     // Add new links
     const linkEnter = linkSelection
       .enter()
-      .append('line')
-      .attr('class', 'link')
-      .attr('stroke', '#e2e8f0')
-      .attr('stroke-width', 2);
+      .append("line")
+      .attr("class", "link")
+      .attr("stroke", "#e2e8f0")
+      .attr("stroke-width", 2);
 
     linkEnter.merge(linkSelection);
   }
 
   private renderNodes(nodes: GraphNode[]): void {
     const nodeSelection = this.g
-      .selectAll<SVGGElement, GraphNode>('.node')
+      .selectAll<SVGGElement, GraphNode>(".node")
       .data(nodes, (d) => d.id);
 
     // Remove old nodes
@@ -169,69 +169,69 @@ export class GraphRenderer {
     // Add new nodes
     const nodeEnter = nodeSelection
       .enter()
-      .append('g')
-      .attr('class', 'node')
-      .style('cursor', 'pointer');
+      .append("g")
+      .attr("class", "node")
+      .style("cursor", "pointer");
 
     // Add circles
     nodeEnter
-      .append('circle')
-      .attr('r', (d) => this.getNodeRadius(d))
-      .attr('fill', (d) => this.getNodeColor(d))
-      .attr('stroke', '#ffffff')
-      .attr('stroke-width', 2);
+      .append("circle")
+      .attr("r", (d) => this.getNodeRadius(d))
+      .attr("fill", (d) => this.getNodeColor(d))
+      .attr("stroke", "#ffffff")
+      .attr("stroke-width", 2);
 
     // Add labels
     nodeEnter
-      .append('text')
-      .attr('text-anchor', 'middle')
-      .attr('dy', '0.35em')
-      .attr('font-size', '12px')
-      .attr('font-weight', '600')
-      .attr('fill', '#1f2937')
+      .append("text")
+      .attr("text-anchor", "middle")
+      .attr("dy", "0.35em")
+      .attr("font-size", "12px")
+      .attr("font-weight", "600")
+      .attr("fill", "#1f2937")
       .text((d) => this.getNodeLabel(d));
 
     // Merge selections and add event handlers
     const nodeUpdate = nodeEnter.merge(nodeSelection);
 
     nodeUpdate
-      .on('click', (event, d) => {
+      .on("click", (event, d) => {
         event.stopPropagation();
         this.onNodeClick(d.id);
       })
-      .on('mouseenter', (_event, d) => {
+      .on("mouseenter", (_event, d) => {
         this.onNodeHover(d.id);
       })
-      .on('mouseleave', () => {
+      .on("mouseleave", () => {
         this.onNodeHover(null);
       });
 
     // Update node appearance based on state
     nodeUpdate
-      .select('circle')
-      .attr('r', (d) => this.getNodeRadius(d))
-      .attr('fill', (d) => this.getNodeColor(d));
+      .select("circle")
+      .attr("r", (d) => this.getNodeRadius(d))
+      .attr("fill", (d) => this.getNodeColor(d));
 
-    nodeUpdate.select('text').text((d) => this.getNodeLabel(d));
+    nodeUpdate.select("text").text((d) => this.getNodeLabel(d));
   }
 
   private tick(): void {
     // Update link positions
     this.g
-      .selectAll<SVGLineElement, GraphLink>('.link')
-      .attr('x1', (d) => (typeof d.source === 'string' ? 0 : d.source.x || 0))
-      .attr('y1', (d) => (typeof d.source === 'string' ? 0 : d.source.y || 0))
-      .attr('x2', (d) => (typeof d.target === 'string' ? 0 : d.target.x || 0))
-      .attr('y2', (d) => (typeof d.target === 'string' ? 0 : d.target.y || 0));
+      .selectAll<SVGLineElement, GraphLink>(".link")
+      .attr("x1", (d) => (typeof d.source === "string" ? 0 : d.source.x || 0))
+      .attr("y1", (d) => (typeof d.source === "string" ? 0 : d.source.y || 0))
+      .attr("x2", (d) => (typeof d.target === "string" ? 0 : d.target.x || 0))
+      .attr("y2", (d) => (typeof d.target === "string" ? 0 : d.target.y || 0));
 
     // Update node positions
     this.g
-      .selectAll<SVGGElement, GraphNode>('.node')
-      .attr('transform', (d) => `translate(${d.x || 0},${d.y || 0})`);
+      .selectAll<SVGGElement, GraphNode>(".node")
+      .attr("transform", (d) => `translate(${d.x || 0},${d.y || 0})`);
   }
 
   private getNodeRadius(node: GraphNode): number {
-    if (node.type === 'Document' || node.type === 'article') {
+    if (node.type === "Document" || node.type === "article") {
       return 20;
     }
     return 15;
@@ -239,17 +239,17 @@ export class GraphRenderer {
 
   private getNodeColor(node: GraphNode): string {
     switch (node.type) {
-      case 'Document':
-      case 'article':
-        return '#3b82f6'; // Blue for documents
-      case 'Concept':
-        return '#10b981'; // Green for concepts
-      case 'Claim':
-        return '#f59e0b'; // Orange for claims
-      case 'Question':
-        return '#8b5cf6'; // Purple for questions
+      case "Document":
+      case "article":
+        return "#3b82f6"; // Blue for documents
+      case "Concept":
+        return "#10b981"; // Green for concepts
+      case "Claim":
+        return "#f59e0b"; // Orange for claims
+      case "Question":
+        return "#8b5cf6"; // Purple for questions
       default:
-        return '#6b7280'; // Gray for others
+        return "#6b7280"; // Gray for others
     }
   }
 
@@ -266,9 +266,9 @@ export class GraphRenderer {
    */
   highlightNode(nodeId: string | null): void {
     this.g
-      .selectAll<SVGCircleElement, GraphNode>('.node circle')
-      .attr('stroke', (d) => (d.id === nodeId ? '#fbbf24' : '#ffffff'))
-      .attr('stroke-width', (d) => (d.id === nodeId ? 3 : 2));
+      .selectAll<SVGCircleElement, GraphNode>(".node circle")
+      .attr("stroke", (d) => (d.id === nodeId ? "#fbbf24" : "#ffffff"))
+      .attr("stroke-width", (d) => (d.id === nodeId ? 3 : 2));
   }
 
   /**
@@ -423,9 +423,9 @@ export class GraphRenderer {
       .filter((node: GraphNode) => {
         return this.currentLinks.some((link: GraphLink) => {
           const sourceId =
-            typeof link.source === 'string' ? link.source : link.source.id;
+            typeof link.source === "string" ? link.source : link.source.id;
           const targetId =
-            typeof link.target === 'string' ? link.target : link.target.id;
+            typeof link.target === "string" ? link.target : link.target.id;
           return sourceId === parentNodeId && targetId === node.id;
         });
       })
@@ -470,14 +470,14 @@ export class GraphRenderer {
 
     // Find child nodes in the DOM
     const childNodes = this.g
-      .selectAll<SVGGElement, GraphNode>('.node')
+      .selectAll<SVGGElement, GraphNode>(".node")
       .filter((d) => childNodeIds.includes(d.id));
 
     const childLinks = this.g
-      .selectAll<SVGLineElement, GraphLink>('.link')
+      .selectAll<SVGLineElement, GraphLink>(".link")
       .filter((d) => {
-        const sourceId = typeof d.source === 'string' ? d.source : d.source.id;
-        const targetId = typeof d.target === 'string' ? d.target : d.target.id;
+        const sourceId = typeof d.source === "string" ? d.source : d.source.id;
+        const targetId = typeof d.target === "string" ? d.target : d.target.id;
         return sourceId === parentNodeId && childNodeIds.includes(targetId);
       });
 
@@ -485,19 +485,19 @@ export class GraphRenderer {
     childNodes
       .transition()
       .duration(400)
-      .attr('transform', `translate(${parentNode.x}, ${parentNode.y})`)
-      .style('opacity', 0);
+      .attr("transform", `translate(${parentNode.x}, ${parentNode.y})`)
+      .style("opacity", 0);
 
     // Animate child links to collapse
     childLinks
       .transition()
       .duration(400)
-      .attr('x1', parentNode.x)
-      .attr('y1', parentNode.y)
-      .attr('x2', parentNode.x)
-      .attr('y2', parentNode.y)
-      .style('opacity', 0)
-      .on('end', () => {
+      .attr("x1", parentNode.x)
+      .attr("y1", parentNode.y)
+      .attr("x2", parentNode.x)
+      .attr("y2", parentNode.y)
+      .style("opacity", 0)
+      .on("end", () => {
         // After animation completes, call the completion callback
         onComplete?.();
       });
@@ -519,16 +519,16 @@ export class GraphRenderer {
     }
 
     // Get current center force
-    const centerForce = this.simulation.force('center') as
-      | ReturnType<typeof import('d3-force').forceCenter>
+    const centerForce = this.simulation.force("center") as
+      | ReturnType<typeof import("d3-force").forceCenter>
       | undefined;
     const originalStrength =
-      centerForce && typeof centerForce.strength === 'function'
+      centerForce && typeof centerForce.strength === "function"
         ? centerForce.strength()
         : 1;
 
     // Temporarily increase center force strength to pull nodes together
-    if (centerForce && typeof centerForce.strength === 'function') {
+    if (centerForce && typeof centerForce.strength === "function") {
       centerForce.strength(originalStrength * 3);
     }
 
@@ -543,7 +543,7 @@ export class GraphRenderer {
       if (
         this.simulation &&
         centerForce &&
-        typeof centerForce.strength === 'function'
+        typeof centerForce.strength === "function"
       ) {
         centerForce.strength(originalStrength);
         this.simulation.alphaTarget(0);
@@ -592,7 +592,7 @@ export class GraphRenderer {
     this.pendingFocusNodeId = null;
 
     const nodeData = this.g
-      .selectAll<SVGGElement, GraphNode>('.node')
+      .selectAll<SVGGElement, GraphNode>(".node")
       .data()
       .find((d) => d.id === nodeId);
 
@@ -617,7 +617,7 @@ export class GraphRenderer {
       this.simulation.stop();
       this.simulation = null;
     }
-    this.g.selectAll('*').remove();
+    this.g.selectAll("*").remove();
   }
 
   /**
@@ -633,7 +633,7 @@ export class GraphRenderer {
   destroy(): void {
     this.clearGraph();
     this.clearPendingFocus();
-    this.svg.on('.zoom', null);
-    this.svg.on('mouseleave', null);
+    this.svg.on(".zoom", null);
+    this.svg.on("mouseleave", null);
   }
 }

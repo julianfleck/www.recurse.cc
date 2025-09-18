@@ -1,4 +1,4 @@
-import type { IconProps } from '@tabler/icons-react';
+import type { IconProps } from "@tabler/icons-react";
 import {
   IconAlertTriangle,
   IconArrowsJoin,
@@ -24,9 +24,9 @@ import {
   IconTarget,
   IconTopologyRing2,
   IconZoom,
-} from '@tabler/icons-react';
-import type { JSX } from 'react';
-import { normalizeTypeLabel } from './visual-config';
+} from "@tabler/icons-react";
+import type { JSX } from "react";
+import { normalizeTypeLabel } from "./visual-config";
 
 export interface IconLookupResult {
   icon: JSX.Element;
@@ -45,64 +45,64 @@ const ICON_MAP: Record<
   string,
   { Closed: IconCtor; Open: IconCtor; label: string }
 > = {
-  document: { Closed: IconFolder, Open: IconFolderOpen, label: 'Document' },
-  article: { Closed: IconFile, Open: IconFileFilled, label: 'Article' },
+  document: { Closed: IconFolder, Open: IconFolderOpen, label: "Document" },
+  article: { Closed: IconFile, Open: IconFileFilled, label: "Article" },
   heading_section: {
     Closed: IconIndentIncrease,
     Open: IconIndentIncrease,
-    label: 'Heading Section',
+    label: "Heading Section",
   },
-  paragraph: { Closed: IconPilcrow, Open: IconPilcrow, label: 'Paragraph' },
-  claim: { Closed: IconNumbers, Open: IconNumbers, label: 'Claim' },
-  quote: { Closed: IconBlockquote, Open: IconBlockquote, label: 'Quote' },
-  example: { Closed: IconArrowsSplit, Open: IconArrowsSplit, label: 'Example' },
+  paragraph: { Closed: IconPilcrow, Open: IconPilcrow, label: "Paragraph" },
+  claim: { Closed: IconNumbers, Open: IconNumbers, label: "Claim" },
+  quote: { Closed: IconBlockquote, Open: IconBlockquote, label: "Quote" },
+  example: { Closed: IconArrowsSplit, Open: IconArrowsSplit, label: "Example" },
   implication: {
     Closed: IconArrowsJoin,
     Open: IconArrowsJoin,
-    label: 'Implication',
+    label: "Implication",
   },
-  experience: { Closed: IconOld, Open: IconOld, label: 'Experience' },
+  experience: { Closed: IconOld, Open: IconOld, label: "Experience" },
   question: {
     Closed: IconHelpHexagon,
     Open: IconHelpHexagon,
-    label: 'Question',
+    label: "Question",
   },
-  observation: { Closed: IconZoom, Open: IconZoom, label: 'Observation' },
-  goal: { Closed: IconTarget, Open: IconTarget, label: 'Goal' },
-  insight: { Closed: IconBulb, Open: IconBulb, label: 'Insight' },
-  definition: { Closed: IconBook, Open: IconBook, label: 'Definition' },
-  contrast: { Closed: IconBackground, Open: IconBackground, label: 'Contrast' },
-  reference: { Closed: IconLink, Open: IconLink, label: 'Reference' },
+  observation: { Closed: IconZoom, Open: IconZoom, label: "Observation" },
+  goal: { Closed: IconTarget, Open: IconTarget, label: "Goal" },
+  insight: { Closed: IconBulb, Open: IconBulb, label: "Insight" },
+  definition: { Closed: IconBook, Open: IconBook, label: "Definition" },
+  contrast: { Closed: IconBackground, Open: IconBackground, label: "Contrast" },
+  reference: { Closed: IconLink, Open: IconLink, label: "Reference" },
   source_attribution: {
     Closed: IconSourceCode,
     Open: IconSourceCode,
-    label: 'Source Attribution',
+    label: "Source Attribution",
   },
   critique: {
     Closed: IconAlertTriangle,
     Open: IconAlertTriangle,
-    label: 'Critique',
+    label: "Critique",
   },
-  tag: { Closed: IconTag, Open: IconTag, label: 'Tag' },
+  tag: { Closed: IconTag, Open: IconTag, label: "Tag" },
   hyponym: {
     Closed: IconTopologyRing2,
     Open: IconTopologyRing2,
-    label: 'Hyponym',
+    label: "Hyponym",
   },
-  hypernym: { Closed: IconHierarchy, Open: IconHierarchy, label: 'Hypernym' },
-  unknown: { Closed: IconCircles, Open: IconCircles, label: 'Unknown' },
+  hypernym: { Closed: IconHierarchy, Open: IconHierarchy, label: "Hypernym" },
+  unknown: { Closed: IconCircles, Open: IconCircles, label: "Unknown" },
 };
 
 export function getNodeIcon(
   type: string,
   options: IconOptions = {}
 ): IconLookupResult {
-  const nodeType = normalizeTypeLabel(type || '');
-  const { size = 'h-full w-full', strokeWidth = 1.5, filled = false } = options;
+  const nodeType = normalizeTypeLabel(type || "");
+  const { size = "h-full w-full", strokeWidth = 1.5, filled = false } = options;
   const commonProps = {
     className: size,
     strokeWidth,
-    'aria-hidden': false,
+    "aria-hidden": false,
   };
   const entry = ICON_MAP[nodeType] ?? ICON_MAP.unknown;
   const Comp = filled ? entry.Open : entry.Closed;
@@ -120,14 +120,14 @@ export function renderNodeIcon(
 // Return both outline and filled variants for list UIs
 export function getNodeIcons(
   type: string,
-  options: Omit<IconOptions, 'filled'> = {}
+  options: Omit<IconOptions, "filled"> = {}
 ): { iconClosed: JSX.Element; iconOpen: JSX.Element; label: string } {
-  const nodeType = normalizeTypeLabel(type || '');
-  const { size = 'h-full w-full', strokeWidth = 1.5 } = options;
+  const nodeType = normalizeTypeLabel(type || "");
+  const { size = "h-full w-full", strokeWidth = 1.5 } = options;
   const commonProps = {
     className: size,
     strokeWidth,
-    'aria-hidden': false,
+    "aria-hidden": false,
   };
   const entry = ICON_MAP[nodeType] ?? ICON_MAP.unknown;
   const Closed = entry.Closed;

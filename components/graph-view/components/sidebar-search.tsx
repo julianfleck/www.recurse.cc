@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { useCallback, useRef, useState } from 'react';
-import { Input } from '@/components/ui/input';
+import { useCallback, useRef, useState } from "react";
+import { Input } from "@/components/ui/input";
 import type {
   GraphLink as DataLink,
   GraphNode as DataNode,
-} from '../utils/data/data-manager';
+} from "../utils/data/data-manager";
 import {
   buildMetadataTextIndex,
   collectTags,
   nodeMatchesParsedQuery,
-} from '../utils/search/filter-helpers';
-import { parseSearchQuery } from '../utils/search/query-parser';
+} from "../utils/search/filter-helpers";
+import { parseSearchQuery } from "../utils/search/query-parser";
 
-export type SidebarSearchMode = 'json' | 'api';
+export type SidebarSearchMode = "json" | "api";
 
 export type SidebarSearchProps = {
   mode: SidebarSearchMode;
@@ -36,7 +36,7 @@ export function SidebarSearch({
   placeholder = 'Search (e.g., summary:"foo" tag:bar)',
   className,
 }: SidebarSearchProps) {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState("");
   const debounceRef = useRef<number | null>(null);
 
   const collectTagsFromNode = useCallback(
@@ -47,7 +47,7 @@ export function SidebarSearch({
   const runLocalFilter = useCallback(
     (raw: string) => {
       const trimmed = raw.trim();
-      if (trimmed === '') {
+      if (trimmed === "") {
         onFilterIdsChange(null);
         return;
       }
@@ -93,7 +93,7 @@ export function SidebarSearch({
       setValue(next);
       onQueryChange?.(next);
       const immediate = next.trim();
-      if (immediate === '') {
+      if (immediate === "") {
         // Clear filters immediately when input is empty
         onFilterIdsChange(null);
       }
@@ -101,7 +101,7 @@ export function SidebarSearch({
         window.clearTimeout(debounceRef.current);
       }
       debounceRef.current = window.setTimeout(() => {
-        if (mode === 'api') {
+        if (mode === "api") {
           onSearchApi?.(next);
         } else {
           runLocalFilter(next);

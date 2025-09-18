@@ -1,5 +1,5 @@
-export type NodeVisualState = 'default' | 'selected' | 'dimmed' | 'hovered';
-export type NodeLayoutMode = 'force' | 'hierarchical';
+export type NodeVisualState = "default" | "selected" | "dimmed" | "hovered";
+export type NodeLayoutMode = "force" | "hierarchical";
 
 export interface NodeVisualData {
   id: string;

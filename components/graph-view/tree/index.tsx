@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { IconFile, IconFolder, IconFolderFilled } from '@tabler/icons-react';
-import { ChevronRight } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
+import { IconFile, IconFolder, IconFolderFilled } from "@tabler/icons-react";
+import { ChevronRight } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import {
   type ComponentProps,
   createContext,
@@ -12,8 +12,8 @@ import {
   useContext,
   useId,
   useState,
-} from 'react';
-import { cn } from '@/lib/utils';
+} from "react";
+import { cn } from "@/lib/utils";
 
 type TreeContextType = {
   expandedIds: Set<string>;
@@ -33,7 +33,7 @@ const TreeContext = createContext<TreeContextType | undefined>(undefined);
 const useTree = () => {
   const context = useContext(TreeContext);
   if (!context) {
-    throw new Error('Tree components must be used within a TreeProvider');
+    throw new Error("Tree components must be used within a TreeProvider");
   }
   return context;
 };
@@ -52,7 +52,7 @@ const TreeNodeContext = createContext<TreeNodeContextType | undefined>(
 const useTreeNode = () => {
   const context = useContext(TreeNodeContext);
   if (!context) {
-    throw new Error('TreeNode components must be used within a TreeNode');
+    throw new Error("TreeNode components must be used within a TreeNode");
   }
   return context;
 };
@@ -183,9 +183,9 @@ export const TreeProvider = ({
     >
       <motion.div
         animate={{ opacity: 1, y: 0 }}
-        className={cn('w-full', className)}
+        className={cn("w-full", className)}
         initial={{ opacity: 0, y: 10 }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
       >
         {children}
       </motion.div>
@@ -196,7 +196,7 @@ export const TreeProvider = ({
 export type TreeViewProps = HTMLAttributes<HTMLDivElement>;
 
 export const TreeView = ({ className, children, ...props }: TreeViewProps) => (
-  <div className={cn('p-2', className)} {...props}>
+  <div className={cn("p-2", className)} {...props}>
     {children}
   </div>
 );
@@ -243,7 +243,7 @@ export const TreeNode = ({
         parentPath: currentPath,
       }}
     >
-      <div className={cn('select-none', className)} {...props}>
+      <div className={cn("select-none", className)} {...props}>
         {children}
       </div>
     </TreeNodeContext.Provider>
@@ -268,9 +268,9 @@ export const TreeNodeTrigger = ({
   return (
     <motion.div
       className={cn(
-        'group relative mx-1 flex cursor-pointer items-center rounded-md px-3 py-2 transition-all duration-200',
-        'hover:bg-accent/50',
-        isSelected && 'bg-accent/80',
+        "group relative mx-1 flex cursor-pointer items-center rounded-md px-3 py-2 transition-all duration-200",
+        "hover:bg-accent/50",
+        isSelected && "bg-accent/80",
         className
       )}
       onClick={(e) => {
@@ -312,7 +312,7 @@ export const TreeLines = () => {
             key={index.toString()}
             style={{
               left: index * (indent ?? 0) + 12,
-              display: shouldHideLine ? 'none' : 'block',
+              display: shouldHideLine ? "none" : "block",
             }}
           />
         );
@@ -324,7 +324,7 @@ export const TreeLines = () => {
         style={{
           left: (level - 1) * (indent ?? 0) + 12,
           width: (indent ?? 0) - 4,
-          transform: 'translateY(-1px)',
+          transform: "translateY(-1px)",
         }}
       />
 
@@ -334,7 +334,7 @@ export const TreeLines = () => {
           className="absolute top-0 border-border/40 border-l"
           style={{
             left: (level - 1) * (indent ?? 0) + 12,
-            height: '50%',
+            height: "50%",
           }}
         />
       )}
@@ -360,13 +360,13 @@ export const TreeNodeContent = ({
     <AnimatePresence>
       {hasChildren && isExpanded && (
         <motion.div
-          animate={{ height: 'auto', opacity: 1 }}
+          animate={{ height: "auto", opacity: 1 }}
           className="overflow-hidden"
           exit={{ height: 0, opacity: 0 }}
           initial={{ height: 0, opacity: 0 }}
           transition={{
             duration: animateExpand ? 0.3 : 0,
-            ease: 'easeInOut',
+            ease: "easeInOut",
           }}
         >
           <motion.div
@@ -412,7 +412,7 @@ export const TreeExpander = ({
     <motion.div
       animate={{ rotate: isExpanded ? 90 : 0 }}
       className={cn(
-        'mr-1 flex h-4 w-4 cursor-pointer items-center justify-center',
+        "mr-1 flex h-4 w-4 cursor-pointer items-center justify-center",
         className
       )}
       onClick={(e) => {
@@ -421,7 +421,7 @@ export const TreeExpander = ({
         onToggleExpanded?.(nodeId);
         onClick?.(e);
       }}
-      transition={{ duration: 0.2, ease: 'easeInOut' }}
+      transition={{ duration: 0.2, ease: "easeInOut" }}
       {...props}
     >
       <ChevronRight className="h-3 w-3 text-muted-foreground" />
@@ -460,7 +460,7 @@ export const TreeIcon = ({
   return (
     <motion.div
       className={cn(
-        'mr-2 flex h-4 w-4 items-center justify-center text-muted-foreground',
+        "mr-2 flex h-4 w-4 items-center justify-center text-muted-foreground",
         className
       )}
       transition={{ duration: 0.15 }}
@@ -475,5 +475,5 @@ export const TreeIcon = ({
 export type TreeLabelProps = HTMLAttributes<HTMLSpanElement>;
 
 export const TreeLabel = ({ className, ...props }: TreeLabelProps) => (
-  <span className={cn('font flex-1 truncate text-sm', className)} {...props} />
+  <span className={cn("font flex-1 truncate text-sm", className)} {...props} />
 );

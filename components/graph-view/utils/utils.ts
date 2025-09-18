@@ -1,15 +1,15 @@
-import { NODE_STYLES } from '../config/config';
-import type { GraphLink, GraphNode } from '../types/types';
+import { NODE_STYLES } from "../config/config";
+import type { GraphLink, GraphNode } from "../types/types";
 
 export function getId(node: string | GraphNode): string {
-  return typeof node === 'string' ? node : node.id;
+  return typeof node === "string" ? node : node.id;
 }
 
 export function getNodeStyle(type: string) {
-  if (type === 'Document' || type === 'article') {
+  if (type === "Document" || type === "article") {
     return NODE_STYLES.document;
   }
-  if (type === 'heading_section') {
+  if (type === "heading_section") {
     return NODE_STYLES.heading_section;
   }
   return NODE_STYLES.default;

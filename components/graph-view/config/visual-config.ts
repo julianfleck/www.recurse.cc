@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
 import {
   IconFile,
   IconFolder,
   IconFolderFilled,
   IconTag,
-} from '@tabler/icons-react';
-import type { ComponentType } from 'react';
+} from "@tabler/icons-react";
+import type { ComponentType } from "react";
 
-export type IconLibrary = 'tabler' | 'lucide';
+export type IconLibrary = "tabler" | "lucide";
 
 export type TablerIconType = ComponentType<{
   size?: number;
@@ -31,57 +31,57 @@ export type GraphVisualConfig = {
 };
 
 export const defaultGraphVisualConfig: GraphVisualConfig = {
-  iconLibrary: 'tabler',
-  metadataTypes: new Set(['tag', 'hyponym', 'hypernym', 'metadata']),
+  iconLibrary: "tabler",
+  metadataTypes: new Set(["tag", "hyponym", "hypernym", "metadata"]),
   labelMap: {
     document: {
-      uiLabel: 'Document',
+      uiLabel: "Document",
       Icon: IconFile,
-      colorClass: 'bg-secondary text-secondary-foreground',
+      colorClass: "bg-secondary text-secondary-foreground",
     },
     article: {
-      uiLabel: 'Article',
+      uiLabel: "Article",
       Icon: IconFile,
-      colorClass: 'bg-primary text-primary-foreground',
+      colorClass: "bg-primary text-primary-foreground",
     },
     heading_section: {
-      uiLabel: 'Section',
+      uiLabel: "Section",
       Icon: IconFolder,
       FilledIcon: IconFolderFilled,
-      colorClass: 'bg-accent text-accent-foreground',
+      colorClass: "bg-accent text-accent-foreground",
     },
     section: {
-      uiLabel: 'Section',
+      uiLabel: "Section",
       Icon: IconFolder,
       FilledIcon: IconFolderFilled,
-      colorClass: 'bg-accent text-accent-foreground',
+      colorClass: "bg-accent text-accent-foreground",
     },
     tag: {
-      uiLabel: 'Tag',
+      uiLabel: "Tag",
       Icon: IconTag,
-      colorClass: 'bg-muted text-muted-foreground',
+      colorClass: "bg-muted text-muted-foreground",
     },
   },
 };
 
 export function normalizeTypeLabel(raw: string): string {
-  const s = (raw || '').toLowerCase();
+  const s = (raw || "").toLowerCase();
   if (!s) {
-    return '';
+    return "";
   }
   // Prefer the last segment when colon-delimited (e.g., "document:article" → "article")
-  const parts = s.split(':').filter(Boolean);
+  const parts = s.split(":").filter(Boolean);
   const candidate = parts.length > 1 ? parts.at(-1) : parts[0];
   // Map common aliases/synonyms
-  if (candidate === 'doc') {
-    return 'document';
+  if (candidate === "doc") {
+    return "document";
   }
   if (
-    candidate === 'heading_section' ||
-    candidate === 'section' ||
-    candidate === 'heading'
+    candidate === "heading_section" ||
+    candidate === "section" ||
+    candidate === "heading"
   ) {
-    return 'heading_section';
+    return "heading_section";
   }
   return candidate;
 }
@@ -99,7 +99,7 @@ export function getVisualForLabel(
   if (key && cfg.metadataTypes.has(key)) {
     return cfg.labelMap.tag ?? { uiLabel: key, Icon: IconTag };
   }
-  return cfg.labelMap.document ?? { uiLabel: key || 'Node', Icon: IconFile };
+  return cfg.labelMap.document ?? { uiLabel: key || "Node", Icon: IconFile };
 }
 
 export function isMetadataType(

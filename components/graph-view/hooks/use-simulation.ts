@@ -5,8 +5,8 @@ import {
   forceManyBody,
   forceSimulation,
   type Simulation,
-} from 'd3-force';
-import type React from 'react';
+} from "d3-force";
+import type React from "react";
 
 export type SimPoint = { x: number; y: number };
 
@@ -48,8 +48,8 @@ export function buildSimData(
     summary: n.summary ?? null,
   }));
   const links: SimLink[] = linksIn.map((l) => ({
-    source: typeof l.source === 'string' ? l.source : l.source.id,
-    target: typeof l.target === 'string' ? l.target : l.target.id,
+    source: typeof l.source === "string" ? l.source : l.source.id,
+    target: typeof l.target === "string" ? l.target : l.target.id,
   }));
   return { nodes, links };
 }
@@ -62,18 +62,18 @@ export function createForceSimulation(
 ): Simulation<SimNode, SimLink> {
   const simulation = forceSimulation(nodes)
     .force(
-      'link',
+      "link",
       forceLink<SimNode, SimLink>(links)
         .id((d) => d.id)
         .distance(calculateDynamicLinkDistance(currentK))
     )
-    .force('charge', forceManyBody().strength(-300))
-    .force('collide', forceCollide().radius(30))
-    .force('center', forceCenter(0, 0));
+    .force("charge", forceManyBody().strength(-300))
+    .force("collide", forceCollide().radius(30))
+    .force("center", forceCenter(0, 0));
 
-  simulation.on('tick', () => {
+  simulation.on("tick", () => {
     for (const n of nodes) {
-      if (typeof n.x === 'number' && typeof n.y === 'number') {
+      if (typeof n.x === "number" && typeof n.y === "number") {
         deps.positionsRef.current.set(n.id, { x: n.x, y: n.y });
       }
     }

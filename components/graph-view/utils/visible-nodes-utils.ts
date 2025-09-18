@@ -1,8 +1,8 @@
 import type {
   GraphLink as DataLink,
   GraphNode as DataNode,
-} from './data/data-manager';
-import { buildTreeFromNodes, isMetadata } from './data/relationship-utils';
+} from "./data/data-manager";
+import { buildTreeFromNodes, isMetadata } from "./data/relationship-utils";
 
 export interface VisibleNodesParams {
   allNodes: DataNode[];
@@ -60,8 +60,8 @@ export function calculateVisibleNodeIds({
   // 2) Compute metadata connections
   const metaConnections = new Map<string, Set<string>>(); // metaId -> set(contentId)
   for (const l of allLinks) {
-    const s = typeof l.source === 'string' ? l.source : l.source.id;
-    const t = typeof l.target === 'string' ? l.target : l.target.id;
+    const s = typeof l.source === "string" ? l.source : l.source.id;
+    const t = typeof l.target === "string" ? l.target : l.target.id;
     const sIsMeta = isMetadata(s);
     const tIsMeta = isMetadata(t);
     if (sIsMeta && !tIsMeta) {

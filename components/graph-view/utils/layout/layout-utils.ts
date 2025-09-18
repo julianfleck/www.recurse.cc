@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 // Utilities shared across graph components for layout-related sync
 
@@ -63,9 +63,9 @@ export function createStructureSignature(
   edges: GraphEdge[],
   isHierarchical: boolean
 ): string {
-  const sigNodes = [...new Set(nodes.map((n) => n.id))].sort().join('|');
+  const sigNodes = [...new Set(nodes.map((n) => n.id))].sort().join("|");
   const sigEdges = [...new Set(edges.map((e) => `${e.source}->${e.target}`))]
     .sort()
-    .join('|');
-  return `${sigNodes}__${sigEdges}__mode:${isHierarchical ? 'h' : 'f'}`;
+    .join("|");
+  return `${sigNodes}__${sigEdges}__mode:${isHierarchical ? "h" : "f"}`;
 }

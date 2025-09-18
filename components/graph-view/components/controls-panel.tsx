@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   IconArrowsJoin,
@@ -11,16 +11,16 @@ import {
   IconPlayerStop,
   IconPlus,
   IconTopologyStar3,
-} from '@tabler/icons-react';
-import { Button } from '@/components/ui/button';
-import { IconToggleButton } from '@/components/ui/icon-toggle-button';
-import { Kbd } from '@/components/ui/kibo-ui/kbd';
+} from "@tabler/icons-react";
+import { Button } from "@/components/ui/button";
+import { IconToggleButton } from "@/components/ui/icon-toggle-button";
+import { Kbd } from "@/components/ui/kibo-ui/kbd";
 
 interface GraphControlsProps {
   onZoomIn: () => void;
   onZoomOut: () => void;
   onFitAll: () => void;
-  layoutMode: 'force' | 'hierarchical';
+  layoutMode: "force" | "hierarchical";
   onToggleLayoutMode: () => void;
   onExpandLevel: () => void;
   onCollapseLevel: () => void;
@@ -57,11 +57,11 @@ export function GraphControls(props: GraphControlsProps) {
         );
         return `Expanding level... (${expansionProgress.current}/${expansionProgress.total}, ${percentage}%)`;
       }
-      return 'Click to stop expanding level';
+      return "Click to stop expanding level";
     }
     return (
       <>
-        Expand next level{' '}
+        Expand next level{" "}
         <Kbd>
           <span>E</span>
         </Kbd>
@@ -71,11 +71,11 @@ export function GraphControls(props: GraphControlsProps) {
 
   const getCollapseTooltip = () => {
     if (isCollapsing) {
-      return 'Click to stop collapsing level';
+      return "Click to stop collapsing level";
     }
     return (
       <>
-        Collapse one level{' '}
+        Collapse one level{" "}
         <Kbd>
           <span>C</span>
         </Kbd>
@@ -93,7 +93,7 @@ export function GraphControls(props: GraphControlsProps) {
           size="icon"
           tooltip={
             <>
-              Zoom In{' '}
+              Zoom In{" "}
               <Kbd>
                 <span>+</span>
               </Kbd>
@@ -111,7 +111,7 @@ export function GraphControls(props: GraphControlsProps) {
           size="icon"
           tooltip={
             <>
-              Zoom Out{' '}
+              Zoom Out{" "}
               <Kbd>
                 <span>-</span>
               </Kbd>
@@ -129,7 +129,7 @@ export function GraphControls(props: GraphControlsProps) {
           size="icon"
           tooltip={
             <>
-              Fit All{' '}
+              Fit All{" "}
               <Kbd>
                 <span>F</span>
               </Kbd>
@@ -169,13 +169,13 @@ export function GraphControls(props: GraphControlsProps) {
           className="size-6"
           icon1={IconHierarchy3}
           icon2={IconTopologyStar3}
-          isIcon2Showing={layoutMode === 'hierarchical'}
+          isIcon2Showing={layoutMode === "hierarchical"}
           onClick={() => onToggleLayoutMode()}
           tooltip={
             <>
-              {layoutMode === 'force'
-                ? 'Switch to Hierarchical Layout'
-                : 'Switch to Force Layout'}{' '}
+              {layoutMode === "force"
+                ? "Switch to Hierarchical Layout"
+                : "Switch to Force Layout"}{" "}
               <Kbd>
                 <span>L</span>
               </Kbd>

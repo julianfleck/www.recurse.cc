@@ -46,12 +46,12 @@ export function PageTOCTitle(props: ComponentProps<"h2">) {
         className="-ml-1.5"
         max={1}
         size={16}
-		strokeWidth={1}
+        strokeWidth={1}
         value={(selected + 1) / Math.max(1, items.length)}
       />
-	  <div className="pl-1.5">
-	      <I18nLabel label="toc" />
-	  </div>
+      <div className="pl-1.5">
+        <I18nLabel label="toc" />
+      </div>
     </h3>
   );
 }

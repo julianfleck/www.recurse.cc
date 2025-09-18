@@ -2,17 +2,17 @@ import type {
   Simulation,
   SimulationLinkDatum,
   SimulationNodeDatum,
-} from 'd3-force';
-import type { Selection } from 'd3-selection';
-import type { ZoomBehavior } from 'd3-zoom';
-import { useRef, useState } from 'react';
-import type { Point } from '../types/types';
+} from "d3-force";
+import type { Selection } from "d3-selection";
+import type { ZoomBehavior } from "d3-zoom";
+import { useRef, useState } from "react";
+import type { Point } from "../types/types";
 import type {
   DataLink,
   DataNode,
   GraphDataManager,
-} from '../utils/data/data-manager';
-import type { HierarchicalLayout } from '../utils/layout/tree-layout';
+} from "../utils/data/data-manager";
+import type { HierarchicalLayout } from "../utils/layout/tree-layout";
 
 export interface GraphState {
   // Refs
@@ -57,7 +57,7 @@ export interface GraphState {
   collapsingCleanupRef: React.MutableRefObject<(() => void) | null>;
   suppressFocusRef: React.MutableRefObject<boolean>;
   suppressSidebarSelectRef: React.MutableRefObject<Set<string>>;
-  layoutTransitionRef: React.MutableRefObject<'force' | 'hierarchical' | null>;
+  layoutTransitionRef: React.MutableRefObject<"force" | "hierarchical" | null>;
   _layoutFitTimerRef: React.MutableRefObject<number | null>;
   suppressLayoutFitUntilRef: React.MutableRefObject<number>;
   didInitialFitRef: React.MutableRefObject<boolean>;
@@ -90,10 +90,10 @@ export interface GraphState {
   setFocusedNodeId: (value: string | null) => void;
   filteredNodeIds: Set<string> | null;
   setFilteredNodeIds: (value: Set<string> | null) => void;
-  highlightSource: 'graph' | 'sidepanel' | null;
-  setHighlightSource: (value: 'graph' | 'sidepanel' | null) => void;
-  layoutMode: 'force' | 'hierarchical';
-  setLayoutMode: (value: 'force' | 'hierarchical') => void;
+  highlightSource: "graph" | "sidepanel" | null;
+  setHighlightSource: (value: "graph" | "sidepanel" | null) => void;
+  layoutMode: "force" | "hierarchical";
+  setLayoutMode: (value: "force" | "hierarchical") => void;
 }
 
 export function useGraphState(): GraphState {
@@ -140,7 +140,7 @@ export function useGraphState(): GraphState {
   const collapsingCleanupRef = useRef<(() => void) | null>(null);
   const suppressFocusRef = useRef<boolean>(false);
   const suppressSidebarSelectRef = useRef<Set<string>>(new Set());
-  const layoutTransitionRef = useRef<'force' | 'hierarchical' | null>(null);
+  const layoutTransitionRef = useRef<"force" | "hierarchical" | null>(null);
   const _layoutFitTimerRef = useRef<number | null>(null);
   const suppressLayoutFitUntilRef = useRef<number>(0);
   const didInitialFitRef = useRef<boolean>(false);
@@ -167,10 +167,10 @@ export function useGraphState(): GraphState {
     null
   );
   const [highlightSource, setHighlightSource] = useState<
-    'graph' | 'sidepanel' | null
+    "graph" | "sidepanel" | null
   >(null);
-  const [layoutMode, setLayoutMode] = useState<'force' | 'hierarchical'>(
-    'force'
+  const [layoutMode, setLayoutMode] = useState<"force" | "hierarchical">(
+    "force"
   );
 
   return {

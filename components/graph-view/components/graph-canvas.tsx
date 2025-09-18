@@ -1,46 +1,46 @@
-'use client';
+"use client";
 
 import type {
   Simulation,
   SimulationLinkDatum,
   SimulationNodeDatum,
-} from 'd3-force';
-import { select } from 'd3-selection';
-import { zoom } from 'd3-zoom';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { TooltipProvider } from '@/components/ui/tooltip';
+} from "d3-force";
+import { select } from "d3-selection";
+import { zoom } from "d3-zoom";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   buildTreeIndex,
   graphExpandedToSidebarExpandedWithTree,
   mergeSidebarExpandedIntoGraph,
-} from '../core/graph-state';
+} from "../core/graph-state";
 import {
   collapseLevel as collapseLevelUtil,
   expandLevel as expandLevelUtil,
-} from '../hooks/use-expansion';
+} from "../hooks/use-expansion";
 // depth-based expand/collapse will be handled locally (store-driven)
 import {
   applyFocusChange as applyFocusChangeUtil,
   createBackgroundClickHandler as createBackgroundClickHandlerUtil,
-} from '../hooks/use-focus';
-import { useGraphData } from '../hooks/use-graph-data';
-import { useGraphInteractions } from '../hooks/use-graph-interactions';
-import { useGraphState } from '../hooks/use-graph-state';
+} from "../hooks/use-focus";
+import { useGraphData } from "../hooks/use-graph-data";
+import { useGraphInteractions } from "../hooks/use-graph-interactions";
+import { useGraphState } from "../hooks/use-graph-state";
 import {
   healLayout as healLayoutUtil,
   updateHierarchicalLayout as updateHierarchicalLayoutUtil,
-} from '../hooks/use-layout';
+} from "../hooks/use-layout";
 import {
   renderEdges as renderEdgesUtil,
   renderNodePositions as renderNodePositionsUtil,
   scheduleRender as scheduleRenderUtil,
-} from '../hooks/use-render';
+} from "../hooks/use-render";
 import {
   buildSimData as buildSimDataUtil,
   calculateDynamicLinkDistance as calculateDynamicLinkDistanceUtil,
   createForceSimulation as createForceSimulationUtil,
-} from '../hooks/use-simulation';
+} from "../hooks/use-simulation";
 import {
   applyTransform as applyTransformUtil,
   fitAll as fitAllUtil,
@@ -49,8 +49,8 @@ import {
   scheduleFitToView as scheduleFitToViewUtil,
   zoomIn as zoomInUtil,
   zoomOut as zoomOutUtil,
-} from '../hooks/use-zoom';
-import { useUIStore } from '../store/ui-store';
+} from "../hooks/use-zoom";
+import { useUIStore } from "../store/ui-store";
 // Standalone version - no store dependencies
 // import { useAuthStore } from '@/hooks/use-auth';
 // import { useGraphFocusStore } from '@/hooks/use-graph';
@@ -59,17 +59,17 @@ import { useUIStore } from '../store/ui-store';
 import type {
   GraphLink as DataLink,
   GraphNode as DataNode,
-} from '../utils/data/data-manager';
-import { GraphDataManager } from '../utils/data/data-manager';
+} from "../utils/data/data-manager";
+import { GraphDataManager } from "../utils/data/data-manager";
 import {
   buildParentChildMaps,
   findRootDocumentIds,
   getNodeDepth,
   isMetadata,
-} from '../utils/data/relationship-utils';
-import { calculateDescendantsByDepth } from '../utils/descendants-utils';
+} from "../utils/data/relationship-utils";
+import { calculateDescendantsByDepth } from "../utils/descendants-utils";
 // Note: expansion helpers no longer imported; main's expand/collapse logic is inlined below
-import type { HierarchicalLayout } from '../utils/layout/tree-layout';
+import type { HierarchicalLayout } from "../utils/layout/tree-layout";
 import {
   computeEdgeStrokeWidth,
   computeNodeSize,
@@ -85,10 +85,10 @@ import {
   getNodeLayerClasses,
   getNodeTailwindClasses,
   getSvgContainerClasses,
-} from '../utils/styling/node-styles';
-import { GraphControls } from './controls-panel';
-import { GraphNodeRenderer } from './node-renderer';
-import { GraphTreeSidebar } from './tree-sidebar';
+} from "../utils/styling/node-styles";
+import { GraphControls } from "./controls-panel";
+import { GraphNodeRenderer } from "./node-renderer";
+import { GraphTreeSidebar } from "./tree-sidebar";
 
 // metadata identification is implemented inside the component to leverage node types
 
@@ -130,17 +130,17 @@ export interface GraphViewProps {
   // When true, hides the fullscreen button/control (used for nested fullscreen view)
   disableFullscreenControl?: boolean;
   // Optional modifier required for wheel zoom (trackpad). When 'cmd', only meta/ctrl + wheel zooms
-  zoomModifier?: '' | 'cmd';
+  zoomModifier?: "" | "cmd";
 }
 
 export function GraphView({
   data,
   dataUrl,
-  className = '',
+  className = "",
   withSidebar = false,
   depth,
   disableFullscreenControl = false,
-  zoomModifier = '',
+  zoomModifier = "",
 }: GraphViewProps) {
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   // Graph state management
@@ -386,7 +386,7 @@ export function GraphView({
 
   // Local action functions to replace store actions
   const _setHighlightedNode = useCallback(
-    (nodeId: string | null, _source?: 'graph' | 'sidepanel') => {
+    (nodeId: string | null, _source?: "graph" | "sidepanel") => {
       setHighlightedNodeId(nodeId);
       // no-op for highlightSource in standalone mode
     },
@@ -452,16 +452,16 @@ export function GraphView({
       return allLinks
         .filter((link) => {
           const sourceId =
-            typeof link.source === 'string' ? link.source : link.source.id;
+            typeof link.source === "string" ? link.source : link.source.id;
           const targetId =
-            typeof link.target === 'string' ? link.target : link.target.id;
+            typeof link.target === "string" ? link.target : link.target.id;
           return nodeIds.includes(sourceId) || nodeIds.includes(targetId);
         })
         .map((link) => ({
           source:
-            typeof link.source === 'string' ? link.source : link.source.id,
+            typeof link.source === "string" ? link.source : link.source.id,
           target:
-            typeof link.target === 'string' ? link.target : link.target.id,
+            typeof link.target === "string" ? link.target : link.target.id,
         }));
     },
     [allLinks]
@@ -518,7 +518,7 @@ export function GraphView({
       if (!sim) {
         return;
       }
-      const linkForce = sim.force('link') as
+      const linkForce = sim.force("link") as
         | ForceLink<SimNode, SimLink>
         | undefined;
       if (!linkForce) {
@@ -547,8 +547,8 @@ export function GraphView({
     const nodes = sim.nodes() as SimNode[];
     for (const n of nodes) {
       const p = positionsRef.current.get(n.id);
-      const x = typeof n.x === 'number' ? n.x : (p?.x ?? 0);
-      const y = typeof n.y === 'number' ? n.y : (p?.y ?? 0);
+      const x = typeof n.x === "number" ? n.x : (p?.x ?? 0);
+      const y = typeof n.y === "number" ? n.y : (p?.y ?? 0);
       n.fx = x;
       n.fy = y;
     }
@@ -600,8 +600,8 @@ export function GraphView({
           summary: n.summary ?? null,
         })),
         linksIn.map((l) => ({
-          source: typeof l.source === 'string' ? l.source : l.source.id,
-          target: typeof l.target === 'string' ? l.target : l.target.id,
+          source: typeof l.source === "string" ? l.source : l.source.id,
+          target: typeof l.target === "string" ? l.target : l.target.id,
         }))
       ),
     []
@@ -657,8 +657,8 @@ export function GraphView({
   const buildParentMapFromLinks = useCallback((): Map<string, string> => {
     const parentByChild = new Map<string, string>();
     for (const l of allLinks) {
-      const s = typeof l.source === 'string' ? l.source : l.source.id;
-      const t = typeof l.target === 'string' ? l.target : l.target.id;
+      const s = typeof l.source === "string" ? l.source : l.source.id;
+      const t = typeof l.target === "string" ? l.target : l.target.id;
       parentByChild.set(t, s);
     }
     return parentByChild;
@@ -762,7 +762,7 @@ export function GraphView({
         ) as SVGPathElement | null;
         if (pathElement) {
           pathElement.style.transition = `opacity ${durationMs}ms ease-out`;
-          pathElement.style.opacity = '0';
+          pathElement.style.opacity = "0";
         }
       }
     },
@@ -795,7 +795,7 @@ export function GraphView({
       if (dataManagerRef.current) {
         dataManagerRef.current.resetFetchedStatus(nodeId);
       }
-      if (layoutMode === 'force') {
+      if (layoutMode === "force") {
         unpinAllSimulationNodes();
       }
       // Important: first trigger the underlying visibility change via callback
@@ -834,7 +834,7 @@ export function GraphView({
       if (!collapseTargetPos) {
         return;
       }
-      if (layoutMode === 'force') {
+      if (layoutMode === "force") {
         pinAllSimulationNodes();
       }
       // Mark this collapse as local to avoid double-trigger by external watcher
@@ -848,9 +848,9 @@ export function GraphView({
         let contentConnections = 0;
         for (const link of allLinks) {
           const s =
-            typeof link.source === 'string' ? link.source : link.source.id;
+            typeof link.source === "string" ? link.source : link.source.id;
           const t =
-            typeof link.target === 'string' ? link.target : link.target.id;
+            typeof link.target === "string" ? link.target : link.target.id;
           if (s === metaId && !isMetadata(t)) {
             contentConnections++;
           }
@@ -967,10 +967,10 @@ export function GraphView({
           return false;
         }
         // If a modifier is required for zoom, allow pan but require meta/ctrl for wheel/dblclick zoom
-        if (zoomModifier === 'cmd' && event && !isFullscreenOpen) {
+        if (zoomModifier === "cmd" && event && !isFullscreenOpen) {
           const type = event.type as string | undefined;
           // Only restrict wheel-based zoom; allow double-click zoom regardless
-          if (type === 'wheel') {
+          if (type === "wheel") {
             const hasCmd = !!(event.metaKey || event.ctrlKey);
             if (!hasCmd) {
               return false;
@@ -980,27 +980,27 @@ export function GraphView({
         return true;
       })
       .scaleExtent([0.1, 3])
-      .on('start', () => {
+      .on("start", () => {
         isZoomingRef.current = true;
-        if (layoutMode === 'force') {
+        if (layoutMode === "force") {
           pinAllSimulationNodes();
         }
       })
-      .on('zoom', (event) => {
+      .on("zoom", (event) => {
         const t = event.transform;
         transformRef.current = { x: t.x, y: t.y, k: t.k };
         applyTransform();
         // Refresh visuals that depend on zoom (sizes, offsets, stroke widths)
         renderNodePositions();
         renderEdges();
-        if (layoutMode === 'force') {
+        if (layoutMode === "force") {
           // Keep link lengths in sync with zoom without reheating (no movement)
           updateLinkForceForZoom(t.k, { reheat: false });
         }
       })
-      .on('end', () => {
+      .on("end", () => {
         isZoomingRef.current = false;
-        if (layoutMode === 'force') {
+        if (layoutMode === "force") {
           unpinAllSimulationNodes();
           const k = transformRef.current.k || 1;
           // Apply final distance and resume simulation to settle briefly
@@ -1010,7 +1010,7 @@ export function GraphView({
     zoomBehaviorRef.current = behavior;
     surfaceSel.call(behavior);
     return () => {
-      surfaceSel.on('.zoom', null);
+      surfaceSel.on(".zoom", null);
     };
   }, [
     // Removed layoutMode to prevent zoom behavior recreation on layout changes
@@ -1113,8 +1113,8 @@ export function GraphView({
     const handler = () => {
       recenterToCurrentZoom();
     };
-    window.addEventListener('resize', handler);
-    return () => window.removeEventListener('resize', handler);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
   }, [recenterToCurrentZoom]);
 
   // Request a single authoritative fit during a layout transition
@@ -1122,7 +1122,7 @@ export function GraphView({
   // Track if initial fit ran to avoid repeated runs on incremental updates
   // Force mode: build or update simulation when structure changes
   useEffect(() => {
-    if (layoutMode !== 'force') {
+    if (layoutMode !== "force") {
       return;
     }
 
@@ -1188,7 +1188,7 @@ export function GraphView({
 
   // Hierarchical mode: compute positions with layout utility
   useEffect(() => {
-    if (layoutMode !== 'hierarchical') {
+    if (layoutMode !== "hierarchical") {
       return;
     }
     updateHierarchicalLayoutUtil(
@@ -1208,7 +1208,7 @@ export function GraphView({
 
   // Helper function to check if a node is expandable (not a metadata node)
   const isNodeExpandable = useCallback((nodeType: string) => {
-    return !['tag', 'hypernym', 'hyponym'].includes(nodeType);
+    return !["tag", "hypernym", "hyponym"].includes(nodeType);
   }, []);
 
   const canCollapseNode = useCallback(
@@ -1217,7 +1217,7 @@ export function GraphView({
       let hasChildren = false;
       for (const link of allLinks) {
         const sourceId =
-          typeof link.source === 'string' ? link.source : link.source.id;
+          typeof link.source === "string" ? link.source : link.source.id;
         if (sourceId === nodeId) {
           hasChildren = true;
           break;
@@ -1279,10 +1279,10 @@ export function GraphView({
       if (!svgRef.current) {
         return;
       }
-      const delay = layoutMode === 'force' ? 250 : 0;
+      const delay = layoutMode === "force" ? 250 : 0;
       window.setTimeout(() => {
         window.dispatchEvent(
-          new CustomEvent('fit:batchComplete:request', {
+          new CustomEvent("fit:batchComplete:request", {
             detail: {
               visibleCount: visibleNodes.length,
               focusedNodeId,
@@ -1291,9 +1291,9 @@ export function GraphView({
         );
       }, delay);
     };
-    window.addEventListener('graph:batchExpansionComplete', handler);
+    window.addEventListener("graph:batchExpansionComplete", handler);
     return () => {
-      window.removeEventListener('graph:batchExpansionComplete', handler);
+      window.removeEventListener("graph:batchExpansionComplete", handler);
     };
   }, [visibleNodes, layoutMode, focusedNodeId]);
 
@@ -1306,7 +1306,7 @@ export function GraphView({
       return; // already handled this mode
     }
     layoutTransitionRef.current = layoutMode;
-    const delay = layoutMode === 'hierarchical' ? 0 : 800;
+    const delay = layoutMode === "hierarchical" ? 0 : 800;
     const t = window.setTimeout(() => {
       // If a subgraph fit was requested recently, skip the layout fit
       if (Date.now() < suppressLayoutFitUntilRef.current) {
@@ -1428,7 +1428,7 @@ export function GraphView({
     (nodeId: string): boolean => {
       return allLinks.some(
         (link) =>
-          (typeof link.source === 'string' ? link.source : link.source.id) ===
+          (typeof link.source === "string" ? link.source : link.source.id) ===
           nodeId
       );
     },
@@ -1536,7 +1536,7 @@ export function GraphView({
 
   // Layout toggle (fit handled by layout effects to avoid double fits)
   const toggleLayoutMode = useCallback(() => {
-    setLayoutMode(layoutMode === 'force' ? 'hierarchical' : 'force');
+    setLayoutMode(layoutMode === "force" ? "hierarchical" : "force");
   }, [layoutMode]);
 
   // Global keyboard shortcuts handler
@@ -1551,27 +1551,30 @@ export function GraphView({
       if (t) {
         const tagNameRaw = (t as unknown as { tagName?: string }).tagName;
         const tag =
-          typeof tagNameRaw === 'string' ? tagNameRaw.toLowerCase() : '';
+          typeof tagNameRaw === "string" ? tagNameRaw.toLowerCase() : "";
         const isEditable =
           t.isContentEditable || !!t.closest?.('[contenteditable="true"]');
         if (
           isEditable ||
-          tag === 'input' ||
-          tag === 'textarea' ||
-          tag === 'select'
+          tag === "input" ||
+          tag === "textarea" ||
+          tag === "select"
         ) {
           return;
         }
       }
       // Handle keyboard shortcuts (lowercase only)
-      if (event.key === '0') {
+      if (event.key === "0") {
         const ae = document.activeElement as HTMLElement | null;
         if (ae && containerRef.current && containerRef.current.contains(ae)) {
           ae.blur();
         }
         event.preventDefault();
         fitAll();
-      } else if ((event.shiftKey && event.key.toLowerCase() === 'f') || event.key === 'F') {
+      } else if (
+        (event.shiftKey && event.key.toLowerCase() === "f") ||
+        event.key === "F"
+      ) {
         const ae = document.activeElement as HTMLElement | null;
         if (ae && containerRef.current && containerRef.current.contains(ae)) {
           ae.blur();
@@ -1580,21 +1583,21 @@ export function GraphView({
           event.preventDefault();
           setIsFullscreenOpen(true);
         }
-      } else if (event.key === 'l') {
+      } else if (event.key === "l") {
         const ae = document.activeElement as HTMLElement | null;
         if (ae && containerRef.current && containerRef.current.contains(ae)) {
           ae.blur();
         }
         event.preventDefault();
         toggleLayoutMode();
-      } else if (event.key === 'e') {
+      } else if (event.key === "e") {
         const ae = document.activeElement as HTMLElement | null;
         if (ae && containerRef.current && containerRef.current.contains(ae)) {
           ae.blur();
         }
         event.preventDefault();
         expandLevel();
-      } else if (event.key === 'c') {
+      } else if (event.key === "c") {
         const ae = document.activeElement as HTMLElement | null;
         if (ae && containerRef.current && containerRef.current.contains(ae)) {
           ae.blur();
@@ -1608,9 +1611,9 @@ export function GraphView({
 
   // Set up global keyboard event listener
   useEffect(() => {
-    document.addEventListener('keydown', handleGlobalKeyDown);
+    document.addEventListener("keydown", handleGlobalKeyDown);
     return () => {
-      document.removeEventListener('keydown', handleGlobalKeyDown);
+      document.removeEventListener("keydown", handleGlobalKeyDown);
     };
   }, [handleGlobalKeyDown]);
 
@@ -1629,7 +1632,7 @@ export function GraphView({
         try {
           const ids = Array.from(visibleNodeIds);
           if (ids.length > 0) {
-            resetZoomToFit(ids, 140, 'fullscreen-open');
+            resetZoomToFit(ids, 140, "fullscreen-open");
           } else {
             fitAll();
           }
@@ -1650,7 +1653,7 @@ export function GraphView({
         try {
           const ids = Array.from(visibleNodeIds);
           if (ids.length > 0) {
-            resetZoomToFit(ids, 120, 'fullscreen-close');
+            resetZoomToFit(ids, 120, "fullscreen-close");
           } else {
             fitAll();
           }
@@ -1686,7 +1689,7 @@ export function GraphView({
               buildTreeIndex(treeData)
             )}
             highlightedNodeId={highlightedNodeId}
-            mode={data || dataUrl ? 'json' : 'api'}
+            mode={data || dataUrl ? "json" : "api"}
             onExpandedIdsChange={(expandedIds) => {
               // Build a quick children map from current tree data
               const childrenById = new Map<string, string[]>();
@@ -1806,7 +1809,7 @@ export function GraphView({
               }
               if (finalSet.size !== expandedNodes.size) {
                 setExpandedNodes(finalSet);
-                const delay = layoutMode === 'force' ? 250 : 0;
+                const delay = layoutMode === "force" ? 250 : 0;
                 if (collapsedNow.length > 0) {
                   window.setTimeout(() => {
                     fitAll();
@@ -1818,7 +1821,7 @@ export function GraphView({
                     suppressLayoutFitUntilRef.current = Date.now() + 1500;
                     if (targetId) {
                       const ids = computeSubgraphIds([targetId]);
-                      resetZoomToFit(Array.from(ids), 140, 'sidebar-expand');
+                      resetZoomToFit(Array.from(ids), 140, "sidebar-expand");
                     }
                   }, delay);
                 }
@@ -1827,7 +1830,7 @@ export function GraphView({
               for (const id of finalSet) {
                 if (!expandedNodes.has(id)) {
                   setExpandedNodes(finalSet);
-                  const delay = layoutMode === 'force' ? 250 : 0;
+                  const delay = layoutMode === "force" ? 250 : 0;
                   if (collapsedNow.length > 0) {
                     window.setTimeout(() => {
                       fitAll();
@@ -1838,7 +1841,7 @@ export function GraphView({
                       suppressLayoutFitUntilRef.current = Date.now() + 1500;
                       if (targetId) {
                         const ids = computeSubgraphIds([targetId]);
-                        resetZoomToFit(Array.from(ids), 140, 'sidebar-expand');
+                        resetZoomToFit(Array.from(ids), 140, "sidebar-expand");
                       }
                     }, delay);
                   }
@@ -1956,7 +1959,7 @@ export function GraphView({
       <Dialog onOpenChange={setIsFullscreenOpen} open={true}>
         <DialogContent
           className="p-0 outline-none outline-offset-0 focus:outline-none focus-visible:outline-none"
-          style={{ width: '90vw', maxWidth: '90vw', height: '90vh' }}
+          style={{ width: "90vw", maxWidth: "90vw", height: "90vh" }}
         >
           <DialogTitle className="sr-only">Graph visualization</DialogTitle>
           {content}

@@ -1,9 +1,9 @@
-import type React from 'react';
+import type React from "react";
 import type {
   GraphLink as DataLink,
   GraphNode as DataNode,
   GraphDataManager,
-} from '../utils/data/data-manager';
+} from "../utils/data/data-manager";
 
 export type ExpansionDeps = {
   // Graph structure/state
@@ -204,10 +204,10 @@ export function collapseLevel(deps: CollapseDeps): void {
       const out: string[] = [];
       for (const link of allLinks) {
         const sourceId =
-          typeof link.source === 'string' ? link.source : link.source.id;
+          typeof link.source === "string" ? link.source : link.source.id;
         if (sourceId === node.id) {
           out.push(
-            typeof link.target === 'string' ? link.target : link.target.id
+            typeof link.target === "string" ? link.target : link.target.id
           );
         }
       }
@@ -242,8 +242,8 @@ export function collapseLevel(deps: CollapseDeps): void {
       }
       let contentConnections = 0;
       for (const L of allLinks) {
-        const ss = typeof L.source === 'string' ? L.source : L.source.id;
-        const tt = typeof L.target === 'string' ? L.target : L.target.id;
+        const ss = typeof L.source === "string" ? L.source : L.source.id;
+        const tt = typeof L.target === "string" ? L.target : L.target.id;
         if (ss === metaId && !isMetadata(tt)) {
           contentConnections++;
         }
@@ -310,7 +310,7 @@ export function collapseLevel(deps: CollapseDeps): void {
       const delayMs = baseDelayMs * (idx % 10);
       window.setTimeout(() => {
         el.style.transition = `opacity ${fadeDurationMs}ms ease-out`;
-        el.style.opacity = '0';
+        el.style.opacity = "0";
       }, delayMs);
     }
 

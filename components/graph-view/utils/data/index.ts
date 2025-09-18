@@ -1,3 +1,3 @@
 // Data utils exports
-export * from './data-manager';
-export * from './relationship-utils';
+export * from "./data-manager";
+export * from "./relationship-utils";

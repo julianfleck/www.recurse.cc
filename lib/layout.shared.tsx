@@ -10,37 +10,37 @@ import { Status } from "../components/status";
  * Docs Layout: app/docs/layout.tsx
  */
 export function baseOptions(): BaseLayoutProps {
-	return {
-		nav: {
-			title: (
-				<>
-					<svg
-						width="24"
-						height="24"
-						xmlns="http://www.w3.org/2000/svg"
-						aria-label="Logo"
-					>
-						<circle cx={12} cy={12} r={12} fill="currentColor" />
-					</svg>
-					recurse.cc
-				</>
-			),
-		},
-		// see https://fumadocs.dev/docs/ui/navigation/links
-		links: [],
-	};
+  return {
+    nav: {
+      title: (
+        <>
+          <svg
+            aria-label="Logo"
+            height="24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx={12} cy={12} fill="currentColor" r={12} />
+          </svg>
+          recurse.cc
+        </>
+      ),
+    },
+    // see https://fumadocs.dev/docs/ui/navigation/links
+    links: [],
+  };
 }
 
 /**
  * Docs-specific layout configurations
  */
 export function docsOptions(): BaseLayoutProps & {
-	sidebar?: { footer?: ReactNode };
+  sidebar?: { footer?: ReactNode };
 } {
-	return {
-		...baseOptions(),
-		sidebar: {
-			footer: <Status />,
-		},
-	};
+  return {
+    ...baseOptions(),
+    sidebar: {
+      footer: <Status />,
+    },
+  };
 }

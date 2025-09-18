@@ -1,5 +1,5 @@
 {
-	"title": "Guide",
-	"defaultOpen": true,
-	"pages": ["setup", "Adding Content", "Retrieving Content", "Applications"]
+  "title": "Guide",
+  "defaultOpen": true,
+  "pages": ["setup", "Adding Content", "Retrieving Content", "Applications"]
 }

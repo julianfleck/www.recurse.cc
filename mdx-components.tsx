@@ -28,8 +28,8 @@ import {
 } from "lucide-react";
 import type { MDXComponents } from "mdx/types";
 import { createElement } from "react";
-import { ExampleGraphs } from "@/components/examples/graphs/ExampleGraphs";
 import { AnimatedGraphExample } from "@/components/examples/graphs/AnimatedGraphExample";
+import { ExampleGraphs } from "@/components/examples/graphs/ExampleGraphs";
 import { FAQ } from "@/components/faq";
 import { GraphView } from "@/components/graph-view";
 import { openapi } from "@/lib/openapi";
@@ -103,10 +103,10 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     Card,
     Cards,
     FAQ,
-		GraphView,
-		ExampleGraphs,
-		AnimatedGraphExample,
-		APIPage: (props) => (
+    GraphView,
+    ExampleGraphs,
+    AnimatedGraphExample,
+    APIPage: (props) => (
       <div className="fd-openapi">
         <APIPage {...openapi.getAPIPageProps(props)} />
       </div>

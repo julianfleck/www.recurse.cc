@@ -24,21 +24,29 @@ function initialsFromName(name?: string, email?: string) {
   return source.slice(0, 2).toUpperCase();
 }
 
-export function UserProfile({ showDashboardLink = false }: { showDashboardLink?: boolean }) {
+export function UserProfile({
+  showDashboardLink = false,
+}: {
+  showDashboardLink?: boolean;
+}) {
   const { user: sdkUser, isAuthenticated, isLoading } = useAuth0();
   const storeUser = useAuthStore((s) => s.user);
   const storeToken = useAuthStore((s) => s.accessToken);
   const displayUser = (isAuthenticated ? sdkUser : storeUser) as
     | { name?: string; email?: string; picture?: string }
     | undefined;
-  const isClientAuthenticated = Boolean(isAuthenticated || storeToken || storeUser);
+  const isClientAuthenticated = Boolean(
+    isAuthenticated || storeToken || storeUser
+  );
 
   const avatarFallback = useMemo(
     () => initialsFromName(displayUser?.name, displayUser?.email),
     [displayUser?.name, displayUser?.email]
   );
 
-  const isLikelyGoogleDefault = Boolean(displayUser?.picture?.includes("googleusercontent.com"));
+  const isLikelyGoogleDefault = Boolean(
+    displayUser?.picture?.includes("googleusercontent.com")
+  );
   const showImage = Boolean(displayUser?.picture && !isLikelyGoogleDefault);
 
   if (isLoading || !isClientAuthenticated) {
@@ -51,7 +59,10 @@ export function UserProfile({ showDashboardLink = false }: { showDashboardLink?:
         <Button className="rounded-full" size="icon" variant="ghost">
           <Avatar className="size-7">
             {showImage ? (
-              <AvatarImage alt={displayUser?.name ?? "User"} src={displayUser?.picture} />
+              <AvatarImage
+                alt={displayUser?.name ?? "User"}
+                src={displayUser?.picture}
+              />
             ) : null}
             <AvatarFallback className="bg-accent text-accent-foreground">
               {avatarFallback}
@@ -63,15 +74,20 @@ export function UserProfile({ showDashboardLink = false }: { showDashboardLink?:
         <DropdownMenuLabel>
           <div className="flex items-center gap-3">
             <Avatar className="size-8">
-            {showImage ? (
-              <AvatarImage alt={displayUser?.name ?? "User"} src={displayUser?.picture} />
-            ) : null}
+              {showImage ? (
+                <AvatarImage
+                  alt={displayUser?.name ?? "User"}
+                  src={displayUser?.picture}
+                />
+              ) : null}
               <AvatarFallback className="bg-accent text-accent-foreground">
                 {avatarFallback}
               </AvatarFallback>
             </Avatar>
             <div className="flex min-w-0 flex-col">
-              <span className="truncate font-medium text-sm">{displayUser?.name || "Account"}</span>
+              <span className="truncate font-medium text-sm">
+                {displayUser?.name || "Account"}
+              </span>
               <span className="truncate text-fd-muted-foreground text-xs">
                 {displayUser?.email}
               </span>

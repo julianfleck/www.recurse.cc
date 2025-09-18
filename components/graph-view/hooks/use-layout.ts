@@ -1,6 +1,6 @@
-import type { Simulation } from 'd3-force';
-import type React from 'react';
-import { HierarchicalLayout } from '../utils/layout/tree-layout';
+import type { Simulation } from "d3-force";
+import type React from "react";
+import { HierarchicalLayout } from "../utils/layout/tree-layout";
 
 type Point = { x: number; y: number };
 
@@ -8,11 +8,11 @@ export function healLayout(
   deps: {
     simulationRef: React.MutableRefObject<Simulation<unknown, unknown> | null>;
   },
-  layoutMode: 'force' | 'hierarchical'
+  layoutMode: "force" | "hierarchical"
 ): void {
   const { simulationRef } = deps;
   const sim = simulationRef.current;
-  if (sim && layoutMode === 'force') {
+  if (sim && layoutMode === "force") {
     sim.alpha(0.3).alphaTarget(0.1).restart();
     window.setTimeout(() => {
       if (simulationRef.current) {
@@ -51,8 +51,8 @@ export function updateHierarchicalLayout(
     summary: n.summary ?? undefined,
   }));
   const links = visibleLinks.map((l) => ({
-    source: typeof l.source === 'string' ? l.source : l.source.id,
-    target: typeof l.target === 'string' ? l.target : l.target.id,
+    source: typeof l.source === "string" ? l.source : l.source.id,
+    target: typeof l.target === "string" ? l.target : l.target.id,
   }));
   layout.updateData(nodes, links);
   const positions = layout.getNodePositions();

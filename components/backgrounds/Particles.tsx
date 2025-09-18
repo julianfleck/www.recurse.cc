@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 interface Particle {
   x: number;
@@ -12,7 +12,7 @@ interface Particle {
   targetOpacity: number;
   life: number;
   maxLife: number;
-  fadeDirection: 'in' | 'out';
+  fadeDirection: "in" | "out";
   baseX: number;
   baseY: number;
   depth: number;
@@ -31,9 +31,9 @@ interface ParticlesProps {
 }
 
 export default function Particles({
-  className = '',
+  className = "",
   particleCount = 50,
-  particleColor = '#ffffff',
+  particleColor = "#ffffff",
   particleSize = 2,
   speed = 0.5,
   enableMouseFollow = true,
@@ -53,14 +53,14 @@ export default function Particles({
       return;
     }
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) {
       return;
     }
 
     // Get computed color if using currentColor
     const getActualColor = () => {
-      if (particleColor === 'currentColor') {
+      if (particleColor === "currentColor") {
         const computedStyle = window.getComputedStyle(canvas);
         return computedStyle.color;
       }
@@ -69,7 +69,7 @@ export default function Particles({
 
     // Detect if we're in dark mode
     const isDarkMode = () => {
-      return document.documentElement.classList.contains('dark');
+      return document.documentElement.classList.contains("dark");
     };
 
     const resizeCanvas = () => {
@@ -85,8 +85,12 @@ export default function Particles({
     const createParticle = (): Particle => {
       const targetOpacity = Math.random() * 0.5 + 0.2;
       const maxLife = Math.random() * 300 + 200; // 200-500 frames
-      const baseX = Math.random() * (isViewportSized ? window.innerWidth : canvas.offsetWidth);
-      const baseY = Math.random() * (isViewportSized ? window.innerHeight : canvas.offsetHeight);
+      const baseX =
+        Math.random() *
+        (isViewportSized ? window.innerWidth : canvas.offsetWidth);
+      const baseY =
+        Math.random() *
+        (isViewportSized ? window.innerHeight : canvas.offsetHeight);
       const depth = Math.random() * 0.8 + 0.2; // 0.2 to 1.0 depth layers
       return {
         x: baseX,
@@ -100,7 +104,7 @@ export default function Particles({
         targetOpacity,
         life: 0,
         maxLife,
-        fadeDirection: 'in',
+        fadeDirection: "in",
         depth,
       };
     };
@@ -113,7 +117,7 @@ export default function Particles({
         particle.life = Math.random() * particle.maxLife * 0.5;
         if (particle.life > particle.maxLife * 0.3) {
           particle.opacity = particle.targetOpacity;
-          particle.fadeDirection = 'out';
+          particle.fadeDirection = "out";
         }
         particlesRef.current.push(particle);
       }
@@ -141,17 +145,17 @@ export default function Particles({
 
         // Apply parallax effect based on mouse position and scroll position
         if (enableMouseFollow) {
-          const centerX = isViewportSized ? window.innerWidth / 2 : canvas.offsetWidth / 2;
-          const centerY = isViewportSized ? window.innerHeight / 2 : canvas.offsetHeight / 2;
+          const centerX = isViewportSized
+            ? window.innerWidth / 2
+            : canvas.offsetWidth / 2;
+          const centerY = isViewportSized
+            ? window.innerHeight / 2
+            : canvas.offsetHeight / 2;
 
           const parallaxX =
-            (mouseRef.current.x - centerX) *
-            parallaxStrength *
-            particle.depth;
+            (mouseRef.current.x - centerX) * parallaxStrength * particle.depth;
           const parallaxY =
-            (mouseRef.current.y - centerY) *
-            parallaxStrength *
-            particle.depth;
+            (mouseRef.current.y - centerY) * parallaxStrength * particle.depth;
 
           // Add scroll-based parallax (different layers move at different speeds)
           // Negative value so particles move up when scrolling down (natural parallax)
@@ -169,7 +173,7 @@ export default function Particles({
         particle.life++;
 
         // Handle fading
-        if (particle.fadeDirection === 'in') {
+        if (particle.fadeDirection === "in") {
           // Fade in phase
           const fadeProgress = Math.min(
             particle.life / (particle.maxLife * 0.2),
@@ -179,7 +183,7 @@ export default function Particles({
 
           // Switch to fade out when reaching 70% of max life
           if (particle.life > particle.maxLife * 0.7) {
-            particle.fadeDirection = 'out';
+            particle.fadeDirection = "out";
           }
         } else {
           // Fade out phase
@@ -269,22 +273,22 @@ export default function Particles({
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     if (enableMouseFollow) {
       // Add mouse listener to document since particles are in a fixed container
-      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener("mousemove", handleMouseMove);
       // Add scroll listener for scroll-based parallax
-      window.addEventListener('scroll', handleScroll);
+      window.addEventListener("scroll", handleScroll);
     }
 
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
       if (enableMouseFollow) {
-        document.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('scroll', handleScroll);
+        document.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("scroll", handleScroll);
       }
     };
   }, [
@@ -299,9 +303,9 @@ export default function Particles({
 
   return (
     <canvas
-      className={`${isViewportSized ? 'fixed inset-0 h-screen w-screen' : 'absolute inset-0 h-full w-full'} ${className}`}
+      className={`${isViewportSized ? "fixed inset-0 h-screen w-screen" : "absolute inset-0 h-full w-full"} ${className}`}
       ref={canvasRef}
-      style={{ pointerEvents: 'none', zIndex }}
+      style={{ pointerEvents: "none", zIndex }}
     />
   );
 }

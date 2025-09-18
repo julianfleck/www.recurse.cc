@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useCallback } from 'react';
+import { useCallback } from "react";
 import type {
   GraphLink as DataLink,
   GraphNode as DataNode,
-} from '../utils/data/data-manager';
+} from "../utils/data/data-manager";
 import {
   buildParentChildMaps,
   findRootDocumentIds,
   isMetadata,
-} from '../utils/data/relationship-utils';
+} from "../utils/data/relationship-utils";
 
 interface UseGraphDataProcessingProps {
   allNodes: DataNode[];
@@ -66,8 +66,8 @@ export function useGraphDataProcessing({
           continue;
         }
 
-        const s = typeof l.source === 'string' ? l.source : l.source.id;
-        const t = typeof l.target === 'string' ? l.target : l.target.id;
+        const s = typeof l.source === "string" ? l.source : l.source.id;
+        const t = typeof l.target === "string" ? l.target : l.target.id;
 
         const sIsMeta = isMetadata(s);
         const tIsMeta = isMetadata(t);
@@ -138,8 +138,8 @@ export function useGraphDataProcessing({
           return true;
         })
         .map((l) => ({
-          s: typeof l.source === 'string' ? l.source : l.source.id,
-          t: typeof l.target === 'string' ? l.target : l.target.id,
+          s: typeof l.source === "string" ? l.source : l.source.id,
+          t: typeof l.target === "string" ? l.target : l.target.id,
         }));
       while (queue.length > 0) {
         const cur = queue.shift() as string;

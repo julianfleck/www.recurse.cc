@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useCallback, useMemo, useState } from 'react';
-import { getNodeIcons } from '../config/icon-config';
+import { useCallback, useMemo, useState } from "react";
+import { getNodeIcons } from "../config/icon-config";
 import {
   defaultGraphVisualConfig,
   getVisualForLabel,
   normalizeTypeLabel,
-} from '../config/visual-config';
+} from "../config/visual-config";
 import {
   TreeExpander,
   TreeIcon,
@@ -16,12 +16,12 @@ import {
   TreeNodeTrigger,
   TreeProvider,
   TreeView,
-} from '../tree';
+} from "../tree";
 import type {
   GraphLink as DataLink,
   GraphNode as DataNode,
-} from '../utils/data/data-manager';
-import { SidebarSearch, type SidebarSearchMode } from './sidebar-search';
+} from "../utils/data/data-manager";
+import { SidebarSearch, type SidebarSearchMode } from "./sidebar-search";
 
 // Recursive component to render tree nodes
 const TreeNodeComponent = ({
@@ -33,24 +33,24 @@ const TreeNodeComponent = ({
   const hasChildren = Array.isArray(node.children) && node.children.length > 0;
   const isHighlighted = highlightedNodeId === node.id;
   const spec = getVisualForLabel(
-    String(node.type || node.label || ''),
+    String(node.type || node.label || ""),
     defaultGraphVisualConfig
   );
 
-  const nodeTypeKey = normalizeTypeLabel(String(node.type || node.label || ''));
+  const nodeTypeKey = normalizeTypeLabel(String(node.type || node.label || ""));
   const { iconClosed, iconOpen } = getNodeIcons(nodeTypeKey, {
-    size: 'h-4 w-4',
+    size: "h-4 w-4",
     strokeWidth: 1.5,
   });
 
   return (
     <TreeNode level={level} nodeId={node.id}>
       <TreeNodeTrigger
-        className={isHighlighted ? 'bg-accent' : ''}
+        className={isHighlighted ? "bg-accent" : ""}
         onToggleExpanded={() => {
           if (hasChildren && onToggle) {
             window.dispatchEvent(
-              new CustomEvent('sidebar:toggleExpanded', {
+              new CustomEvent("sidebar:toggleExpanded", {
                 detail: { id: node.id },
               })
             );
@@ -135,7 +135,7 @@ export function GraphTreeSidebar({
   onExpandedIdsChange,
   setHighlightedNodeId,
   onFocusNode,
-  mode = 'json',
+  mode = "json",
   allNodes = [],
   allLinks = [],
   onFilterIdsChange,
@@ -147,7 +147,7 @@ export function GraphTreeSidebar({
     (selectedIds: string[]) => {
       const id = selectedIds.length > 0 ? selectedIds[0] : null;
       window.dispatchEvent(
-        new CustomEvent('sidebar:select', { detail: { id } })
+        new CustomEvent("sidebar:select", { detail: { id } })
       );
       setHighlightedNodeId(id);
       if (id && onFocusNode) {
@@ -211,7 +211,7 @@ export function GraphTreeSidebar({
           onSearchApi={(raw) => {
             // Placeholder: API integration can be wired to call a search endpoint
             window.dispatchEvent(
-              new CustomEvent('graph:sidebarSearch', { detail: { query: raw } })
+              new CustomEvent("graph:sidebarSearch", { detail: { query: raw } })
             );
           }}
         />

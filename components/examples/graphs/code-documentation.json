@@ -47,7 +47,11 @@
                   "summary": "Simple button implementation with click handler",
                   "children": [],
                   "metadata": {
-                    "tags": ["Usage Example", "Implementation", "Getting Started"],
+                    "tags": [
+                      "Usage Example",
+                      "Implementation",
+                      "Getting Started"
+                    ],
                     "hypernyms": ["Code Sample", "Documentation"]
                   }
                 }
@@ -133,7 +137,11 @@
               "summary": "Utility function for formatting dates with internationalization support",
               "children": [],
               "metadata": {
-                "tags": ["Date Formatting", "Internationalization", "Utilities"],
+                "tags": [
+                  "Date Formatting",
+                  "Internationalization",
+                  "Utilities"
+                ],
                 "hypernyms": ["Helper Functions", "Data Processing"]
               }
             }
@@ -145,7 +153,13 @@
         }
       ],
       "metadata": {
-        "tags": ["React", "TypeScript", "Component Library", "UI", "Design System"],
+        "tags": [
+          "React",
+          "TypeScript",
+          "Component Library",
+          "UI",
+          "Design System"
+        ],
         "hypernyms": ["Frontend Development", "Software Engineering"]
       }
     }

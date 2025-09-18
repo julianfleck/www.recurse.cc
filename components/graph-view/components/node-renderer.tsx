@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from "@/components/ui/tooltip";
 import type {
   GraphLink as DataLink,
   GraphNode as DataNode,
-} from '../utils/data/data-manager';
-import { getNodeCursorClass } from '../utils/styling/node-styles';
+} from "../utils/data/data-manager";
+import { getNodeCursorClass } from "../utils/styling/node-styles";
 import {
   deriveConnectedMetadataTitles,
   GraphTooltipLayout,
-} from './node-tooltip';
-import { NodeVisual } from './node-visual';
+} from "./node-tooltip";
+import { NodeVisual } from "./node-visual";
 
-export type NodeLayoutMode = 'force' | 'hierarchical';
-export type NodeVisualState = 'default' | 'selected' | 'hovered' | 'dimmed';
+export type NodeLayoutMode = "force" | "hierarchical";
+export type NodeVisualState = "default" | "selected" | "hovered" | "dimmed";
 
 interface GraphNodeRendererProps {
   node: DataNode;
@@ -26,7 +26,7 @@ interface GraphNodeRendererProps {
   edges: DataLink[];
   highlightedNodeId?: string;
   transformRef: React.MutableRefObject<{ x: number; y: number; k: number }>;
-  layoutMode: 'force' | 'hierarchical';
+  layoutMode: "force" | "hierarchical";
   nodeElsRef: React.MutableRefObject<Map<string, HTMLElement>>;
   filteredNodeIds?: Set<string>;
   visibleNodeIds: Set<string>;
@@ -66,17 +66,17 @@ export function GraphNodeRenderer({
   const isDimmed =
     filteredNodeIds && filteredNodeIds.size > 0 && !visibleNodeIds.has(n.id);
   const isSelected = highlightedNodeId === n.id;
-  let nodeState: NodeVisualState = 'default';
+  let nodeState: NodeVisualState = "default";
   if (isSelected) {
-    nodeState = 'selected';
+    nodeState = "selected";
   } else if (highlightedNodeId === n.id) {
-    nodeState = 'hovered';
+    nodeState = "hovered";
   } else if (isDimmed) {
-    nodeState = 'dimmed';
+    nodeState = "dimmed";
   }
 
   const layoutModeProp: NodeLayoutMode =
-    layoutMode === 'hierarchical' ? 'hierarchical' : 'force';
+    layoutMode === "hierarchical" ? "hierarchical" : "force";
   const zoomLevel = transformRef.current.k || 1;
 
   // Create tooltip content for this node
@@ -104,7 +104,7 @@ export function GraphNodeRenderer({
               title: n.title,
               type: n.type,
               summary: n.summary,
-            })} ${isDimmed ? 'opacity-30' : 'opacity-100'}`}
+            })} ${isDimmed ? "opacity-30" : "opacity-100"}`}
             data-node-id={n.id}
             ref={(el) => {
               if (el) {

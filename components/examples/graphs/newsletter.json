@@ -53,7 +53,11 @@
               "summary": "Congress is advancing bipartisan legislation to establish comprehensive data privacy standards",
               "children": [],
               "metadata": {
-                "tags": ["Privacy Law", "Federal Legislation", "Data Protection"],
+                "tags": [
+                  "Privacy Law",
+                  "Federal Legislation",
+                  "Data Protection"
+                ],
                 "hypernyms": ["US Policy", "Consumer Protection"]
               }
             },

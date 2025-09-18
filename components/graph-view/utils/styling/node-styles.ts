@@ -1,9 +1,9 @@
+import { getVisualForLabel } from "../../config/visual-config";
 import type {
   NodeLayoutMode,
   NodeVisualData,
   NodeVisualState,
-} from '../types/visual-types';
-import { getVisualForLabel } from '../../config/visual-config';
+} from "../types/visual-types";
 
 // Node styling utilities
 export function computeEdgeStrokeWidth(currentZoomLevel: number): number {
@@ -13,7 +13,7 @@ export function computeEdgeStrokeWidth(currentZoomLevel: number): number {
 
 export function getEdgeTailwindClass(): string {
   // Use border color token for edge stroke via arbitrary value
-  return 'stroke-[var(--border)]';
+  return "stroke-[var(--border)]";
 }
 
 export function computeNodeSize(currentZoomLevel: number): number {
@@ -38,47 +38,47 @@ export function computeNodeStyle(args: {
 }
 
 export function getNodeTailwindClasses(data: NodeVisualData): string {
-  const base = 'border-foreground/20';
-  const spec = getVisualForLabel(data.type || '');
-  const colorClass = spec?.colorClass ?? 'bg-card';
+  const base = "border-foreground/20";
+  const spec = getVisualForLabel(data.type || "");
+  const colorClass = spec?.colorClass ?? "bg-card";
   return `${base} ${colorClass}`;
 }
 
 // Graph container styling
 export function getGraphContainerClasses(withSidebar: boolean): string {
-  return `relative h-full w-full overflow-hidden ${withSidebar ? 'flex' : ''}`;
+  return `relative h-full w-full overflow-hidden ${withSidebar ? "flex" : ""}`;
 }
 
 export function getGraphContentClasses(withSidebar: boolean): string {
-  return `relative ${withSidebar ? 'flex-1' : 'h-full w-full'}`;
+  return `relative ${withSidebar ? "flex-1" : "h-full w-full"}`;
 }
 
 export function getControlsContainerClasses(): string {
-  return 'flex w-full justify-between pt-8 pr-6 pb-2 pl-6';
+  return "flex w-full justify-between pt-8 pr-6 pb-2 pl-6";
 }
 
 export function getSvgContainerClasses(): string {
-  return 'absolute inset-0 overflow-hidden';
+  return "absolute inset-0 overflow-hidden";
 }
 
 export function getNodeLayerClasses(): string {
-  return 'absolute inset-0 origin-top-left will-change-transform';
+  return "absolute inset-0 origin-top-left will-change-transform";
 }
 
 export function getLoadingOverlayClasses(): string {
-  return 'absolute inset-0 flex items-center justify-center';
+  return "absolute inset-0 flex items-center justify-center";
 }
 
 export function getLoadingContentClasses(): string {
-  return 'text-center';
+  return "text-center";
 }
 
 export function getLoadingTitleClasses(): string {
-  return 'font-semibold text-foreground text-lg';
+  return "font-semibold text-foreground text-lg";
 }
 
 export function getLoadingSubtitleClasses(): string {
-  return 'text-muted-foreground text-sm';
+  return "text-muted-foreground text-sm";
 }
 
 // Cursor styling based on node interaction state
@@ -89,10 +89,10 @@ export function getNodeCursorClass(
   nodeTypeInput: string
 ): string {
   if (canCollapseNode(nodeId)) {
-    return 'cursor-grab';
+    return "cursor-grab";
   }
   if (isNodeExpandable(nodeTypeInput)) {
-    return 'cursor-crosshair';
+    return "cursor-crosshair";
   }
-  return 'cursor-default';
+  return "cursor-default";
 }

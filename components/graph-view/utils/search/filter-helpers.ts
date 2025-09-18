@@ -1,6 +1,6 @@
-import type { GraphLink as DataLink } from '../data/data-manager';
-import { isMetadata } from '../data/relationship-utils';
-import type { ParsedQuery } from './query-parser';
+import type { GraphLink as DataLink } from "../data/data-manager";
+import { isMetadata } from "../data/relationship-utils";
+import type { ParsedQuery } from "./query-parser";
 
 export type BasicNode = {
   id: string;
@@ -16,7 +16,7 @@ export function collectTags(node: BasicNode): string[] {
   const meta = node.metadata;
   if (meta && Array.isArray(meta.tags)) {
     for (const t of meta.tags as unknown[]) {
-      if (typeof t === 'string') {
+      if (typeof t === "string") {
         out.push(t.toLowerCase());
       }
     }
@@ -24,7 +24,7 @@ export function collectTags(node: BasicNode): string[] {
   const legacy = node.tags;
   if (Array.isArray(legacy)) {
     for (const t of legacy as unknown[]) {
-      if (typeof t === 'string') {
+      if (typeof t === "string") {
         out.push(t.toLowerCase());
       }
     }
@@ -38,8 +38,8 @@ export function nodeMatchesFields(
   tags: string[],
   types: string[]
 ): boolean {
-  const summaryText = (node.summary || '').toLowerCase();
-  const typeText = (node.type || '').toLowerCase();
+  const summaryText = (node.summary || "").toLowerCase();
+  const typeText = (node.type || "").toLowerCase();
   const metaTags = collectTags(node);
   const hasSummary =
     summaries.length === 0 || summaries.some((q) => summaryText.includes(q));
@@ -68,9 +68,9 @@ export function nodeMatchesTerms(
   if (terms.length === 0) {
     return true;
   }
-  const title = (node.title || '').toLowerCase();
-  const summary = (node.summary || '').toLowerCase();
-  const type = (node.type || '').toLowerCase();
+  const title = (node.title || "").toLowerCase();
+  const summary = (node.summary || "").toLowerCase();
+  const type = (node.type || "").toLowerCase();
   const hay = `${title} ${summary} ${type} ${extras}`;
   for (const term of terms) {
     if (!hay.includes(term)) {
@@ -90,8 +90,8 @@ export type MetadataText = {
 function buildTargetsBySource(allLinks: DataLink[]): Map<string, string[]> {
   const map = new Map<string, string[]>();
   for (const l of allLinks) {
-    const s = typeof l.source === 'string' ? l.source : l.source.id;
-    const t = typeof l.target === 'string' ? l.target : l.target.id;
+    const s = typeof l.source === "string" ? l.source : l.source.id;
+    const t = typeof l.target === "string" ? l.target : l.target.id;
     const existing = map.get(s);
     if (existing) {
       existing.push(t);
@@ -117,14 +117,14 @@ function collectLinkedMetadataTexts(
     if (!isMetadata(child.id)) {
       continue;
     }
-    const title = (child.title || child.id || '').toLowerCase();
-    const type = (child.type || '').toLowerCase();
+    const title = (child.title || child.id || "").toLowerCase();
+    const type = (child.type || "").toLowerCase();
     out.any.push(`${title} ${type}`);
-    if (type.startsWith('tag')) {
+    if (type.startsWith("tag")) {
       out.tag.push(title);
-    } else if (type.startsWith('hyponym')) {
+    } else if (type.startsWith("hyponym")) {
       out.hyponym.push(title);
-    } else if (type.startsWith('hypernym')) {
+    } else if (type.startsWith("hypernym")) {
       out.hypernym.push(title);
     }
   }
@@ -175,9 +175,9 @@ export function nodeMatchesParsedQuery(
   localTagTexts: string[],
   linkedMeta: MetadataText
 ): boolean {
-  const titleText = (node.title || '').toLowerCase();
-  const summaryText = (node.summary || '').toLowerCase();
-  const typeText = (node.type || '').toLowerCase();
+  const titleText = (node.title || "").toLowerCase();
+  const summaryText = (node.summary || "").toLowerCase();
+  const typeText = (node.type || "").toLowerCase();
 
   // Fielded
   if (!includesSome(titleText, parsed.fields.title)) {
@@ -187,7 +187,7 @@ export function nodeMatchesParsedQuery(
     return false;
   }
   const metaHay =
-    `${localTagTexts.join(' ')} ${linkedMeta.any.join(' ')}`.trim();
+    `${localTagTexts.join(" ")} ${linkedMeta.any.join(" ")}`.trim();
   if (!includesSome(metaHay, parsed.fields.tag)) {
     return false;
   }

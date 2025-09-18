@@ -4,12 +4,12 @@
 function _isMetadataNodeId(id: string): boolean {
   const lower = id.toLowerCase();
   return (
-    lower.startsWith('tag:') ||
-    lower.startsWith('hyponym:') ||
-    lower.startsWith('hypernym:') ||
-    lower.startsWith('tag_') ||
-    lower.startsWith('hyponym_') ||
-    lower.startsWith('hypernym_')
+    lower.startsWith("tag:") ||
+    lower.startsWith("hyponym:") ||
+    lower.startsWith("hypernym:") ||
+    lower.startsWith("tag_") ||
+    lower.startsWith("hyponym_") ||
+    lower.startsWith("hypernym_")
   );
 }
 
@@ -116,11 +116,11 @@ export class GraphDataManager {
   }
 
   private slugify(value: string): string {
-    return value.trim().toLowerCase().replace(/\s+/g, '_');
+    return value.trim().toLowerCase().replace(/\s+/g, "_");
   }
 
   private getOrRegisterMetaId(
-    kind: 'tag' | 'hypernym' | 'hyponym',
+    kind: "tag" | "hypernym" | "hyponym",
     title: string,
     realId?: string
   ): string {
@@ -151,7 +151,7 @@ export class GraphDataManager {
   }> {
     try {
       const _tStart =
-        typeof performance !== 'undefined' ? performance.now() : Date.now();
+        typeof performance !== "undefined" ? performance.now() : Date.now();
 
       const nodes: GraphNode[] = [];
       const links: GraphLink[] = [];
@@ -172,19 +172,19 @@ export class GraphDataManager {
         seen.add(n.id);
         nodes.push({
           id: n.id,
-          title: n.title ?? 'Untitled',
+          title: n.title ?? "Untitled",
           type: n.type,
           summary: n.summary,
           created_at: n.created_at,
           updated_at: n.updated_at,
-          index: typeof n.index === 'number' ? n.index : undefined,
+          index: typeof n.index === "number" ? n.index : undefined,
           hasChildren: false,
         });
       };
 
       const upsertMetadata = (
         ownerId: string,
-        kind: 'tag' | 'hypernym' | 'hyponym',
+        kind: "tag" | "hypernym" | "hyponym",
         values?: string[]
       ): void => {
         if (!values || values.length === 0) {
@@ -203,22 +203,22 @@ export class GraphDataManager {
 
       const getMetaList = (
         obj: unknown,
-        key: 'tags' | 'hypernyms' | 'hyponyms'
+        key: "tags" | "hypernyms" | "hyponyms"
       ): string[] | undefined => {
-        if (obj && typeof obj === 'object') {
+        if (obj && typeof obj === "object") {
           const meta = (obj as { metadata?: unknown }).metadata;
-          if (meta && typeof meta === 'object') {
+          if (meta && typeof meta === "object") {
             const fromMetadata = (meta as Record<string, unknown>)[key];
             if (Array.isArray(fromMetadata) && fromMetadata.length > 0) {
               return (fromMetadata as unknown[]).filter(
-                (v): v is string => typeof v === 'string'
+                (v): v is string => typeof v === "string"
               );
             }
           }
           const legacy = (obj as Record<string, unknown>)[key];
           if (Array.isArray(legacy) && legacy.length > 0) {
             return (legacy as unknown[]).filter(
-              (v): v is string => typeof v === 'string'
+              (v): v is string => typeof v === "string"
             );
           }
         }
@@ -227,34 +227,34 @@ export class GraphDataManager {
 
       const walk = (sn: any, parentId?: string) => {
         // Canonicalize metadata node ids to avoid duplicates
-        const typeLower = (sn.type || '').toLowerCase();
-        const idLower = (sn.id || '').toLowerCase();
+        const typeLower = (sn.type || "").toLowerCase();
+        const idLower = (sn.id || "").toLowerCase();
         let nodeIdToUse: string = sn.id;
         if (
-          typeLower === 'tag' ||
-          typeLower === 'hypernym' ||
-          typeLower === 'hyponym' ||
-          typeLower === 'metadata' ||
-          idLower.startsWith('tag:') ||
-          idLower.startsWith('hyponym:') ||
-          idLower.startsWith('hypernym:') ||
-          idLower.startsWith('tag_') ||
-          idLower.startsWith('hyponym_') ||
-          idLower.startsWith('hypernym_')
+          typeLower === "tag" ||
+          typeLower === "hypernym" ||
+          typeLower === "hyponym" ||
+          typeLower === "metadata" ||
+          idLower.startsWith("tag:") ||
+          idLower.startsWith("hyponym:") ||
+          idLower.startsWith("hypernym:") ||
+          idLower.startsWith("tag_") ||
+          idLower.startsWith("hyponym_") ||
+          idLower.startsWith("hypernym_")
         ) {
-          let kind: 'tag' | 'hypernym' | 'hyponym' | null = null;
-          if (typeLower === 'tag' || idLower.startsWith('tag')) {
-            kind = 'tag';
+          let kind: "tag" | "hypernym" | "hyponym" | null = null;
+          if (typeLower === "tag" || idLower.startsWith("tag")) {
+            kind = "tag";
           } else if (
-            typeLower === 'hypernym' ||
-            idLower.startsWith('hypernym')
+            typeLower === "hypernym" ||
+            idLower.startsWith("hypernym")
           ) {
-            kind = 'hypernym';
-          } else if (typeLower === 'hyponym' || idLower.startsWith('hyponym')) {
-            kind = 'hyponym';
+            kind = "hypernym";
+          } else if (typeLower === "hyponym" || idLower.startsWith("hyponym")) {
+            kind = "hyponym";
           }
           if (kind) {
-            const title = (sn.title || '').toString();
+            const title = (sn.title || "").toString();
             nodeIdToUse = this.getOrRegisterMetaId(
               kind,
               title || idLower.split(ID_SPLIT_REGEX)[1] || idLower,
@@ -270,9 +270,9 @@ export class GraphDataManager {
         }
 
         // Connect metadata arrays from sn.metadata (fallback to legacy arrays)
-        upsertMetadata(nodeIdToUse, 'tag', getMetaList(sn, 'tags'));
-        upsertMetadata(nodeIdToUse, 'hypernym', getMetaList(sn, 'hypernyms'));
-        upsertMetadata(nodeIdToUse, 'hyponym', getMetaList(sn, 'hyponyms'));
+        upsertMetadata(nodeIdToUse, "tag", getMetaList(sn, "tags"));
+        upsertMetadata(nodeIdToUse, "hypernym", getMetaList(sn, "hypernyms"));
+        upsertMetadata(nodeIdToUse, "hyponym", getMetaList(sn, "hyponyms"));
 
         // Create links to children and recurse
         const childNodes = Array.isArray(sn.children) ? sn.children : [];
@@ -297,9 +297,9 @@ export class GraphDataManager {
         for (const link of jsonData.links) {
           if (link.source && link.target) {
             const sourceId =
-              typeof link.source === 'string' ? link.source : link.source.id;
+              typeof link.source === "string" ? link.source : link.source.id;
             const targetId =
-              typeof link.target === 'string' ? link.target : link.target.id;
+              typeof link.target === "string" ? link.target : link.target.id;
 
             // Ensure both nodes exist before adding the link
             if (seen.has(sourceId) && seen.has(targetId)) {
@@ -311,27 +311,27 @@ export class GraphDataManager {
 
       // Sort nodes for stable presentation: documents first, then by index/title
       nodes.sort((a, b) => {
-        const at = (a.type || '').toLowerCase();
-        const bt = (b.type || '').toLowerCase();
+        const at = (a.type || "").toLowerCase();
+        const bt = (b.type || "").toLowerCase();
         const aIsDoc =
-          at === 'document' || at.startsWith('document:') || at === 'folder';
+          at === "document" || at.startsWith("document:") || at === "folder";
         const bIsDoc =
-          bt === 'document' || bt.startsWith('document:') || bt === 'folder';
+          bt === "document" || bt.startsWith("document:") || bt === "folder";
         if (aIsDoc !== bIsDoc) {
           return aIsDoc ? -1 : 1;
         }
         const ai =
-          typeof a.index === 'number' ? a.index : Number.NEGATIVE_INFINITY;
+          typeof a.index === "number" ? a.index : Number.NEGATIVE_INFINITY;
         const bi =
-          typeof b.index === 'number' ? b.index : Number.NEGATIVE_INFINITY;
+          typeof b.index === "number" ? b.index : Number.NEGATIVE_INFINITY;
         if (ai !== bi) {
           return ai - bi;
         }
-        return (a.title || '').localeCompare(b.title || '');
+        return (a.title || "").localeCompare(b.title || "");
       });
 
       const _tEnd =
-        typeof performance !== 'undefined' ? performance.now() : Date.now();
+        typeof performance !== "undefined" ? performance.now() : Date.now();
 
       // Mark all nodes from the JSON as fetched to prevent redundant fetchChildren calls
       const allNodeIds = new Set<string>();
@@ -369,18 +369,18 @@ export class GraphDataManager {
   }> {
     try {
       const _tStart =
-        typeof performance !== 'undefined' ? performance.now() : Date.now();
+        typeof performance !== "undefined" ? performance.now() : Date.now();
       // Use unified search to fetch documents and their tree structure with sufficient depth
       const limit = 100;
       const res = await this.apiService.search({
-        query: 'type:document',
+        query: "type:document",
         depth: 3,
-        field_set: 'metadata',
+        field_set: "metadata",
         page: 1,
         limit,
       });
       const _tAfterApi =
-        typeof performance !== 'undefined' ? performance.now() : Date.now();
+        typeof performance !== "undefined" ? performance.now() : Date.now();
 
       const nodes: GraphNode[] = [];
       const links: GraphLink[] = [];
@@ -401,19 +401,19 @@ export class GraphDataManager {
         seen.add(n.id);
         nodes.push({
           id: n.id,
-          title: n.title ?? 'Untitled',
+          title: n.title ?? "Untitled",
           type: n.type,
           summary: n.summary,
           created_at: n.created_at,
           updated_at: n.updated_at,
-          index: typeof n.index === 'number' ? n.index : undefined,
+          index: typeof n.index === "number" ? n.index : undefined,
           hasChildren: false,
         });
       };
 
       const upsertMetadata = (
         ownerId: string,
-        kind: 'tag' | 'hypernym' | 'hyponym',
+        kind: "tag" | "hypernym" | "hyponym",
         values?: string[]
       ): void => {
         if (!values || values.length === 0) {
@@ -432,22 +432,22 @@ export class GraphDataManager {
 
       const getMetaList = (
         obj: unknown,
-        key: 'tags' | 'hypernyms' | 'hyponyms'
+        key: "tags" | "hypernyms" | "hyponyms"
       ): string[] | undefined => {
-        if (obj && typeof obj === 'object') {
+        if (obj && typeof obj === "object") {
           const meta = (obj as { metadata?: unknown }).metadata;
-          if (meta && typeof meta === 'object') {
+          if (meta && typeof meta === "object") {
             const fromMetadata = (meta as Record<string, unknown>)[key];
             if (Array.isArray(fromMetadata) && fromMetadata.length > 0) {
               return (fromMetadata as unknown[]).filter(
-                (v): v is string => typeof v === 'string'
+                (v): v is string => typeof v === "string"
               );
             }
           }
           const legacy = (obj as Record<string, unknown>)[key];
           if (Array.isArray(legacy) && legacy.length > 0) {
             return (legacy as unknown[]).filter(
-              (v): v is string => typeof v === 'string'
+              (v): v is string => typeof v === "string"
             );
           }
         }
@@ -456,34 +456,34 @@ export class GraphDataManager {
 
       const walk = (sn: SearchNode, parentId?: string) => {
         // Canonicalize metadata node ids to avoid duplicates
-        const typeLower = (sn.type || '').toLowerCase();
-        const idLower = (sn.id || '').toLowerCase();
+        const typeLower = (sn.type || "").toLowerCase();
+        const idLower = (sn.id || "").toLowerCase();
         let nodeIdToUse: string = sn.id;
         if (
-          typeLower === 'tag' ||
-          typeLower === 'hypernym' ||
-          typeLower === 'hyponym' ||
-          typeLower === 'metadata' ||
-          idLower.startsWith('tag:') ||
-          idLower.startsWith('hyponym:') ||
-          idLower.startsWith('hypernym:') ||
-          idLower.startsWith('tag_') ||
-          idLower.startsWith('hyponym_') ||
-          idLower.startsWith('hypernym_')
+          typeLower === "tag" ||
+          typeLower === "hypernym" ||
+          typeLower === "hyponym" ||
+          typeLower === "metadata" ||
+          idLower.startsWith("tag:") ||
+          idLower.startsWith("hyponym:") ||
+          idLower.startsWith("hypernym:") ||
+          idLower.startsWith("tag_") ||
+          idLower.startsWith("hyponym_") ||
+          idLower.startsWith("hypernym_")
         ) {
-          let kind: 'tag' | 'hypernym' | 'hyponym' | null = null;
-          if (typeLower === 'tag' || idLower.startsWith('tag')) {
-            kind = 'tag';
+          let kind: "tag" | "hypernym" | "hyponym" | null = null;
+          if (typeLower === "tag" || idLower.startsWith("tag")) {
+            kind = "tag";
           } else if (
-            typeLower === 'hypernym' ||
-            idLower.startsWith('hypernym')
+            typeLower === "hypernym" ||
+            idLower.startsWith("hypernym")
           ) {
-            kind = 'hypernym';
-          } else if (typeLower === 'hyponym' || idLower.startsWith('hyponym')) {
-            kind = 'hyponym';
+            kind = "hypernym";
+          } else if (typeLower === "hyponym" || idLower.startsWith("hyponym")) {
+            kind = "hyponym";
           }
           if (kind) {
-            const title = (sn.title || '').toString();
+            const title = (sn.title || "").toString();
             nodeIdToUse = this.getOrRegisterMetaId(
               kind,
               title || idLower.split(ID_SPLIT_REGEX)[1] || idLower,
@@ -499,9 +499,9 @@ export class GraphDataManager {
         }
 
         // Connect metadata arrays from sn.metadata (fallback to legacy arrays)
-        upsertMetadata(nodeIdToUse, 'tag', getMetaList(sn, 'tags'));
-        upsertMetadata(nodeIdToUse, 'hypernym', getMetaList(sn, 'hypernyms'));
-        upsertMetadata(nodeIdToUse, 'hyponym', getMetaList(sn, 'hyponyms'));
+        upsertMetadata(nodeIdToUse, "tag", getMetaList(sn, "tags"));
+        upsertMetadata(nodeIdToUse, "hypernym", getMetaList(sn, "hypernyms"));
+        upsertMetadata(nodeIdToUse, "hyponym", getMetaList(sn, "hyponyms"));
 
         // Recurse children
         const childNodes = Array.isArray(sn.children) ? sn.children : [];
@@ -516,27 +516,27 @@ export class GraphDataManager {
 
       // Sort nodes for stable presentation: documents first, then by index/title
       nodes.sort((a, b) => {
-        const at = (a.type || '').toLowerCase();
-        const bt = (b.type || '').toLowerCase();
+        const at = (a.type || "").toLowerCase();
+        const bt = (b.type || "").toLowerCase();
         const aIsDoc =
-          at === 'document' || at.startsWith('document:') || at === 'folder';
+          at === "document" || at.startsWith("document:") || at === "folder";
         const bIsDoc =
-          bt === 'document' || bt.startsWith('document:') || bt === 'folder';
+          bt === "document" || bt.startsWith("document:") || bt === "folder";
         if (aIsDoc !== bIsDoc) {
           return aIsDoc ? -1 : 1;
         }
         const ai =
-          typeof a.index === 'number' ? a.index : Number.NEGATIVE_INFINITY;
+          typeof a.index === "number" ? a.index : Number.NEGATIVE_INFINITY;
         const bi =
-          typeof b.index === 'number' ? b.index : Number.NEGATIVE_INFINITY;
+          typeof b.index === "number" ? b.index : Number.NEGATIVE_INFINITY;
         if (ai !== bi) {
           return ai - bi;
         }
-        return (a.title || '').localeCompare(b.title || '');
+        return (a.title || "").localeCompare(b.title || "");
       });
 
       const _tEnd =
-        typeof performance !== 'undefined' ? performance.now() : Date.now();
+        typeof performance !== "undefined" ? performance.now() : Date.now();
       // Mark all nodes from initial load as fetched to prevent redundant fetchChildren calls
       const allNodeIds = new Set<string>();
       const collectNodeIds = (nodeList: SearchNode[]) => {
@@ -584,7 +584,7 @@ export class GraphDataManager {
         id: nodeId,
         // Only fetch one level of children to avoid over-expansion
         depth: 1,
-        field_set: 'metadata',
+        field_set: "metadata",
         // page/limit not relevant for id lookup
       });
 
@@ -608,19 +608,19 @@ export class GraphDataManager {
         seen.add(n.id);
         newNodes.push({
           id: n.id,
-          title: n.title ?? 'Untitled',
+          title: n.title ?? "Untitled",
           type: n.type,
           summary: n.summary,
           created_at: n.created_at,
           updated_at: n.updated_at,
-          index: typeof n.index === 'number' ? n.index : undefined,
+          index: typeof n.index === "number" ? n.index : undefined,
           hasChildren: false,
         });
       };
 
       const upsertMetadata = (
         ownerId: string,
-        kind: 'tag' | 'hypernym' | 'hyponym',
+        kind: "tag" | "hypernym" | "hyponym",
         values?: string[]
       ) => {
         if (!values || values.length === 0) {
@@ -638,22 +638,22 @@ export class GraphDataManager {
 
       const getMetaList = (
         obj: unknown,
-        key: 'tags' | 'hypernyms' | 'hyponyms'
+        key: "tags" | "hypernyms" | "hyponyms"
       ): string[] | undefined => {
-        if (obj && typeof obj === 'object') {
+        if (obj && typeof obj === "object") {
           const meta = (obj as { metadata?: unknown }).metadata;
-          if (meta && typeof meta === 'object') {
+          if (meta && typeof meta === "object") {
             const fromMetadata = (meta as Record<string, unknown>)[key];
             if (Array.isArray(fromMetadata) && fromMetadata.length > 0) {
               return (fromMetadata as unknown[]).filter(
-                (v): v is string => typeof v === 'string'
+                (v): v is string => typeof v === "string"
               );
             }
           }
           const legacy = (obj as Record<string, unknown>)[key];
           if (Array.isArray(legacy) && legacy.length > 0) {
             return (legacy as unknown[]).filter(
-              (v): v is string => typeof v === 'string'
+              (v): v is string => typeof v === "string"
             );
           }
         }
@@ -663,34 +663,34 @@ export class GraphDataManager {
       const rootId = nodeId;
       const walk = (sn: SearchNode, parentId?: string, depthLeft = 1) => {
         // Canonicalize potential metadata node ids
-        const typeLower = (sn.type || '').toLowerCase();
-        const idLower = (sn.id || '').toLowerCase();
+        const typeLower = (sn.type || "").toLowerCase();
+        const idLower = (sn.id || "").toLowerCase();
         let nodeIdToUse: string = sn.id;
         if (
-          typeLower === 'tag' ||
-          typeLower === 'hypernym' ||
-          typeLower === 'hyponym' ||
-          typeLower === 'metadata' ||
-          idLower.startsWith('tag:') ||
-          idLower.startsWith('hyponym:') ||
-          idLower.startsWith('hypernym:') ||
-          idLower.startsWith('tag_') ||
-          idLower.startsWith('hyponym_') ||
-          idLower.startsWith('hypernym_')
+          typeLower === "tag" ||
+          typeLower === "hypernym" ||
+          typeLower === "hyponym" ||
+          typeLower === "metadata" ||
+          idLower.startsWith("tag:") ||
+          idLower.startsWith("hyponym:") ||
+          idLower.startsWith("hypernym:") ||
+          idLower.startsWith("tag_") ||
+          idLower.startsWith("hyponym_") ||
+          idLower.startsWith("hypernym_")
         ) {
-          let kind: 'tag' | 'hypernym' | 'hyponym' | null = null;
-          if (typeLower === 'tag' || idLower.startsWith('tag')) {
-            kind = 'tag';
+          let kind: "tag" | "hypernym" | "hyponym" | null = null;
+          if (typeLower === "tag" || idLower.startsWith("tag")) {
+            kind = "tag";
           } else if (
-            typeLower === 'hypernym' ||
-            idLower.startsWith('hypernym')
+            typeLower === "hypernym" ||
+            idLower.startsWith("hypernym")
           ) {
-            kind = 'hypernym';
-          } else if (typeLower === 'hyponym' || idLower.startsWith('hyponym')) {
-            kind = 'hyponym';
+            kind = "hypernym";
+          } else if (typeLower === "hyponym" || idLower.startsWith("hyponym")) {
+            kind = "hyponym";
           }
           if (kind) {
-            const title = (sn.title || '').toString();
+            const title = (sn.title || "").toString();
             nodeIdToUse = this.getOrRegisterMetaId(
               kind,
               title || idLower.split(ID_SPLIT_REGEX)[1] || idLower,
@@ -707,9 +707,9 @@ export class GraphDataManager {
           }
           newLinks.push({ source: parentId, target: nodeIdToUse });
         }
-        upsertMetadata(nodeIdToUse, 'tag', getMetaList(sn, 'tags'));
-        upsertMetadata(nodeIdToUse, 'hypernym', getMetaList(sn, 'hypernyms'));
-        upsertMetadata(nodeIdToUse, 'hyponym', getMetaList(sn, 'hyponyms'));
+        upsertMetadata(nodeIdToUse, "tag", getMetaList(sn, "tags"));
+        upsertMetadata(nodeIdToUse, "hypernym", getMetaList(sn, "hypernyms"));
+        upsertMetadata(nodeIdToUse, "hyponym", getMetaList(sn, "hyponyms"));
 
         const childNodes = Array.isArray(sn.children) ? sn.children : [];
         if (depthLeft > 0) {
@@ -730,22 +730,22 @@ export class GraphDataManager {
       // Sort nodes by index then title
       newNodes.sort((a, b) => {
         const ai =
-          typeof a.index === 'number' ? a.index : Number.NEGATIVE_INFINITY;
+          typeof a.index === "number" ? a.index : Number.NEGATIVE_INFINITY;
         const bi =
-          typeof b.index === 'number' ? b.index : Number.NEGATIVE_INFINITY;
+          typeof b.index === "number" ? b.index : Number.NEGATIVE_INFINITY;
         if (ai !== bi) {
           return ai - bi;
         }
-        return (a.title || '').localeCompare(b.title || '');
+        return (a.title || "").localeCompare(b.title || "");
       });
 
       // Deduplicate links
       const linkMap = new Map<string, GraphLink>();
       for (const link of newLinks) {
         const s =
-          typeof link.source === 'string' ? link.source : link.source.id;
+          typeof link.source === "string" ? link.source : link.source.id;
         const t =
-          typeof link.target === 'string' ? link.target : link.target.id;
+          typeof link.target === "string" ? link.target : link.target.id;
         linkMap.set(`${s}->${t}`, link);
       }
       const uniqueLinks = Array.from(linkMap.values());
@@ -799,8 +799,8 @@ export class GraphDataManager {
    * Check if a node type is a document type
    */
   private isDocumentType(type: string): boolean {
-    const t = (type || '').toLowerCase();
-    return t === 'document' || t.startsWith('document:') || t === 'folder';
+    const t = (type || "").toLowerCase();
+    return t === "document" || t.startsWith("document:") || t === "folder";
   }
 
   /**
@@ -811,8 +811,8 @@ export class GraphDataManager {
     b: HierarchicalNode
   ): number {
     // Sort by index ascending; missing index last
-    const ai = typeof a.index === 'number' ? a.index : Number.NEGATIVE_INFINITY;
-    const bi = typeof b.index === 'number' ? b.index : Number.NEGATIVE_INFINITY;
+    const ai = typeof a.index === "number" ? a.index : Number.NEGATIVE_INFINITY;
+    const bi = typeof b.index === "number" ? b.index : Number.NEGATIVE_INFINITY;
     if (ai !== bi) {
       return ai - bi;
     }
@@ -944,46 +944,46 @@ export class GraphDataManager {
     }
     const raw = filter.trim();
     const lower = raw.toLowerCase();
-    if (lower.startsWith('type:')) {
+    if (lower.startsWith("type:")) {
       const qRaw = lower.slice(5).trim();
       if (!qRaw) {
         return false;
       }
       const alias = (q: string): string => {
         if (
-          q === 'def' ||
-          q === 'defs' ||
-          q === 'definition' ||
-          q === 'definitions'
+          q === "def" ||
+          q === "defs" ||
+          q === "definition" ||
+          q === "definitions"
         ) {
-          return 'definition';
+          return "definition";
         }
-        if (q === 'ins' || q === 'insight' || q === 'insights') {
-          return 'insight';
+        if (q === "ins" || q === "insight" || q === "insights") {
+          return "insight";
         }
         if (
-          q === 'doc' ||
-          q === 'docs' ||
-          q === 'document' ||
-          q === 'documents'
+          q === "doc" ||
+          q === "docs" ||
+          q === "document" ||
+          q === "documents"
         ) {
-          return 'document';
+          return "document";
         }
-        if (q === 'folder' || q === 'folders') {
-          return 'folder';
+        if (q === "folder" || q === "folders") {
+          return "folder";
         }
         return q;
       };
       const q = alias(qRaw);
-      const t = (node.type ?? '').toLowerCase();
+      const t = (node.type ?? "").toLowerCase();
       // Prefer exact match; fallback to prefix for convenience
       return t === q || t.startsWith(q);
     }
     const lf = lower;
     return (
-      (node.title ?? '').toLowerCase().includes(lf) ||
-      (node.summary ?? '').toLowerCase().includes(lf) ||
-      (node.type ?? '').toLowerCase().includes(lf)
+      (node.title ?? "").toLowerCase().includes(lf) ||
+      (node.summary ?? "").toLowerCase().includes(lf) ||
+      (node.type ?? "").toLowerCase().includes(lf)
     );
   }
 
@@ -997,7 +997,7 @@ export class GraphDataManager {
     childrenCache: Map<string, HierarchicalNode[]>
   ): { matches: Set<string>; expandedForFilter: Set<string> } {
     // When there is no filter, do not auto-expand anything
-    if (!filter || filter.trim() === '') {
+    if (!filter || filter.trim() === "") {
       return {
         matches: new Set<string>(),
         expandedForFilter: new Set<string>(),
@@ -1116,8 +1116,8 @@ export class GraphDataManager {
 
   // Static helper functions
   private static isDocumentTypeStatic(type: string): boolean {
-    const t = (type || '').toLowerCase();
-    return t === 'document' || t.startsWith('document:') || t === 'folder';
+    const t = (type || "").toLowerCase();
+    return t === "document" || t.startsWith("document:") || t === "folder";
   }
 
   // Static utility methods for hierarchy operations (used by side panel)
@@ -1205,9 +1205,9 @@ export class GraphDataManager {
           node.children.sort((a, b) => {
             // Sort by index ascending; missing index last
             const ai =
-              typeof a.index === 'number' ? a.index : Number.NEGATIVE_INFINITY;
+              typeof a.index === "number" ? a.index : Number.NEGATIVE_INFINITY;
             const bi =
-              typeof b.index === 'number' ? b.index : Number.NEGATIVE_INFINITY;
+              typeof b.index === "number" ? b.index : Number.NEGATIVE_INFINITY;
             if (ai !== bi) {
               return ai - bi;
             }
@@ -1241,9 +1241,9 @@ export class GraphDataManager {
         }
         // Sort by index ascending; missing index last
         const ai =
-          typeof a.index === 'number' ? a.index : Number.NEGATIVE_INFINITY;
+          typeof a.index === "number" ? a.index : Number.NEGATIVE_INFINITY;
         const bi =
-          typeof b.index === 'number' ? b.index : Number.NEGATIVE_INFINITY;
+          typeof b.index === "number" ? b.index : Number.NEGATIVE_INFINITY;
         if (ai !== bi) {
           return ai - bi;
         }
@@ -1284,11 +1284,11 @@ export class GraphDataManager {
               .filter((n): n is HierarchicalNode => Boolean(n))
               .sort((a, b) => {
                 const ai =
-                  typeof a.index === 'number'
+                  typeof a.index === "number"
                     ? a.index
                     : Number.NEGATIVE_INFINITY;
                 const bi =
-                  typeof b.index === 'number'
+                  typeof b.index === "number"
                     ? b.index
                     : Number.NEGATIVE_INFINITY;
                 if (ai !== bi) {
@@ -1312,7 +1312,7 @@ export class GraphDataManager {
     parentByChildId: Map<string, string>,
     childrenCache?: Map<string, HierarchicalNode[]>
   ): { matches: Set<string>; expandedForFilter: Set<string> } {
-    const trimmed = (filter || '').trim();
+    const trimmed = (filter || "").trim();
     if (!trimmed) {
       return {
         matches: new Set<string>(),
@@ -1341,52 +1341,52 @@ export class GraphDataManager {
 
     const aliasType = (q: string): string => {
       if (
-        q === 'def' ||
-        q === 'defs' ||
-        q === 'definition' ||
-        q === 'definitions'
+        q === "def" ||
+        q === "defs" ||
+        q === "definition" ||
+        q === "definitions"
       ) {
-        return 'definition';
+        return "definition";
       }
-      if (q === 'ins' || q === 'insight' || q === 'insights') {
-        return 'insight';
+      if (q === "ins" || q === "insight" || q === "insights") {
+        return "insight";
       }
       if (
-        q === 'doc' ||
-        q === 'docs' ||
-        q === 'document' ||
-        q === 'documents'
+        q === "doc" ||
+        q === "docs" ||
+        q === "document" ||
+        q === "documents"
       ) {
-        return 'document';
+        return "document";
       }
-      if (q === 'folder' || q === 'folders') {
-        return 'folder';
+      if (q === "folder" || q === "folders") {
+        return "folder";
       }
       return q;
     };
 
     for (const t of tokens) {
-      if (t.startsWith('type:')) {
+      if (t.startsWith("type:")) {
         const v = t.slice(5).trim();
         if (v) {
           typeQuery = aliasType(v);
         }
-      } else if (t.startsWith('tag:')) {
+      } else if (t.startsWith("tag:")) {
         const v = t.slice(4).trim();
         if (v) {
           metaQueries.tag.push(v);
         }
-      } else if (t.startsWith('hyponym:')) {
+      } else if (t.startsWith("hyponym:")) {
         const v = t.slice(8).trim();
         if (v) {
           metaQueries.hyponym.push(v);
         }
-      } else if (t.startsWith('hypernym:')) {
+      } else if (t.startsWith("hypernym:")) {
         const v = t.slice(9).trim();
         if (v) {
           metaQueries.hypernym.push(v);
         }
-      } else if (t.startsWith('metadata:')) {
+      } else if (t.startsWith("metadata:")) {
         const v = t.slice(9).trim();
         if (v) {
           metaQueries.any.push(v);
@@ -1402,18 +1402,18 @@ export class GraphDataManager {
     }
     const isMetadataId = (id: string): boolean => {
       const lower = id.toLowerCase();
-      const t = (nodeById.get(id)?.type ?? '').toLowerCase();
+      const t = (nodeById.get(id)?.type ?? "").toLowerCase();
       return (
-        t === 'tag' ||
-        t === 'hyponym' ||
-        t === 'hypernym' ||
-        t === 'metadata' ||
-        lower.startsWith('tag:') ||
-        lower.startsWith('tag_') ||
-        lower.startsWith('hyponym:') ||
-        lower.startsWith('hyponym_') ||
-        lower.startsWith('hypernym:') ||
-        lower.startsWith('hypernym_')
+        t === "tag" ||
+        t === "hyponym" ||
+        t === "hypernym" ||
+        t === "metadata" ||
+        lower.startsWith("tag:") ||
+        lower.startsWith("tag_") ||
+        lower.startsWith("hyponym:") ||
+        lower.startsWith("hyponym_") ||
+        lower.startsWith("hypernym:") ||
+        lower.startsWith("hypernym_")
       );
     };
 
@@ -1434,7 +1434,7 @@ export class GraphDataManager {
     const nodeMatches = (n: HierarchicalNode): boolean => {
       // Enforce type constraint
       if (typeQuery) {
-        const nt = (n.type ?? '').toLowerCase();
+        const nt = (n.type ?? "").toLowerCase();
         if (!(nt === typeQuery || nt.startsWith(typeQuery))) {
           return false;
         }
@@ -1445,7 +1445,7 @@ export class GraphDataManager {
 
       const requireMeta = (
         list: string[],
-        kind: 'tag' | 'hypernym' | 'hyponym'
+        kind: "tag" | "hypernym" | "hyponym"
       ): boolean => {
         if (list.length === 0) {
           return true;
@@ -1457,9 +1457,9 @@ export class GraphDataManager {
             const lid = id.toLowerCase();
             const q = qRaw.toLowerCase();
             const metaNode = nodeById.get(id);
-            const ntitle = (metaNode?.title ?? '').toLowerCase();
-            const ntype = (metaNode?.type ?? '').toLowerCase();
-            const isKind = ntype === kind || ntype === 'metadata';
+            const ntitle = (metaNode?.title ?? "").toLowerCase();
+            const ntype = (metaNode?.type ?? "").toLowerCase();
+            const isKind = ntype === kind || ntype === "metadata";
             return (
               isKind &&
               (lid.startsWith(p + q) ||
@@ -1469,13 +1469,13 @@ export class GraphDataManager {
           })
         );
       };
-      if (!requireMeta(metaQueries.tag, 'tag')) {
+      if (!requireMeta(metaQueries.tag, "tag")) {
         return false;
       }
-      if (!requireMeta(metaQueries.hyponym, 'hyponym')) {
+      if (!requireMeta(metaQueries.hyponym, "hyponym")) {
         return false;
       }
-      if (!requireMeta(metaQueries.hypernym, 'hypernym')) {
+      if (!requireMeta(metaQueries.hypernym, "hypernym")) {
         return false;
       }
       if (metaQueries.any.length > 0) {
@@ -1486,8 +1486,8 @@ export class GraphDataManager {
               return true;
             }
             const metaNode = nodeById.get(id);
-            const title = (metaNode?.title ?? '').toLowerCase();
-            const type = (metaNode?.type ?? '').toLowerCase();
+            const title = (metaNode?.title ?? "").toLowerCase();
+            const type = (metaNode?.type ?? "").toLowerCase();
             return title.includes(q) || type.includes(q);
           })
         );
@@ -1498,10 +1498,10 @@ export class GraphDataManager {
 
       // Free-text terms: match in title/summary/type or metadata ids
       if (freeTerms.length > 0) {
-        const title = (n.title ?? '').toLowerCase();
-        const summary = (n.summary ?? '').toLowerCase();
-        const ntype = (n.type ?? '').toLowerCase();
-        const metaText = metaIds.join(' ').toLowerCase();
+        const title = (n.title ?? "").toLowerCase();
+        const summary = (n.summary ?? "").toLowerCase();
+        const ntype = (n.type ?? "").toLowerCase();
+        const metaText = metaIds.join(" ").toLowerCase();
         const hay = `${title} ${summary} ${ntype} ${metaText}`;
         for (const term of freeTerms) {
           if (!hay.includes(term)) {

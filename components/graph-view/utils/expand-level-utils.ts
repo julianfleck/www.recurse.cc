@@ -1,4 +1,4 @@
-import type { GraphNode as DataNode } from './data/data-manager';
+import type { GraphNode as DataNode } from "./data/data-manager";
 
 export interface ExpandLevelParams {
   treeData: DataNode[];
@@ -15,7 +15,7 @@ export function calculateNodesToExpand({
   treeData,
   visibleNodeIds,
   expandedNodes,
-}: Omit<ExpandLevelParams, 'toggleNodeExpansion'>): string[] {
+}: Omit<ExpandLevelParams, "toggleNodeExpansion">): string[] {
   // Build child map from treeData so metadata children are included consistently
   const childMap = new Map<string, string[]>();
   const rootIds: string[] = [];
@@ -41,7 +41,10 @@ export function calculateNodesToExpand({
 
   // BFS minimal depth
   const depth = new Map<string, number>();
-  const queue: Array<{ id: string; d: number }> = roots.map((id) => ({ id, d: 0 }));
+  const queue: Array<{ id: string; d: number }> = roots.map((id) => ({
+    id,
+    d: 0,
+  }));
 
   while (queue.length > 0) {
     const { id, d } = queue.shift()!;

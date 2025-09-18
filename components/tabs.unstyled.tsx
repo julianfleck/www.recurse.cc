@@ -1,5 +1,7 @@
-'use client';
+"use client";
 
+import * as Primitive from "@radix-ui/react-tabs";
+import { useEffectEvent } from "fumadocs-core/utils/use-effect-event";
 import {
   type ComponentProps,
   createContext,
@@ -8,10 +10,8 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'react';
-import * as Primitive from '@radix-ui/react-tabs';
-import { mergeRefs } from '../lib/merge-refs';
-import { useEffectEvent } from 'fumadocs-core/utils/use-effect-event';
+} from "react";
+import { mergeRefs } from "../lib/merge-refs";
 
 type ChangeListener = (v: string) => void;
 const listeners = new Map<string, ChangeListener[]>();
@@ -26,7 +26,7 @@ function removeChangeListener(id: string, listener: ChangeListener): void {
   const list = listeners.get(id) ?? [];
   listeners.set(
     id,
-    list.filter((item) => item !== listener),
+    list.filter((item) => item !== listener)
   );
 }
 
@@ -53,7 +53,7 @@ const TabsContext = createContext<{
 
 function useTabContext() {
   const ctx = useContext(TabsContext);
-  if (!ctx) throw new Error('You must wrap your component in <Tabs>');
+  if (!ctx) throw new Error("You must wrap your component in <Tabs>");
   return ctx;
 }
 
@@ -79,7 +79,7 @@ export function Tabs({
     _value === undefined
       ? // eslint-disable-next-line react-hooks/rules-of-hooks -- not supposed to change controlled/uncontrolled
         useState(defaultValue)
-      : [_value, _onValueChange ?? (() => undefined)];
+      : [_value, _onValueChange ?? (() => {})];
 
   const onChange = useEffectEvent((v: string) => setValue(v));
   const valueToIdMap = useMemo(() => new Map<string, string>(), []);
@@ -112,14 +112,12 @@ export function Tabs({
 
   return (
     <Primitive.Tabs
-      ref={mergeRefs(ref, tabsRef)}
-      value={value}
       onValueChange={(v: string) => {
         if (updateAnchor) {
           const id = valueToIdMap.get(v);
 
           if (id) {
-            window.history.replaceState(null, '', `#${id}`);
+            window.history.replaceState(null, "", `#${id}`);
           }
         }
 
@@ -134,6 +132,8 @@ export function Tabs({
           setValue(v);
         }
       }}
+      ref={mergeRefs(ref, tabsRef)}
+      value={value}
       {...props}
     >
       <TabsContext.Provider

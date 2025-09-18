@@ -1,5 +1,5 @@
-import { useCallback } from 'react';
-import type { DataLink, DataNode } from '../utils/data/data-manager';
+import { useCallback } from "react";
+import type { DataLink, DataNode } from "../utils/data/data-manager";
 
 export interface UseNodeManagementParams {
   allLinks: DataLink[];
@@ -19,7 +19,7 @@ export interface NodeManagementResult {
   canCollapseNode: (nodeId: string) => boolean;
   _setHighlightedNode: (
     nodeId: string | null,
-    source?: 'graph' | 'sidepanel'
+    source?: "graph" | "sidepanel"
   ) => void;
 }
 
@@ -31,7 +31,7 @@ export function useNodeManagement({
   setIsBatchOperation,
 }: UseNodeManagementParams): NodeManagementResult {
   const _setHighlightedNode = useCallback(
-    (nodeId: string | null, source?: 'graph' | 'sidepanel') => {
+    (nodeId: string | null, source?: "graph" | "sidepanel") => {
       setHighlightedNodeId(nodeId);
       // Note: setHighlightSource removed as it wasn't defined in the original
     },
@@ -66,7 +66,7 @@ export function useNodeManagement({
   );
 
   const isNodeExpandable = useCallback((nodeType: string) => {
-    return !['tag', 'hypernym', 'hyponym'].includes(nodeType);
+    return !["tag", "hypernym", "hyponym"].includes(nodeType);
   }, []);
 
   const canCollapseNode = useCallback(
@@ -75,7 +75,7 @@ export function useNodeManagement({
       let hasChildren = false;
       for (const link of allLinks) {
         const sourceId =
-          typeof link.source === 'string' ? link.source : link.source.id;
+          typeof link.source === "string" ? link.source : link.source.id;
         if (sourceId === nodeId) {
           hasChildren = true;
           break;

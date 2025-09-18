@@ -1,5 +1,5 @@
-import type { GraphLink as DataLink } from './data/data-manager';
-import { isMetadata } from './data/relationship-utils';
+import type { GraphLink as DataLink } from "./data/data-manager";
+import { isMetadata } from "./data/relationship-utils";
 
 export interface DescendantsByDepthParams {
   rootId: string;
@@ -38,11 +38,11 @@ export function calculateDescendantsByDepth({
     const children = Array.from(allLinks)
       .filter((link) => {
         const sourceId =
-          typeof link.source === 'string' ? link.source : link.source.id;
+          typeof link.source === "string" ? link.source : link.source.id;
         return sourceId === currentId;
       })
       .map((link) =>
-        typeof link.target === 'string' ? link.target : link.target.id
+        typeof link.target === "string" ? link.target : link.target.id
       )
       .filter(
         (targetId) => !isMetadata(targetId) && visibleNodeIds.has(targetId)
@@ -59,9 +59,9 @@ export function calculateDescendantsByDepth({
       let connections = 0;
       for (const link of allLinks) {
         const s =
-          typeof link.source === 'string' ? link.source : link.source.id;
+          typeof link.source === "string" ? link.source : link.source.id;
         const t =
-          typeof link.target === 'string' ? link.target : link.target.id;
+          typeof link.target === "string" ? link.target : link.target.id;
         if (s === metaId && !isMetadata(t)) {
           connections++;
         }
@@ -73,10 +73,8 @@ export function calculateDescendantsByDepth({
     };
 
     for (const link of allLinks) {
-      const s =
-        typeof link.source === 'string' ? link.source : link.source.id;
-      const t =
-        typeof link.target === 'string' ? link.target : link.target.id;
+      const s = typeof link.source === "string" ? link.source : link.source.id;
+      const t = typeof link.target === "string" ? link.target : link.target.id;
       if (
         s === currentId &&
         isMetadata(t) &&
