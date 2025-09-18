@@ -20,9 +20,9 @@ export function Status() {
 
   const fetchHealth = async () => {
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
       if (!baseUrl) {
-        console.warn("NEXT_PUBLIC_BASE_URL not set, skipping health check");
+        console.warn("NEXT_PUBLIC_API_BASE_URL not set, skipping health check");
         setError(true);
         return;
       }
