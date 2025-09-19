@@ -82,7 +82,6 @@ export class ApiService {
 
             if (jwtPayload.exp && jwtPayload.exp < nowInSeconds) {
               // Don't set the authorization header for expired tokens
-              console.warn("JWT token is expired, skipping authorization header");
               return;
             }
 
@@ -162,7 +161,6 @@ export class ApiService {
 
             if (jwtPayload.exp && jwtPayload.exp < nowInSeconds) {
               // Don't set the authorization header for expired tokens
-              console.warn("JWT token is expired, skipping authorization header");
               return;
             }
 

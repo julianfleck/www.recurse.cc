@@ -48,6 +48,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useAuthStore } from "@/components/auth/auth-store";
 import { apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -349,9 +350,7 @@ export function ApiKeysTable() {
   const fetchApiKeys = useCallback(async () => {
     try {
       setLoading(true);
-      console.log("Fetching API keys...");
       const response = await apiService.get<ApiKey[]>("/users/me/api-keys");
-      console.log("API keys response:", response);
       setData(response.data);
     } catch (error) {
       console.error("Failed to fetch API keys:", error);
@@ -361,9 +360,22 @@ export function ApiKeysTable() {
     }
   }, []);
 
+  // Wait for authentication before fetching
   useEffect(() => {
-    fetchApiKeys();
-  }, [fetchApiKeys]);
+    const unsubscribe = useAuthStore.subscribe((state) => {
+      if (state.accessToken && data.length === 0 && !loading) {
+        fetchApiKeys();
+      }
+    });
+
+    // Also check immediately in case auth is already available
+    const currentToken = useAuthStore.getState().accessToken;
+    if (currentToken && data.length === 0 && !loading) {
+      fetchApiKeys();
+    }
+
+    return unsubscribe;
+  }, [fetchApiKeys, data.length, loading]);
 
   const table = useReactTable({
     data,

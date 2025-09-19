@@ -27,14 +27,9 @@ export function AuthInit() {
         : undefined;
       getAccessTokenSilently(options as never)
         .then((token) => {
-          console.log("Auth token obtained, setting up API auth");
           setAuth(token, "auth0", user);
           // Set up API auth getter to use the token from auth store
-          setApiAuthGetter(() => {
-            const token = useAuthStore.getState().accessToken;
-            console.log("Getting token from store:", token ? "present" : "null");
-            return token;
-          });
+          setApiAuthGetter(() => useAuthStore.getState().accessToken);
         })
         .catch(() => {
           setAuth(undefined, "auth0", user);
@@ -42,18 +37,12 @@ export function AuthInit() {
           setApiAuthGetter(emptyTokenGetter);
         });
     } else if (isReady && !accessTokenFromStore) {
-      console.log("No auth token, clearing auth");
       clear();
       // Clear API auth getter when not authenticated
       setApiAuthGetter(emptyTokenGetter);
     } else if (isReady && accessTokenFromStore) {
-      console.log("Using stored auth token");
       // If we have a token from store (email/password flow), set up API auth getter
-      setApiAuthGetter(() => {
-        const token = useAuthStore.getState().accessToken;
-        console.log("Getting stored token:", token ? "present" : "null");
-        return token;
-      });
+      setApiAuthGetter(() => useAuthStore.getState().accessToken);
     }
   }, [
     isAuthenticated,
