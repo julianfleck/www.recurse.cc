@@ -68,6 +68,7 @@ export type ApiKey = {
   created_at: string;
 };
 
+// Columns definition moved inside component to access deleteApiKey function
 const columns: ColumnDef<ApiKey>[] = [
   {
     id: "select",
@@ -256,7 +257,10 @@ const columns: ColumnDef<ApiKey>[] = [
             </DropdownMenuItem>
             <DropdownMenuItem
               className="hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground"
-              onClick={() => deleteApiKey(apiKey.id)}
+              onClick={() => {
+                // deleteApiKey will be available once columns are moved inside component
+                console.log("Delete clicked for API key:", apiKey.id);
+              }}
             >
               <TrashIcon className="mr-2 h-4 w-4" />
               Delete
@@ -410,10 +414,10 @@ export function ApiKeysTable() {
     console.log("Deleting selected API keys:", selectedIds);
 
     try {
-      // Delete all selected keys
-      await Promise.all(
-        selectedIds.map((keyId) => apiService.delete(`/users/me/api-keys/${keyId}`))
-      );
+        // Delete all selected keys
+        await Promise.all(
+          selectedIds.map((keyId) => apiService.delete(`/users/me/api-keys/${keyId}`))
+        );
 
       // Clear selection and refresh table
       setRowSelection({});
@@ -423,6 +427,177 @@ export function ApiKeysTable() {
       // TODO: Add user notification for delete failure
     }
   }, [rowSelection, fetchApiKeys]);
+
+  const columns: ColumnDef<ApiKey>[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          aria-label="Select all"
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          aria-label="Select row"
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "is_active",
+      header: "Status",
+      cell: ({ row }) => (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="ml-2 flex items-center justify-center pb-2">
+              <div
+                className={cn(
+                  "size-1.5 rounded-full ring-2 ring-chart-2/90",
+                  row.getValue("is_active") ? "bg-chart-2" : "bg-muted-foreground"
+                )}
+              />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>API key is {row.getValue("is_active") ? "active" : "inactive"}</p>
+          </TooltipContent>
+        </Tooltip>
+      ),
+      enableSorting: true,
+    },
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => (
+        <div className="font-medium">{row.getValue("name")}</div>
+      ),
+    },
+    {
+      accessorKey: "id",
+      header: "Key",
+      cell: ({ row }) => {
+        const id = row.getValue("id") as string;
+        return (
+          <div className="font-mono text-xs">
+            {id.substring(0, SECRET_KEY_VISIBLE_CHARS)}...
+            {id.substring(id.length - SECRET_KEY_END_CHARS)}
+          </div>
+        );
+      },
+      enableSorting: false,
+    },
+    {
+      accessorKey: "created_at",
+      header: "Created",
+      cell: ({ row }) => {
+        const date = new Date(row.getValue("created_at"));
+        return <div className="text-sm">{date.toLocaleDateString()}</div>;
+      },
+      enableSorting: true,
+    },
+    {
+      accessorKey: "last_used",
+      header: "Last Used",
+      cell: ({ row }) => {
+        const lastUsed = row.getValue("last_used");
+        if (!lastUsed) return <div className="text-sm text-muted-foreground">Never</div>;
+        const date = new Date(lastUsed);
+        return <div className="text-sm">{date.toLocaleDateString()}</div>;
+      },
+      enableSorting: true,
+    },
+    {
+      accessorKey: "total_requests",
+      header: "Requests",
+      cell: ({ row }) => (
+        <div className="text-sm">{row.getValue("total_requests").toLocaleString()}</div>
+      ),
+      enableSorting: true,
+    },
+    {
+      accessorKey: "scopes",
+      header: "Scope",
+      cell: ({ row }) => {
+        const scopes = row.getValue("scopes") as string[];
+        const scopeText = scopes.length > 0 ? scopes.join(", ") : "None";
+        const dataScope = row.getValue("data_scope") as string;
+
+        return (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Badge variant="secondary" className="text-xs">
+                {scopeText}
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>
+                {dataScope === "user"
+                  ? "Content added/retrieved is visible to your user account"
+                  : "Content added/retrieved is only visible to this API key"}
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        );
+      },
+      enableSorting: false,
+    },
+    {
+      accessorKey: "permissions",
+      header: "Permissions",
+      cell: ({ row }) => {
+        const scopes = row.getValue("scopes") as string[];
+        return (
+          <div className="flex flex-wrap gap-1">
+            {scopes.map((scope) => (
+              <Badge key={scope} variant="outline" className="text-xs">
+                {scope}
+              </Badge>
+            ))}
+          </div>
+        );
+      },
+      enableSorting: false,
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => {
+        const apiKey = row.original;
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="h-8 w-8 p-0" size="sm" variant="ghost">
+                <MoreHorizontalIcon className="h-4 w-4" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>
+                <EditIcon className="mr-2 h-4 w-4" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground"
+                onClick={() => deleteApiKey(apiKey.id)}
+              >
+                <TrashIcon className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+      enableSorting: false,
+    },
+  ];
 
   // Wait for authentication before fetching
   useEffect(() => {
