@@ -139,6 +139,87 @@ export class ApiService {
   }
 
   /**
+   * Makes a DELETE request to the API
+   * @param endpoint - The API endpoint (without base URL)
+   * @returns Promise with the API response
+   */
+  async delete<T = unknown>(endpoint: string): Promise<ApiResponse<T>> {
+    try {
+      const url = `${this.baseUrl}${endpoint}`;
+
+      const authToken = getAccessToken?.();
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+
+      if (authToken) {
+        // Validate that it's a JWT token (3 parts separated by dots)
+        const tokenParts = authToken.split(".");
+        if (tokenParts.length === JWT_PARTS_COUNT) {
+          // Check if token is expired (basic check)
+          try {
+            const jwtPayload = JSON.parse(atob(tokenParts[1]));
+            const nowInSeconds = Math.floor(
+              Date.now() / MILLISECONDS_PER_SECOND
+            );
+
+            if (jwtPayload.exp && jwtPayload.exp < nowInSeconds) {
+              // Don't set the authorization header for expired tokens
+              console.warn("JWT token is expired, not setting authorization header");
+              return;
+            }
+
+            headers.Authorization = `Bearer ${authToken}`;
+          } catch (error) {
+            // Still try to use the token even if we can't parse it
+            console.warn("Failed to parse JWT token:", error);
+            headers.Authorization = `Bearer ${authToken}`;
+          }
+        } else {
+          console.warn("Invalid JWT token format (not 3 parts)");
+        }
+      } else {
+        console.warn("No auth token available for DELETE request");
+      }
+
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers,
+        // Include credentials for CORS requests
+        credentials: "include",
+        // Set mode to handle CORS
+        mode: "cors",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new ApiError(
+          `API request failed: ${response.statusText}`,
+          response.status,
+          data
+        );
+      }
+
+      return {
+        data,
+        status: response.status,
+        statusText: response.statusText,
+      };
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+
+      throw new ApiError(
+        `Network error: ${error instanceof Error ? error.message : "Unknown error"}`,
+        undefined,
+        error
+      );
+    }
+  }
+
+  /**
    * Makes a POST request to the API
    * @param endpoint - The API endpoint (without base URL)
    * @param payload - The request payload

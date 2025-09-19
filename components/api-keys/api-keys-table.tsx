@@ -190,8 +190,8 @@ const columns: ColumnDef<ApiKey>[] = [
           <TooltipContent>
             <p>
               {isApiKey
-                ? "Content is only visible to this API key"
-                : "Content is visible to your user account"}
+                ? "This API key sees only the content that was added with this key"
+                : "This API key sees all the content in your user account"}
             </p>
           </TooltipContent>
         </Tooltip>
@@ -239,26 +239,32 @@ const columns: ColumnDef<ApiKey>[] = [
   {
     id: "actions",
     header: "",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button className="h-8 w-8 p-0" size="sm" variant="ghost">
-            <MoreHorizontalIcon className="h-4 w-4" />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem>
-            <EditIcon className="mr-2 h-4 w-4" />
-            Edit
-          </DropdownMenuItem>
-          <DropdownMenuItem className="hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground">
-            <TrashIcon className="mr-2 h-4 w-4" />
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => {
+      const apiKey = row.original;
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="h-8 w-8 p-0" size="sm" variant="ghost">
+              <MoreHorizontalIcon className="h-4 w-4" />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+              <EditIcon className="mr-2 h-4 w-4" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground"
+              onClick={() => deleteApiKey(apiKey.id)}
+            >
+              <TrashIcon className="mr-2 h-4 w-4" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
     enableSorting: false,
   },
 ];
@@ -385,6 +391,39 @@ export function ApiKeysTable() {
     }
   }, []);
 
+  const deleteApiKey = useCallback(async (keyId: string) => {
+    try {
+      console.log("Deleting API key:", keyId);
+      const response = await apiService.delete(`/users/me/api-keys/${keyId}`);
+      console.log("Delete response:", response);
+
+      // Refresh the table after successful deletion
+      fetchApiKeys();
+    } catch (error) {
+      console.error("Failed to delete API key:", error);
+      // TODO: Add user notification for delete failure
+    }
+  }, [fetchApiKeys]);
+
+  const deleteSelectedKeys = useCallback(async () => {
+    const selectedIds = Object.keys(rowSelection);
+    console.log("Deleting selected API keys:", selectedIds);
+
+    try {
+      // Delete all selected keys
+      await Promise.all(
+        selectedIds.map((keyId) => apiService.delete(`/users/me/api-keys/${keyId}`))
+      );
+
+      // Clear selection and refresh table
+      setRowSelection({});
+      fetchApiKeys();
+    } catch (error) {
+      console.error("Failed to delete selected API keys:", error);
+      // TODO: Add user notification for delete failure
+    }
+  }, [rowSelection, fetchApiKeys]);
+
   // Wait for authentication before fetching
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -469,6 +508,7 @@ export function ApiKeysTable() {
             <Button
               icon={<TrashIcon className="h-4 w-4" />}
               iconSide="left"
+              onClick={deleteSelectedKeys}
               size="sm"
               variant="destructive"
             >
