@@ -209,14 +209,12 @@ export function ApiKeyDialog({
   useEffect(() => {
     if (open) {
       setCurrentStep(STEP_SETTINGS);
-      setDirection(1);
       setName("");
       setExpiresAt({});
       setScopes(["all"]);
       setDataScope("user");
       setFieldErrors({});
       setCreatedKey(null);
-      setCopied(false);
     }
   }, [open]);
 
