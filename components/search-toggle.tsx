@@ -46,9 +46,11 @@ export function SearchToggle({
 
 export function LargeSearchToggle({
   hideIfDisabled,
+  customText,
   ...props
 }: ComponentProps<"button"> & {
   hideIfDisabled?: boolean;
+  customText?: string;
 }) {
   const { enabled, hotKey, setOpenSearch } = useSearchContext();
   const { text } = useI18n();
@@ -62,18 +64,25 @@ export function LargeSearchToggle({
       type="button"
       {...props}
       className={cn(
-        "inline-flex items-center gap-2 rounded-lg border bg-fd-secondary/50 p-1.5 ps-2 text-fd-muted-foreground text-xs transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground",
+        buttonVariants({
+          variant: "outline",
+          size: "sm",
+        }),
+        "inline-flex items-center gap-2 bg-fd-secondary/50 px-3 py-2 text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-accent-foreground",
         props.className
       )}
       onClick={() => {
         setOpenSearch(true);
       }}
     >
-      <Search className="size-4" />
-      {text.search}
+      <Search />
+      {customText || text.search}
       <div className="ms-auto inline-flex gap-0.5">
-        {hotKey.map((k, i) => (
-          <kbd className="rounded-md border bg-fd-background px-1.5" key={i}>
+        {hotKey.map((k) => (
+          <kbd
+            className="rounded-md border bg-fd-background px-1.5"
+            key={k.display}
+          >
             {k.display}
           </kbd>
         ))}

@@ -47,9 +47,9 @@ import {
   SidebarTrigger,
   SidebarViewport,
 } from "../../sidebar";
-import { ThemeToggle } from "../../theme-toggle";
 import { buttonVariants } from "../../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { ThemeToggle } from "../../ui/theme-toggle";
 import {
   type BaseLayoutProps,
   BaseLinkItem,
@@ -67,6 +67,8 @@ export interface DocsLayoutProps extends BaseLayoutProps {
   disableDocActions?: boolean;
   /** Optional custom breadcrumb renderer in the header navbar */
   headerBreadcrumb?: ReactNode;
+  /** Custom search placeholder text */
+  searchText?: string;
 
   nav?: BaseLayoutProps["nav"] & {
     mode?: "top" | "auto";
@@ -106,6 +108,7 @@ export function DocsLayout(props: DocsLayoutProps) {
     i18n = false,
     disableThemeSwitch = false,
     themeSwitch = { enabled: !disableThemeSwitch },
+    searchText,
   } = props;
 
   const navMode = nav.mode ?? "auto";
@@ -277,9 +280,7 @@ export function DocsLayout(props: DocsLayoutProps) {
             </LanguageToggle>
           ) : null}
           {themeSwitch.enabled !== false &&
-            (themeSwitch.component ?? (
-              <ThemeToggle mode={themeSwitch.mode ?? "light-dark-system"} />
-            ))}
+            (themeSwitch.component ?? <ThemeToggle />)}
           {footer}
         </HideIfEmpty>
       </SidebarContentMobile>
@@ -309,6 +310,7 @@ export function DocsLayout(props: DocsLayoutProps) {
           <DocsNavbar
             {...props}
             links={links}
+            searchText={searchText}
             tabs={tabMode === "navbar" ? tabs : []}
           />
           {props.children}
@@ -324,10 +326,12 @@ function DocsNavbar({
   searchToggle = {},
   themeSwitch = {},
   nav = {},
+  searchText,
   ...props
 }: DocsLayoutProps & {
   links: LinkItemType[];
   tabs: Option[];
+  searchText?: string;
 }) {
   const navMode = nav.mode ?? "auto";
   const sidebarCollapsible = props.sidebar?.collapsible ?? true;
@@ -416,7 +420,10 @@ function DocsNavbar({
           <div className="flex items-center md:hidden">
             {searchToggle.enabled !== false &&
               (searchToggle.components?.sm ?? (
-                <LargeSearchToggle hideIfDisabled />
+                <LargeSearchToggle
+                  customText={searchText || "Search Documentation"}
+                  hideIfDisabled
+                />
               ))}
             {props.disableDocActions ? null : <HeaderViewOptions />}
             {props.disableDocActions ? null : <HeaderLLMCopyButton />}
@@ -430,14 +437,15 @@ function DocsNavbar({
               </LanguageToggle>
             ) : null}
             {searchToggle.enabled !== false && (
-              <LargeSearchToggle hideIfDisabled />
+              <LargeSearchToggle
+                customText={searchText || "Search Documentation"}
+                hideIfDisabled
+              />
             )}
             {props.disableDocActions ? null : <HeaderViewOptions />}
             {props.disableDocActions ? null : <HeaderLLMCopyButton />}
             {themeSwitch.enabled !== false &&
-              (themeSwitch.component ?? (
-                <ThemeToggle mode={themeSwitch.mode ?? "light-dark-system"} />
-              ))}
+              (themeSwitch.component ?? <ThemeToggle />)}
             <UserProfile showDashboardLink />
             {sidebarCollapsible && navMode === "top" && (
               <SidebarCollapseTrigger

@@ -29,6 +29,7 @@ export function IconToggleButton({
   icon1ClassName,
   icon2ClassName,
 }: IconToggleButtonProps) {
+  const size = buttonProps?.size || "icon";
   const content = (
     <Button
       className={cn(
@@ -37,14 +38,18 @@ export function IconToggleButton({
         className
       )}
       onClick={onClick}
-      size="icon"
+      size={size}
       variant="outline"
       {...buttonProps}
     >
-      <div className="relative flex h-5 w-5 items-center justify-center transition-all duration-600 ease-out">
+      <div className={cn(
+        "relative flex items-center justify-center transition-all duration-600 ease-out",
+        size === "icon-sm" ? "h-5 w-5" : "h-6 w-6"
+      )}>
         <Icon1
           className={cn(
-            "absolute h-[20px] w-[20px] transition-all delay-50 duration-200 ease-out",
+            "absolute transition-all delay-50 duration-200 ease-out",
+            size === "icon-sm" ? "h-[12px] w-[12px]" : "h-[14px] w-[14px]",
             icon1ClassName,
             isIcon2Showing
               ? "group-hover/toggle:-translate-y-6 translate-y-0 opacity-100 group-hover/toggle:opacity-0"
@@ -54,7 +59,8 @@ export function IconToggleButton({
         />
         <Icon2
           className={cn(
-            "absolute h-[20px] w-[20px] transition-all delay-50 duration-200 ease-out",
+            "absolute transition-all delay-50 duration-200 ease-out",
+            size === "icon-sm" ? "h-[14px] w-[14px]" : "h-[16px] w-[16px]",
             icon2ClassName,
             isIcon2Showing
               ? "translate-y-6 opacity-0 group-hover/toggle:translate-y-0 group-hover/toggle:opacity-100"

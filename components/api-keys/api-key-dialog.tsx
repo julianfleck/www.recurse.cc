@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import { ApiKeyDialogSuccess } from "@/components/api-keys/api-key-dialog-success";
+import { ApiKeyDialogSuccess, type ApiKeyResponse } from "@/components/api-keys/api-key-dialog-success";
 import { CalendarNaturalLanguage } from "@/components/calendar-natural-language";
 import { Button } from "@/components/ui/button";
 import {

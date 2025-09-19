@@ -3,7 +3,10 @@
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/cn";
+
+const COPY_SUCCESS_DURATION_MS = 2000;
 
 type CopyButtonProps = {
   text: string;
@@ -17,40 +20,82 @@ type CopyButtonProps = {
     | "ghost"
     | "link";
   children?: React.ReactNode;
+  copied?: boolean;
+  onCopy?: () => void;
+  label?: string;
+  inline?: boolean;
+  disabled?: boolean;
 };
 
 export function CopyButton({
   text,
   className,
   size = "sm",
-  variant = "ghost",
+  variant = "outline",
   children,
+  copied: externalCopied,
+  onCopy,
+  label,
+  inline = false,
+  disabled = false,
 }: CopyButtonProps) {
-  const [copied, setCopied] = useState(false);
+  const [internalCopied, setInternalCopied] = useState(false);
+
+  // Use external copied state if provided, otherwise use internal state
+  const isCopied =
+    externalCopied !== undefined ? externalCopied : internalCopied;
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (_err) {}
+      if (externalCopied === undefined) {
+        // Only manage internal state if no external state is provided
+        setInternalCopied(true);
+        setTimeout(() => setInternalCopied(false), COPY_SUCCESS_DURATION_MS);
+      }
+      onCopy?.();
+    } catch (_err) {
+      // Silently fail if clipboard access fails
+    }
   };
 
+  // Inline mode - render minimal button for input fields without border/background
+  if (inline) {
+    return (
+      <button
+        className={cn(
+          buttonVariants({ variant: "ghost", size: "sm" }),
+          className
+        )}
+        disabled={disabled || isCopied}
+        onClick={handleCopy}
+        type="button"
+      >
+        {isCopied ? <CheckIcon /> : <CopyIcon />}
+        {label && <span>{label}</span>}
+        <span className="sr-only">{isCopied ? "Copied!" : "Copy"}</span>
+      </button>
+    );
+  }
+
+  // Regular mode - use Button wrapper
   return (
     <Button
       className={className}
-      disabled={copied}
+      disabled={disabled || isCopied}
       onClick={handleCopy}
       size={size}
+      tooltip={isCopied ? "Copied!" : "Copy page as markdown"}
       variant={variant}
     >
-      {copied ? (
+      {isCopied ? (
         <CheckIcon className="h-4 w-4" />
       ) : (
         <CopyIcon className="h-4 w-4" />
       )}
       {children && <span className="ml-2">{children}</span>}
-      <span className="sr-only">{copied ? "Copied!" : "Copy"}</span>
+      {label && !children && <span className="ml-1">{label}</span>}
+      <span className="sr-only">{isCopied ? "Copied!" : "Copy"}</span>
     </Button>
   );
 }

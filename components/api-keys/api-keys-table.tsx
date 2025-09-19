@@ -747,9 +747,9 @@ export function ApiKeysTable() {
       </div>
 
       {/* Table */}
-      <div className="min-h-[400px] rounded-md border">
-        <Table>
-          <TableHeader>
+      <div className="mt-4 rounded-sm border">
+        <Table maxHeight="h-[400px]" stickyHeader>
+          <TableHeader sticky>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
@@ -807,11 +807,11 @@ export function ApiKeysTable() {
       </div>
 
       {/* Pagination info */}
-      <div className="flex items-center justify-between px-2 py-4">
+      <div className="flex items-center justify-between px-2 pt-4">
         <div className="flex-1 text-muted-foreground text-sm">
           {selectedCount > 0 && `${selectedCount} of `}
           {table.getFilteredRowModel().rows.length} API key
-          {table.getFilteredRowModel().rows.length !== 1 ? "s" : ""}
+          {table.getFilteredRowModel().rows.length !== 1 ? "s" : ""} found
         </div>
       </div>
 

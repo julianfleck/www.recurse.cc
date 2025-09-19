@@ -12,6 +12,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <DocsLayout
       {...options}
       disableDocActions
+      searchText="Search Knowledge Base"
       // Render children pages directly; page content controls header/footer via DocsPage
       sidebar={{
         ...(options.sidebar ?? {}),

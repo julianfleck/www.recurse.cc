@@ -4,12 +4,19 @@ import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+interface TableProps extends React.ComponentProps<"table"> {
+  stickyHeader?: boolean;
+  maxHeight?: string;
+}
+
+function Table({ className, stickyHeader, maxHeight, ...props }: TableProps) {
+  const containerClasses = cn(
+    "relative w-full",
+    stickyHeader && maxHeight ? `${maxHeight} overflow-auto` : "overflow-x-auto"
+  );
+
   return (
-    <div
-      className="relative w-full overflow-x-auto"
-      data-slot="table-container"
-    >
+    <div className={containerClasses} data-slot="table-container">
       <table
         className={cn("w-full caption-bottom text-sm", className)}
         data-slot="table"
@@ -19,10 +26,19 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
   );
 }
 
-function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
+interface TableHeaderProps extends React.ComponentProps<"thead"> {
+  sticky?: boolean;
+}
+
+function TableHeader({ className, sticky, ...props }: TableHeaderProps) {
   return (
     <thead
-      className={cn("[&_tr]:border-b", className)}
+      className={cn(
+        "[&_tr]:border-b",
+        sticky &&
+          "sticky top-0 z-10 rounded-md bg-card shadow-md after:absolute after:right-0 after:bottom-0 after:left-0 after:z-10 after:h-px after:bg-border after:content-['']",
+        className
+      )}
       data-slot="table-header"
       {...props}
     />

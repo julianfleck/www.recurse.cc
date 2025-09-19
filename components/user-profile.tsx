@@ -115,8 +115,8 @@ export function UserProfile({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="rounded-full" size="icon" variant="ghost">
-          <Avatar className="size-7">
+        <Button className="rounded-full" size="icon-sm" variant="outline">
+          <Avatar className="size-full bg-transparent">
             {showImage ? (
               <AvatarImage
                 alt={displayUser?.name ?? "User"}
@@ -132,17 +132,6 @@ export function UserProfile({
       <DropdownMenuContent align="end" className="w-64">
         <DropdownMenuLabel>
           <div className="flex items-center gap-3">
-            <Avatar className="size-8">
-              {showImage ? (
-                <AvatarImage
-                  alt={displayUser?.name ?? "User"}
-                  src={displayUser?.picture}
-                />
-              ) : null}
-              <AvatarFallback className="bg-accent text-accent-foreground">
-                {avatarFallback}
-              </AvatarFallback>
-            </Avatar>
             <div className="flex min-w-0 flex-col">
               <div className="flex items-center gap-1">
                 <span className="truncate font-medium text-sm">

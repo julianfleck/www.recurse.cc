@@ -1,5 +1,6 @@
 import { HomeLayout } from "fumadocs-ui/layouts/home";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { LargeSearchToggle } from "@/components/search-toggle";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { UserProfile } from "@/components/user-profile";
 import { baseOptions } from "@/lib/layout.shared";
 
@@ -13,11 +14,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         { type: "main", text: "Dashboard", url: "/dashboard" },
         ...(options.links ?? []),
       ]}
+      searchToggle={{
+        enabled: true,
+        components: {
+          lg: <LargeSearchToggle customText="Search Documentation" />,
+        },
+      }}
       themeSwitch={{
         enabled: true,
         component: (
           <div className="flex items-center gap-2">
-            <ThemeToggle mode="light-dark-system" />
+            <ThemeToggle />
             <UserProfile showDashboardLink />
           </div>
         ),

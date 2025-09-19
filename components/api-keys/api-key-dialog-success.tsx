@@ -1,19 +1,25 @@
 "use client";
 
-import { CheckIcon } from "lucide-react";
+import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-type ApiKeyResponse = {
+export type ApiKeyResponse = {
   id: string;
   name: string;
   key: string;
@@ -33,80 +39,147 @@ export function ApiKeyDialogSuccess({
   onOpenChange,
   createdKey,
 }: ApiKeyDialogSuccessProps) {
+  // Format the display key by replacing ellipsis with round dots and padding to match key length
+  const formatDisplayKey = (displayKey: string, actualKey: string): string => {
+    const dot = "•";
+    const ellipsisPattern = /\.\./g;
+
+    if (ellipsisPattern.test(displayKey)) {
+      // Replace ellipsis with dots and pad to match the actual key length
+      const prefix = displayKey.replace(ellipsisPattern, "");
+      const dotsNeeded = actualKey.length - prefix.length;
+      return prefix + dot.repeat(Math.max(0, dotsNeeded));
+    }
+
+    // If no ellipsis found, return the display key as is
+    return displayKey;
+  };
+
+  const COPY_SUCCESS_DURATION_MS = 2000;
+
+  const formattedDisplayKey = formatDisplayKey(
+    createdKey.display_key,
+    createdKey.key
+  );
+
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyKey = async () => {
+    try {
+      await navigator.clipboard.writeText(createdKey.key);
+      setCopied(true);
+      setTimeout(() => setCopied(false), COPY_SUCCESS_DURATION_MS);
+    } catch (_err) {
+      // Silently fail if clipboard access fails
+    }
+  };
+
+  const handleCopyAndClose = async () => {
+    await handleCopyKey();
+    onOpenChange(false);
+  };
+
   return (
-    <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>API Key Created Successfully!</DialogTitle>
-          <DialogDescription>{createdKey.message}</DialogDescription>
-        </DialogHeader>
+    <TooltipProvider>
+      <Dialog onOpenChange={onOpenChange} open={open}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>API Key Created Successfully!</DialogTitle>
+            {/* <DialogDescription>{createdKey.message}</DialogDescription> */}
+          </DialogHeader>
 
-        <div className="space-y-4">
-          {/* API Key Name */}
-          <div className="rounded-lg bg-muted/50 p-4">
-            <div className="space-y-2">
-              <Label className="font-medium text-sm">API Key Name</Label>
-              <Input className="text-sm" readOnly value={createdKey.name} />
+          <div className="space-y-4 pt-2 pb-8">
+            {/* Text */}
+            <div className="mt-4 max-w-lg rounded-lg bg-muted/50 pb-8">
+              Your API key has been created successfully. You can copy the key
+              below to use it in your applications. This is the only time you'll
+              see this secret key. Store it securely and never share it
+              publicly.
             </div>
-          </div>
 
-          {/* API Key ID */}
-          <div className="rounded-lg bg-muted/50 p-4">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label className="font-medium text-sm">API Key ID</Label>
-                <CopyButton text={createdKey.id} />
+            {/* API Key Name */}
+            <div className="rounded-lg bg-muted/50">
+              <div className="space-y-2">
+                <Label className="font-medium text-[10px] uppercase tracking-wider">
+                  API Key Name
+                </Label>
+                <Input
+                  autoFocus={false}
+                  className="text-sm hover:cursor-default"
+                  readOnly
+                  value={createdKey.name}
+                />
               </div>
-              <Input
-                className="font-mono text-sm"
-                readOnly
-                value={createdKey.id}
-              />
             </div>
-          </div>
 
-          {/* Secret Key (Masked Display) */}
-          <div className="rounded-lg bg-muted/50 p-4">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label className="font-medium text-sm">Secret Key</Label>
-                <CopyButton text={createdKey.key} />
+            {/* Secret Key (Masked Display) */}
+            <div className="rounded-lg bg-muted/50">
+              <div className="space-y-2">
+                <Label className="font-medium text-[10px] uppercase tracking-wider">
+                  Secret Key
+                </Label>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className="relative w-full"
+                      onClick={handleCopyKey}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleCopyKey();
+                        }
+                      }}
+                      type="button"
+                    >
+                      <Input
+                        autoFocus={false}
+                        className="hover:!bg-accent pr-10 font-mono text-sm hover:cursor-default"
+                        readOnly
+                        value={formattedDisplayKey}
+                      />
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-1">
+                        <CopyButton
+                          copied={copied}
+                          inline
+                          text={createdKey.key}
+                        />
+                      </div>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-sm">
+                    <p>
+                      This is a masked version for display. Click to copy the
+                      full key.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
-              <Input
-                className="font-mono text-sm"
-                readOnly
-                value={createdKey.display_key}
-              />
-              <p className="text-muted-foreground text-xs">
-                This is a masked version for display. Click copy to get the full
-                key.
-              </p>
             </div>
+
+            {/* Security Notice */}
+            {/* <div className="mb-4 rounded-lg border border-border bg-muted/50 p-4 text-sm">
+              <div className="flex items-start gap-2">
+                <CheckIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                <p className="text-foreground">
+                  This is the only time you'll see this secret key. Store it
+                  securely and never share it publicly.
+                </p>
+              </div>
+            </div> */}
           </div>
 
-          {/* Security Notice */}
-          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm dark:border-amber-800 dark:bg-amber-950/30">
-            <div className="flex items-start gap-2">
-              <CheckIcon className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-600 dark:text-amber-400" />
-              <p className="text-amber-800 dark:text-amber-200">
-                This is the only time you'll see this secret key. Store it
-                securely and never share it publicly.
-              </p>
-            </div>
+          <div className="flex justify-end">
+            <Button
+              className="h-11 w-full"
+              onClick={handleCopyAndClose}
+              size="lg"
+              variant="default"
+            >
+              Copy and close this message
+            </Button>
           </div>
-        </div>
-
-        <div className="flex justify-end">
-          <CopyButton
-            className="h-11 w-full"
-            size="lg"
-            text={createdKey.key}
-            variant="default"
-          >
-            Done
-          </CopyButton>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+    </TooltipProvider>
   );
 }
