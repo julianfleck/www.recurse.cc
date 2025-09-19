@@ -49,7 +49,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { apiService, ApiError } from "@/lib/api";
+import { ApiError, apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 // Constants
@@ -356,13 +356,22 @@ export function ApiKeysTable() {
       console.error("Failed to fetch API keys:", error);
 
       // If it's an authentication error and we haven't retried yet, wait a bit and retry
-      if (error instanceof ApiError && (error.status === 401 || error.status === 403) && retryCount < 2) {
-        console.log(`Auth error, retrying API keys fetch in ${500 * (retryCount + 1)}ms`);
-        setTimeout(() => {
-          if (useAuthStore.getState().accessToken) {
-            fetchApiKeys(retryCount + 1);
-          }
-        }, 500 * (retryCount + 1));
+      if (
+        error instanceof ApiError &&
+        (error.status === 401 || error.status === 403) &&
+        retryCount < 2
+      ) {
+        console.log(
+          `Auth error, retrying API keys fetch in ${500 * (retryCount + 1)}ms`
+        );
+        setTimeout(
+          () => {
+            if (useAuthStore.getState().accessToken) {
+              fetchApiKeys(retryCount + 1);
+            }
+          },
+          500 * (retryCount + 1)
+        );
         return;
       }
 

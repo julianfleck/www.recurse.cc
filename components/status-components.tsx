@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Status as KiboStatus } from "@/components/ui/kibo-ui/status";
 import { apiService } from "@/lib/api";
+import { useAuthStore } from "@/components/auth/auth-store";
 
 type HealthStatus = {
   status: "healthy" | "unhealthy" | "degraded";
@@ -45,14 +46,32 @@ export function HealthStatus() {
   const [error, setError] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchHealth = useCallback(async () => {
+  const fetchHealth = useCallback(async (retryCount = 0) => {
     try {
       const response = await apiService.get<HealthStatus>("/health");
 
       setHealth(response.data);
       setLastUpdated(new Date());
       setError(false);
-    } catch {
+    } catch (err) {
+      console.error("Failed to fetch health status:", err);
+
+      // If it's an authentication error and we haven't retried yet, wait a bit and retry
+      const errorMessage = err instanceof Error ? err.message : "Unknown error";
+      if (
+        err instanceof Error &&
+        (errorMessage.includes("401") || errorMessage.includes("403")) &&
+        retryCount < 2
+      ) {
+        console.log(
+          `Health status auth error, retrying in ${500 * (retryCount + 1)}ms`
+        );
+        setTimeout(() => {
+          fetchHealth(retryCount + 1);
+        }, 500 * (retryCount + 1));
+        return;
+      }
+
       setError(true);
     } finally {
       setLoading(false);
@@ -60,19 +79,47 @@ export function HealthStatus() {
   }, []);
 
   useEffect(() => {
-    // Add a small delay to allow auth service to initialize
-    const initialDelay = setTimeout(() => {
-      fetchHealth();
-    }, AUTH_INIT_DELAY_MS);
+    let timeoutId: NodeJS.Timeout;
+    let intervalId: NodeJS.Timeout;
+    let isMounted = true;
 
-    // Poll every 30 seconds
-    const interval = setInterval(fetchHealth, HEALTH_CHECK_INTERVAL_MS);
+    const fetchIfAuthenticated = () => {
+      if (!isMounted) return;
+
+      const token = useAuthStore.getState().accessToken;
+      if (token && !loading) {
+        fetchHealth();
+      }
+    };
+
+    const unsubscribe = useAuthStore.subscribe((state) => {
+      if (state.accessToken) {
+        // Add a small delay to ensure auth is stable
+        timeoutId = setTimeout(fetchIfAuthenticated, 100);
+      }
+    });
+
+    // Check immediately with a small delay to ensure component is ready
+    timeoutId = setTimeout(fetchIfAuthenticated, 50);
+
+    // Set up interval for polling
+    intervalId = setInterval(() => {
+      if (isMounted) {
+        fetchHealth();
+      }
+    }, HEALTH_CHECK_INTERVAL_MS);
 
     return () => {
-      clearTimeout(initialDelay);
-      clearInterval(interval);
+      isMounted = false;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+      unsubscribe();
     };
-  }, [fetchHealth]);
+  }, [fetchHealth, loading]);
 
   // Map health status to Kibo status
   const getKiboStatus = (): StatusState => {
@@ -113,26 +160,45 @@ export function DocumentCountStatus() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchDocumentCount = useCallback(async () => {
+  const fetchDocumentCount = useCallback(async (retryCount = 0) => {
     try {
       setIsLoading(true);
       setError(null);
 
+      console.log("Fetching document count...");
       const response = await apiService.get<DocumentSearchResponse>(
         "/search/document",
         {
           field_set: "basic",
           depth: 0,
-          limit: 100,
+          limit: 1,
           page: 1,
           min_score: 0,
         }
       );
 
+      console.log("Document count response:", response);
       setDocumentCount(response.data.pagination.total_count);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to load document count";
+
+      console.error("Failed to fetch document count:", err);
+
+      // If it's an authentication error and we haven't retried yet, wait a bit and retry
+      if (
+        err instanceof Error &&
+        (errorMessage.includes("401") || errorMessage.includes("403")) &&
+        retryCount < 2
+      ) {
+        console.log(
+          `Document count auth error, retrying in ${500 * (retryCount + 1)}ms`
+        );
+        setTimeout(() => {
+          fetchDocumentCount(retryCount + 1);
+        }, 500 * (retryCount + 1));
+        return;
+      }
 
       setError(errorMessage);
     } finally {
@@ -141,22 +207,47 @@ export function DocumentCountStatus() {
   }, []);
 
   useEffect(() => {
-    // Add a small delay to allow auth service to initialize
-    const initialDelay = setTimeout(() => {
-      fetchDocumentCount();
-    }, DOCUMENT_AUTH_INIT_DELAY_MS);
+    let timeoutId: NodeJS.Timeout;
+    let intervalId: NodeJS.Timeout;
+    let isMounted = true;
 
-    // Refresh every 5 minutes
-    const interval = setInterval(
-      fetchDocumentCount,
-      DOCUMENT_COUNT_REFRESH_INTERVAL_MS
-    );
+    const fetchIfAuthenticated = () => {
+      if (!isMounted) return;
+
+      const token = useAuthStore.getState().accessToken;
+      if (token && !isLoading) {
+        fetchDocumentCount();
+      }
+    };
+
+    const unsubscribe = useAuthStore.subscribe((state) => {
+      if (state.accessToken) {
+        // Add a small delay to ensure auth is stable
+        timeoutId = setTimeout(fetchIfAuthenticated, 100);
+      }
+    });
+
+    // Check immediately with a small delay to ensure component is ready
+    timeoutId = setTimeout(fetchIfAuthenticated, 50);
+
+    // Set up interval for refreshing
+    intervalId = setInterval(() => {
+      if (isMounted) {
+        fetchDocumentCount();
+      }
+    }, DOCUMENT_COUNT_REFRESH_INTERVAL_MS);
 
     return () => {
-      clearTimeout(initialDelay);
-      clearInterval(interval);
+      isMounted = false;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+      unsubscribe();
     };
-  }, [fetchDocumentCount]);
+  }, [fetchDocumentCount, isLoading]);
 
   let displayText: string;
   if (isLoading) {
