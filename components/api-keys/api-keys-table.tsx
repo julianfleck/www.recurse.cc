@@ -23,7 +23,7 @@ import {
   SearchIcon,
   TrashIcon,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiKeyDialog } from "@/components/api-keys/api-key-dialog";
 import { useAuthStore } from "@/components/auth/auth-store";
 import { Badge } from "@/components/ui/badge";
@@ -344,6 +344,9 @@ export function ApiKeysTable() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
+  // Prevent multiple simultaneous retries
+  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   // Dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -359,19 +362,20 @@ export function ApiKeysTable() {
       if (
         error instanceof ApiError &&
         (error.status === 401 || error.status === 403) &&
-        retryCount < 2
+        retryCount < 2 &&
+        !retryTimeoutRef.current
       ) {
+        const delay = 2000 * (retryCount + 1); // 2s, 4s delays
         console.log(
-          `Auth error, retrying API keys fetch in ${500 * (retryCount + 1)}ms`
+          `Auth error, retrying API keys fetch in ${delay}ms (retry ${retryCount + 1})`
         );
-        setTimeout(
-          () => {
-            if (useAuthStore.getState().accessToken) {
-              fetchApiKeys(retryCount + 1);
-            }
-          },
-          500 * (retryCount + 1)
-        );
+
+        retryTimeoutRef.current = setTimeout(() => {
+          retryTimeoutRef.current = null;
+          if (useAuthStore.getState().accessToken) {
+            fetchApiKeys(retryCount + 1);
+          }
+        }, delay);
         return;
       }
 
@@ -410,6 +414,10 @@ export function ApiKeysTable() {
       isMounted = false;
       if (timeoutId) {
         clearTimeout(timeoutId);
+      }
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+        retryTimeoutRef.current = null;
       }
       unsubscribe();
     };

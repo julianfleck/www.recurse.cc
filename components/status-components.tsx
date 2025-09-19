@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Status as KiboStatus } from "@/components/ui/kibo-ui/status";
 import { apiService } from "@/lib/api";
 import { useAuthStore } from "@/components/auth/auth-store";
@@ -46,6 +46,9 @@ export function HealthStatus() {
   const [error, setError] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
+  // Prevent multiple simultaneous retries
+  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const fetchHealth = useCallback(async (retryCount = 0) => {
     try {
       const response = await apiService.get<HealthStatus>("/health");
@@ -61,14 +64,18 @@ export function HealthStatus() {
       if (
         err instanceof Error &&
         (errorMessage.includes("401") || errorMessage.includes("403")) &&
-        retryCount < 2
+        retryCount < 2 &&
+        !retryTimeoutRef.current
       ) {
+        const delay = 2500 * (retryCount + 1); // 2.5s, 5s delays
         console.log(
-          `Health status auth error, retrying in ${500 * (retryCount + 1)}ms`
+          `Health status auth error, retrying in ${delay}ms (retry ${retryCount + 1})`
         );
-        setTimeout(() => {
+
+        retryTimeoutRef.current = setTimeout(() => {
+          retryTimeoutRef.current = null;
           fetchHealth(retryCount + 1);
-        }, 500 * (retryCount + 1));
+        }, delay);
         return;
       }
 
@@ -117,6 +124,10 @@ export function HealthStatus() {
       if (intervalId) {
         clearInterval(intervalId);
       }
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+        retryTimeoutRef.current = null;
+      }
       unsubscribe();
     };
   }, [fetchHealth, loading]);
@@ -160,6 +171,9 @@ export function DocumentCountStatus() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Prevent multiple simultaneous retries
+  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const fetchDocumentCount = useCallback(async (retryCount = 0) => {
     try {
       setIsLoading(true);
@@ -189,14 +203,18 @@ export function DocumentCountStatus() {
       if (
         err instanceof Error &&
         (errorMessage.includes("401") || errorMessage.includes("403")) &&
-        retryCount < 2
+        retryCount < 2 &&
+        !retryTimeoutRef.current
       ) {
+        const delay = 3000 * (retryCount + 1); // 3s, 6s delays
         console.log(
-          `Document count auth error, retrying in ${500 * (retryCount + 1)}ms`
+          `Document count auth error, retrying in ${delay}ms (retry ${retryCount + 1})`
         );
-        setTimeout(() => {
+
+        retryTimeoutRef.current = setTimeout(() => {
+          retryTimeoutRef.current = null;
           fetchDocumentCount(retryCount + 1);
-        }, 500 * (retryCount + 1));
+        }, delay);
         return;
       }
 
@@ -244,6 +262,10 @@ export function DocumentCountStatus() {
       }
       if (intervalId) {
         clearInterval(intervalId);
+      }
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+        retryTimeoutRef.current = null;
       }
       unsubscribe();
     };
