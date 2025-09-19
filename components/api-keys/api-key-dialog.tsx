@@ -511,16 +511,18 @@ export function ApiKeyDialog({
       </DialogContent>
 
       {/* Success Dialog */}
-      <ApiKeyDialogSuccess
-        createdKey={createdKey!}
-        onOpenChange={(successOpen) => {
-          if (!successOpen) {
-            onOpenChange(false);
-            setCreatedKey(null);
-          }
-        }}
-        open={currentStep === 2 && !!createdKey}
-      />
+      {createdKey && (
+        <ApiKeyDialogSuccess
+          createdKey={createdKey}
+          onOpenChange={(successOpen) => {
+            if (!successOpen) {
+              onOpenChange(false);
+              setCreatedKey(null);
+            }
+          }}
+          open={currentStep === 2}
+        />
+      )}
     </Dialog>
   );
 }
