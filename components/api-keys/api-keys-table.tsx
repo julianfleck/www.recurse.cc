@@ -24,6 +24,7 @@ import {
   TrashIcon,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { ApiKeyDialog } from "@/components/api-keys/api-key-dialog";
 import { useAuthStore } from "@/components/auth/auth-store";
 import { Badge } from "@/components/ui/badge";
@@ -51,7 +52,6 @@ import {
 } from "@/components/ui/tooltip";
 import { ApiError, apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
 
 // Constants
 const SECRET_KEY_VISIBLE_CHARS = 8;
@@ -396,22 +396,25 @@ export function ApiKeysTable() {
     }
   }, []);
 
-  const deleteApiKey = useCallback(async (keyId: string) => {
-    try {
-      console.log("Deleting API key:", keyId);
-      const response = await apiService.delete(`/users/me/api-keys/${keyId}`);
-      console.log("Delete response:", response);
+  const deleteApiKey = useCallback(
+    async (keyId: string) => {
+      try {
+        console.log("Deleting API key:", keyId);
+        const response = await apiService.delete(`/users/me/api-keys/${keyId}`);
+        console.log("Delete response:", response);
 
-      // Show success toast
-      toast.success("API key deleted successfully");
+        // Show success toast
+        toast.success("API key deleted successfully");
 
-      // Refresh the table after successful deletion
-      fetchApiKeys();
-    } catch (error) {
-      console.error("Failed to delete API key:", error);
-      toast.error("Failed to delete API key");
-    }
-  }, [fetchApiKeys]);
+        // Refresh the table after successful deletion
+        fetchApiKeys();
+      } catch (error) {
+        console.error("Failed to delete API key:", error);
+        toast.error("Failed to delete API key");
+      }
+    },
+    [fetchApiKeys]
+  );
 
   const deleteSelectedKeys = useCallback(async () => {
     const selectedIds = Object.keys(rowSelection);
@@ -420,12 +423,16 @@ export function ApiKeysTable() {
     try {
       // Delete all selected keys
       await Promise.all(
-        selectedIds.map((keyId) => apiService.delete(`/users/me/api-keys/${keyId}`))
+        selectedIds.map((keyId) =>
+          apiService.delete(`/users/me/api-keys/${keyId}`)
+        )
       );
 
       // Show success toast
       const count = selectedIds.length;
-      toast.success(`${count} API key${count > 1 ? 's' : ''} deleted successfully`);
+      toast.success(
+        `${count} API key${count > 1 ? "s" : ""} deleted successfully`
+      );
 
       // Clear selection and refresh table
       setRowSelection({});
@@ -465,17 +472,21 @@ export function ApiKeysTable() {
       cell: ({ row }) => (
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="ml-2 flex items-center justify-center pb-2">
+            <div className="ml-2 flex items-center justify-center pt-2 pb-2">
               <div
                 className={cn(
                   "size-1.5 rounded-full ring-2 ring-chart-2/90",
-                  row.getValue("is_active") ? "bg-chart-2" : "bg-muted-foreground"
+                  row.getValue("is_active")
+                    ? "bg-chart-2"
+                    : "bg-muted-foreground"
                 )}
               />
             </div>
           </TooltipTrigger>
           <TooltipContent>
-            <p>API key is {row.getValue("is_active") ? "active" : "inactive"}</p>
+            <p>
+              API key is {row.getValue("is_active") ? "active" : "inactive"}
+            </p>
           </TooltipContent>
         </Tooltip>
       ),
@@ -516,7 +527,8 @@ export function ApiKeysTable() {
       header: "Last Used",
       cell: ({ row }) => {
         const lastUsed = row.getValue("last_used");
-        if (!lastUsed) return <div className="text-sm text-muted-foreground">Never</div>;
+        if (!lastUsed)
+          return <div className="text-muted-foreground text-sm">Never</div>;
         const date = new Date(lastUsed);
         return <div className="text-sm">{date.toLocaleDateString()}</div>;
       },

@@ -44,6 +44,10 @@
   --font-mono: Geist Mono, monospace;
   --radius: 0.3rem;
   --shadow-2xs: 0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.05);
+  --status-online: #a6c82e;
+  --status-maintenance: #8d87cf;
+  --status-offline: #e57637;
+  --status-degraded: #e57637;
   --shadow-xs: 0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.05);
   --shadow-sm:
     0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.1), 0px 1px 2px -1px
@@ -103,6 +107,10 @@
   --font-mono: Geist Mono, monospace;
   --radius: 0.3rem;
   --shadow-2xs: 0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.05);
+  --status-online: #bdc122;
+  --status-maintenance: #b98eff;
+  --status-offline: #e57637;
+  --status-degraded: #e57637;
   --shadow-xs: 0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.05);
   --shadow-sm:
     0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.1), 0px 1px 2px -1px
@@ -161,6 +169,11 @@
   --font-serif: var(--font-serif);
 
   --radius-sm: calc(var(--radius) - 2.5px);
+
+  --color-status-online: var(--status-online);
+  --color-status-maintenance: var(--status-maintenance);
+  --color-status-offline: var(--status-offline);
+  --color-status-degraded: var(--status-degraded);
   --radius-md: calc(var(--radius) - 1px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 2px);

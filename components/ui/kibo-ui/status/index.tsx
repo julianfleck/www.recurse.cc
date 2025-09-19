@@ -9,19 +9,19 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-// Use consistent colors regardless of theme for SSR compatibility
+// Use theme colors for status indicators
 const getStatusColor = (status: string): string => {
   switch (status) {
     case "online":
-      return "#a6c82e";
+      return "var(--color-status-online)";
     case "maintenance":
-      return "#8d87cf";
+      return "var(--color-status-maintenance)";
     case "degraded":
-      return "#e57637";
+      return "var(--color-status-degraded)";
     case "offline":
-      return "#dc2626";
+      return "var(--color-status-offline)";
     default:
-      return "#dc2626";
+      return "var(--color-status-offline)";
   }
 };
 
@@ -101,13 +101,12 @@ export const StatusIndicator = ({
     <span className="relative flex h-2 w-2" {...props}>
       <span
         className={cn(
-          "absolute inline-flex h-full w-full animate-ping rounded-full opacity-75",
-          className
+          "absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
         )}
         style={{ backgroundColor: color }}
       />
       <span
-        className={cn("relative inline-flex h-2 w-2 rounded-full", className)}
+        className={cn("relative inline-flex h-2 w-2 rounded-full")}
         style={{ backgroundColor: color }}
       />
     </span>
