@@ -49,7 +49,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { apiService } from "@/lib/api";
+import { apiService, ApiError } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 // Constants
@@ -347,14 +347,26 @@ export function ApiKeysTable() {
   // Dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const fetchApiKeys = useCallback(async () => {
+  const fetchApiKeys = useCallback(async (retryCount = 0) => {
     try {
       setLoading(true);
       const response = await apiService.get<ApiKey[]>("/users/me/api-keys");
       setData(response.data);
     } catch (error) {
       console.error("Failed to fetch API keys:", error);
-      // Silently handle API key fetch errors
+
+      // If it's an authentication error and we haven't retried yet, wait a bit and retry
+      if (error instanceof ApiError && (error.status === 401 || error.status === 403) && retryCount < 2) {
+        console.log(`Auth error, retrying API keys fetch in ${500 * (retryCount + 1)}ms`);
+        setTimeout(() => {
+          if (useAuthStore.getState().accessToken) {
+            fetchApiKeys(retryCount + 1);
+          }
+        }, 500 * (retryCount + 1));
+        return;
+      }
+
+      // Silently handle other API key fetch errors
     } finally {
       setLoading(false);
     }
@@ -362,19 +374,36 @@ export function ApiKeysTable() {
 
   // Wait for authentication before fetching
   useEffect(() => {
-    const unsubscribe = useAuthStore.subscribe((state) => {
-      if (state.accessToken && data.length === 0 && !loading) {
+    let timeoutId: NodeJS.Timeout;
+    let isMounted = true;
+
+    const fetchIfAuthenticated = () => {
+      if (!isMounted) return;
+
+      const token = useAuthStore.getState().accessToken;
+      if (token && data.length === 0 && !loading) {
+        console.log("Auth token available, fetching API keys");
         fetchApiKeys();
+      }
+    };
+
+    const unsubscribe = useAuthStore.subscribe((state) => {
+      if (state.accessToken) {
+        // Add a small delay to ensure auth is stable
+        timeoutId = setTimeout(fetchIfAuthenticated, 100);
       }
     });
 
-    // Also check immediately in case auth is already available
-    const currentToken = useAuthStore.getState().accessToken;
-    if (currentToken && data.length === 0 && !loading) {
-      fetchApiKeys();
-    }
+    // Check immediately with a small delay to ensure component is ready
+    timeoutId = setTimeout(fetchIfAuthenticated, 50);
 
-    return unsubscribe;
+    return () => {
+      isMounted = false;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      unsubscribe();
+    };
   }, [fetchApiKeys, data.length, loading]);
 
   const table = useReactTable({
