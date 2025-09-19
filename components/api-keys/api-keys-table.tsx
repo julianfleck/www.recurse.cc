@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ApiKeyDialog } from "@/components/api-keys/api-key-dialog";
+import { useAuthStore } from "@/components/auth/auth-store";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -48,7 +49,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useAuthStore } from "@/components/auth/auth-store";
 import { apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -336,7 +336,7 @@ const SortableTableHead = ({ header }: { header: any }) => {
 
 export function ApiKeysTable() {
   const [data, setData] = useState<ApiKey[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([
     { id: "created_at", desc: true },
   ]);
