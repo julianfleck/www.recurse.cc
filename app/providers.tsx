@@ -2,6 +2,7 @@
 import { Auth0Provider } from "@auth0/auth0-react";
 import { RootProvider } from "fumadocs-ui/provider";
 import type { ReactNode } from "react";
+import { Toaster } from "sonner";
 import { AuthInit } from "@/components/auth/auth-init";
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -28,7 +29,10 @@ export function Providers({ children }: { children: ReactNode }) {
       useRefreshTokens={true}
     >
       <AuthInit />
-      <RootProvider>{children}</RootProvider>
+      <RootProvider>
+        {children}
+        <Toaster />
+      </RootProvider>
     </Auth0Provider>
   );
 }

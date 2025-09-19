@@ -51,6 +51,7 @@ import {
 } from "@/components/ui/tooltip";
 import { ApiError, apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 // Constants
 const SECRET_KEY_VISIBLE_CHARS = 8;
@@ -401,11 +402,14 @@ export function ApiKeysTable() {
       const response = await apiService.delete(`/users/me/api-keys/${keyId}`);
       console.log("Delete response:", response);
 
+      // Show success toast
+      toast.success("API key deleted successfully");
+
       // Refresh the table after successful deletion
       fetchApiKeys();
     } catch (error) {
       console.error("Failed to delete API key:", error);
-      // TODO: Add user notification for delete failure
+      toast.error("Failed to delete API key");
     }
   }, [fetchApiKeys]);
 
@@ -414,17 +418,21 @@ export function ApiKeysTable() {
     console.log("Deleting selected API keys:", selectedIds);
 
     try {
-        // Delete all selected keys
-        await Promise.all(
-          selectedIds.map((keyId) => apiService.delete(`/users/me/api-keys/${keyId}`))
-        );
+      // Delete all selected keys
+      await Promise.all(
+        selectedIds.map((keyId) => apiService.delete(`/users/me/api-keys/${keyId}`))
+      );
+
+      // Show success toast
+      const count = selectedIds.length;
+      toast.success(`${count} API key${count > 1 ? 's' : ''} deleted successfully`);
 
       // Clear selection and refresh table
       setRowSelection({});
       fetchApiKeys();
     } catch (error) {
       console.error("Failed to delete selected API keys:", error);
-      // TODO: Add user notification for delete failure
+      toast.error("Failed to delete selected API keys");
     }
   }, [rowSelection, fetchApiKeys]);
 
