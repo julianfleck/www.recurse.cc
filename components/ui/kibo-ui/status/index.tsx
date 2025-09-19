@@ -134,4 +134,3 @@ export const StatusLabel = ({
     )}
   </span>
 );
-

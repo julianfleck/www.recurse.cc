@@ -45,9 +45,9 @@ import { cn } from "@/lib/utils";
 
 declare module "@tanstack/react-table" {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface ColumnMeta<TData extends RowData, TValue> {
+  type ColumnMeta<_TData extends RowData, _TValue> = {
     filterVariant?: "text" | "range" | "select";
-  }
+  };
 }
 
 type Item = {
@@ -344,7 +344,9 @@ function Filter({ column }: { column: Column<any, unknown> }) {
     typeof column.columnDef.header === "string" ? column.columnDef.header : "";
 
   const sortedUniqueValues = useMemo(() => {
-    if (filterVariant === "range") return [];
+    if (filterVariant === "range") {
+      return [];
+    }
 
     const values = Array.from(column.getFacetedUniqueValues().keys());
 
@@ -358,7 +360,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
 
     return Array.from(new Set(flattenedValues)).sort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [column.getFacetedUniqueValues(), filterVariant]);
+  }, [filterVariant, column.getFacetedUniqueValues]);
 
   if (filterVariant === "range") {
     return (

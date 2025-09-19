@@ -1,7 +1,7 @@
 "use client";
 
 import { parseDate } from "chrono-node";
-import { CalendarIcon, X } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -39,7 +39,7 @@ export function CalendarNaturalLanguage({
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const setTimeRange = (range: { start: string; end: string }) => {
+  const setTimeRange = (_range: { start: string; end: string }) => {
     // For now, just handle date, time can be added later if needed
     // Time range functionality can be implemented later
   };
@@ -119,7 +119,7 @@ export function CalendarNaturalLanguage({
           } else {
             // Try parsing as a direct date string
             const directDate = new Date(e.target.value);
-            if (!isNaN(directDate.getTime())) {
+            if (!Number.isNaN(directDate.getTime())) {
               setDateRange({ from: directDate, to: directDate });
             }
           }

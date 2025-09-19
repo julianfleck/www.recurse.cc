@@ -33,10 +33,10 @@ export const docsSource = loader({
       {
         name: "sidebar-label",
         file(node, filePath) {
-          if (filePath && filePath.endsWith(".mdx")) {
+          if (filePath?.endsWith(".mdx")) {
             try {
-              const fs = require("fs");
-              const path = require("path");
+              const fs = require("node:fs");
+              const path = require("node:path");
               const contentDir = path.join(process.cwd(), "content/docs");
               const fullPath = path.join(contentDir, filePath);
 
@@ -54,9 +54,7 @@ export const docsSource = loader({
                   };
                 }
               }
-            } catch (error) {
-              console.warn("Failed to read sidebar_label from file:", filePath);
-            }
+            } catch (_error) {}
           }
           return node;
         },
@@ -87,7 +85,9 @@ export const combinedSource = {
 
 // Icon resolver function
 function resolveIcon(icon?: string) {
-  if (!icon) return;
+  if (!icon) {
+    return;
+  }
   switch (icon.toLowerCase()) {
     // Lucide icons
     case "book":

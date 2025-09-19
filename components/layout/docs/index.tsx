@@ -28,7 +28,7 @@ import { UserProfile } from "@/components/user-profile";
 import { cn } from "../../../lib/cn";
 import { LanguageToggle } from "../../language-toggle";
 import { type Option, RootToggle } from "../../root-toggle";
-import { LargeSearchToggle, SearchToggle } from "../../search-toggle";
+import { LargeSearchToggle } from "../../search-toggle";
 import {
   Sidebar,
   SidebarCollapseTrigger,
@@ -309,7 +309,7 @@ export function DocsLayout(props: DocsLayoutProps) {
           <DocsNavbar
             {...props}
             links={links}
-            tabs={tabMode == "navbar" ? tabs : []}
+            tabs={tabMode === "navbar" ? tabs : []}
           />
           {props.children}
         </LayoutBody>
@@ -491,8 +491,9 @@ function NavbarLinkItem({
         </PopoverTrigger>
         <PopoverContent className="flex flex-col">
           {item.items.map((child, i) => {
-            if (child.type === "custom")
+            if (child.type === "custom") {
               return <Fragment key={i}>{child.children}</Fragment>;
+            }
 
             return (
               <BaseLinkItem
@@ -510,7 +511,9 @@ function NavbarLinkItem({
     );
   }
 
-  if (item.type === "custom") return item.children;
+  if (item.type === "custom") {
+    return item.children;
+  }
 
   return (
     <BaseLinkItem item={item} {...props}>
@@ -526,7 +529,7 @@ function SidebarLinkItem({
   item: Exclude<LinkItemType, { type: "icon" }>;
   className?: string;
 }) {
-  if (item.type === "menu")
+  if (item.type === "menu") {
     return (
       <SidebarFolder {...props}>
         {item.url ? (
@@ -547,8 +550,11 @@ function SidebarLinkItem({
         </SidebarFolderContent>
       </SidebarFolder>
     );
+  }
 
-  if (item.type === "custom") return <div {...props}>{item.children}</div>;
+  if (item.type === "custom") {
+    return <div {...props}>{item.children}</div>;
+  }
 
   return (
     <SidebarItem

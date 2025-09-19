@@ -4,13 +4,13 @@ import type {
 } from "./data/data-manager";
 import { buildTreeFromNodes, isMetadata } from "./data/relationship-utils";
 
-export interface VisibleNodesParams {
+export type VisibleNodesParams = {
   allNodes: DataNode[];
   allLinks: DataLink[];
   expandedNodes: Set<string>;
   filteredNodeIds?: Set<string> | null;
   collapsingChildIds?: Set<string>;
-}
+};
 
 /**
  * Calculate which nodes should be visible based on expansion state and filters

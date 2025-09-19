@@ -5,7 +5,6 @@ import {
   readdir,
   readFile,
   rm,
-  unlink,
   writeFile,
 } from "node:fs/promises";
 import * as path from "node:path";
@@ -33,16 +32,19 @@ async function cleanOutput(root) {
         // After cleaning children, remove dir if empty
         try {
           const remaining = await readdir(full);
-          if (remaining.length === 0)
+          if (remaining.length === 0) {
             await rm(full, { recursive: true, force: true });
+          }
         } catch {}
         continue;
       }
       // keep any meta.json file
-      if (entry.isFile() && entry.name.toLowerCase() === "meta.json") continue;
+      if (entry.isFile() && entry.name.toLowerCase() === "meta.json") {
+        continue;
+      }
       await rm(full, { recursive: true, force: true });
     }
-  } catch (err) {
+  } catch (_err) {
     // ignore when folder doesn't exist
   }
 }
@@ -56,7 +58,9 @@ function flattenPathAllGroups(originalPath) {
   const normalized = path.normalize(originalPath);
   const rel = path.relative(options.output, normalized);
   const parts = rel.split(path.sep);
-  if (parts.length <= 2) return originalPath; // already flat (group/file)
+  if (parts.length <= 2) {
+    return originalPath; // already flat (group/file)
+  }
   const group = parts[0];
   const tail = parts.slice(1).join("-");
   return path.join(options.output, group, tail);

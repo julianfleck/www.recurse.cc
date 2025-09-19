@@ -1,13 +1,12 @@
 import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
-import React from "react";
 import { remark } from "remark";
 import remarkHtml from "remark-html";
 import { getFAQsByIds } from "@/lib/faq-data";
 
-interface FAQProps {
+type FAQProps = {
   items: string; // Comma-separated string of FAQ item IDs
   className?: string;
-}
+};
 
 export function FAQ({ items, className }: FAQProps) {
   // Parse the comma-separated string of IDs

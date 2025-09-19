@@ -22,11 +22,11 @@ type ApiKeyResponse = {
   message: string;
 };
 
-interface ApiKeyDialogSuccessProps {
+type ApiKeyDialogSuccessProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   createdKey: ApiKeyResponse;
-}
+};
 
 export function ApiKeyDialogSuccess({
   open,
@@ -46,11 +46,7 @@ export function ApiKeyDialogSuccess({
           <div className="rounded-lg bg-muted/50 p-4">
             <div className="space-y-2">
               <Label className="font-medium text-sm">API Key Name</Label>
-              <Input
-                className="text-sm"
-                readOnly
-                value={createdKey.name}
-              />
+              <Input className="text-sm" readOnly value={createdKey.name} />
             </div>
           </div>
 
@@ -81,8 +77,9 @@ export function ApiKeyDialogSuccess({
                 readOnly
                 value={createdKey.display_key}
               />
-              <p className="text-xs text-muted-foreground">
-                This is a masked version for display. Click copy to get the full key.
+              <p className="text-muted-foreground text-xs">
+                This is a masked version for display. Click copy to get the full
+                key.
               </p>
             </div>
           </div>

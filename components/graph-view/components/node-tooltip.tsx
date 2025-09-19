@@ -4,7 +4,7 @@ import type { GraphLink, GraphNode } from "../utils/data/data-manager";
 import { getTypeDisplayName } from "../utils/type-display";
 
 // Generic tooltip layout component for consistent styling across the app
-interface GenericTooltipLayoutProps {
+type GenericTooltipLayoutProps = {
   title?: string;
   type?: string;
   summary?: string;
@@ -12,7 +12,7 @@ interface GenericTooltipLayoutProps {
   className?: string;
   showTypeBadge?: boolean;
   showIcon?: boolean;
-}
+};
 
 export function GenericTooltipLayout({
   title,
@@ -84,11 +84,11 @@ export function GenericTooltipLayout({
   );
 }
 
-interface GraphTooltipLayoutProps {
+type GraphTooltipLayoutProps = {
   nodeData: GraphNode;
   connectedMetadataTitles: string[];
   className?: string;
-}
+};
 
 export function GraphTooltipLayout({
   nodeData,

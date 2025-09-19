@@ -1,7 +1,9 @@
 import type { SidebarTab } from "fumadocs-ui/utils/get-sidebar-tabs";
 
 function normalize(url: string) {
-  if (url.length > 1 && url.endsWith("/")) return url.slice(0, -1);
+  if (url.length > 1 && url.endsWith("/")) {
+    return url.slice(0, -1);
+  }
   return url;
 }
 
@@ -17,7 +19,9 @@ export function isActive(
 }
 
 export function isTabActive(tab: SidebarTab, pathname: string) {
-  if (tab.urls) return tab.urls.has(normalize(pathname));
+  if (tab.urls) {
+    return tab.urls.has(normalize(pathname));
+  }
 
   return isActive(tab.url, pathname, true);
 }

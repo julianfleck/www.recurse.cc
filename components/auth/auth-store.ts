@@ -17,10 +17,14 @@ type AuthState = {
 };
 
 function loadPersisted(): Partial<AuthState> {
-  if (typeof window === "undefined") return {};
+  if (typeof window === "undefined") {
+    return {};
+  }
   try {
     const raw = window.localStorage.getItem("auth_store");
-    if (!raw) return {};
+    if (!raw) {
+      return {};
+    }
     const parsed = JSON.parse(raw) as Partial<AuthState>;
     return parsed ?? {};
   } catch {

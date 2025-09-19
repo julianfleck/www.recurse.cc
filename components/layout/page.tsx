@@ -58,7 +58,7 @@ interface FooterOptions extends FooterProps {
   component: ReactNode;
 }
 
-export interface DocsPageProps {
+export type DocsPageProps = {
   toc?: TOCItemType[];
   tableOfContent?: Partial<TableOfContentOptions>;
   tableOfContentPopover?: Partial<TableOfContentPopoverOptions>;
@@ -86,7 +86,7 @@ export interface DocsPageProps {
   container?: ComponentProps<"div">;
   article?: ComponentProps<"article">;
   children?: ReactNode;
-}
+};
 
 type TableOfContentOptions = Pick<AnchorProviderProps, "single"> & {
   /**
@@ -258,7 +258,9 @@ export const DocsDescription = forwardRef<
   ComponentProps<"p">
 >((props, ref) => {
   // don't render if no description provided
-  if (props.children === undefined) return null;
+  if (props.children === undefined) {
+    return null;
+  }
 
   return (
     <p

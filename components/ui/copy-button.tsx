@@ -5,13 +5,19 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
-interface CopyButtonProps {
+type CopyButtonProps = {
   text: string;
   className?: string;
   size?: "sm" | "default" | "lg";
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
   children?: React.ReactNode;
-}
+};
 
 export function CopyButton({
   text,
@@ -27,9 +33,7 @@ export function CopyButton({
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy text: ", err);
-    }
+    } catch (_err) {}
   };
 
   return (

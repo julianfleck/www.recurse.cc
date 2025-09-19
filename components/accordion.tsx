@@ -33,14 +33,19 @@ export const Accordions = forwardRef<
   useEffect(() => {
     const id = window.location.hash.substring(1);
     const element = rootRef.current;
-    if (!element || id.length === 0) return;
+    if (!element || id.length === 0) {
+      return;
+    }
 
     const selected = document.getElementById(id);
-    if (!(selected && element.contains(selected))) return;
+    if (!(selected && element.contains(selected))) {
+      return;
+    }
     const value = selected.getAttribute("data-accordion-value");
 
-    if (value)
+    if (value) {
       setValue((prev) => (typeof prev === "string" ? value : [value, ...prev]));
+    }
   }, []);
 
   return (

@@ -121,7 +121,11 @@ export function LoginForm({
           <p className="text-muted-foreground text-sm">Signing you in...</p>
         </div>
       ) : (
-        <form className="grid gap-3" id="login-form" onSubmit={handleEmailLogin}>
+        <form
+          className="grid gap-3"
+          id="login-form"
+          onSubmit={handleEmailLogin}
+        >
           <label className="text-sm" htmlFor="email">
             Email
           </label>

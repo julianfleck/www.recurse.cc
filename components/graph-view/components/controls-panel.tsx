@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { IconToggleButton } from "@/components/ui/icon-toggle-button";
 import { Kbd } from "@/components/ui/kibo-ui/kbd";
 
-interface GraphControlsProps {
+type GraphControlsProps = {
   onZoomIn: () => void;
   onZoomOut: () => void;
   onFitAll: () => void;
@@ -30,7 +30,7 @@ interface GraphControlsProps {
   onStopExpansion: () => void;
   onStopCollapsing: () => void;
   onOpenFullscreen?: () => void;
-}
+};
 
 export function GraphControls(props: GraphControlsProps) {
   const {

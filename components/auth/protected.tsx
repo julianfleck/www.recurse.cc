@@ -14,9 +14,13 @@ export function ProtectedContent({ children }: { children: ReactNode }) {
   const isClientAuthenticated = Boolean(storeToken || storeUser);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading) {
+      return;
+    }
     const unauthenticated = !(isAuthenticated || isClientAuthenticated);
-    if (unauthenticated) router.replace("/login");
+    if (unauthenticated) {
+      router.replace("/login");
+    }
   }, [isAuthenticated, isClientAuthenticated, isLoading, router]);
 
   const shouldBlock = isLoading || !(isAuthenticated || isClientAuthenticated);

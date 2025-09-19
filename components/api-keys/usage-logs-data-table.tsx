@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   type ColumnDef,
@@ -11,33 +11,33 @@ import {
   type SortingState,
   useReactTable,
   type VisibilityState,
-} from '@tanstack/react-table';
-import { parseDate } from 'chrono-node';
-import { CalendarIcon, ChevronDown, Search, X } from 'lucide-react';
-import { useMemo, useState } from 'react';
+} from "@tanstack/react-table";
+import { parseDate } from "chrono-node";
+import { CalendarIcon, ChevronDown, Search, X } from "lucide-react";
+import { useMemo, useState } from "react";
 
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -45,12 +45,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 
-interface DataTableProps<TData, TValue> {
+type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-}
+};
 
 type UsageLogType = {
   timestamp: string;
@@ -62,21 +62,21 @@ export function UsageLogsDataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([
-    { id: 'timestamp', desc: true },
+    { id: "timestamp", desc: true },
   ]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     method: false,
     status_code: false,
   });
-  const [globalFilter, setGlobalFilter] = useState('');
+  const [globalFilter, setGlobalFilter] = useState("");
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
   const [timeRange, setTimeRange] = useState<{ start: string; end: string }>({
-    start: '',
-    end: '',
+    start: "",
+    end: "",
   });
   const [datePickerOpen, setDatePickerOpen] = useState(false);
-  const [naturalInput, setNaturalInput] = useState('');
+  const [naturalInput, setNaturalInput] = useState("");
   const [pageSize, setPageSize] = useState(20);
 
   // Filter data by date and time ranges
@@ -149,7 +149,7 @@ export function UsageLogsDataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: 'includesString',
+    globalFilterFn: "includesString",
     state: {
       sorting,
       columnFilters,
@@ -164,10 +164,10 @@ export function UsageLogsDataTable<TData, TValue>({
   });
 
   const _clearFilters = () => {
-    setGlobalFilter('');
+    setGlobalFilter("");
     setDateRange({});
-    setTimeRange({ start: '', end: '' });
-    setNaturalInput('');
+    setTimeRange({ start: "", end: "" });
+    setNaturalInput("");
     setColumnFilters([]);
   };
 
@@ -197,7 +197,7 @@ export function UsageLogsDataTable<TData, TValue>({
                 // Clear filters if input is empty
                 if (!e.target.value.trim()) {
                   setDateRange({});
-                  setTimeRange({ start: '', end: '' });
+                  setTimeRange({ start: "", end: "" });
                   return;
                 }
 
@@ -208,10 +208,10 @@ export function UsageLogsDataTable<TData, TValue>({
 
                   // For relative terms like "last week", "yesterday", etc., create a range to today
                   if (
-                    inputLower.includes('last') ||
-                    inputLower.includes('yesterday') ||
-                    inputLower.includes('ago') ||
-                    inputLower.includes('past')
+                    inputLower.includes("last") ||
+                    inputLower.includes("yesterday") ||
+                    inputLower.includes("ago") ||
+                    inputLower.includes("past")
                   ) {
                     setDateRange({ from: parsed, to: now });
                   } else {
@@ -221,7 +221,7 @@ export function UsageLogsDataTable<TData, TValue>({
                 }
               }}
               onKeyDown={(e) => {
-                if (e.key === 'ArrowDown') {
+                if (e.key === "ArrowDown") {
                   e.preventDefault();
                   setDatePickerOpen(true);
                 }
@@ -235,7 +235,7 @@ export function UsageLogsDataTable<TData, TValue>({
                   naturalInput;
 
                 if (!hasFilters) {
-                  return 'yesterday, last week...';
+                  return "yesterday, last week...";
                 }
 
                 if (naturalInput) {
@@ -264,7 +264,7 @@ export function UsageLogsDataTable<TData, TValue>({
                   parts.push(`Until ${timeRange.end}`);
                 }
 
-                return parts.join(' • ') || 'filters active...';
+                return parts.join(" • ") || "filters active...";
               })()}
               value={naturalInput}
             />
@@ -273,9 +273,9 @@ export function UsageLogsDataTable<TData, TValue>({
               <Button
                 className="-translate-y-1/2 absolute top-1/2 right-8 size-6"
                 onClick={() => {
-                  setNaturalInput('');
+                  setNaturalInput("");
                   setDateRange({});
-                  setTimeRange({ start: '', end: '' });
+                  setTimeRange({ start: "", end: "" });
                 }}
                 size="sm"
                 variant="ghost"
@@ -308,7 +308,7 @@ export function UsageLogsDataTable<TData, TValue>({
                         mode="range"
                         onSelect={(range) => {
                           setDateRange(range || {});
-                          setNaturalInput(''); // Clear natural input when using calendar
+                          setNaturalInput(""); // Clear natural input when using calendar
                         }}
                         selected={
                           dateRange.from || dateRange.to
@@ -364,8 +364,8 @@ export function UsageLogsDataTable<TData, TValue>({
                     <Button
                       onClick={() => {
                         setDateRange({});
-                        setTimeRange({ start: '', end: '' });
-                        setNaturalInput('');
+                        setTimeRange({ start: "", end: "" });
+                        setNaturalInput("");
                       }}
                       size="sm"
                       variant="outline"
@@ -425,9 +425,9 @@ export function UsageLogsDataTable<TData, TValue>({
                         column.toggleVisibility(!!value)
                       }
                     >
-                      {column.id === 'timestamp'
-                        ? 'Date/Time'
-                        : column.id.replace('_', ' ')}
+                      {column.id === "timestamp"
+                        ? "Date/Time"
+                        : column.id.replace("_", " ")}
                     </DropdownMenuCheckboxItem>
                   );
                 })}
@@ -467,7 +467,7 @@ export function UsageLogsDataTable<TData, TValue>({
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     className="h-12"
-                    data-state={row.getIsSelected() && 'selected'}
+                    data-state={row.getIsSelected() && "selected"}
                     key={row.id}
                   >
                     {row.getVisibleCells().map((cell) => (
@@ -498,16 +498,16 @@ export function UsageLogsDataTable<TData, TValue>({
       {/* Pagination */}
       <div className="flex items-center justify-between">
         <div className="text-muted-foreground text-sm">
-          Showing{' '}
+          Showing{" "}
           {table.getState().pagination.pageIndex *
             table.getState().pagination.pageSize +
-            1}{' '}
-          to{' '}
+            1}{" "}
+          to{" "}
           {Math.min(
             (table.getState().pagination.pageIndex + 1) *
               table.getState().pagination.pageSize,
             table.getFilteredRowModel().rows.length
-          )}{' '}
+          )}{" "}
           of {table.getFilteredRowModel().rows.length} results
         </div>
         <div className="flex items-center space-x-2">

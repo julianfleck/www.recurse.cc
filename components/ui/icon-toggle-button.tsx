@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-interface IconToggleButtonProps {
+type IconToggleButtonProps = {
   icon1: React.ComponentType<{ className?: string; strokeWidth?: number }>;
   icon2: React.ComponentType<{ className?: string; strokeWidth?: number }>;
   isIcon2Showing?: boolean;
@@ -16,7 +16,7 @@ interface IconToggleButtonProps {
   tooltip?: string;
   icon1ClassName?: string;
   icon2ClassName?: string;
-}
+};
 
 export function IconToggleButton({
   icon1: Icon1,

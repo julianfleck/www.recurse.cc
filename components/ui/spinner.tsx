@@ -13,10 +13,7 @@ export function Spinner({
 }: SpinnerProps) {
   return (
     <svg
-      className={cn(
-        "animate-spin text-muted-foreground",
-        className
-      )}
+      className={cn("animate-spin text-muted-foreground", className)}
       fill="none"
       height={size}
       role="img"

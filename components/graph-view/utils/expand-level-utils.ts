@@ -1,11 +1,11 @@
 import type { GraphNode as DataNode } from "./data/data-manager";
 
-export interface ExpandLevelParams {
+export type ExpandLevelParams = {
   treeData: DataNode[];
   visibleNodeIds: Set<string>;
   expandedNodes: Set<string>;
   toggleNodeExpansion: (nodeId: string) => void;
-}
+};
 
 /**
  * Calculate which nodes should be expanded in the next level

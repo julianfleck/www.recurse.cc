@@ -17,7 +17,6 @@ export function AuthInit() {
   const audience = process.env.NEXT_PUBLIC_AUTH0_AUDIENCE;
   const scopes = "openid profile email";
 
-
   useEffect(() => {
     // Prefer SDK-based login when available; otherwise respect a client-side token set via email/password flow
     const isReady = !isLoading;

@@ -4,7 +4,7 @@ import { buildTreeFromNodes } from "../utils/data/relationship-utils";
 import { calculateVisibleNodeIds } from "../utils/visible-nodes-utils";
 import { useGraphDataProcessing } from "./use-data-processing";
 
-export interface UseGraphDataParams {
+export type UseGraphDataParams = {
   nodesById: Map<string, DataNode>;
   edges: DataLink[];
   expandedNodes: Set<string>;
@@ -12,9 +12,9 @@ export interface UseGraphDataParams {
   collapsingChildIds: Set<string>;
   allNodes: DataNode[];
   allLinks: DataLink[];
-}
+};
 
-export interface GraphDataResult {
+export type GraphDataResult = {
   allNodes: DataNode[];
   allLinks: DataLink[];
   visibleNodeIds: Set<string>;
@@ -22,7 +22,7 @@ export interface GraphDataResult {
   treeData: DataNode[];
   visibleLinks: DataLink[];
   computeSubgraphIds: (rootIds: string[]) => Set<string>;
-}
+};
 
 export function useGraphData({
   nodesById,

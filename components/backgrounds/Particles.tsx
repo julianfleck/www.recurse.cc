@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-interface Particle {
+type Particle = {
   x: number;
   y: number;
   vx: number;
@@ -16,9 +16,9 @@ interface Particle {
   baseX: number;
   baseY: number;
   depth: number;
-}
+};
 
-interface ParticlesProps {
+type ParticlesProps = {
   className?: string;
   particleCount?: number;
   particleColor?: string;
@@ -28,7 +28,7 @@ interface ParticlesProps {
   parallaxStrength?: number;
   zIndex?: number;
   isViewportSized?: boolean;
-}
+};
 
 export default function Particles({
   className = "",

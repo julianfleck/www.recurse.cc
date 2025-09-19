@@ -16,7 +16,7 @@ function _isMetadataNodeId(id: string): boolean {
 // Reusable regex declared at top-level per lint guidance
 const ID_SPLIT_REGEX = /[:_]/;
 
-export interface GraphNode {
+export type GraphNode = {
   id: string;
   title: string;
   type: string;
@@ -34,19 +34,19 @@ export interface GraphNode {
   fy?: number | null;
   vx?: number;
   vy?: number;
-}
+};
 
-export interface GraphLink {
+export type GraphLink = {
   source: string | GraphNode;
   target: string | GraphNode;
-}
+};
 
-export interface GraphData {
+export type GraphData = {
   nodes: GraphNode[];
   links: GraphLink[];
-}
+};
 
-export interface HierarchicalNode {
+export type HierarchicalNode = {
   id: string;
   title: string;
   type: string;
@@ -59,7 +59,7 @@ export interface HierarchicalNode {
   isExpanded: boolean;
   index?: number;
   created_at?: string;
-}
+};
 
 export interface FlatNode extends HierarchicalNode {
   isVisible: boolean;
@@ -67,14 +67,14 @@ export interface FlatNode extends HierarchicalNode {
   isAncestor: boolean;
 }
 
-export interface ProcessedSidePanelData {
+export type ProcessedSidePanelData = {
   flatNodes: FlatNode[];
   hierarchicalNodes: HierarchicalNode[];
   isLoading: boolean;
   error: string | null;
   fetchedNodes: Set<string>;
   childrenCache?: Map<string, HierarchicalNode[]>;
-}
+};
 
 type SearchNode = {
   id: string;
@@ -97,13 +97,13 @@ type SearchNode = {
 };
 
 export class GraphDataManager {
-  private fetchedNodes = new Set<string>();
-  private expandedChildren = new Map<string, Set<string>>();
+  private readonly fetchedNodes = new Set<string>();
+  private readonly expandedChildren = new Map<string, Set<string>>();
   // Normalize metadata (kind + title) to a stable id to prevent duplicates
-  private metadataRegistry = new Map<string, string>();
-  private onDataUpdate?: (data: GraphData) => void;
-  private apiService?: any; // Made optional for standalone mode
-  private onError: (error: Error) => void;
+  private readonly metadataRegistry = new Map<string, string>();
+  private readonly onDataUpdate?: (data: GraphData) => void;
+  private readonly apiService?: any; // Made optional for standalone mode
+  private readonly onError: (error: Error) => void;
 
   constructor(
     apiService: any, // Made optional for standalone mode

@@ -65,7 +65,9 @@ export function RootToggle({
       <PopoverContent className="flex w-(--radix-popover-trigger-width) flex-col gap-1 overflow-hidden p-1">
         {options.map((item) => {
           const isActive = selected && item.url === selected.url;
-          if (!isActive && item.unlisted) return;
+          if (!isActive && item.unlisted) {
+            return;
+          }
 
           return (
             <Link

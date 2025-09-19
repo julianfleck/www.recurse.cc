@@ -54,7 +54,9 @@ export function ThemeToggle({
         {...props}
       >
         {full.map(([key, Icon]) => {
-          if (key === "system") return;
+          if (key === "system") {
+            return;
+          }
 
           return (
             <Icon

@@ -34,7 +34,7 @@ import {
 } from "./ui/collapsible";
 import { ScrollArea, ScrollViewport } from "./ui/scroll-area";
 
-export interface SidebarProps {
+export type SidebarProps = {
   /**
    * Open folders by default if their level is lower or equal to a specific level
    * (Starting from 1)
@@ -59,13 +59,13 @@ export interface SidebarProps {
    * Alternative children for mobile
    */
   Mobile?: ReactNode;
-}
+};
 
-interface InternalContext {
+type InternalContext = {
   defaultOpenLevel: number;
   prefetch: boolean;
   level: number;
-}
+};
 
 const itemVariants = cva(
   "relative my-[1px] flex flex-row items-center gap-3 rounded-lg p-1.5 ps-(--sidebar-item-offset) text-start text-fd-muted-foreground [overflow-wrap:anywhere] [&_svg]:size-4 [&_svg]:shrink-0",
@@ -137,13 +137,16 @@ export function SidebarContent(props: ComponentProps<"aside">) {
           !collapsed ||
           e.pointerType === "touch" ||
           closeTimeRef.current > Date.now()
-        )
+        ) {
           return;
+        }
         window.clearTimeout(timerRef.current);
         setHover(true);
       }}
       onPointerLeave={(e) => {
-        if (!collapsed || e.pointerType === "touch") return;
+        if (!collapsed || e.pointerType === "touch") {
+          return;
+        }
         window.clearTimeout(timerRef.current);
 
         timerRef.current = window.setTimeout(
@@ -301,7 +304,9 @@ export function SidebarFolder({
   const [open, setOpen] = useState(defaultOpen);
 
   useOnChange(defaultOpen, (v) => {
-    if (v) setOpen(v);
+    if (v) {
+      setOpen(v);
+    }
   });
 
   return (
@@ -443,23 +448,27 @@ export function SidebarCollapseTrigger(props: ComponentProps<"button">) {
 
 function useFolderContext() {
   const ctx = useContext(FolderContext);
-  if (!ctx) throw new Error("Missing sidebar folder");
+  if (!ctx) {
+    throw new Error("Missing sidebar folder");
+  }
 
   return ctx;
 }
 
 function useInternalContext() {
   const ctx = useContext(Context);
-  if (!ctx) throw new Error("<Sidebar /> component required.");
+  if (!ctx) {
+    throw new Error("<Sidebar /> component required.");
+  }
 
   return ctx;
 }
 
-export interface SidebarComponents {
+export type SidebarComponents = {
   Item: FC<{ item: PageTree.Item }>;
   Folder: FC<{ item: PageTree.Folder; level: number; children: ReactNode }>;
   Separator: FC<{ item: PageTree.Separator }>;
-}
+};
 
 /**
  * Render sidebar items from page tree
@@ -478,7 +487,9 @@ export function SidebarPageTree(props: {
     ): ReactNode[] {
       return items.map((item, i) => {
         if (item.type === "separator") {
-          if (Separator) return <Separator item={item} key={i} />;
+          if (Separator) {
+            return <Separator item={item} key={i} />;
+          }
           return (
             <SidebarSeparator className={cn(i !== 0 && "mt-6")} key={i}>
               {item.icon}
@@ -490,12 +501,13 @@ export function SidebarPageTree(props: {
         if (item.type === "folder") {
           const children = renderSidebarList(item.children, level + 1);
 
-          if (Folder)
+          if (Folder) {
             return (
               <Folder item={item} key={i} level={level}>
                 {children}
               </Folder>
             );
+          }
           return (
             <PageTreeFolder item={item} key={i}>
               {children}
@@ -503,7 +515,9 @@ export function SidebarPageTree(props: {
           );
         }
 
-        if (Item) return <Item item={item} key={item.url} />;
+        if (Item) {
+          return <Item item={item} key={item.url} />;
+        }
         return (
           <SidebarItem
             external={item.external}

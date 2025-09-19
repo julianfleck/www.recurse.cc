@@ -14,7 +14,7 @@ import type {
 } from "../utils/data/data-manager";
 import type { HierarchicalLayout } from "../utils/layout/tree-layout";
 
-export interface GraphState {
+export type GraphState = {
   // Refs
   svgRef: React.MutableRefObject<SVGSVGElement | null>;
   zoomSurfaceRef: React.MutableRefObject<HTMLDivElement | null>;
@@ -94,7 +94,7 @@ export interface GraphState {
   setHighlightSource: (value: "graph" | "sidepanel" | null) => void;
   layoutMode: "force" | "hierarchical";
   setLayoutMode: (value: "force" | "hierarchical") => void;
-}
+};
 
 export function useGraphState(): GraphState {
   // Refs

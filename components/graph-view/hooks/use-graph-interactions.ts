@@ -6,7 +6,7 @@ import type {
   GraphNode as DataNode,
 } from "../utils/data/data-manager";
 
-interface UseGraphInteractionsProps {
+type UseGraphInteractionsProps = {
   visibleNodes: DataNode[];
   allNodes: DataNode[];
   allLinks: DataLink[];
@@ -25,7 +25,7 @@ interface UseGraphInteractionsProps {
   isNodeExpandable: (type: string) => boolean;
   findRootDocumentIds: (nodes: DataNode[], links: DataLink[]) => string[];
   animateCollapse: (id: string, callback: () => void) => void;
-}
+};
 
 export function useGraphInteractions({
   visibleNodes,

@@ -1,6 +1,6 @@
 "use client";
 
-export interface HierarchicalNode {
+export type HierarchicalNode = {
   id: string;
   title: string;
   type: string;
@@ -8,14 +8,14 @@ export interface HierarchicalNode {
   isDocument?: boolean;
   x?: number;
   y?: number;
-}
+};
 
-export interface HierarchicalLink {
+export type HierarchicalLink = {
   source: string;
   target: string;
-}
+};
 
-export interface HierarchicalLayoutOptions {
+export type HierarchicalLayoutOptions = {
   width: number;
   height: number;
   nodeWidth: number;
@@ -24,7 +24,7 @@ export interface HierarchicalLayoutOptions {
   verticalSpacing: number;
   marginTop: number;
   marginLeft: number;
-}
+};
 
 export class HierarchicalLayout {
   private options: HierarchicalLayoutOptions;
@@ -128,7 +128,9 @@ export class HierarchicalLayout {
       arr.sort((a, b) => {
         const aMeta = this.isMetadataLike(a);
         const bMeta = this.isMetadataLike(b);
-        if (aMeta !== bMeta) return aMeta ? 1 : -1; // content first
+        if (aMeta !== bMeta) {
+          return aMeta ? 1 : -1; // content first
+        }
         return (a.title || "").localeCompare(b.title || "");
       });
       levels.set(lvl, arr);
@@ -150,23 +152,6 @@ export class HierarchicalLayout {
         marginTop + level * verticalSpacing
       );
     }
-  }
-
-  /**
-   * Position nodes horizontally (LTR)
-   */
-  private positionHorizontally(
-    nodes: HierarchicalNode[],
-    _level: number,
-    startX: number,
-    y: number
-  ): void {
-    const { horizontalSpacing, nodeWidth } = this.options;
-
-    nodes.forEach((node, index) => {
-      node.x = startX + index * (nodeWidth + horizontalSpacing);
-      node.y = y;
-    });
   }
 
   /**

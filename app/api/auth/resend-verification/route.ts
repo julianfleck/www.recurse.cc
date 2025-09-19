@@ -16,10 +16,11 @@ async function getMgmtToken(
     }),
   });
   const json = await res.json();
-  if (!res.ok)
+  if (!res.ok) {
     throw new Error(
       json?.error_description || json?.error || "Failed to get management token"
     );
+  }
   return json.access_token as string;
 }
 

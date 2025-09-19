@@ -9,7 +9,9 @@ export type LanguageSelectProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
 export function LanguageToggle(props: LanguageSelectProps): React.ReactElement {
   const context = useI18n();
-  if (!context.locales) throw new Error("Missing `<I18nProvider />`");
+  if (!context.locales) {
+    throw new Error("Missing `<I18nProvider />`");
+  }
 
   return (
     <Popover>

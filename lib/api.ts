@@ -81,24 +81,16 @@ export class ApiService {
             );
 
             if (jwtPayload.exp && jwtPayload.exp < nowInSeconds) {
-              // Don't set the authorization header for expired tokens
-              console.warn(
-                "JWT token is expired, not setting authorization header"
-              );
               return;
             }
 
             headers.Authorization = `Bearer ${authToken}`;
-          } catch (error) {
-            // Still try to use the token even if we can't parse it
-            console.warn("Failed to parse JWT token:", error);
+          } catch (_error) {
             headers.Authorization = `Bearer ${authToken}`;
           }
         } else {
-          console.warn("Invalid JWT token format (not 3 parts)");
         }
       } else {
-        console.warn("No auth token available for GET request");
       }
 
       const response = await fetch(url, {
@@ -164,22 +156,16 @@ export class ApiService {
             );
 
             if (jwtPayload.exp && jwtPayload.exp < nowInSeconds) {
-              // Don't set the authorization header for expired tokens
-              console.warn("JWT token is expired, not setting authorization header");
               return;
             }
 
             headers.Authorization = `Bearer ${authToken}`;
-          } catch (error) {
-            // Still try to use the token even if we can't parse it
-            console.warn("Failed to parse JWT token:", error);
+          } catch (_error) {
             headers.Authorization = `Bearer ${authToken}`;
           }
         } else {
-          console.warn("Invalid JWT token format (not 3 parts)");
         }
       } else {
-        console.warn("No auth token available for DELETE request");
       }
 
       const response = await fetch(url, {
@@ -249,24 +235,16 @@ export class ApiService {
             );
 
             if (jwtPayload.exp && jwtPayload.exp < nowInSeconds) {
-              // Don't set the authorization header for expired tokens
-              console.warn(
-                "JWT token is expired, not setting authorization header"
-              );
               return;
             }
 
             headers.Authorization = `Bearer ${authToken}`;
-          } catch (error) {
-            // Still try to use the token even if we can't parse it
-            console.warn("Failed to parse JWT token:", error);
+          } catch (_error) {
             headers.Authorization = `Bearer ${authToken}`;
           }
         } else {
-          console.warn("Invalid JWT token format (not 3 parts)");
         }
       } else {
-        console.warn("No auth token available for POST request");
       }
 
       const response = await fetch(url, {

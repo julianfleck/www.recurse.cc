@@ -11,12 +11,12 @@ import {
   isMetadata,
 } from "../utils/data/relationship-utils";
 
-interface UseGraphDataProcessingProps {
+type UseGraphDataProcessingProps = {
   allNodes: DataNode[];
   allLinks: DataLink[];
   expandedNodes: Set<string>;
   visibleNodeIds?: Set<string>;
-}
+};
 
 export function useGraphDataProcessing({
   allNodes,

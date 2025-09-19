@@ -17,7 +17,7 @@ export interface NavOptions extends NavProviderProps {
   children?: ReactNode;
 }
 
-export interface BaseLayoutProps {
+export type BaseLayoutProps = {
   themeSwitch?: {
     enabled?: boolean;
     component?: ReactNode;
@@ -58,16 +58,16 @@ export interface BaseLayoutProps {
   nav?: Partial<NavOptions>;
 
   children?: ReactNode;
-}
+};
 
-interface BaseItem {
+type BaseItem = {
   /**
    * Restrict where the item is displayed
    *
    * @defaultValue 'all'
    */
   on?: "menu" | "nav" | "all";
-}
+};
 
 export interface BaseLinkType extends BaseItem {
   url: string;
@@ -159,7 +159,7 @@ export function getLinks(
 ): LinkItemType[] {
   let result = links ?? [];
 
-  if (githubUrl)
+  if (githubUrl) {
     result = [
       ...result,
       {
@@ -175,6 +175,7 @@ export function getLinks(
         external: true,
       },
     ];
+  }
 
   return result;
 }

@@ -2,7 +2,7 @@
 import type { ApiResponse, GraphApiConfig, GraphDataPayload } from "./types";
 
 export class GraphApiClient {
-  private config: Required<GraphApiConfig>;
+  private readonly config: Required<GraphApiConfig>;
 
   constructor(config: GraphApiConfig = {}) {
     this.config = {

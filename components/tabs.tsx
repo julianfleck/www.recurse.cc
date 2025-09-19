@@ -46,7 +46,7 @@ const TabsContext = createContext<{
 
 function useTabContext() {
   const ctx = useContext(TabsContext);
-  if (!ctx) throw new Error('You must wrap your component in <Tabs>');
+  if (!ctx) { throw new Error('You must wrap your component in <Tabs>'); }
   return ctx;
 }
 
@@ -58,7 +58,7 @@ export const TabsList = React.forwardRef<
     ref={ref}
     {...props}
     className={cn(
-      'flex gap-3.5 text-fd-secondary-foreground overflow-x-auto px-4 not-prose',
+      'not-prose flex gap-3.5 overflow-x-auto px-4 text-fd-secondary-foreground',
       props.className,
     )}
   />
@@ -73,7 +73,7 @@ export const TabsTrigger = React.forwardRef<
     ref={ref}
     {...props}
     className={cn(
-      'inline-flex items-center gap-2 whitespace-nowrap text-fd-muted-foreground border-b border-transparent py-2 text-sm font-medium transition-colors [&_svg]:size-4 hover:text-fd-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-fd-primary data-[state=active]:text-fd-primary',
+      'inline-flex items-center gap-2 whitespace-nowrap border-transparent border-b py-2 font-medium text-fd-muted-foreground text-sm transition-colors hover:text-fd-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-fd-primary data-[state=active]:text-fd-primary [&_svg]:size-4',
       props.className,
     )}
   />
@@ -94,22 +94,22 @@ export function Tabs({
 
   return (
     <Unstyled.Tabs
-      ref={ref}
       className={cn(
-        'flex flex-col overflow-hidden rounded-xl border bg-fd-secondary my-4',
+        'my-4 flex flex-col overflow-hidden rounded-xl border bg-fd-secondary',
         className,
       )}
-      value={value}
       onValueChange={(v: string) => {
-        if (items && !items.some((item) => escapeValue(item) === v)) return;
+        if (items && !items.some((item) => escapeValue(item) === v)) { return; }
         setValue(v);
       }}
+      ref={ref}
+      value={value}
       {...props}
     >
       {items && (
         <TabsList>
           {label && (
-            <span className="text-sm font-medium my-auto me-auto">{label}</span>
+            <span className="my-auto me-auto font-medium text-sm">{label}</span>
           )}
           {items.map((item) => (
             <TabsTrigger key={item} value={escapeValue(item)}>
@@ -141,10 +141,11 @@ export function Tab({ value, ...props }: TabProps) {
     value ??
     // eslint-disable-next-line react-hooks/rules-of-hooks -- `value` is not supposed to change
     items?.at(useCollectionIndex());
-  if (!resolved)
+  if (!resolved) {
     throw new Error(
       'Failed to resolve tab `value`, please pass a `value` prop to the Tab component.',
     );
+  }
 
   return (
     <TabsContent value={escapeValue(resolved)} {...props}>
@@ -160,12 +161,12 @@ export function TabsContent({
 }: ComponentProps<typeof Unstyled.TabsContent>) {
   return (
     <Unstyled.TabsContent
-      value={value}
-      forceMount
       className={cn(
-        'p-4 text-[15px] bg-fd-background rounded-xl outline-none prose-no-margin data-[state=inactive]:hidden [&>figure:only-child]:-m-4 [&>figure:only-child]:border-none',
+        'prose-no-margin [&>figure:only-child]:-m-4 rounded-xl bg-fd-background p-4 text-[15px] outline-none data-[state=inactive]:hidden [&>figure:only-child]:border-none',
         className,
       )}
+      forceMount
+      value={value}
       {...props}
     >
       {props.children}
@@ -186,11 +187,11 @@ function useCollectionIndex() {
   useEffect(() => {
     return () => {
       const idx = collection.indexOf(key);
-      if (idx !== -1) collection.splice(idx, 1);
+      if (idx !== -1) { collection.splice(idx, 1); }
     };
   }, [key, collection]);
 
-  if (!collection.includes(key)) collection.push(key);
+  if (!collection.includes(key)) { collection.push(key); }
   return collection.indexOf(key);
 }
 

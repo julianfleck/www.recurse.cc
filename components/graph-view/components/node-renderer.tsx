@@ -20,7 +20,7 @@ import { NodeVisual } from "./node-visual";
 export type NodeLayoutMode = "force" | "hierarchical";
 export type NodeVisualState = "default" | "selected" | "hovered" | "dimmed";
 
-interface GraphNodeRendererProps {
+type GraphNodeRendererProps = {
   node: DataNode;
   nodesById: Map<string, DataNode>;
   edges: DataLink[];
@@ -42,7 +42,7 @@ interface GraphNodeRendererProps {
     type: string;
     summary?: string | null;
   }) => string;
-}
+};
 
 export function GraphNodeRenderer({
   node: n,

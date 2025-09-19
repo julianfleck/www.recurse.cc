@@ -1,19 +1,19 @@
 // API types for the graph-standalone component
-export interface ApiResponse<T = any> {
+export type ApiResponse<T = any> = {
   data: T;
   success: boolean;
   message?: string;
   error?: string;
-}
+};
 
-export interface GraphApiConfig {
+export type GraphApiConfig = {
   baseUrl?: string;
   timeout?: number;
   retries?: number;
-}
+};
 
-export interface GraphDataPayload {
+export type GraphDataPayload = {
   nodes?: any[];
   links?: any[];
   metadata?: Record<string, any>;
-}
+};

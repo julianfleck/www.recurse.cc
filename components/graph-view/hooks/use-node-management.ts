@@ -1,7 +1,7 @@
 import { useCallback } from "react";
-import type { DataLink, DataNode } from "../utils/data/data-manager";
+import type { DataLink } from "../utils/data/data-manager";
 
-export interface UseNodeManagementParams {
+export type UseNodeManagementParams = {
   allLinks: DataLink[];
   expandedNodes: Set<string>;
   setExpandedNodes: (
@@ -9,9 +9,9 @@ export interface UseNodeManagementParams {
   ) => void;
   setHighlightedNodeId: (value: string | null) => void;
   setIsBatchOperation: (value: boolean) => void;
-}
+};
 
-export interface NodeManagementResult {
+export type NodeManagementResult = {
   toggleNodeExpansion: (nodeId: string) => void;
   setScrollTargetId: (nodeId: string) => void;
   setIsBulkOperation: (isBulk: boolean) => void;
@@ -21,7 +21,7 @@ export interface NodeManagementResult {
     nodeId: string | null,
     source?: "graph" | "sidepanel"
   ) => void;
-}
+};
 
 export function useNodeManagement({
   allLinks,
@@ -31,7 +31,7 @@ export function useNodeManagement({
   setIsBatchOperation,
 }: UseNodeManagementParams): NodeManagementResult {
   const _setHighlightedNode = useCallback(
-    (nodeId: string | null, source?: "graph" | "sidepanel") => {
+    (nodeId: string | null, _source?: "graph" | "sidepanel") => {
       setHighlightedNodeId(nodeId);
       // Note: setHighlightSource removed as it wasn't defined in the original
     },

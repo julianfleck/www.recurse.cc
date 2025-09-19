@@ -28,16 +28,16 @@ import {
 import type { JSX } from "react";
 import { normalizeTypeLabel } from "./visual-config";
 
-export interface IconLookupResult {
+export type IconLookupResult = {
   icon: JSX.Element;
   label: string;
-}
+};
 
-export interface IconOptions {
+export type IconOptions = {
   size?: string;
   strokeWidth?: number;
   filled?: boolean;
-}
+};
 
 type IconCtor = React.ComponentType<IconProps>;
 

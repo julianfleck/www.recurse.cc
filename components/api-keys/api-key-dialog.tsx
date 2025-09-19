@@ -1,11 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  ArrowRight,
-  CheckIcon,
-  ChevronsUpDownIcon,
-} from "lucide-react";
+import { ArrowRight, CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { ApiKeyDialogSuccess } from "@/components/api-keys/api-key-dialog-success";
@@ -84,7 +80,7 @@ type StepProgressProps = {
   className?: string;
 };
 
-function StepProgress({
+function _StepProgress({
   currentStep,
   onStepClick,
   className,
@@ -117,10 +113,7 @@ function StepProgress({
               disabled={!isClickable}
               key={step.id}
               onClick={() =>
-                isClickable &&
-                onStepClick(
-                  step.id as typeof STEP_SETTINGS | 2
-                )
+                isClickable && onStepClick(step.id as typeof STEP_SETTINGS | 2)
               }
               type="button"
             />
@@ -174,15 +167,14 @@ type ApiKeyDialogProps = {
   onSuccess?: () => void;
 };
 
-
 export function ApiKeyDialog({
   open,
   onOpenChange,
   onSuccess,
 }: ApiKeyDialogProps) {
-  const [currentStep, setCurrentStep] = useState<
-    typeof STEP_SETTINGS | 2
-  >(STEP_SETTINGS);
+  const [currentStep, setCurrentStep] = useState<typeof STEP_SETTINGS | 2>(
+    STEP_SETTINGS
+  );
 
   // Form state
   const [name, setName] = useState("");
@@ -271,8 +263,7 @@ export function ApiKeyDialog({
     }
   };
 
-
-  const goToStep = (target: typeof STEP_SETTINGS | 2) => {
+  const _goToStep = (target: typeof STEP_SETTINGS | 2) => {
     setCurrentStep(target);
   };
 
@@ -487,7 +478,6 @@ export function ApiKeyDialog({
               </div>
             </StepContent>
           )}
-
         </div>
 
         {/* Footer */}

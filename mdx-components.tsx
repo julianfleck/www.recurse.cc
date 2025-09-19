@@ -36,7 +36,9 @@ import { openapi } from "@/lib/openapi";
 
 // Icon resolver function (same as in lib/source.ts)
 function resolveIcon(icon: string) {
-  if (!icon) return;
+  if (!icon) {
+    return;
+  }
   switch (icon.toLowerCase()) {
     // Lucide icons
     case "book":

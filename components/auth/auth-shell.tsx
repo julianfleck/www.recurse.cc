@@ -25,19 +25,13 @@ export function AuthShell({
         <CardContent className="flex h-full p-0 md:grid md:grid-cols-2">
           <div className="flex h-full w-full flex-col p-6 md:p-8">
             {/* Header Section */}
-            <div className="flex-shrink-0">
-              {header}
-            </div>
-            
+            <div className="flex-shrink-0">{header}</div>
+
             {/* Content Section - grows to fill space */}
-            <div className="flex min-h-0 flex-1 flex-col py-6">
-              {children}
-            </div>
-            
+            <div className="flex min-h-0 flex-1 flex-col py-6">{children}</div>
+
             {/* Footer Section */}
-            <div className="flex-shrink-0">
-              {footer}
-            </div>
+            <div className="flex-shrink-0">{footer}</div>
           </div>
           <AuthSideVisual />
         </CardContent>

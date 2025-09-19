@@ -18,13 +18,13 @@ import { type ZoomBehavior, zoom, zoomIdentity } from "d3-zoom";
 import type { GraphLink, GraphNode } from "../utils/data/data-manager";
 
 export class GraphRenderer {
-  private svg: Selection<SVGSVGElement, unknown, null, undefined>;
-  private g: Selection<SVGGElement, unknown, null, undefined>;
+  private readonly svg: Selection<SVGSVGElement, unknown, null, undefined>;
+  private readonly g: Selection<SVGGElement, unknown, null, undefined>;
   private simulation: Simulation<GraphNode, GraphLink> | null = null;
-  private zoomBehavior: ZoomBehavior<SVGSVGElement, unknown>;
-  private onNodeClick: (nodeId: string) => void;
-  private onNodeHover: (nodeId: string | null) => void;
-  private baseDistance = 80;
+  private readonly zoomBehavior: ZoomBehavior<SVGSVGElement, unknown>;
+  private readonly onNodeClick: (nodeId: string) => void;
+  private readonly onNodeHover: (nodeId: string | null) => void;
+  private readonly baseDistance = 80;
   private currentZoom = 1;
   private pendingFocusNodeId: string | null = null;
   private currentNodes: GraphNode[] = [];

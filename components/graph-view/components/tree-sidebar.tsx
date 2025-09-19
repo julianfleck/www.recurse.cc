@@ -104,7 +104,7 @@ type TreeNodeData = {
   type?: string;
 };
 
-interface GraphTreeSidebarProps {
+type GraphTreeSidebarProps = {
   treeData: TreeNodeData[];
   highlightedNodeId?: string;
   // Controlled expansion ids from parent (GraphView) in sidebar format
@@ -118,15 +118,15 @@ interface GraphTreeSidebarProps {
   allNodes?: DataNode[];
   allLinks?: DataLink[];
   onFilterIdsChange?: (ids: Set<string> | null) => void;
-}
+};
 
-interface TreeNodeComponentProps {
+type TreeNodeComponentProps = {
   node: TreeNodeData;
   level?: number;
   highlightedNodeId?: string;
   onToggle?: (id: string) => void;
   // no local expansion knowledge needed; TreeProvider is controlled by parent
-}
+};
 
 export function GraphTreeSidebar({
   treeData,

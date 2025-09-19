@@ -1,11 +1,11 @@
 import type { GraphLink as DataLink } from "./data/data-manager";
 import { isMetadata } from "./data/relationship-utils";
 
-export interface DescendantsByDepthParams {
+export type DescendantsByDepthParams = {
   rootId: string;
   allLinks: DataLink[];
   visibleNodeIds: Set<string>;
-}
+};
 
 /**
  * Calculate descendants by depth for a given root node

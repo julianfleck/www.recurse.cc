@@ -24,11 +24,15 @@ export default function ClerkTOCItems({
   }>();
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current) {
+      return;
+    }
     const container = containerRef.current;
 
     function onResize(): void {
-      if (container.clientHeight === 0) return;
+      if (container.clientHeight === 0) {
+        return;
+      }
       let w = 0,
         h = 0;
       const d: string[] = [];
@@ -36,7 +40,9 @@ export default function ClerkTOCItems({
         const element: HTMLElement | null = container.querySelector(
           `a[href="#${items[i].url.slice(1)}"]`
         );
-        if (!element) continue;
+        if (!element) {
+          continue;
+        }
 
         const styles = getComputedStyle(element);
         const offset = getLineOffset(items[i].depth) + 1,
@@ -69,12 +75,13 @@ export default function ClerkTOCItems({
     };
   }, [items]);
 
-  if (items.length === 0)
+  if (items.length === 0) {
     return (
       <div className="rounded-lg border bg-fd-card p-3 text-fd-muted-foreground text-xs">
         {text.tocNoHeadings}
       </div>
     );
+  }
 
   return (
     <>
@@ -117,8 +124,12 @@ export default function ClerkTOCItems({
 }
 
 function getItemOffset(depth: number): number {
-  if (depth <= 2) return 14;
-  if (depth === 3) return 26;
+  if (depth <= 2) {
+    return 14;
+  }
+  if (depth === 3) {
+    return 26;
+  }
   return 36;
 }
 

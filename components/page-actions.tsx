@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { cn } from "../lib/cn";
-import { buttonVariants } from "./ui/button";
 
 const cache = new Map<string, string>();
 
@@ -31,7 +30,9 @@ export function LLMCopyButton({
   const [isLoading, setLoading] = useState(false);
   const [checked, onClick] = useCopyButton(async () => {
     const cached = cache.get(markdownUrl);
-    if (cached) return navigator.clipboard.writeText(cached);
+    if (cached) {
+      return navigator.clipboard.writeText(cached);
+    }
 
     setLoading(true);
 
@@ -256,7 +257,9 @@ export function HeaderViewOptions(): React.ReactElement {
       ? `https://github.com/${githubOwner}/${githubRepo}/blob/${githubBranch}/content/docs${pathname}.mdx`
       : undefined;
 
-  if (!githubUrl) return <></>;
+  if (!githubUrl) {
+    return <></>;
+  }
 
   return <ViewOptions githubUrl={githubUrl} markdownUrl={`${pathname}.mdx`} />;
 }

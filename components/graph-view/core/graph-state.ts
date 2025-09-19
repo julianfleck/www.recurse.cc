@@ -22,11 +22,11 @@ export function mergeSidebarExpandedIntoGraph(
 }
 
 // Tree-aware index helpers for robust syncing (optional use)
-export interface TreeIndex {
+export type TreeIndex = {
   presentIds: Set<string>;
   parentById: Map<string, string | null>;
   hasChildrenById: Map<string, boolean>;
-}
+};
 
 export function buildTreeIndex(
   treeData: Array<{ id: string; children?: any[] }>

@@ -16,24 +16,24 @@ export interface GraphLink extends SimulationLinkDatum<GraphNode> {
   target: string | GraphNode;
 }
 
-export interface GraphState {
+export type GraphState = {
   nodes: GraphNode[];
   links: GraphLink[];
   expandedChildren: Map<string, Set<string>>;
   fetchedNodes: Set<string>;
   collapsingNodes: Set<string>;
   hoveredNodeId: string | null;
-}
+};
 
-export interface AnimationState {
+export type AnimationState = {
   isAnimating: boolean;
   currentTarget: string | null;
-}
+};
 
-export interface GraphConfig {
+export type GraphConfig = {
   baseDistance: number;
   zoomScaleExtent: [number, number];
   collapseThreshold: number;
   expandThreshold: number;
   animationDuration: number;
-}
+};

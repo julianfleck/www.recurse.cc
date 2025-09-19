@@ -13,9 +13,13 @@ export function AuthGate() {
   const isClientAuthenticated = Boolean(storeToken || storeUser);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading) {
+      return;
+    }
     const unauthenticated = !(isAuthenticated || isClientAuthenticated);
-    if (unauthenticated) router.replace("/login");
+    if (unauthenticated) {
+      router.replace("/login");
+    }
   }, [isAuthenticated, isClientAuthenticated, isLoading, router]);
 
   return null;

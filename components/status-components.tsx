@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useAuthStore } from "@/components/auth/auth-store";
 import { Status as KiboStatus } from "@/components/ui/kibo-ui/status";
 import { apiService } from "@/lib/api";
-import { useAuthStore } from "@/components/auth/auth-store";
 
 type HealthStatus = {
   status: "healthy" | "unhealthy" | "degraded";
@@ -21,8 +21,8 @@ const DOCUMENT_COUNT_REFRESH_INTERVAL_MS =
   DOCUMENT_COUNT_REFRESH_MINUTES * MILLISECONDS_PER_MINUTE;
 
 // Auth initialization delay constants
-const AUTH_INIT_DELAY_MS = 1000; // 1 second for health status
-const DOCUMENT_AUTH_INIT_DELAY_MS = 1500; // 1.5 seconds for document count
+const _AUTH_INIT_DELAY_MS = 1000; // 1 second for health status
+const _DOCUMENT_AUTH_INIT_DELAY_MS = 1500; // 1.5 seconds for document count
 
 // Response type for document search API
 type DocumentSearchResponse = {
@@ -57,8 +57,6 @@ export function HealthStatus() {
       setLastUpdated(new Date());
       setError(false);
     } catch (err) {
-      console.error("Failed to fetch health status:", err);
-
       // If it's an authentication error and we haven't retried yet, wait a bit and retry
       const errorMessage = err instanceof Error ? err.message : "Unknown error";
       if (
@@ -68,9 +66,6 @@ export function HealthStatus() {
         !retryTimeoutRef.current
       ) {
         const delay = 2500 * (retryCount + 1); // 2.5s, 5s delays
-        console.log(
-          `Health status auth error, retrying in ${delay}ms (retry ${retryCount + 1})`
-        );
 
         retryTimeoutRef.current = setTimeout(() => {
           retryTimeoutRef.current = null;
@@ -91,7 +86,9 @@ export function HealthStatus() {
     let isMounted = true;
 
     const fetchIfAuthenticated = () => {
-      if (!isMounted) return;
+      if (!isMounted) {
+        return;
+      }
 
       const token = useAuthStore.getState().accessToken;
       if (token && !loading) {
@@ -158,7 +155,7 @@ export function HealthStatus() {
   return (
     <KiboStatus
       className="mt-2"
-    //   icon={IconActivity}
+      //   icon={IconActivity}
       showTooltip={true}
       status={status}
       title={`API Status at ${lastUpdated?.toLocaleTimeString()}`}
@@ -178,8 +175,6 @@ export function DocumentCountStatus() {
     try {
       setIsLoading(true);
       setError(null);
-
-      console.log("Fetching document count...");
       const response = await apiService.get<DocumentSearchResponse>(
         "/search/document",
         {
@@ -190,14 +185,10 @@ export function DocumentCountStatus() {
           min_score: 0,
         }
       );
-
-      console.log("Document count response:", response);
       setDocumentCount(response.data.pagination.total_count);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to load document count";
-
-      console.error("Failed to fetch document count:", err);
 
       // If it's an authentication error and we haven't retried yet, wait a bit and retry
       if (
@@ -207,9 +198,6 @@ export function DocumentCountStatus() {
         !retryTimeoutRef.current
       ) {
         const delay = 3000 * (retryCount + 1); // 3s, 6s delays
-        console.log(
-          `Document count auth error, retrying in ${delay}ms (retry ${retryCount + 1})`
-        );
 
         retryTimeoutRef.current = setTimeout(() => {
           retryTimeoutRef.current = null;
@@ -230,7 +218,9 @@ export function DocumentCountStatus() {
     let isMounted = true;
 
     const fetchIfAuthenticated = () => {
-      if (!isMounted) return;
+      if (!isMounted) {
+        return;
+      }
 
       const token = useAuthStore.getState().accessToken;
       if (token && !isLoading) {

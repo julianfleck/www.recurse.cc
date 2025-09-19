@@ -12,7 +12,9 @@ async function walk(dir) {
       await walk(full);
       continue;
     }
-    if (!entry.name.endsWith(".mdx")) continue;
+    if (!entry.name.endsWith(".mdx")) {
+      continue;
+    }
     try {
       const text = await readFile(full, "utf8");
       if (text.startsWith(HEADER_PREFIX)) {

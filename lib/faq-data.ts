@@ -1,12 +1,12 @@
 // FAQ data structure for reusable FAQ component
 // Each FAQ item has an id, title, and content (can be string or React element)
 
-export interface FAQItem {
+export type FAQItem = {
   id: string;
   title: string;
   content: string;
   category?: string;
-}
+};
 
 export const faqItems: FAQItem[] = [
   // Registration FAQs

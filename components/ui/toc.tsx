@@ -55,12 +55,13 @@ export function TOCItems({ ref, className, ...props }: ComponentProps<"div">) {
   const items = useTOCItems();
   const { text } = useI18n();
 
-  if (items.length === 0)
+  if (items.length === 0) {
     return (
       <div className="rounded-lg border bg-fd-card p-3 text-fd-muted-foreground text-xs">
         {text.tocNoHeadings}
       </div>
     );
+  }
 
   return (
     <>

@@ -18,12 +18,15 @@ export type ImageZoomProps = ImageProps & {
 };
 
 function getImageSrc(src: ImageProps["src"]): string {
-  if (typeof src === "string") return src;
+  if (typeof src === "string") {
+    return src;
+  }
 
   if (typeof src === "object") {
     // Next.js
-    if ("default" in src)
+    if ("default" in src) {
       return (src as { default: { src: string } }).default.src;
+    }
     return src.src;
   }
 

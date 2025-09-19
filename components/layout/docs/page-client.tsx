@@ -1,6 +1,6 @@
 "use client";
 
-import { IconCalendar, IconCalendarWeek } from "@tabler/icons-react";
+import { IconCalendarWeek } from "@tabler/icons-react";
 import {
   type BreadcrumbOptions,
   getBreadcrumbItemsFromPath,
@@ -30,7 +30,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../../ui/collapsible";
-import { Pill, PillIcon, PillStatus } from "../../ui/kibo-ui/pill";
+import { Pill, PillStatus } from "../../ui/kibo-ui/pill";
 import { ProgressCircle } from "../../ui/progress-circle";
 import { useTOCItems } from "../../ui/toc";
 
@@ -54,7 +54,9 @@ export function PageTOCPopoverTrigger(props: ComponentProps<"button">) {
     const items = getBreadcrumbItemsFromPath(root, treePath, {
       includePage: true,
     });
-    if (items.length === 0) return;
+    if (items.length === 0) {
+      return;
+    }
     return items.map((i) => i.name).join(" / ");
   }, [root, treePath]);
   const showItem = selected !== -1 && !open;
@@ -120,10 +122,13 @@ export function PageTOCPopover(props: ComponentProps<"div">) {
   const { isTransparent } = useNav();
 
   const onClick = useEffectEvent((e: Event) => {
-    if (!open) return;
+    if (!open) {
+      return;
+    }
 
-    if (ref.current && !ref.current.contains(e.target as HTMLElement))
+    if (ref.current && !ref.current.contains(e.target as HTMLElement)) {
       setOpen(false);
+    }
   });
 
   useEffect(() => {
@@ -141,7 +146,7 @@ export function PageTOCPopover(props: ComponentProps<"div">) {
           open,
           setOpen,
         }),
-        [setOpen, open]
+        [open]
       )}
     >
       <Collapsible asChild onOpenChange={setOpen} open={open}>
@@ -236,7 +241,9 @@ export function PageFooter({ items, ...props }: FooterProps) {
   const pathname = usePathname();
 
   const { previous, next } = useMemo(() => {
-    if (items) return items;
+    if (items) {
+      return items;
+    }
 
     const cached = listCache.get(root.$id);
     const list = cached ?? scanNavigationList(root.children);
@@ -244,7 +251,9 @@ export function PageFooter({ items, ...props }: FooterProps) {
 
     const idx = list.findIndex((item) => isActive(item.url, pathname, false));
 
-    if (idx === -1) return {};
+    if (idx === -1) {
+      return {};
+    }
     return {
       previous: list[idx - 1],
       next: list[idx + 1],
@@ -312,7 +321,9 @@ export function PageBreadcrumb({
     });
   }, [includePage, includeRoot, includeSeparator, path, root]);
 
-  if (items.length === 0) return null;
+  if (items.length === 0) {
+    return null;
+  }
 
   return (
     <div

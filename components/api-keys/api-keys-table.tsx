@@ -70,7 +70,7 @@ export type ApiKey = {
 };
 
 // Columns definition moved inside component to access deleteApiKey function
-const columns: ColumnDef<ApiKey>[] = [
+const _columns: ColumnDef<ApiKey>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -242,7 +242,7 @@ const columns: ColumnDef<ApiKey>[] = [
     id: "actions",
     header: "",
     cell: ({ row }) => {
-      const apiKey = row.original;
+      const _apiKey = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -258,10 +258,7 @@ const columns: ColumnDef<ApiKey>[] = [
             </DropdownMenuItem>
             <DropdownMenuItem
               className="hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground"
-              onClick={() => {
-                // deleteApiKey will be available once columns are moved inside component
-                console.log("Delete clicked for API key:", apiKey.id);
-              }}
+              onClick={() => {}}
             >
               <TrashIcon className="mr-2 h-4 w-4" />
               Delete
@@ -281,8 +278,11 @@ const SortableTableHead = ({ header }: { header: any }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sortState = header.column.getIsSorted();
   let ariaSort: "ascending" | "descending" | "none" = "none";
-  if (sortState === "asc") ariaSort = "ascending";
-  else if (sortState === "desc") ariaSort = "descending";
+  if (sortState === "asc") {
+    ariaSort = "ascending";
+  } else if (sortState === "desc") {
+    ariaSort = "descending";
+  }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const canSort = header.column.getCanSort();
 
@@ -367,8 +367,6 @@ export function ApiKeysTable() {
       const response = await apiService.get<ApiKey[]>("/users/me/api-keys");
       setData(response.data);
     } catch (error) {
-      console.error("Failed to fetch API keys:", error);
-
       // If it's an authentication error and we haven't retried yet, wait a bit and retry
       if (
         error instanceof ApiError &&
@@ -377,9 +375,6 @@ export function ApiKeysTable() {
         !retryTimeoutRef.current
       ) {
         const delay = 2000 * (retryCount + 1); // 2s, 4s delays
-        console.log(
-          `Auth error, retrying API keys fetch in ${delay}ms (retry ${retryCount + 1})`
-        );
 
         retryTimeoutRef.current = setTimeout(() => {
           retryTimeoutRef.current = null;
@@ -399,17 +394,16 @@ export function ApiKeysTable() {
   const deleteApiKey = useCallback(
     async (keyId: string) => {
       try {
-        console.log("Deleting API key:", keyId);
-        const response = await apiService.delete(`/users/me/api-keys/${keyId}`);
-        console.log("Delete response:", response);
+        const _response = await apiService.delete(
+          `/users/me/api-keys/${keyId}`
+        );
 
         // Show success toast
         toast.success("API key deleted successfully");
 
         // Refresh the table after successful deletion
         fetchApiKeys();
-      } catch (error) {
-        console.error("Failed to delete API key:", error);
+      } catch (_error) {
         toast.error("Failed to delete API key");
       }
     },
@@ -418,7 +412,6 @@ export function ApiKeysTable() {
 
   const deleteSelectedKeys = useCallback(async () => {
     const selectedIds = Object.keys(rowSelection);
-    console.log("Deleting selected API keys:", selectedIds);
 
     try {
       // Delete all selected keys
@@ -437,8 +430,7 @@ export function ApiKeysTable() {
       // Clear selection and refresh table
       setRowSelection({});
       fetchApiKeys();
-    } catch (error) {
-      console.error("Failed to delete selected API keys:", error);
+    } catch (_error) {
       toast.error("Failed to delete selected API keys");
     }
   }, [rowSelection, fetchApiKeys]);
@@ -527,8 +519,9 @@ export function ApiKeysTable() {
       header: "Last Used",
       cell: ({ row }) => {
         const lastUsed = row.getValue("last_used");
-        if (!lastUsed)
+        if (!lastUsed) {
           return <div className="text-muted-foreground text-sm">Never</div>;
+        }
         const date = new Date(lastUsed);
         return <div className="text-sm">{date.toLocaleDateString()}</div>;
       },
@@ -653,11 +646,12 @@ export function ApiKeysTable() {
     let isMounted = true;
 
     const fetchIfAuthenticated = () => {
-      if (!isMounted) return;
+      if (!isMounted) {
+        return;
+      }
 
       const token = useAuthStore.getState().accessToken;
       if (token && data.length === 0 && !loading) {
-        console.log("Auth token available, fetching API keys");
         fetchApiKeys();
       }
     };
