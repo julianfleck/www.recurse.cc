@@ -516,48 +516,76 @@ export function ApiKeysTable() {
     },
     {
       accessorKey: "total_requests",
-      header: "Requests",
+      header: "Total Requests",
       cell: ({ row }) => (
-        <div className="text-sm">{row.getValue("total_requests").toLocaleString()}</div>
+        <div className="font-mono text-xs">
+          {(row.getValue("total_requests") as number).toLocaleString()}
+        </div>
       ),
       enableSorting: true,
     },
     {
-      accessorKey: "scopes",
+      accessorKey: "data_scope",
       header: "Scope",
       cell: ({ row }) => {
-        const scopes = row.getValue("scopes") as string[];
-        const scopeText = scopes.length > 0 ? scopes.join(", ") : "None";
-        const dataScope = row.getValue("data_scope") as string;
+        const scope = row.getValue("data_scope") as string;
+        const isApiKey = scope === "api_key";
+        const isUser = scope === "user";
 
         return (
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Badge variant="secondary" className="text-xs">
-                {scopeText}
+            <TooltipTrigger>
+              <Badge
+                className={cn(
+                  "border-border text-[8px] text-muted-foreground uppercase tracking-wider"
+                )}
+                variant="outline"
+              >
+                {isApiKey && "API Key"}
+                {isUser && "User"}
               </Badge>
             </TooltipTrigger>
             <TooltipContent>
               <p>
-                {dataScope === "user"
-                  ? "Content added/retrieved is visible to your user account"
-                  : "Content added/retrieved is only visible to this API key"}
+                {isApiKey
+                  ? "Content is only visible to this API key"
+                  : "Content is visible to your user account"}
               </p>
             </TooltipContent>
           </Tooltip>
         );
       },
-      enableSorting: false,
+      enableSorting: true,
     },
     {
-      accessorKey: "permissions",
+      accessorKey: "scopes",
       header: "Permissions",
       cell: ({ row }) => {
         const scopes = row.getValue("scopes") as string[];
+
+        if (!scopes || scopes.length === 0) {
+          return (
+            <Badge
+              className={cn(
+                "border-border text-[8px] text-muted-foreground uppercase tracking-wider"
+              )}
+              variant="outline"
+            >
+              All
+            </Badge>
+          );
+        }
+
         return (
           <div className="flex flex-wrap gap-1">
             {scopes.map((scope) => (
-              <Badge key={scope} variant="outline" className="text-xs">
+              <Badge
+                className={cn(
+                  "border-border text-[8px] text-muted-foreground uppercase tracking-wider"
+                )}
+                key={scope}
+                variant="outline"
+              >
                 {scope}
               </Badge>
             ))}
