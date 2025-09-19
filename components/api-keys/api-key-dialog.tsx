@@ -194,12 +194,11 @@ export function ApiKeyDialog({
   // Success state
   const [createdKey, setCreatedKey] = useState<{
     id: string;
-    secret: string;
     name: string;
-    expires_at: string | null;
-    scopes: string[];
-    data_scope: "user" | "api_key";
+    key: string;
+    display_key: string;
     created_at: string;
+    message: string;
   } | null>(null);
 
   // Loading state

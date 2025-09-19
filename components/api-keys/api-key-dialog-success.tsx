@@ -15,12 +15,11 @@ import { Label } from "@/components/ui/label";
 
 type ApiKeyResponse = {
   id: string;
-  secret: string;
   name: string;
-  expires_at: string | null;
-  scopes: string[];
-  data_scope: "user" | "api_key";
+  key: string;
+  display_key: string;
   created_at: string;
+  message: string;
 };
 
 interface ApiKeyDialogSuccessProps {
@@ -39,13 +38,23 @@ export function ApiKeyDialogSuccess({
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>API Key Created Successfully!</DialogTitle>
-          <DialogDescription>
-            Your new API key has been generated. Make sure to copy and store it
-            securely.
-          </DialogDescription>
+          <DialogDescription>{createdKey.message}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
+          {/* API Key Name */}
+          <div className="rounded-lg bg-muted/50 p-4">
+            <div className="space-y-2">
+              <Label className="font-medium text-sm">API Key Name</Label>
+              <Input
+                className="text-sm"
+                readOnly
+                value={createdKey.name}
+              />
+            </div>
+          </div>
+
+          {/* API Key ID */}
           <div className="rounded-lg bg-muted/50 p-4">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -60,17 +69,21 @@ export function ApiKeyDialogSuccess({
             </div>
           </div>
 
+          {/* Secret Key (Masked Display) */}
           <div className="rounded-lg bg-muted/50 p-4">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label className="font-medium text-sm">Secret Key</Label>
-                <CopyButton text={createdKey.secret} />
+                <CopyButton text={createdKey.key} />
               </div>
               <Input
                 className="font-mono text-sm"
                 readOnly
-                value={createdKey.secret}
+                value={createdKey.display_key}
               />
+              <p className="text-xs text-muted-foreground">
+                This is a masked version for display. Click copy to get the full key.
+              </p>
             </div>
           </div>
 
@@ -90,7 +103,7 @@ export function ApiKeyDialogSuccess({
           <CopyButton
             className="h-11 w-full"
             size="lg"
-            text={createdKey.secret}
+            text={createdKey.key}
             variant="default"
           >
             Done
