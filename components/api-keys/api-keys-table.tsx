@@ -121,7 +121,7 @@ const columns: ColumnDef<ApiKey>[] = [
   },
   {
     accessorKey: "id",
-    header: "Secret Key",
+    header: "Key",
     cell: ({ row }) => {
       const id = row.getValue("id") as string;
       return (

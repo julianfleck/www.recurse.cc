@@ -1,38 +1,38 @@
-'use client';
+"use client";
 
-import { parseDate } from 'chrono-node';
-import { CalendarIcon, X } from 'lucide-react';
-import { useState } from 'react';
+import { parseDate } from "chrono-node";
+import { CalendarIcon, X } from "lucide-react";
+import { useState } from "react";
 
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from "@/components/ui/popover";
 
 type CalendarNaturalLanguageProps = {
   value?: { from?: Date; to?: Date };
   onChange?: (date: { from?: Date; to?: Date }) => void;
   placeholder?: string;
   className?: string;
-}
+};
 
 export function CalendarNaturalLanguage({
   value,
   onChange,
-  placeholder = 'yesterday, last week...',
+  placeholder = "yesterday, last week...",
   className,
 }: CalendarNaturalLanguageProps) {
   const [datePickerOpen, setDatePickerOpen] = useState(false);
-  const [naturalInput, setNaturalInput] = useState('');
+  const [naturalInput, setNaturalInput] = useState("");
 
   // Handle date range
   const dateRange = value || {};
-  const timeRange = { start: '', end: '' };
+  const timeRange = { start: "", end: "" };
 
   const setDateRange = (range: { from?: Date; to?: Date }) => {
     onChange?.(range);
@@ -46,8 +46,8 @@ export function CalendarNaturalLanguage({
 
   const getPlaceholderText = () => {
     const hasFilters =
-      (dateRange.from instanceof Date) ||
-      (dateRange.to instanceof Date) ||
+      dateRange.from instanceof Date ||
+      dateRange.to instanceof Date ||
       timeRange.start ||
       timeRange.end ||
       naturalInput;
@@ -82,11 +82,11 @@ export function CalendarNaturalLanguage({
       parts.push(`Until ${timeRange.end}`);
     }
 
-    return parts.join(' • ') || 'filters active...';
+    return parts.join(" • ") || "filters active...";
   };
 
   return (
-    <div className={`relative ${className || ''}`}>
+    <div className={`relative ${className || ""}`}>
       <Input
         className="h-9 w-[240px] pr-16 placeholder:text-muted-foreground/40"
         onChange={(e) => {
@@ -95,7 +95,7 @@ export function CalendarNaturalLanguage({
           // Clear filters if input is empty
           if (!e.target.value.trim()) {
             setDateRange({});
-            setTimeRange({ start: '', end: '' });
+            setTimeRange({ start: "", end: "" });
             return;
           }
 
@@ -106,10 +106,10 @@ export function CalendarNaturalLanguage({
 
             // For relative terms like "last week", "yesterday", etc., create a range to today
             if (
-              inputLower.includes('last') ||
-              inputLower.includes('yesterday') ||
-              inputLower.includes('ago') ||
-              inputLower.includes('past')
+              inputLower.includes("last") ||
+              inputLower.includes("yesterday") ||
+              inputLower.includes("ago") ||
+              inputLower.includes("past")
             ) {
               setDateRange({ from: parsed, to: now });
             } else {
@@ -125,7 +125,7 @@ export function CalendarNaturalLanguage({
           }
         }}
         onKeyDown={(e) => {
-          if (e.key === 'ArrowDown') {
+          if (e.key === "ArrowDown") {
             e.preventDefault();
             setDatePickerOpen(true);
           }
@@ -139,9 +139,9 @@ export function CalendarNaturalLanguage({
         <PopoverTrigger asChild>
           <Button
             className="-translate-y-1/2 absolute top-1/2 right-2 size-6"
+            onClick={() => setDatePickerOpen(true)}
             size="sm"
             variant="ghost"
-            onClick={() => setDatePickerOpen(true)}
           >
             <CalendarIcon className="size-3.5" />
             <span className="sr-only">Open calendar</span>
@@ -159,11 +159,13 @@ export function CalendarNaturalLanguage({
                   onSelect={(date) => {
                     if (date) {
                       setDateRange({ from: date, to: date });
-                      setNaturalInput('');
+                      setNaturalInput("");
                       setDatePickerOpen(false);
                     }
                   }}
-                  selected={dateRange.from instanceof Date ? dateRange.from : undefined}
+                  selected={
+                    dateRange.from instanceof Date ? dateRange.from : undefined
+                  }
                 />
               </div>
 
@@ -194,8 +196,8 @@ export function CalendarNaturalLanguage({
               <Button
                 onClick={() => {
                   setDateRange({});
-                  setTimeRange({ start: '', end: '' });
-                  setNaturalInput('');
+                  setTimeRange({ start: "", end: "" });
+                  setNaturalInput("");
                 }}
                 size="sm"
                 variant="outline"

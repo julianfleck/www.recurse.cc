@@ -3,13 +3,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
-  Check,
   CheckIcon,
   ChevronsUpDownIcon,
-  Copy,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { z } from "zod";
+import { ApiKeyDialogSuccess } from "@/components/api-keys/api-key-dialog-success";
 import { CalendarNaturalLanguage } from "@/components/calendar-natural-language";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,13 +37,11 @@ import { apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 // Constants
-const COPY_TIMEOUT_MS = 2000;
 const COMBOBOX_WIDTH = "w-full";
 const MIN_NAME_LENGTH = 1;
 const MAX_NAME_LENGTH = 100;
 
 const STEP_SETTINGS = 1;
-const STEP_SUCCESS = 2;
 
 const SCOPES = [
   { value: "all", label: "All (read, write, export)" },
@@ -82,8 +79,8 @@ const apiKeySchema = z
   );
 
 type StepProgressProps = {
-  currentStep: typeof STEP_SETTINGS | typeof STEP_SUCCESS;
-  onStepClick: (step: typeof STEP_SETTINGS | typeof STEP_SUCCESS) => void;
+  currentStep: typeof STEP_SETTINGS | 2;
+  onStepClick: (step: typeof STEP_SETTINGS | 2) => void;
   className?: string;
 };
 
@@ -98,7 +95,7 @@ function StepProgress({
       label: "Settings",
       description: "Configure your API key",
     },
-    { id: STEP_SUCCESS, label: "Success", description: "Copy your secret key" },
+    { id: 2, label: "Success", description: "Copy your secret key" },
   ];
 
   return (
@@ -122,7 +119,7 @@ function StepProgress({
               onClick={() =>
                 isClickable &&
                 onStepClick(
-                  step.id as typeof STEP_SETTINGS | typeof STEP_SUCCESS
+                  step.id as typeof STEP_SETTINGS | 2
                 )
               }
               type="button"
@@ -177,15 +174,6 @@ type ApiKeyDialogProps = {
   onSuccess?: () => void;
 };
 
-type ApiKeyResponse = {
-  id: string;
-  secret: string;
-  name: string;
-  expires_at: string | null;
-  scopes: string[];
-  data_scope: "user" | "api_key";
-  created_at: string;
-};
 
 export function ApiKeyDialog({
   open,
@@ -193,9 +181,8 @@ export function ApiKeyDialog({
   onSuccess,
 }: ApiKeyDialogProps) {
   const [currentStep, setCurrentStep] = useState<
-    typeof STEP_SETTINGS | typeof STEP_SUCCESS
+    typeof STEP_SETTINGS | 2
   >(STEP_SETTINGS);
-  const [direction, setDirection] = useState(1);
 
   // Form state
   const [name, setName] = useState("");
@@ -205,8 +192,15 @@ export function ApiKeyDialog({
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   // Success state
-  const [createdKey, setCreatedKey] = useState<ApiKeyResponse | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [createdKey, setCreatedKey] = useState<{
+    id: string;
+    secret: string;
+    name: string;
+    expires_at: string | null;
+    scopes: string[];
+    data_scope: "user" | "api_key";
+    created_at: string;
+  } | null>(null);
 
   // Loading state
   const [creating, setCreating] = useState(false);
@@ -269,8 +263,7 @@ export function ApiKeyDialog({
         payload
       );
       setCreatedKey(response.data);
-      setDirection(1);
-      setCurrentStep(STEP_SUCCESS);
+      setCurrentStep(2);
       onSuccess?.();
     } catch {
       setFieldErrors({
@@ -281,22 +274,9 @@ export function ApiKeyDialog({
     }
   };
 
-  const handleCopySecret = async () => {
-    if (createdKey?.secret) {
-      await navigator.clipboard.writeText(createdKey.secret);
-      setCopied(true);
-      setTimeout(() => setCopied(false), COPY_TIMEOUT_MS);
-    }
-  };
 
-  const goToStep = (target: typeof STEP_SETTINGS | typeof STEP_SUCCESS) => {
-    if (target < currentStep) {
-      setDirection(-1);
-      setCurrentStep(target);
-    } else if (target > currentStep) {
-      setDirection(1);
-      setCurrentStep(target);
-    }
+  const goToStep = (target: typeof STEP_SETTINGS | 2) => {
+    setCurrentStep(target);
   };
 
   const getScopeDescription = (scope: "user" | "api_key") => {
@@ -511,84 +491,6 @@ export function ApiKeyDialog({
             </StepContent>
           )}
 
-          {currentStep === STEP_SUCCESS && (
-            <StepContent step={2}>
-              <div className="space-y-6 text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
-                  <Check className="h-6 w-6 text-green-600 dark:text-green-400" />
-                </div>
-
-                <div>
-                  <h3 className="font-semibold text-lg">
-                    API Key Created Successfully!
-                  </h3>
-                  <p className="text-muted-foreground text-sm">
-                    Your new API key has been generated. Make sure to copy and
-                    store it securely.
-                  </p>
-                </div>
-
-                {createdKey && (
-                  <div className="space-y-4">
-                    <div className="rounded-lg bg-muted/50 p-4">
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <Label className="font-medium text-sm">
-                            API Key ID
-                          </Label>
-                          <Button
-                            onClick={() =>
-                              navigator.clipboard.writeText(createdKey.id)
-                            }
-                            size="sm"
-                            variant="ghost"
-                          >
-                            <Copy className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        <code className="block break-all font-mono text-sm">
-                          {createdKey.id}
-                        </code>
-                      </div>
-                    </div>
-
-                    <div className="rounded-lg bg-muted/50 p-4">
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <Label className="font-medium text-sm">
-                            Secret Key
-                          </Label>
-                          <Button
-                            disabled={copied}
-                            onClick={handleCopySecret}
-                            size="sm"
-                            variant="ghost"
-                          >
-                            <Copy className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        <code className="block break-all font-mono text-sm">
-                          {createdKey.secret}
-                        </code>
-                        {copied && (
-                          <div className="text-green-600 text-xs">
-                            Copied to clipboard!
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm dark:border-amber-800 dark:bg-amber-950/30">
-                  <p>
-                    ⚠️ This is the only time you'll see this secret key. Store it
-                    securely and never share it publicly.
-                  </p>
-                </div>
-              </div>
-            </StepContent>
-          )}
         </div>
 
         {/* Footer */}
@@ -605,14 +507,20 @@ export function ApiKeyDialog({
               {creating ? "Creating…" : "Create API Key"}
             </Button>
           )}
-
-          {currentStep === STEP_SUCCESS && (
-            <Button className="h-11 w-full" onClick={() => onOpenChange(false)}>
-              Done
-            </Button>
-          )}
         </div>
       </DialogContent>
+
+      {/* Success Dialog */}
+      <ApiKeyDialogSuccess
+        createdKey={createdKey!}
+        onOpenChange={(successOpen) => {
+          if (!successOpen) {
+            onOpenChange(false);
+            setCreatedKey(null);
+          }
+        }}
+        open={currentStep === 2 && !!createdKey}
+      />
     </Dialog>
   );
 }
