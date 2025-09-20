@@ -1,4 +1,4 @@
-// import type { ApiService } from '@/services/api';
+import type { GraphApiClient } from "../../api";
 
 // Helper function to check if a node ID represents metadata
 function _isMetadataNodeId(id: string): boolean {
@@ -102,11 +102,11 @@ export class GraphDataManager {
   // Normalize metadata (kind + title) to a stable id to prevent duplicates
   private readonly metadataRegistry = new Map<string, string>();
   private readonly onDataUpdate?: (data: GraphData) => void;
-  private readonly apiService?: any; // Made optional for standalone mode
+  private readonly apiService?: GraphApiClient;
   private readonly onError: (error: Error) => void;
 
   constructor(
-    apiService: any, // Made optional for standalone mode
+    apiService: GraphApiClient | undefined, // Made optional for standalone mode
     onDataUpdate: (data: GraphData) => void,
     onError: (error: Error) => void
   ) {
@@ -145,7 +145,7 @@ export class GraphDataManager {
   /**
    * Load data from provided JSON instead of API calls
    */
-  async loadFromJSON(jsonData: any): Promise<{
+  loadFromJSON(jsonData: unknown): Promise<{
     nodes: GraphNode[];
     links: GraphLink[];
   }> {
@@ -165,6 +165,9 @@ export class GraphDataManager {
         created_at?: string;
         updated_at?: string;
         index?: number | null;
+        tags?: string[];
+        hypernyms?: string[];
+        hyponyms?: string[];
       }): void => {
         if (seen.has(n.id)) {
           return;
@@ -179,6 +182,9 @@ export class GraphDataManager {
           updated_at: n.updated_at,
           index: typeof n.index === "number" ? n.index : undefined,
           hasChildren: false,
+          tags: n.tags,
+          hypernyms: n.hypernyms,
+          hyponyms: n.hyponyms,
         });
       };
 
@@ -204,25 +210,40 @@ export class GraphDataManager {
       const getMetaList = (
         obj: unknown,
         key: "tags" | "hypernyms" | "hyponyms"
-      ): string[] | undefined => {
+      ): string[] => {
+        const collected: unknown[] = [];
+        const add = (val: unknown) => {
+          if (Array.isArray(val)) collected.push(...val);
+        };
+
         if (obj && typeof obj === "object") {
-          const meta = (obj as { metadata?: unknown }).metadata;
-          if (meta && typeof meta === "object") {
-            const fromMetadata = (meta as Record<string, unknown>)[key];
-            if (Array.isArray(fromMetadata) && fromMetadata.length > 0) {
-              return (fromMetadata as unknown[]).filter(
-                (v): v is string => typeof v === "string"
-              );
-            }
-          }
-          const legacy = (obj as Record<string, unknown>)[key];
-          if (Array.isArray(legacy) && legacy.length > 0) {
-            return (legacy as unknown[]).filter(
-              (v): v is string => typeof v === "string"
-            );
+          const root = obj as Record<string, unknown>;
+          // direct on object
+          add(root[key]);
+          // object.metadata.*
+          const meta = root.metadata as Record<string, unknown> | undefined;
+          if (meta && typeof meta === "object") add(meta[key]);
+          // object.data.* and object.data.metadata.*
+          const data = root.data as Record<string, unknown> | undefined;
+          if (data && typeof data === "object") {
+            add(data[key]);
+            const dataMeta = data.metadata as
+              | Record<string, unknown>
+              | undefined;
+            if (dataMeta && typeof dataMeta === "object") add(dataMeta[key]);
           }
         }
-        return [];
+
+        // Filter to strings, trim, and dedupe case-insensitively while preserving display case
+        const normalized = new Map<string, string>();
+        for (const v of collected) {
+          if (typeof v !== "string") continue;
+          const s = v.trim();
+          if (!s) continue;
+          const lower = s.toLowerCase();
+          if (!normalized.has(lower)) normalized.set(lower, s);
+        }
+        return Array.from(normalized.values());
       };
 
       const walk = (sn: any, parentId?: string) => {
@@ -263,16 +284,40 @@ export class GraphDataManager {
           }
         }
 
-        // Create/ensure owner node with canonical id
-        ensureNode({ ...sn, id: nodeIdToUse });
+        // Extract metadata arrays from sn.metadata (fallback to legacy arrays)
+        const tags = getMetaList(sn, "tags");
+        const hypernyms = getMetaList(sn, "hypernyms");
+        const hyponyms = getMetaList(sn, "hyponyms");
+
+        // Create/ensure owner node with canonical id and attach metadata arrays for renderer
+        ensureNode({ ...sn, id: nodeIdToUse, tags, hypernyms, hyponyms });
         if (parentId) {
           links.push({ source: parentId, target: nodeIdToUse });
         }
 
-        // Connect metadata arrays from sn.metadata (fallback to legacy arrays)
-        upsertMetadata(nodeIdToUse, "tag", getMetaList(sn, "tags"));
-        upsertMetadata(nodeIdToUse, "hypernym", getMetaList(sn, "hypernyms"));
-        upsertMetadata(nodeIdToUse, "hyponym", getMetaList(sn, "hyponyms"));
+        // eslint-disable-next-line no-console
+        console.log("[DataManager] Extracted metadata", {
+          id: nodeIdToUse,
+          title: sn.title,
+          tags,
+          hypernyms,
+          hyponyms,
+        });
+        // Debug: final extracted metadata for this node
+        // eslint-disable-next-line no-console
+        console.log("[DataManager] Extracted metadata", {
+          id: sn.id,
+          title: sn.title,
+          tags,
+          hypernyms,
+          hyponyms,
+        });
+
+        // No debug logging here
+
+        upsertMetadata(nodeIdToUse, "tag", tags);
+        upsertMetadata(nodeIdToUse, "hypernym", hypernyms);
+        upsertMetadata(nodeIdToUse, "hyponym", hyponyms);
 
         // Create links to children and recurse
         const childNodes = Array.isArray(sn.children) ? sn.children : [];
@@ -371,13 +416,15 @@ export class GraphDataManager {
       const _tStart =
         typeof performance !== "undefined" ? performance.now() : Date.now();
       // Use unified search to fetch documents and their tree structure with sufficient depth
-      const limit = 100;
-      const res = await this.apiService.search({
-        query: "type:document",
-        depth: 3,
+      if (!this.apiService) {
+        throw new Error("API service not available");
+      }
+      const res = await this.apiService.get("/search/document", {
         field_set: "metadata",
+        depth: 2,
+        min_score: 0,
+        limit: 5,
         page: 1,
-        limit,
       });
       const _tAfterApi =
         typeof performance !== "undefined" ? performance.now() : Date.now();
@@ -433,25 +480,44 @@ export class GraphDataManager {
       const getMetaList = (
         obj: unknown,
         key: "tags" | "hypernyms" | "hyponyms"
-      ): string[] | undefined => {
+      ): string[] => {
+        const result: string[] = [];
+
         if (obj && typeof obj === "object") {
+          // Check metadata.tags, metadata.hypernyms, metadata.hyponyms
           const meta = (obj as { metadata?: unknown }).metadata;
           if (meta && typeof meta === "object") {
             const fromMetadata = (meta as Record<string, unknown>)[key];
-            if (Array.isArray(fromMetadata) && fromMetadata.length > 0) {
-              return (fromMetadata as unknown[]).filter(
-                (v): v is string => typeof v === "string"
-              );
+            if (Array.isArray(fromMetadata)) {
+              const validStrings = (fromMetadata as unknown[])
+                .filter((v): v is string => typeof v === "string")
+                .map((s) => s.trim())
+                .filter((s) => s.length > 0);
+              result.push(...validStrings);
             }
           }
-          const legacy = (obj as Record<string, unknown>)[key];
-          if (Array.isArray(legacy) && legacy.length > 0) {
-            return (legacy as unknown[]).filter(
-              (v): v is string => typeof v === "string"
-            );
+
+          // Also check direct properties: data.tags, data.hypernyms, data.hyponyms
+          const direct = (obj as Record<string, unknown>)[key];
+          if (Array.isArray(direct)) {
+            const validStrings = (direct as unknown[])
+              .filter((v): v is string => typeof v === "string")
+              .map((s) => s.trim())
+              .filter((s) => s.length > 0);
+            result.push(...validStrings);
           }
         }
-        return [];
+
+        // Normalize to lowercase for deduplication, but preserve original case for display
+        const normalized = new Map<string, string>();
+        for (const item of result) {
+          const lower = item.toLowerCase();
+          if (!normalized.has(lower)) {
+            normalized.set(lower, item);
+          }
+        }
+
+        return Array.from(normalized.values());
       };
 
       const walk = (sn: SearchNode, parentId?: string) => {
@@ -499,9 +565,21 @@ export class GraphDataManager {
         }
 
         // Connect metadata arrays from sn.metadata (fallback to legacy arrays)
-        upsertMetadata(nodeIdToUse, "tag", getMetaList(sn, "tags"));
-        upsertMetadata(nodeIdToUse, "hypernym", getMetaList(sn, "hypernyms"));
-        upsertMetadata(nodeIdToUse, "hyponym", getMetaList(sn, "hyponyms"));
+        const tags = getMetaList(sn, "tags");
+        const hypernyms = getMetaList(sn, "hypernyms");
+        const hyponyms = getMetaList(sn, "hyponyms");
+        // eslint-disable-next-line no-console
+        console.log("[DataManager] Extracted metadata (API)", {
+          id: sn.id,
+          title: sn.title,
+          tags,
+          hypernyms,
+          hyponyms,
+        });
+
+        upsertMetadata(nodeIdToUse, "tag", tags);
+        upsertMetadata(nodeIdToUse, "hypernym", hypernyms);
+        upsertMetadata(nodeIdToUse, "hyponym", hyponyms);
 
         // Recurse children
         const childNodes = Array.isArray(sn.children) ? sn.children : [];
@@ -510,7 +588,16 @@ export class GraphDataManager {
         }
       };
 
-      for (const root of res.nodes) {
+      // Access nodes from the API response data
+      const responseData = res.data as { nodes?: unknown[] };
+      const nodes_from_api = responseData?.nodes || [];
+      // eslint-disable-next-line no-console
+      console.log(
+        "[DataManager] loadInitialDocuments nodes:",
+        Array.isArray(nodes_from_api) ? nodes_from_api.length : 0
+      );
+
+      for (const root of nodes_from_api) {
         walk(root, undefined);
       }
 
@@ -549,7 +636,7 @@ export class GraphDataManager {
           }
         }
       };
-      collectNodeIds(res.nodes || []);
+      collectNodeIds(nodes_from_api);
       for (const nodeId of allNodeIds) {
         this.fetchedNodes.add(nodeId);
       }
@@ -639,25 +726,42 @@ export class GraphDataManager {
       const getMetaList = (
         obj: unknown,
         key: "tags" | "hypernyms" | "hyponyms"
-      ): string[] | undefined => {
+      ): string[] => {
+        const result: string[] = [];
+
         if (obj && typeof obj === "object") {
+          // Check metadata.tags, metadata.hypernyms, metadata.hyponyms
           const meta = (obj as { metadata?: unknown }).metadata;
           if (meta && typeof meta === "object") {
             const fromMetadata = (meta as Record<string, unknown>)[key];
-            if (Array.isArray(fromMetadata) && fromMetadata.length > 0) {
-              return (fromMetadata as unknown[]).filter(
+            if (Array.isArray(fromMetadata)) {
+              const validStrings = (fromMetadata as unknown[]).filter(
                 (v): v is string => typeof v === "string"
               );
+              result.push(...validStrings);
             }
           }
-          const legacy = (obj as Record<string, unknown>)[key];
-          if (Array.isArray(legacy) && legacy.length > 0) {
-            return (legacy as unknown[]).filter(
+
+          // Also check direct properties: data.tags, data.hypernyms, data.hyponyms
+          const direct = (obj as Record<string, unknown>)[key];
+          if (Array.isArray(direct)) {
+            const validStrings = (direct as unknown[]).filter(
               (v): v is string => typeof v === "string"
             );
+            result.push(...validStrings);
           }
         }
-        return [];
+
+        // Normalize to lowercase for deduplication, but preserve original case for display
+        const normalized = new Map<string, string>();
+        for (const item of result) {
+          const lower = item.toLowerCase();
+          if (!normalized.has(lower)) {
+            normalized.set(lower, item);
+          }
+        }
+
+        return Array.from(normalized.values());
       };
 
       const rootId = nodeId;
@@ -719,7 +823,11 @@ export class GraphDataManager {
         }
       };
 
-      for (const root of res.nodes) {
+      // Access nodes from the API response data
+      const responseData = res.data as { nodes?: unknown[] };
+      const nodes_from_api = responseData?.nodes || [];
+
+      for (const root of nodes_from_api) {
         walk(root, undefined, 1);
       }
 

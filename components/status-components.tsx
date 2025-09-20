@@ -180,9 +180,9 @@ export function DocumentCountStatus() {
         {
           field_set: "basic",
           depth: 0,
+          min_score: 0,
           limit: 1,
           page: 1,
-          min_score: 0,
         }
       );
       setDocumentCount(response.data.pagination.total_count);

@@ -8,8 +8,11 @@ import type {
 import { select } from "d3-selection";
 import { zoom } from "d3-zoom";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useAuthStore } from "@/components/auth/auth-store";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { graphApiClient } from "../api";
 import {
   buildTreeIndex,
   graphExpandedToSidebarExpandedWithTree,
@@ -52,7 +55,6 @@ import {
 } from "../hooks/use-zoom";
 import { useUIStore } from "../store/ui-store";
 // Standalone version - no store dependencies
-// import { useAuthStore } from '@/hooks/use-auth';
 // import { useGraphFocusStore } from '@/hooks/use-graph';
 // import { useUIStore } from '@/hooks/use-ui';
 // import { ApiService } from '@/services/api';
@@ -331,11 +333,11 @@ export function GraphView({
     // Do not depend on fitAll to avoid TDZ; we use a local wrapper instead
   ]);
 
-  // Initialize GraphDataManager for standalone mode
+  // Initialize GraphDataManager with API service
   useEffect(() => {
     if (!dataManagerRef.current) {
       dataManagerRef.current = new GraphDataManager(
-        null, // No API service in standalone mode
+        graphApiClient, // Use the API service for data loading
         (updatedData) => {
           // Handle data updates
           if (updatedData.nodes) {
@@ -356,7 +358,10 @@ export function GraphView({
     }
   }, [dataManagerRef, setNodesById, setEdges]);
 
-  // Load data from props
+  // Track if we've already loaded data to prevent duplicate loads
+  const hasLoadedDataRef = useRef(false);
+
+  // Load data from props (always reload on change)
   useEffect(() => {
     const loadData = async () => {
       if (!dataManagerRef.current) {
@@ -379,10 +384,55 @@ export function GraphView({
       }
     };
 
-    if (data || dataUrl) {
-      loadData();
-    }
+    void loadData();
   }, [data, dataUrl, dataManagerRef]);
+
+  // Listen for authentication changes and load data when auth becomes ready
+  useEffect(() => {
+    const loadDataWhenAuthReady = async () => {
+      if (!dataManagerRef.current || hasLoadedDataRef.current || data || dataUrl) {
+        console.log("[GraphCanvas] Skipping API load:", {
+          hasDataManager: !!dataManagerRef.current,
+          hasLoadedData: hasLoadedDataRef.current,
+          hasStaticData: !!(data || dataUrl),
+        });
+        return; // Skip if we have static data or already loaded
+      }
+
+      const accessToken = useAuthStore.getState().accessToken;
+      console.log("[GraphCanvas] Checking auth for API load. Token available:", !!accessToken);
+      
+      if (accessToken) {
+        console.log("[GraphCanvas] Loading data from API...");
+        await dataManagerRef.current.loadInitialDocuments();
+        hasLoadedDataRef.current = true;
+        console.log("[GraphCanvas] API data load completed");
+      } else {
+        console.log("[GraphCanvas] No auth token available, waiting...");
+      }
+    };
+
+    // Subscribe to auth store changes
+    const unsubscribe = useAuthStore.subscribe((state, prevState) => {
+      console.log("[GraphCanvas] Auth store changed:", {
+        hadToken: !!prevState.accessToken,
+        hasToken: !!state.accessToken,
+        tokenChanged: !prevState.accessToken && state.accessToken,
+      });
+      
+      // Only trigger if accessToken changed from undefined to defined
+      if (!prevState.accessToken && state.accessToken) {
+        console.log("[GraphCanvas] Auth token became available, loading data...");
+        loadDataWhenAuthReady();
+      }
+    });
+
+    // Also check immediately in case auth is already ready
+    console.log("[GraphCanvas] Initial auth check...");
+    loadDataWhenAuthReady();
+
+    return unsubscribe;
+  }, [data, dataUrl]);
 
   // Local action functions to replace store actions
   const _setHighlightedNode = useCallback(
@@ -1931,13 +1981,7 @@ export function GraphView({
 
           {!isInitialized && (
             <div className={getLoadingOverlayClasses()}>
-              <div className={getLoadingContentClasses()}>
-                <div className={getLoadingTitleClasses()}>Loading graph...</div>
-                <div className={getLoadingSubtitleClasses()}>
-                  Fetching documents and relationships
-                  {/* Perf note: timings logged by GraphDataManager in console */}
-                </div>
-              </div>
+              <Spinner size={32} />
             </div>
           )}
 

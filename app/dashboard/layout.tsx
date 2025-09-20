@@ -1,5 +1,4 @@
 import { Book, Brain } from "lucide-react";
-import { AuthGate } from "@/components/auth/auth-gate";
 import { ProtectedContent } from "@/components/auth/protected";
 import { DocsLayout } from "@/components/layout/docs";
 import { DocumentCountStatus } from "@/components/status-components";
@@ -32,7 +31,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       }}
       tree={dashboardSource.pageTree}
     >
-      <AuthGate />
       <ProtectedContent>{children}</ProtectedContent>
     </DocsLayout>
   );

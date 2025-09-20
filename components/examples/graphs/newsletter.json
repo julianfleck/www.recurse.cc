@@ -20,7 +20,8 @@
               "children": [],
               "metadata": {
                 "tags": ["EU AI Act", "Regulation", "Transparency"],
-                "hypernyms": ["AI Governance", "European Policy"]
+                "hypernyms": ["AI Governance", "European Policy"],
+                "hyponyms": []
               }
             },
             {
@@ -31,13 +32,15 @@
               "children": [],
               "metadata": {
                 "tags": ["European Parliament", "Legislation", "Voting"],
-                "hypernyms": ["Policy Making", "Democratic Process"]
+                "hypernyms": ["Policy Making", "Democratic Process"],
+                "hyponyms": []
               }
             }
           ],
           "metadata": {
             "tags": ["AI", "Regulation", "Europe"],
-            "hypernyms": ["Technology Policy", "Governance"]
+            "hypernyms": ["Technology Policy", "Governance"],
+            "hyponyms": []
           }
         },
         {
@@ -58,7 +61,8 @@
                   "Federal Legislation",
                   "Data Protection"
                 ],
-                "hypernyms": ["US Policy", "Consumer Protection"]
+                "hypernyms": ["US Policy", "Consumer Protection"],
+                "hyponyms": []
               }
             },
             {
@@ -69,19 +73,22 @@
               "children": [],
               "metadata": {
                 "tags": ["Congress", "Hearings", "Oversight"],
-                "hypernyms": ["Government Process", "Policy Development"]
+                "hypernyms": ["Government Process", "Policy Development"],
+                "hyponyms": []
               }
             }
           ],
           "metadata": {
             "tags": ["Privacy", "Data Protection", "US Policy"],
-            "hypernyms": ["Consumer Rights", "Digital Regulation"]
+            "hypernyms": ["Consumer Rights", "Digital Regulation"],
+            "hyponyms": []
           }
         }
       ],
       "metadata": {
         "tags": ["Technology", "Policy", "AI", "Privacy", "Regulation"],
-        "hypernyms": ["Government", "Technology Sector"]
+        "hypernyms": ["Government", "Technology Sector"],
+        "hyponyms": ["Newsletter", "Weekly Roundup"]
       }
     }
   ],

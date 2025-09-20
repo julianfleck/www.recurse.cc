@@ -17,31 +17,49 @@ export function AuthInit() {
   const audience = process.env.NEXT_PUBLIC_AUTH0_AUDIENCE;
   const scopes = "openid profile email";
 
+  // Set up API auth getter immediately if we have a token in store
+  useEffect(() => {
+    if (accessTokenFromStore) {
+      console.log("[AuthInit] Setting up API auth getter with existing store token");
+      setApiAuthGetter(() => useAuthStore.getState().accessToken);
+    } else {
+      console.log("[AuthInit] No store token, clearing API auth getter");
+      setApiAuthGetter(emptyTokenGetter);
+    }
+  }, [accessTokenFromStore]);
+
   useEffect(() => {
     // Prefer SDK-based login when available; otherwise respect a client-side token set via email/password flow
     const isReady = !isLoading;
+    
+    console.log("[AuthInit] Auth state:", {
+      isLoading,
+      isAuthenticated,
+      isReady,
+      hasAccessTokenFromStore: !!accessTokenFromStore,
+      user: user?.email || user?.name || "no user",
+    });
+    
     if (isReady && isAuthenticated) {
+      console.log("[AuthInit] Auth0 authenticated, getting token silently...");
       const options = audience
         ? { authorizationParams: { audience, scope: scopes } }
         : undefined;
       getAccessTokenSilently(options as never)
         .then((token) => {
+          console.log("[AuthInit] Got token from Auth0, setting in store");
           setAuth(token, "auth0", user);
-          // Set up API auth getter to use the token from auth store
-          setApiAuthGetter(() => useAuthStore.getState().accessToken);
+          // API auth getter will be set up by the separate effect above
         })
-        .catch(() => {
+        .catch((error) => {
+          console.error("[AuthInit] Failed to get token from Auth0:", error);
           setAuth(undefined, "auth0", user);
-          // Clear API auth getter when auth fails
-          setApiAuthGetter(emptyTokenGetter);
+          // API auth getter will be cleared by the separate effect above
         });
     } else if (isReady && !accessTokenFromStore) {
+      console.log("[AuthInit] Not authenticated and no store token, clearing auth");
       clear();
-      // Clear API auth getter when not authenticated
-      setApiAuthGetter(emptyTokenGetter);
-    } else if (isReady && accessTokenFromStore) {
-      // If we have a token from store (email/password flow), set up API auth getter
-      setApiAuthGetter(() => useAuthStore.getState().accessToken);
+      // API auth getter will be cleared by the separate effect above
     }
   }, [
     isAuthenticated,
