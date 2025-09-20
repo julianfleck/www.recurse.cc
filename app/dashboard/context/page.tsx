@@ -1,0 +1,260 @@
+"use client";
+
+import { AnimatePresence, motion } from "framer-motion";
+import { Copy, Search } from "lucide-react";
+import { useCallback, useState } from "react";
+import { GenericTooltipLayout } from "@/components/graph-view/components/node-tooltip";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { apiService } from "@/lib/api";
+
+type SearchResult = {
+  id: string;
+  title?: string;
+  summary?: string;
+  type?: string;
+  similarity_score?: number;
+  reranked_score?: number;
+  index?: number;
+};
+
+type ApiSearchResponse = {
+  data: {
+    nodes: SearchResult[];
+    total_found?: number;
+    returned_count?: number;
+    search_time_ms?: number;
+    filters_applied?: string[];
+    pagination?: {
+      page: number;
+      limit: number;
+      total_count: number;
+      total_pages: number;
+      has_next: boolean;
+      has_previous: boolean;
+    };
+  };
+  status: number;
+  statusText: string;
+};
+
+const SEARCH_LIMIT = 20;
+const STAGGER_DELAY = 0.1;
+const ANIMATION_DURATION = 0.3;
+const SCORE_MULTIPLIER = 100;
+
+export default function ContextPage() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [totalFound, setTotalFound] = useState<number | null>(null);
+
+  const handleSearch = useCallback(async (query: string) => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      setTotalFound(null);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+    setTotalFound(null);
+
+    try {
+      const searchParams = {
+        query,
+        limit: SEARCH_LIMIT,
+        field_set: "content",
+      };
+
+      const response: ApiSearchResponse = await apiService.get("/search", searchParams);
+
+      // Extract nodes from the API response structure
+      const nodes = response.data?.nodes || [];
+      setSearchResults(nodes);
+      setTotalFound(response.data?.total_found || null);
+    } catch (err) {
+      // Search failed - handle error silently but show user-friendly message
+      setError(err instanceof Error ? err.message : "Search failed");
+      setSearchResults([]);
+      setTotalFound(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const handleCopyResults = useCallback(async () => {
+    try {
+      const searchData = {
+        query: searchTerm,
+        total_found: totalFound,
+        results: searchResults,
+        timestamp: new Date().toISOString(),
+      };
+      const jsonString = JSON.stringify(searchData, null, 2);
+      await navigator.clipboard.writeText(jsonString);
+    } catch {
+      // Copy failed - silently handle error
+    }
+  }, [searchResults, searchTerm, totalFound]);
+
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter") {
+        handleSearch(searchTerm);
+      }
+    },
+    [searchTerm, handleSearch]
+  );
+
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <motion.div
+          animate={{ opacity: 1 }}
+          className="flex justify-center py-12"
+          exit={{ opacity: 0 }}
+          initial={{ opacity: 0 }}
+        >
+          <div className="space-y-2 text-center">
+            <div className="mx-auto h-8 w-8 animate-spin rounded-full border-primary border-b-2" />
+            <p className="text-muted-foreground">Searching...</p>
+          </div>
+        </motion.div>
+      );
+    }
+
+    if (searchResults.length > 0) {
+      return (
+        <motion.div
+          animate={{ opacity: 1 }}
+          className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+          exit={{ opacity: 0 }}
+          initial={{ opacity: 0 }}
+        >
+          <AnimatePresence>
+            {searchResults.map((result, index) => (
+              <motion.div
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: -20 }}
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                key={result.id}
+                transition={{
+                  delay: index * STAGGER_DELAY,
+                  duration: ANIMATION_DURATION,
+                  ease: "easeOut",
+                }}
+              >
+                <Card className="h-full">
+                  <CardContent className="p-0">
+                    <div className="flex h-full flex-col p-4">
+                      <GenericTooltipLayout
+                        className="flex-1"
+                        metadata={result.metadata}
+                        showIcon={false}
+                        summary={result.summary}
+                        title={result.title || result.id}
+                        type={result.type}
+                      />
+                      {result.similarity_score ? (
+                        <div className="mt-3 border-border border-t pt-2">
+                          <div className="flex items-center justify-between text-muted-foreground text-xs">
+                            <span>Similarity</span>
+                            <Badge className="text-xs" variant="secondary">
+                              {(result.similarity_score * SCORE_MULTIPLIER).toFixed(1)}%
+                            </Badge>
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+      );
+    }
+
+    if (searchTerm && !isLoading) {
+      return (
+        <motion.div
+          animate={{ opacity: 1 }}
+          className="py-12 text-center"
+          exit={{ opacity: 0 }}
+          initial={{ opacity: 0 }}
+        >
+          <p className="text-muted-foreground">
+            No results found for "{searchTerm}"
+          </p>
+        </motion.div>
+      );
+    }
+
+    return null;
+  };
+
+  return (
+    <div className="container mx-auto max-w-7xl space-y-6 p-6">
+      {/* Header */}
+      <div className="space-y-2">
+        <h1 className="font-bold text-3xl">Context Search</h1>
+        <p className="text-muted-foreground">
+          Search through your knowledge base to find relevant context and
+          information.
+        </p>
+      </div>
+
+      {/* Search Section */}
+      <div className="space-y-4">
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
+            <Input
+              className="pl-9"
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Enter your search query..."
+              value={searchTerm}
+            />
+          </div>
+          <Button
+            disabled={isLoading || !searchTerm.trim()}
+            onClick={() => handleSearch(searchTerm)}
+          >
+            {isLoading ? "Searching..." : "Search"}
+          </Button>
+          {searchResults.length > 0 && (
+            <Button
+              className="gap-2"
+              onClick={handleCopyResults}
+              variant="outline"
+            >
+              <Copy className="h-4 w-4" />
+              Copy JSON
+            </Button>
+          )}
+        </div>
+
+        {error && (
+          <div className="rounded-md border border-destructive/20 bg-destructive/10 p-3 text-destructive text-sm">
+            {error}
+          </div>
+        )}
+      </div>
+
+      {/* Results Count */}
+      {totalFound !== null && searchResults.length > 0 && (
+        <div className="text-muted-foreground text-sm">
+          Found {totalFound.toLocaleString()} results • Showing {searchResults.length} items
+        </div>
+      )}
+
+      {/* Results Grid */}
+      <AnimatePresence mode="wait">{renderContent()}</AnimatePresence>
+    </div>
+  );
+}
