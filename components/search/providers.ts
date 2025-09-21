@@ -41,7 +41,10 @@ export const documentationProvider: SearchProvider = {
     return items.map(
       (it) =>
         ({
-          id: it.url || it.id || it.path || crypto.randomUUID(),
+          id:
+            (it.url || it.path || it.id || "").toString() +
+            (it.hash ? `#${it.hash}` : "") ||
+            crypto.randomUUID(),
           title: it.title || it.heading || it.id,
           summary:
             it.excerpt ||
@@ -56,8 +59,10 @@ export const documentationProvider: SearchProvider = {
             Array.isArray(it.breadcrumbs)
               ? it.breadcrumbs.join(" › ")
               : it.breadcrumbs,
-            it.path,
           ].filter(Boolean) as string[],
+          href: (it.url || it.path || "").toString() + (it.hash ? `#${it.hash}` : ""),
+          breadcrumbs: Array.isArray(it.breadcrumbs) ? it.breadcrumbs : [],
+          highlight: it.highlight || "",
         }) satisfies SearchItem
     );
   },

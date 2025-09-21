@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { CommandItem } from "@/components/ui/command";
 
 export interface SearchResult {
@@ -24,6 +25,7 @@ export function SearchResultsList({
   searchTerm,
   isLoading = false,
 }: SearchResultsListProps) {
+  const router = useRouter();
   if (isLoading && results.length === 0) {
     return (
       <div className="flex justify-center py-6">
@@ -37,31 +39,46 @@ export function SearchResultsList({
 
   return (
     <>
-      {results.map((result) => (
+      {results.map((result, idx) => (
         <CommandItem
-          key={result.id}
+          className="flex-col items-start gap-1 px-4 py-3 data-[selected=true]:bg-accent/60"
+          key={`${result.id}-${idx}`}
           value={result.title || result.id}
-          className="flex-col items-start gap-1 px-4 py-3"
+          onSelect={() => {
+            if ((result as any).href) {
+              router.push((result as any).href as string);
+            }
+          }}
         >
           <div className="flex w-full items-center gap-2">
-            <span className="font-medium">{result.title || result.id}</span>
+            <span className="font-medium text-sm">
+              {result.title || result.id}
+            </span>
             {result.type && (
-              <span className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
+              <span className="rounded bg-muted px-1.5 py-0.5 text-muted-foreground text-xs">
                 {result.type}
               </span>
             )}
           </div>
 
+          {(result as any).breadcrumbs && (result as any).breadcrumbs.length > 0 && (
+            <div className="text-muted-foreground text-[11px]">
+              {(result as any).breadcrumbs.join(" › ")}
+            </div>
+          )}
+
           {result.summary && (
-            <p className="text-xs text-muted-foreground line-clamp-2">
+            <p className="line-clamp-2 text-muted-foreground text-xs">
               {result.summary}
             </p>
           )}
 
-          {(result.metadata && result.metadata.length > 0) && (
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <span>{result.metadata.slice(0, 2).join(" › ")}</span>
-              {result.metadata.length > 2 && <span>› ...</span>}
+          {result.metadata && result.metadata.length > 0 && (
+            <div className="flex items-center gap-1 text-muted-foreground text-xs">
+              <span className="truncate">
+                {result.metadata.slice(0, 2).join(" › ")}
+                {result.metadata.length > 2 && " › ..."}
+              </span>
             </div>
           )}
         </CommandItem>

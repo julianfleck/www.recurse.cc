@@ -4,6 +4,9 @@ export type SearchItem = {
   summary?: string;
   type?: string;
   metadata?: string[];
+  href?: string;
+  breadcrumbs?: string[];
+  highlight?: string;
 };
 
 export type SearchProvider = {
