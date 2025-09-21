@@ -94,7 +94,12 @@ export class ApiService {
           throw new ApiError("Invalid token format", 401);
         }
       } else {
-        throw new ApiError("No authentication token available", 401);
+        const authError = new ApiError(
+          "No authentication token available",
+          401
+        );
+        authError.name = "AuthenticationError";
+        throw authError;
       }
 
       console.log(`[API] GET ${url} - Headers:`, headers);
@@ -193,7 +198,12 @@ export class ApiService {
           throw new ApiError("Invalid token format", 401);
         }
       } else {
-        throw new ApiError("No authentication token available", 401);
+        const authError = new ApiError(
+          "No authentication token available",
+          401
+        );
+        authError.name = "AuthenticationError";
+        throw authError;
       }
 
       const response = await fetch(url, {
@@ -276,7 +286,12 @@ export class ApiService {
           throw new ApiError("Invalid token format", 401);
         }
       } else {
-        throw new ApiError("No authentication token available", 401);
+        const authError = new ApiError(
+          "No authentication token available",
+          401
+        );
+        authError.name = "AuthenticationError";
+        throw authError;
       }
 
       console.log(`[API] POST ${url} - Headers:`, headers);

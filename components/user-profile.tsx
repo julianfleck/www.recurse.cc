@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { apiService } from "@/lib/api";
+import { isOnAuthPage } from "@/lib/auth-utils";
 import { useAuthStore } from "./auth/auth-store";
 
 // Constants
@@ -85,17 +86,26 @@ export function UserProfile({
   const showImage = Boolean(displayUser?.picture && !isLikelyGoogleDefault);
 
   const fetchUserProfile = useCallback(async () => {
-    if (!isClientAuthenticated) {
+    if (!(isClientAuthenticated && storeToken)) {
+      setUserProfile(null);
       return;
     }
 
     try {
       const response = await apiService.get<UserProfile>("/users/me");
       setUserProfile(response.data);
-    } catch {
-      // Silently handle profile fetch errors
+    } catch (error) {
+      // Handle authentication errors by redirecting to login (but not when already on auth pages)
+      if (error instanceof Error && error.name === "AuthenticationError") {
+        if (!isOnAuthPage()) {
+          window.location.href = "/login";
+        }
+        return;
+      }
+      // Silently handle other profile fetch errors
+      setUserProfile(null);
     }
-  }, [isClientAuthenticated]);
+  }, [isClientAuthenticated, storeToken]);
 
   useEffect(() => {
     if (isClientAuthenticated && !isLoading) {

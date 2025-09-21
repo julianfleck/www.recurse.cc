@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthStore } from "@/components/auth/auth-store";
 import { Status as KiboStatus } from "@/components/ui/kibo-ui/status";
 import { apiService } from "@/lib/api";
+import { isOnAuthPage } from "@/lib/auth-utils";
 
 type HealthStatus = {
   status: "healthy" | "unhealthy" | "degraded";
@@ -187,6 +188,14 @@ export function DocumentCountStatus() {
       );
       setDocumentCount(response.data.pagination.total_count);
     } catch (err) {
+      // Handle authentication errors by redirecting to login (but not when already on auth pages)
+      if (err instanceof Error && err.name === "AuthenticationError") {
+        if (!isOnAuthPage()) {
+          window.location.href = "/login";
+        }
+        return;
+      }
+
       const errorMessage =
         err instanceof Error ? err.message : "Failed to load document count";
 

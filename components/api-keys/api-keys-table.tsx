@@ -519,10 +519,10 @@ export function ApiKeysTable() {
       header: "Last Used",
       cell: ({ row }) => {
         const lastUsed = row.getValue("last_used");
-        if (!lastUsed) {
+        if (!lastUsed || (typeof lastUsed === 'object' && Object.keys(lastUsed).length === 0)) {
           return <div className="text-muted-foreground text-sm">Never</div>;
         }
-        const date = new Date(lastUsed);
+        const date = new Date(lastUsed as string | number | Date);
         return <div className="text-sm">{date.toLocaleDateString()}</div>;
       },
       enableSorting: true,

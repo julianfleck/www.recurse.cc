@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useAuthStore } from "@/components/auth/auth-store";
 import { GenericTooltipLayout } from "@/components/graph-view/components/node-tooltip";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { CopyButton } from "@/components/ui/copy-button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { apiService } from "@/lib/api";
+import { isOnAuthPage } from "@/lib/auth-utils";
 
 type SearchResult = {
   id: string;
@@ -56,6 +58,7 @@ export default function ContextPage() {
   const [error, setError] = useState<string | null>(null);
   const [totalFound, setTotalFound] = useState<number | null>(null);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const accessToken = useAuthStore((s) => s.accessToken);
 
   // Cleanup timer on unmount
   useEffect(() => {
@@ -102,6 +105,13 @@ export default function ContextPage() {
         setSearchResults(nodes);
         setTotalFound(response.data?.total_found || null);
       } catch (err) {
+        // Handle authentication errors by redirecting to login (but not when already on auth pages)
+        if (err instanceof Error && err.name === "AuthenticationError") {
+          if (!isOnAuthPage()) {
+            window.location.href = "/login";
+          }
+          return;
+        }
         // Search failed - handle error silently but show user-friendly message
         setError(err instanceof Error ? err.message : "Search failed");
         setSearchResults([]);
@@ -130,10 +140,12 @@ export default function ContextPage() {
     [handleSearch]
   );
 
-  // Initial search on mount
+  // Initial search on mount - only if authenticated
   useEffect(() => {
-    handleSearch("type:doc");
-  }, [handleSearch]);
+    if (accessToken) {
+      handleSearch("type:doc");
+    }
+  }, [handleSearch, accessToken]);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -266,30 +278,25 @@ export default function ContextPage() {
           </div>
           {searchResults.length > 0 &&
             (isLoadingNewResults ? (
-              <Button
-                disabled
-                size="sm"
-                tooltip="Loading..."
-                variant="outline"
-              >
+              <Button disabled size="sm" tooltip="Loading..." variant="outline">
                 <Spinner className="h-4 w-4" />
               </Button>
             ) : (
-            <CopyButton
-              size="sm"
-              text={JSON.stringify(
-                {
-                  query: searchTerm,
-                  total_found: totalFound,
-                  results: searchResults,
-                  timestamp: new Date().toISOString(),
-                },
-                null,
-                2
-              )}
-              tooltip="Copy context as JSON"
-              variant="outline"
-            />
+              <CopyButton
+                size="sm"
+                text={JSON.stringify(
+                  {
+                    query: searchTerm,
+                    total_found: totalFound,
+                    results: searchResults,
+                    timestamp: new Date().toISOString(),
+                  },
+                  null,
+                  2
+                )}
+                tooltip="Copy context as JSON"
+                variant="outline"
+              />
             ))}
         </div>
 

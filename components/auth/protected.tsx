@@ -22,9 +22,16 @@ export function ProtectedContent({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Only redirect if we're on client and have no token AND Auth0 has finished loading AND Auth0 says not authenticated
     if (isClient && !(isClientAuthenticated || isLoading || isAuthenticated)) {
-      router.replace("/login");
+      console.log("[ProtectedContent] Redirecting to login...", {
+        isClient,
+        isClientAuthenticated,
+        isLoading,
+        isAuthenticated
+      });
+      // Use window.location for immediate redirect to avoid router issues
+      window.location.href = "/login";
     }
-  }, [isClient, isAuthenticated, isClientAuthenticated, isLoading, router]);
+  }, [isClient, isAuthenticated, isClientAuthenticated, isLoading]);
 
   // Don't render anything until we're on the client
   if (!isClient) {
@@ -55,6 +62,7 @@ export function ProtectedContent({ children }: { children: ReactNode }) {
   }
 
   // Auth0 finished loading, no store token, not authenticated - redirect will happen via useEffect
+  // Don't render children to prevent API calls during redirect
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background">
       <div
