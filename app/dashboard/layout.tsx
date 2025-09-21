@@ -1,8 +1,9 @@
 import { Book, Brain } from "lucide-react";
 import { ProtectedContent } from "@/components/auth/protected";
 import { DocsLayout } from "@/components/layout/docs";
+import { knowledgeBaseProvider } from "@/components/search/providers";
+import { LargeSearchToggle } from "@/components/search/toggle";
 import { DocumentCountStatus } from "@/components/status-components";
-import { LargeSearchToggle } from "@/components/search-toggle";
 import { docsOptions } from "@/lib/layout.shared";
 import { dashboardSource } from "@/lib/source";
 
@@ -13,11 +14,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {...options}
       disableDocActions
       searchText="Search Knowledge Base"
-      // Use knowledge base search for dashboard section
+      // Use knowledge base search provider in dashboard
       searchToggle={{
         enabled: true,
         components: {
-          lg: <LargeSearchToggle customText="Search Knowledge Base" />,
+          sm: (
+            <LargeSearchToggle
+              customText="Search Knowledge Base"
+              enableHotkey={false}
+              placeholder="Search knowledge base..."
+              provider={knowledgeBaseProvider}
+            />
+          ),
+          lg: (
+            <LargeSearchToggle
+              customText="Search Knowledge Base"
+              enableHotkey
+              placeholder="Search knowledge base..."
+              provider={knowledgeBaseProvider}
+            />
+          ),
         },
       }}
       // Render children pages directly; page content controls header/footer via DocsPage

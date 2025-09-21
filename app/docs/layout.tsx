@@ -1,6 +1,7 @@
 import { Book, Brain } from "lucide-react";
 import { DocsLayout } from "@/components/layout/docs";
-import { LargeDocumentationSearchToggle } from "@/components/documentation-search";
+import { documentationProvider } from "@/components/search/providers";
+import { LargeSearchToggle } from "@/components/search/toggle";
 import { docsOptions } from "@/lib/layout.shared";
 import { docsSource } from "@/lib/source";
 
@@ -9,11 +10,26 @@ export default function Layout({ children }: LayoutProps<"/docs">) {
   return (
     <DocsLayout
       {...options}
-      // Use documentation search for docs section
+      // Use documentation search provider in docs section
       searchToggle={{
         enabled: true,
         components: {
-          lg: <LargeDocumentationSearchToggle customText="Search Documentation" />,
+          sm: (
+            <LargeSearchToggle
+              customText="Search Documentation"
+              enableHotkey={false}
+              placeholder="Search documentation..."
+              provider={documentationProvider}
+            />
+          ),
+          lg: (
+            <LargeSearchToggle
+              customText="Search Documentation"
+              enableHotkey
+              placeholder="Search documentation..."
+              provider={documentationProvider}
+            />
+          ),
         },
       }}
       sidebar={{

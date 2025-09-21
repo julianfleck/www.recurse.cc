@@ -29,7 +29,8 @@ export function Providers({ children }: { children: ReactNode }) {
       useRefreshTokens={true}
     >
       <AuthInit />
-      <RootProvider>
+      {/* Disable Fumadocs internal search provider; we inject our own search components per layout */}
+      <RootProvider search={{ enabled: false }}>
         {children}
         <Toaster />
       </RootProvider>

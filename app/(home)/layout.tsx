@@ -1,5 +1,6 @@
 import { HomeLayout } from "fumadocs-ui/layouts/home";
-import { LargeSearchToggle } from "@/components/search-toggle";
+import { documentationProvider } from "@/components/search/providers";
+import { LargeSearchToggle } from "@/components/search/toggle";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { UserProfile } from "@/components/user-profile";
 import { baseOptions } from "@/lib/layout.shared";
@@ -17,7 +18,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       searchToggle={{
         enabled: true,
         components: {
-          lg: <LargeSearchToggle customText="Search Documentation" />,
+          sm: (
+            <LargeSearchToggle
+              customText="Search Documentation"
+              enableHotkey={false}
+              placeholder="Search documentation..."
+              provider={documentationProvider}
+            />
+          ),
+          lg: (
+            <LargeSearchToggle
+              customText="Search Documentation"
+              enableHotkey
+              placeholder="Search documentation..."
+              provider={documentationProvider}
+            />
+          ),
         },
       }}
       themeSwitch={{
