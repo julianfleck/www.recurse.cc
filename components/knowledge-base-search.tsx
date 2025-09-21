@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { apiService } from "@/lib/api";
 import { isOnAuthPage } from "@/lib/auth-utils";
+import { useAuthStore } from "@/components/auth/auth-store";
 
 interface KnowledgeBaseSearchProps {
   open: boolean;
@@ -22,11 +23,22 @@ export function KnowledgeBaseSearch({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const accessToken = useAuthStore((s) => s.accessToken);
 
-  // Focus input when opened
+  // Focus input when opened and clear state when closed
   useEffect(() => {
     if (open && inputRef.current) {
       inputRef.current.focus();
+    } else if (!open) {
+      // Clear any pending search and reset state when modal closes
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+        debounceTimeoutRef.current = null;
+      }
+      setSearchTerm("");
+      setSearchResults([]);
+      setError(null);
     }
   }, [open]);
 
@@ -54,6 +66,13 @@ export function KnowledgeBaseSearch({
         return;
       }
 
+      // Don't search if not authenticated
+      if (!accessToken) {
+        setError("Please log in to search the knowledge base");
+        setSearchResults([]);
+        return;
+      }
+
       setIsLoading(true);
       setError(null);
 
@@ -65,7 +84,8 @@ export function KnowledgeBaseSearch({
         };
 
         const response = await apiService.get("/search", searchParams);
-        setSearchResults(response.data.nodes || []);
+        const data = response.data as any;
+        setSearchResults(data?.nodes || []);
       } catch (err) {
         // Handle authentication errors by redirecting to login (but not when already on auth pages)
         if (err instanceof Error && err.name === "AuthenticationError") {
@@ -80,7 +100,7 @@ export function KnowledgeBaseSearch({
         setIsLoading(false);
       }
     },
-    [onOpenChange]
+    [accessToken]
   );
 
   const handleInputChange = useCallback(
@@ -88,12 +108,15 @@ export function KnowledgeBaseSearch({
       const value = e.target.value;
       setSearchTerm(value);
 
-      // Debounce search
-      const timeoutId = setTimeout(() => {
+      // Clear existing timeout
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+
+      // Set new timeout for debounced search
+      debounceTimeoutRef.current = setTimeout(() => {
         performSearch(value);
       }, 300);
-
-      return () => clearTimeout(timeoutId);
     },
     [performSearch]
   );
@@ -109,56 +132,57 @@ export function KnowledgeBaseSearch({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 pt-16">
-      <div className="w-full max-w-2xl rounded-lg bg-background p-4 shadow-lg">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Search Knowledge Base</h2>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onOpenChange(false)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
+    <div className="fixed inset-0 z-50 bg-black/50">
+      <div className="mx-auto max-w-2xl pt-16">
+        <div className="relative mx-4 rounded-lg border bg-background shadow-lg">
+          <form onSubmit={handleSubmit}>
+            <div className="flex items-center border-b px-3">
+              <Search className="mr-2 h-4 w-4 text-muted-foreground" />
+              <input
+                ref={inputRef}
+                className="flex h-12 w-full bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground"
+                placeholder="Search knowledge base..."
+                value={searchTerm}
+                onChange={(e) => handleInputChange(e)}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="ml-2 h-6 w-6 p-0"
+                onClick={() => onOpenChange(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </form>
 
-        <form onSubmit={handleSubmit} className="mb-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              ref={inputRef}
-              className="pl-9"
-              placeholder="Search knowledge base..."
-              value={searchTerm}
-              onChange={handleInputChange}
+          {error && (
+            <div className="border-b bg-destructive/10 px-4 py-2 text-sm text-destructive">
+              {error}
+            </div>
+          )}
+
+          <div className="max-h-96 overflow-y-auto">
+            <SearchResultsList
+              results={searchResults}
+              searchTerm={searchTerm}
+              isLoading={isLoading}
             />
           </div>
-        </form>
 
-        {error && (
-          <div className="mb-4 rounded-md bg-destructive/10 p-3 text-destructive text-sm">
-            {error}
-          </div>
-        )}
-
-        <div className="max-h-96 overflow-y-auto">
-          <SearchResultsList
-            results={searchResults}
-            searchTerm={searchTerm}
-            isLoading={isLoading}
-          />
-        </div>
-
-        <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-          <div>
-            Press{" "}
-            <kbd className="rounded border bg-muted px-1.5 py-0.5">Esc</kbd> to
-            close
-          </div>
-          <div>
-            <kbd className="rounded border bg-muted px-1.5 py-0.5">⌘</kbd> +
-            <kbd className="rounded border bg-muted px-1.5 py-0.5">K</kbd> to
-            search
+          <div className="border-t bg-muted/50 px-4 py-2 text-xs text-muted-foreground">
+            <div className="flex items-center justify-between">
+              <div>
+                <kbd className="rounded border bg-background px-1.5 py-0.5 text-xs">↑↓</kbd> to navigate
+              </div>
+              <div>
+                <kbd className="rounded border bg-background px-1.5 py-0.5 text-xs">Enter</kbd> to select
+              </div>
+              <div>
+                <kbd className="rounded border bg-background px-1.5 py-0.5 text-xs">Esc</kbd> to close
+              </div>
+            </div>
           </div>
         </div>
       </div>

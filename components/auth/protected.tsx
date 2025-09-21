@@ -63,19 +63,6 @@ export function ProtectedContent({ children }: { children: ReactNode }) {
 
   // Auth0 finished loading, no store token, not authenticated - redirect will happen via useEffect
   // Don't render children to prevent API calls during redirect
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background">
-      <div
-        aria-live="polite"
-        className="flex items-center gap-3 text-fd-muted-foreground text-sm"
-      >
-        <span
-          aria-hidden="true"
-          className="inline-block size-4 animate-spin rounded-full border-2 border-fd-muted-foreground border-t-transparent"
-        />
-        <span>Redirecting to login…</span>
-      </div>
-    </div>
-  );
+  return null;
 }
 

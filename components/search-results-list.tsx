@@ -79,56 +79,33 @@ export function SearchResultsList({
             ease: "easeOut",
           }}
         >
-          <div className="rounded-lg border bg-card p-4 shadow-sm transition-shadow hover:shadow-md">
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0 flex-1">
-                <div className="mb-2 flex items-center gap-2">
-                  <h3 className="truncate font-medium text-sm">
-                    {result.title || result.id}
-                  </h3>
-                  {result.type && (
-                    <Badge className="text-xs" variant="secondary">
-                      {result.type}
-                    </Badge>
-                  )}
-                </div>
-
-                {result.summary && (
-                  <p className="mb-2 line-clamp-2 text-muted-foreground text-sm">
-                    {result.summary}
-                  </p>
-                )}
-
-                {result.metadata && result.metadata.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {result.metadata.slice(0, 3).map((meta, metaIndex) => (
-                      <Badge
-                        className="text-xs"
-                        key={metaIndex}
-                        variant="outline"
-                      >
-                        {meta}
-                      </Badge>
-                    ))}
-                    {result.metadata.length > 3 && (
-                      <Badge className="text-xs" variant="outline">
-                        +{result.metadata.length - 3} more
-                      </Badge>
-                    )}
-                  </div>
-                )}
+          <div className="flex cursor-pointer items-center gap-3 px-4 py-3 hover:bg-muted/50">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <h3 className="truncate text-sm font-medium">
+                  {result.title || result.id}
+                </h3>
               </div>
 
-              {result.similarity_score && (
-                <div className="flex flex-col items-end gap-1">
-                  <Badge className="text-xs" variant="secondary">
-                    {(result.similarity_score * 100).toFixed(1)}%
-                  </Badge>
-                  <span className="text-muted-foreground text-xs">
-                    similarity
-                  </span>
-                </div>
+              {result.summary && (
+                <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
+                  {result.summary}
+                </p>
               )}
+
+              <div className="mt-1 flex items-center gap-2">
+                {result.type && (
+                  <span className="text-xs text-muted-foreground">
+                    {result.type}
+                  </span>
+                )}
+                {result.metadata && result.metadata.length > 0 && (
+                  <span className="text-xs text-muted-foreground">
+                    • {result.metadata.slice(0, 2).join(" › ")}
+                    {result.metadata.length > 2 && " › ..."}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </motion.div>

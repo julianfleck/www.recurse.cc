@@ -2,12 +2,14 @@
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { cn } from "../lib/cn";
-import { buttonVariants } from "./ui/button";
 import { KnowledgeBaseSearch } from "./knowledge-base-search";
+import { buttonVariants } from "./ui/button";
 
 interface SearchToggleProps
   extends Omit<React.ComponentProps<"button">, "color"> {
   hideIfDisabled?: boolean;
+  size?: "icon-sm" | "sm" | "default" | "lg";
+  color?: "ghost" | "default" | "secondary" | "destructive" | "outline" | "link";
 }
 
 export function SearchToggle({
@@ -37,7 +39,7 @@ export function SearchToggle({
       >
         <Search />
       </button>
-      <KnowledgeBaseSearch open={open} onOpenChange={setOpen} />
+      <KnowledgeBaseSearch onOpenChange={setOpen} open={open} />
     </>
   );
 }
@@ -73,15 +75,11 @@ export function LargeSearchToggle({
         <Search />
         {customText || "Search Knowledge Base"}
         <div className="ms-auto inline-flex gap-0.5">
-          <kbd className="rounded-md border bg-fd-background px-1.5">
-            ⌘
-          </kbd>
-          <kbd className="rounded-md border bg-fd-background px-1.5">
-            K
-          </kbd>
+          <kbd className="rounded-md border bg-fd-background px-1.5">⌘</kbd>
+          <kbd className="rounded-md border bg-fd-background px-1.5">K</kbd>
         </div>
       </button>
-      <KnowledgeBaseSearch open={open} onOpenChange={setOpen} />
+      <KnowledgeBaseSearch onOpenChange={setOpen} open={open} />
     </>
   );
 }
