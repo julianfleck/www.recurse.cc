@@ -57,7 +57,8 @@ export default function ContextPage() {
   const [isLoadingNewResults, setIsLoadingNewResults] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [totalFound, setTotalFound] = useState<number | null>(null);
-  const [hasPerformedManualSearch, setHasPerformedManualSearch] = useState(false);
+  const [hasPerformedManualSearch, setHasPerformedManualSearch] =
+    useState(false);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const accessToken = useAuthStore((s) => s.accessToken);
 
@@ -200,17 +201,17 @@ export default function ContextPage() {
           exit={{ opacity: 0 }}
           initial={{ opacity: 0 }}
           style={{
-            columnFill: 'balance',
+            columnFill: "balance",
           }}
         >
           <AnimatePresence>
             {searchResults.map((result, index) => (
               <motion.div
                 animate={{ opacity: 1, scale: 1, y: 0 }}
+                className="mb-4 break-inside-avoid"
                 exit={{ opacity: 0, scale: 0.8, y: -20 }}
                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                 key={result.id}
-                className="break-inside-avoid mb-4"
                 transition={{
                   delay: index * STAGGER_DELAY,
                   duration: ANIMATION_DURATION,

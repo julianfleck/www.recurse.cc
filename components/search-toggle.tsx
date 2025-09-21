@@ -1,14 +1,12 @@
 "use client";
-import { useI18n } from "fumadocs-ui/contexts/i18n";
-import { useSearchContext } from "fumadocs-ui/contexts/search";
 import { Search } from "lucide-react";
-import type { ComponentProps } from "react";
+import { useState } from "react";
 import { cn } from "../lib/cn";
-import { type ButtonProps, buttonVariants } from "./ui/button";
+import { buttonVariants } from "./ui/button";
+import { KnowledgeBaseSearch } from "./knowledge-base-search";
 
 interface SearchToggleProps
-  extends Omit<ComponentProps<"button">, "color">,
-    ButtonProps {
+  extends Omit<React.ComponentProps<"button">, "color"> {
   hideIfDisabled?: boolean;
 }
 
@@ -18,29 +16,29 @@ export function SearchToggle({
   color = "ghost",
   ...props
 }: SearchToggleProps) {
-  const { setOpenSearch, enabled } = useSearchContext();
-  if (hideIfDisabled && !enabled) {
-    return null;
-  }
+  const [open, setOpen] = useState(false);
 
   return (
-    <button
-      aria-label="Open Search"
-      className={cn(
-        buttonVariants({
-          size,
-          color,
-        }),
-        props.className
-      )}
-      data-search=""
-      onClick={() => {
-        setOpenSearch(true);
-      }}
-      type="button"
-    >
-      <Search />
-    </button>
+    <>
+      <button
+        aria-label="Open Search"
+        className={cn(
+          buttonVariants({
+            size,
+            color,
+          }),
+          props.className
+        )}
+        data-search=""
+        onClick={() => {
+          setOpen(true);
+        }}
+        type="button"
+      >
+        <Search />
+      </button>
+      <KnowledgeBaseSearch open={open} onOpenChange={setOpen} />
+    </>
   );
 }
 
@@ -48,45 +46,42 @@ export function LargeSearchToggle({
   hideIfDisabled,
   customText,
   ...props
-}: ComponentProps<"button"> & {
+}: React.ComponentProps<"button"> & {
   hideIfDisabled?: boolean;
   customText?: string;
 }) {
-  const { enabled, hotKey, setOpenSearch } = useSearchContext();
-  const { text } = useI18n();
-  if (hideIfDisabled && !enabled) {
-    return null;
-  }
+  const [open, setOpen] = useState(false);
 
   return (
-    <button
-      data-search-full=""
-      type="button"
-      {...props}
-      className={cn(
-        buttonVariants({
-          variant: "outline",
-          size: "sm",
-        }),
-        "inline-flex items-center gap-2 bg-fd-secondary/50 px-3 py-2 text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-accent-foreground",
-        props.className
-      )}
-      onClick={() => {
-        setOpenSearch(true);
-      }}
-    >
-      <Search />
-      {customText || text.search}
-      <div className="ms-auto inline-flex gap-0.5">
-        {hotKey.map((k) => (
-          <kbd
-            className="rounded-md border bg-fd-background px-1.5"
-            key={k.display}
-          >
-            {k.display}
+    <>
+      <button
+        data-search-full=""
+        type="button"
+        {...props}
+        className={cn(
+          buttonVariants({
+            variant: "outline",
+            size: "sm",
+          }),
+          "inline-flex items-center gap-2 bg-fd-secondary/50 px-3 py-2 text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-accent-foreground",
+          props.className
+        )}
+        onClick={() => {
+          setOpen(true);
+        }}
+      >
+        <Search />
+        {customText || "Search Knowledge Base"}
+        <div className="ms-auto inline-flex gap-0.5">
+          <kbd className="rounded-md border bg-fd-background px-1.5">
+            ⌘
           </kbd>
-        ))}
-      </div>
-    </button>
+          <kbd className="rounded-md border bg-fd-background px-1.5">
+            K
+          </kbd>
+        </div>
+      </button>
+      <KnowledgeBaseSearch open={open} onOpenChange={setOpen} />
+    </>
   );
 }
