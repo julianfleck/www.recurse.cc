@@ -1,13 +1,16 @@
 "use client";
 
-import { Search, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useAuthStore } from "@/components/auth/auth-store";
+import { useCallback, useEffect, useState } from "react";
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandInput,
+  CommandList,
+} from "@/components/ui/command";
 import { SearchResultsList } from "@/components/search-results-list";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { apiService } from "@/lib/api";
 import { isOnAuthPage } from "@/lib/auth-utils";
+import { useAuthStore } from "@/components/auth/auth-store";
 
 interface KnowledgeBaseSearchProps {
   open: boolean;
@@ -22,39 +25,7 @@ export function KnowledgeBaseSearch({
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const accessToken = useAuthStore((s) => s.accessToken);
-
-  // Focus input when opened and clear state when closed
-  useEffect(() => {
-    if (open && inputRef.current) {
-      inputRef.current.focus();
-    } else if (!open) {
-      // Clear any pending search and reset state when modal closes
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-        debounceTimeoutRef.current = null;
-      }
-      setSearchTerm("");
-      setSearchResults([]);
-      setError(null);
-    }
-  }, [open]);
-
-  // Handle keyboard shortcuts when modal is open
-  useEffect(() => {
-    if (!open) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onOpenChange(false);
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [open, onOpenChange]);
 
   const performSearch = useCallback(
     async (query: string) => {
@@ -101,98 +72,41 @@ export function KnowledgeBaseSearch({
     [accessToken]
   );
 
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setSearchTerm(value);
-
-      // Clear existing timeout
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-      }
-
-      // Set new timeout for debounced search
-      debounceTimeoutRef.current = setTimeout(() => {
-        performSearch(value);
-      }, 300);
-    },
-    [performSearch]
-  );
-
-  const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
+  // Perform search when search term changes
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
       performSearch(searchTerm);
-    },
-    [searchTerm, performSearch]
-  );
+    }, 300);
 
-  if (!open) return null;
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, performSearch]);
+
+  // Clear state when dialog closes
+  useEffect(() => {
+    if (!open) {
+      setSearchTerm("");
+      setSearchResults([]);
+      setError(null);
+    }
+  }, [open]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50">
-      <div className="mx-auto max-w-2xl pt-16">
-        <div className="relative mx-4 rounded-lg border bg-background shadow-lg">
-          <form onSubmit={handleSubmit}>
-            <div className="flex items-center border-b px-3">
-              <Search className="mr-2 h-4 w-4 text-muted-foreground" />
-              <input
-                className="flex h-12 w-full bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground"
-                onChange={(e) => handleInputChange(e)}
-                placeholder="Search knowledge base..."
-                ref={inputRef}
-                value={searchTerm}
-              />
-              <Button
-                className="ml-2 h-6 w-6 p-0"
-                onClick={() => onOpenChange(false)}
-                size="sm"
-                type="button"
-                variant="ghost"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          </form>
-
-          {error && (
-            <div className="border-b bg-destructive/10 px-4 py-2 text-destructive text-sm">
-              {error}
-            </div>
-          )}
-
-          <div className="max-h-96 overflow-y-auto">
-            <SearchResultsList
-              isLoading={isLoading}
-              results={searchResults}
-              searchTerm={searchTerm}
-            />
-          </div>
-
-          <div className="border-t bg-muted/50 px-4 py-2 text-muted-foreground text-xs">
-            <div className="flex items-center justify-between">
-              <div>
-                <kbd className="rounded border bg-background px-1.5 py-0.5 text-xs">
-                  ↑↓
-                </kbd>{" "}
-                to navigate
-              </div>
-              <div>
-                <kbd className="rounded border bg-background px-1.5 py-0.5 text-xs">
-                  Enter
-                </kbd>{" "}
-                to select
-              </div>
-              <div>
-                <kbd className="rounded border bg-background px-1.5 py-0.5 text-xs">
-                  Esc
-                </kbd>{" "}
-                to close
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <CommandDialog open={open} onOpenChange={onOpenChange}>
+      <CommandInput
+        placeholder="Search knowledge base..."
+        value={searchTerm}
+        onValueChange={setSearchTerm}
+      />
+      <CommandList>
+        <CommandEmpty>
+          {error || (searchTerm ? "No results found." : "Start typing to search...")}
+        </CommandEmpty>
+        <SearchResultsList
+          results={searchResults}
+          searchTerm={searchTerm}
+          isLoading={isLoading}
+        />
+      </CommandList>
+    </CommandDialog>
   );
 }

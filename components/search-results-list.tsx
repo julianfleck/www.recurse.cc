@@ -1,8 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
+import { CommandItem } from "@/components/ui/command";
 
 export interface SearchResult {
   id: string;
@@ -21,9 +19,6 @@ interface SearchResultsListProps {
   isLoading?: boolean;
 }
 
-const STAGGER_DELAY = 0.05;
-const ANIMATION_DURATION = 0.3;
-
 export function SearchResultsList({
   results,
   searchTerm,
@@ -31,85 +26,46 @@ export function SearchResultsList({
 }: SearchResultsListProps) {
   if (isLoading && results.length === 0) {
     return (
-      <motion.div
-        animate={{ opacity: 1 }}
-        className="flex justify-center py-12"
-        exit={{ opacity: 0 }}
-        initial={{ opacity: 0 }}
-      >
-        <div className="space-y-2 text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-primary border-b-2" />
-          <p className="text-muted-foreground">Searching...</p>
+      <div className="flex justify-center py-6">
+        <div className="flex items-center gap-2">
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
+          <span className="text-muted-foreground text-sm">Searching...</span>
         </div>
-      </motion.div>
-    );
-  }
-
-  if (results.length === 0 && searchTerm) {
-    return (
-      <motion.div
-        animate={{ opacity: 1 }}
-        className="py-12 text-center"
-        exit={{ opacity: 0 }}
-        initial={{ opacity: 0 }}
-      >
-        <p className="text-muted-foreground">
-          No results found for "{searchTerm}"
-        </p>
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <motion.div
-      animate={{ opacity: 1 }}
-      className="space-y-4"
-      exit={{ opacity: 0 }}
-      initial={{ opacity: 0 }}
-    >
-      {results.map((result, index) => (
-        <motion.div
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          initial={{ opacity: 0, y: 10 }}
+    <>
+      {results.map((result) => (
+        <CommandItem
           key={result.id}
-          transition={{
-            delay: index * STAGGER_DELAY,
-            duration: ANIMATION_DURATION,
-            ease: "easeOut",
-          }}
+          value={result.title || result.id}
+          className="flex-col items-start gap-1 px-4 py-3"
         >
-          <div className="flex cursor-pointer items-center gap-3 px-4 py-3 hover:bg-muted/50">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <h3 className="truncate text-sm font-medium">
-                  {result.title || result.id}
-                </h3>
-              </div>
-
-              {result.summary && (
-                <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
-                  {result.summary}
-                </p>
-              )}
-
-              <div className="mt-1 flex items-center gap-2">
-                {result.type && (
-                  <span className="text-xs text-muted-foreground">
-                    {result.type}
-                  </span>
-                )}
-                {result.metadata && result.metadata.length > 0 && (
-                  <span className="text-xs text-muted-foreground">
-                    • {result.metadata.slice(0, 2).join(" › ")}
-                    {result.metadata.length > 2 && " › ..."}
-                  </span>
-                )}
-              </div>
-            </div>
+          <div className="flex w-full items-center gap-2">
+            <span className="font-medium">{result.title || result.id}</span>
+            {result.type && (
+              <span className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
+                {result.type}
+              </span>
+            )}
           </div>
-        </motion.div>
+
+          {result.summary && (
+            <p className="text-xs text-muted-foreground line-clamp-2">
+              {result.summary}
+            </p>
+          )}
+
+          {(result.metadata && result.metadata.length > 0) && (
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <span>{result.metadata.slice(0, 2).join(" › ")}</span>
+              {result.metadata.length > 2 && <span>› ...</span>}
+            </div>
+          )}
+        </CommandItem>
       ))}
-    </motion.div>
+    </>
   );
 }
