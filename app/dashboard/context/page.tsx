@@ -1,14 +1,13 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Copy, Search } from "lucide-react";
-import { Spinner } from "@/components/ui/spinner";
+import { Search } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { GenericTooltipLayout } from "@/components/graph-view/components/node-tooltip";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { ContextCard } from "@/components/context/context-card";
+import { CopyButton } from "@/components/ui/copy-button";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { apiService } from "@/lib/api";
 
 type SearchResult = {
@@ -44,7 +43,6 @@ type ApiSearchResponse = {
 const SEARCH_LIMIT = 20;
 const STAGGER_DELAY = 0.1;
 const ANIMATION_DURATION = 0.3;
-const SCORE_MULTIPLIER = 100;
 const DEBOUNCE_DELAY = 1000; // 1 second delay for auto-search
 
 export default function ContextPage() {
@@ -65,50 +63,53 @@ export default function ContextPage() {
     };
   }, []);
 
-  const handleSearch = useCallback(async (query: string) => {
-    if (!query.trim()) {
-      setSearchResults([]);
+  const handleSearch = useCallback(
+    async (query: string) => {
+      if (!query.trim()) {
+        setSearchResults([]);
+        setTotalFound(null);
+        return;
+      }
+
+      // If we have existing results, show loading state in button instead of full loader
+      const hasExistingResults = searchResults.length > 0;
+      if (hasExistingResults) {
+        setIsLoadingNewResults(true);
+      } else {
+        setIsLoading(true);
+      }
+
+      setError(null);
       setTotalFound(null);
-      return;
-    }
 
-    // If we have existing results, show loading state in button instead of full loader
-    const hasExistingResults = searchResults.length > 0;
-    if (hasExistingResults) {
-      setIsLoadingNewResults(true);
-    } else {
-      setIsLoading(true);
-    }
+      try {
+        const searchParams = {
+          query,
+          limit: SEARCH_LIMIT,
+          field_set: "content",
+        };
 
-    setError(null);
-    setTotalFound(null);
+        const response: ApiSearchResponse = await apiService.get(
+          "/search",
+          searchParams
+        );
 
-    try {
-      const searchParams = {
-        query,
-        limit: SEARCH_LIMIT,
-        field_set: "content",
-      };
-
-      const response: ApiSearchResponse = await apiService.get(
-        "/search",
-        searchParams
-      );
-
-      // Extract nodes from the API response structure
-      const nodes = response.data?.nodes || [];
-      setSearchResults(nodes);
-      setTotalFound(response.data?.total_found || null);
-    } catch (err) {
-      // Search failed - handle error silently but show user-friendly message
-      setError(err instanceof Error ? err.message : "Search failed");
-      setSearchResults([]);
-      setTotalFound(null);
-    } finally {
-      setIsLoading(false);
-      setIsLoadingNewResults(false);
-    }
-  }, [searchResults.length]);
+        // Extract nodes from the API response structure
+        const nodes = response.data?.nodes || [];
+        setSearchResults(nodes);
+        setTotalFound(response.data?.total_found || null);
+      } catch (err) {
+        // Search failed - handle error silently but show user-friendly message
+        setError(err instanceof Error ? err.message : "Search failed");
+        setSearchResults([]);
+        setTotalFound(null);
+      } finally {
+        setIsLoading(false);
+        setIsLoadingNewResults(false);
+      }
+    },
+    [searchResults.length]
+  );
 
   // Debounced search function
   const debouncedSearch = useCallback(
@@ -131,22 +132,6 @@ export default function ContextPage() {
     handleSearch("type:doc");
   }, [handleSearch]);
 
-  const handleCopyResults = useCallback(async () => {
-    try {
-      const searchData = {
-        query: searchTerm,
-        total_found: totalFound,
-        results: searchResults,
-        timestamp: new Date().toISOString(),
-      };
-      const jsonString = JSON.stringify(searchData, null, 2);
-      await navigator.clipboard.writeText(jsonString);
-      // Could add a toast notification here to confirm copy
-    } catch {
-      // Copy failed - silently handle error
-      // Could add an error toast here
-    }
-  }, [searchResults, searchTerm, totalFound]);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -197,45 +182,18 @@ export default function ContextPage() {
         >
           <AnimatePresence>
             {searchResults.map((result, index) => (
-              <motion.div
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.8, y: -20 }}
-                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              <ContextCard
                 key={result.id}
-                transition={{
-                  delay: index * STAGGER_DELAY,
-                  duration: ANIMATION_DURATION,
-                  ease: "easeOut",
-                }}
-              >
-                <Card className="h-full">
-                  <CardContent className="p-0">
-                    <div className="flex h-full flex-col p-4">
-                      <GenericTooltipLayout
-                        className="flex-1"
-                        metadata={result.metadata}
-                        showIcon={false}
-                        summary={result.summary}
-                        title={result.title || result.id}
-                        type={result.type}
-                      />
-                      {result.similarity_score ? (
-                        <div className="mt-3 border-border border-t pt-2">
-                          <div className="flex items-center justify-between text-muted-foreground text-xs">
-                            <span>Similarity</span>
-                            <Badge className="text-xs" variant="secondary">
-                              {(
-                                result.similarity_score * SCORE_MULTIPLIER
-                              ).toFixed(1)}
-                              %
-                            </Badge>
-                          </div>
-                        </div>
-                      ) : null}
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                id={result.id}
+                title={result.title}
+                summary={result.summary}
+                type={result.type}
+                metadata={result.metadata}
+                similarity_score={result.similarity_score}
+                index={index}
+                staggerDelay={STAGGER_DELAY}
+                animationDuration={ANIMATION_DURATION}
+              />
             ))}
           </AnimatePresence>
         </motion.div>
@@ -284,24 +242,28 @@ export default function ContextPage() {
             />
           </div>
           {searchResults.length > 0 && (
-            <Button
-              className="gap-2"
-              onClick={handleCopyResults}
-              variant="outline"
-              disabled={isLoadingNewResults}
-            >
-              {isLoadingNewResults ? (
-                <>
-                  <Spinner className="h-4 w-4" />
-                  Loading...
-                </>
-              ) : (
-                <>
-                  <Copy className="h-4 w-4" />
-                  Copy JSON
-                </>
-              )}
-            </Button>
+            isLoadingNewResults ? (
+              <Button
+                disabled
+                size="icon"
+                tooltip="Loading..."
+                variant="outline"
+              >
+                <Spinner className="h-4 w-4" />
+              </Button>
+            ) : (
+              <CopyButton
+                size="icon"
+                text={JSON.stringify({
+                  query: searchTerm,
+                  total_found: totalFound,
+                  results: searchResults,
+                  timestamp: new Date().toISOString(),
+                }, null, 2)}
+                tooltip="Copy context as JSON"
+                variant="outline"
+              />
+            )
           )}
         </div>
 

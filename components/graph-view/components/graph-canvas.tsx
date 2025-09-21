@@ -306,6 +306,8 @@ export function GraphView({
           treeData,
           visibleNodeIds,
           expandedNodes,
+          // Expand only the currently focused/hovered root if present
+          targetRootId: focusedNodeId ?? null,
           setExpandedNodes,
           setIsExpanding,
           setIsBatchOperation,
@@ -1493,6 +1495,7 @@ export function GraphView({
       treeData,
       visibleNodeIds,
       expandedNodes,
+      targetRootId: highlightedNodeId ?? focusedNodeId ?? null,
       setExpandedNodes,
       setIsExpanding,
       setIsBatchOperation,
@@ -1510,6 +1513,8 @@ export function GraphView({
     suppressNextFitRef,
     dataManagerRef,
     fitAll,
+    highlightedNodeId,
+    focusedNodeId,
     markManualOverride,
   ]);
 

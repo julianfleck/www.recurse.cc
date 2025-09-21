@@ -11,6 +11,8 @@ export type ExpansionDeps = {
   expandedNodes: Set<string>;
   // Tree data for determining expansion levels
   treeData: DataNode[];
+  // Optional: when provided, expand only this root (if it is a root)
+  targetRootId?: string | null;
   // State setters/refs
   setExpandedNodes: (next: Set<string>) => void;
   setIsExpanding: (value: boolean) => void;
@@ -51,6 +53,7 @@ export async function expandLevel(deps: ExpansionDeps): Promise<void> {
     treeData,
     visibleNodeIds,
     expandedNodes,
+    targetRootId,
     setExpandedNodes,
     setIsExpanding,
     setIsBatchOperation,
@@ -84,6 +87,37 @@ export async function expandLevel(deps: ExpansionDeps): Promise<void> {
 
   // Filter visible roots
   const roots = rootIds.filter((id) => visibleNodeIds.has(id));
+
+  // If a target root is provided and is a visible root, expand only that root
+  if (targetRootId && roots.includes(targetRootId)) {
+    // Fetch children if needed
+    if (
+      dataManagerRef.current &&
+      !dataManagerRef.current.hasFetched(targetRootId)
+    ) {
+      setIsBatchOperation(true);
+      try {
+        await (dataManagerRef.current
+          ? dataManagerRef.current.fetchChildren(targetRootId)
+          : Promise.resolve(null));
+      } finally {
+        setIsBatchOperation(false);
+      }
+    }
+
+    const next = new Set(expandedNodes);
+    next.add(targetRootId);
+    setExpandedNodes(next);
+
+    setIsExpanding(false);
+    window.setTimeout(() => {
+      fitAll();
+      window.setTimeout(() => {
+        suppressNextFitRef.current = false;
+      }, 600);
+    }, 300);
+    return;
+  }
   // BFS to compute minimal depth
   const depth = new Map<string, number>();
   const queue: string[] = [...roots];
