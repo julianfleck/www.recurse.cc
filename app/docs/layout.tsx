@@ -8,6 +8,7 @@ export default function Layout({ children }: LayoutProps<"/docs">) {
   return (
     <DocsLayout
       {...options}
+      // Use default search toggle (modified to open knowledge base search)
       sidebar={{
         ...(options.sidebar ?? {}),
         tabs: [

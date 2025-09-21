@@ -1,6 +1,6 @@
 "use client";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "../lib/cn";
 import { KnowledgeBaseSearch } from "./knowledge-base-search";
 import { buttonVariants } from "./ui/button";
@@ -53,6 +53,19 @@ export function LargeSearchToggle({
   customText?: string;
 }) {
   const [open, setOpen] = useState(false);
+
+  // Global keyboard shortcut for search
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "k" && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        setOpen(true);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <>

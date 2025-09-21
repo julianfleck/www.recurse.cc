@@ -2,12 +2,12 @@
 
 import { Search, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useAuthStore } from "@/components/auth/auth-store";
 import { SearchResultsList } from "@/components/search-results-list";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { apiService } from "@/lib/api";
 import { isOnAuthPage } from "@/lib/auth-utils";
-import { useAuthStore } from "@/components/auth/auth-store";
 
 interface KnowledgeBaseSearchProps {
   open: boolean;
@@ -42,14 +42,12 @@ export function KnowledgeBaseSearch({
     }
   }, [open]);
 
-  // Handle keyboard shortcuts
+  // Handle keyboard shortcuts when modal is open
   useEffect(() => {
+    if (!open) return;
+
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "k" && (event.metaKey || event.ctrlKey)) {
-        event.preventDefault();
-        onOpenChange(true);
-      }
-      if (event.key === "Escape" && open) {
+      if (event.key === "Escape") {
         onOpenChange(false);
       }
     };
@@ -139,18 +137,18 @@ export function KnowledgeBaseSearch({
             <div className="flex items-center border-b px-3">
               <Search className="mr-2 h-4 w-4 text-muted-foreground" />
               <input
-                ref={inputRef}
                 className="flex h-12 w-full bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground"
-                placeholder="Search knowledge base..."
-                value={searchTerm}
                 onChange={(e) => handleInputChange(e)}
+                placeholder="Search knowledge base..."
+                ref={inputRef}
+                value={searchTerm}
               />
               <Button
-                type="button"
-                variant="ghost"
-                size="sm"
                 className="ml-2 h-6 w-6 p-0"
                 onClick={() => onOpenChange(false)}
+                size="sm"
+                type="button"
+                variant="ghost"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -158,29 +156,38 @@ export function KnowledgeBaseSearch({
           </form>
 
           {error && (
-            <div className="border-b bg-destructive/10 px-4 py-2 text-sm text-destructive">
+            <div className="border-b bg-destructive/10 px-4 py-2 text-destructive text-sm">
               {error}
             </div>
           )}
 
           <div className="max-h-96 overflow-y-auto">
             <SearchResultsList
+              isLoading={isLoading}
               results={searchResults}
               searchTerm={searchTerm}
-              isLoading={isLoading}
             />
           </div>
 
-          <div className="border-t bg-muted/50 px-4 py-2 text-xs text-muted-foreground">
+          <div className="border-t bg-muted/50 px-4 py-2 text-muted-foreground text-xs">
             <div className="flex items-center justify-between">
               <div>
-                <kbd className="rounded border bg-background px-1.5 py-0.5 text-xs">↑↓</kbd> to navigate
+                <kbd className="rounded border bg-background px-1.5 py-0.5 text-xs">
+                  ↑↓
+                </kbd>{" "}
+                to navigate
               </div>
               <div>
-                <kbd className="rounded border bg-background px-1.5 py-0.5 text-xs">Enter</kbd> to select
+                <kbd className="rounded border bg-background px-1.5 py-0.5 text-xs">
+                  Enter
+                </kbd>{" "}
+                to select
               </div>
               <div>
-                <kbd className="rounded border bg-background px-1.5 py-0.5 text-xs">Esc</kbd> to close
+                <kbd className="rounded border bg-background px-1.5 py-0.5 text-xs">
+                  Esc
+                </kbd>{" "}
+                to close
               </div>
             </div>
           </div>
