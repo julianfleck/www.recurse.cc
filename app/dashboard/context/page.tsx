@@ -190,9 +190,12 @@ export default function ContextPage() {
       return (
         <motion.div
           animate={{ opacity: 1 }}
-          className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+          className="columns-1 gap-4 md:columns-2 lg:columns-3 xl:columns-4"
           exit={{ opacity: 0 }}
           initial={{ opacity: 0 }}
+          style={{
+            columnFill: 'balance',
+          }}
         >
           <AnimatePresence>
             {searchResults.map((result, index) => (
@@ -201,6 +204,7 @@ export default function ContextPage() {
                 exit={{ opacity: 0, scale: 0.8, y: -20 }}
                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                 key={result.id}
+                className="break-inside-avoid mb-4"
                 transition={{
                   delay: index * STAGGER_DELAY,
                   duration: ANIMATION_DURATION,
