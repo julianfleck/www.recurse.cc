@@ -3,8 +3,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { GenericTooltipLayout } from "@/components/graph-view/components/node-tooltip";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ContextCard } from "@/components/context/context-card";
 import { CopyButton } from "@/components/ui/copy-button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
@@ -15,6 +16,7 @@ type SearchResult = {
   title?: string;
   summary?: string;
   type?: string;
+  metadata?: string[];
   similarity_score?: number;
   reranked_score?: number;
   index?: number;
@@ -43,6 +45,7 @@ type ApiSearchResponse = {
 const SEARCH_LIMIT = 20;
 const STAGGER_DELAY = 0.1;
 const ANIMATION_DURATION = 0.3;
+const SCORE_MULTIPLIER = 100;
 const DEBOUNCE_DELAY = 1000; // 1 second delay for auto-search
 
 export default function ContextPage() {
@@ -132,7 +135,6 @@ export default function ContextPage() {
     handleSearch("type:doc");
   }, [handleSearch]);
 
-
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
@@ -182,18 +184,39 @@ export default function ContextPage() {
         >
           <AnimatePresence>
             {searchResults.map((result, index) => (
-              <ContextCard
+              <motion.div
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: -20 }}
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
                 key={result.id}
-                id={result.id}
-                title={result.title}
-                summary={result.summary}
-                type={result.type}
-                metadata={result.metadata}
-                similarity_score={result.similarity_score}
-                index={index}
-                staggerDelay={STAGGER_DELAY}
-                animationDuration={ANIMATION_DURATION}
-              />
+                transition={{
+                  delay: index * STAGGER_DELAY,
+                  duration: ANIMATION_DURATION,
+                  ease: "easeOut",
+                }}
+              >
+                <GenericTooltipLayout
+                  className="rounded-lg border bg-card px-4 py-5 shadow-sm"
+                  metadata={result.metadata}
+                  showIcon={false}
+                  summary={result.summary}
+                  title={result.title || result.id}
+                  type={result.type}
+                />
+                {result.similarity_score ? (
+                  <div className="mx-4 mt-3 border-border border-t pt-2 pb-4">
+                    <div className="flex items-center justify-between text-muted-foreground text-xs">
+                      <span>Similarity</span>
+                      <Badge className="text-xs" variant="secondary">
+                        {(result.similarity_score * SCORE_MULTIPLIER).toFixed(
+                          1
+                        )}
+                        %
+                      </Badge>
+                    </div>
+                  </div>
+                ) : null}
+              </motion.div>
             ))}
           </AnimatePresence>
         </motion.div>
@@ -241,30 +264,33 @@ export default function ContextPage() {
               value={searchTerm}
             />
           </div>
-          {searchResults.length > 0 && (
-            isLoadingNewResults ? (
+          {searchResults.length > 0 &&
+            (isLoadingNewResults ? (
               <Button
                 disabled
-                size="icon"
+                size="sm"
                 tooltip="Loading..."
                 variant="outline"
               >
                 <Spinner className="h-4 w-4" />
               </Button>
             ) : (
-              <CopyButton
-                size="icon"
-                text={JSON.stringify({
+            <CopyButton
+              size="sm"
+              text={JSON.stringify(
+                {
                   query: searchTerm,
                   total_found: totalFound,
                   results: searchResults,
                   timestamp: new Date().toISOString(),
-                }, null, 2)}
-                tooltip="Copy context as JSON"
-                variant="outline"
-              />
-            )
-          )}
+                },
+                null,
+                2
+              )}
+              tooltip="Copy context as JSON"
+              variant="outline"
+            />
+            ))}
         </div>
 
         {error && (

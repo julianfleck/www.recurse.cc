@@ -25,6 +25,7 @@ type CopyButtonProps = {
   label?: string;
   inline?: boolean;
   disabled?: boolean;
+  tooltip?: string;
 };
 
 export function CopyButton({
@@ -38,6 +39,7 @@ export function CopyButton({
   label,
   inline = false,
   disabled = false,
+  tooltip,
 }: CopyButtonProps) {
   const [internalCopied, setInternalCopied] = useState(false);
 
@@ -85,7 +87,7 @@ export function CopyButton({
       disabled={disabled || isCopied}
       onClick={handleCopy}
       size={size}
-      tooltip={isCopied ? "Copied!" : "Copy page as markdown"}
+      tooltip={tooltip || (isCopied ? "Copied!" : "Copy")}
       variant={variant}
     >
       {isCopied ? (

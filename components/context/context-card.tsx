@@ -44,17 +44,19 @@ export function ContextCard({
     >
       <Card className="h-full">
         <CardContent className="p-0">
-          <div className="flex h-full flex-col p-4">
-            <GenericTooltipLayout
-              className="flex-1"
-              metadata={metadata}
-              showIcon={false}
-              summary={summary}
-              title={title || id}
-              type={type}
-            />
+          <div className="flex h-full flex-col">
+            <div className="p-4">
+              <GenericTooltipLayout
+                metadata={metadata}
+                showIcon={true}
+                summary={summary}
+                title={title || id}
+                type={type}
+              />
+            </div>
+
             {similarity_score ? (
-              <div className="mt-3 border-border border-t pt-2">
+              <div className="border-border border-t px-4 pt-2 pb-4">
                 <div className="flex items-center justify-between text-muted-foreground text-xs">
                   <span>Similarity</span>
                   <Badge className="text-xs" variant="secondary">
