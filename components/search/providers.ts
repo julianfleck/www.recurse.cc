@@ -38,13 +38,23 @@ export const documentationProvider: SearchProvider = {
       : Array.isArray(data)
         ? data
         : [];
-    return items.map(
+    
+    // Remove duplicates based on href
+    const uniqueItems = items.reduce((acc, it) => {
+      const href = (it.url || it.path || "").toString() + (it.hash ? `#${it.hash}` : "");
+      if (!acc.some(existing => existing.href === href)) {
+        acc.push({
+          ...it,
+          href,
+        });
+      }
+      return acc;
+    }, [] as any[]);
+
+    return uniqueItems.map(
       (it) =>
         ({
-          id:
-            (it.url || it.path || it.id || "").toString() +
-            (it.hash ? `#${it.hash}` : "") ||
-            crypto.randomUUID(),
+          id: it.href || crypto.randomUUID(),
           title: it.title || it.heading || it.id,
           summary:
             it.excerpt ||
@@ -54,13 +64,13 @@ export const documentationProvider: SearchProvider = {
               : Array.isArray(it.content)
                 ? it.content.join(" ").slice(0, 200)
                 : ""),
-          type: it.tag || it.section || it.type || "doc",
+          type: it.tag || it.section || it.type || (it.hash ? "heading" : "page"),
           metadata: [
             Array.isArray(it.breadcrumbs)
               ? it.breadcrumbs.join(" › ")
               : it.breadcrumbs,
           ].filter(Boolean) as string[],
-          href: (it.url || it.path || "").toString() + (it.hash ? `#${it.hash}` : ""),
+          href: it.href,
           breadcrumbs: Array.isArray(it.breadcrumbs) ? it.breadcrumbs : [],
           highlight: it.highlight || "",
         }) satisfies SearchItem

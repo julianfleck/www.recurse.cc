@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { SearchCommandDialog } from "./dialog";
+import { documentationProvider, knowledgeBaseProvider } from "./providers";
 import type { SearchProvider } from "./types";
 
 type ToggleProps = Omit<React.ComponentProps<"button">, "color"> & {
@@ -17,7 +18,8 @@ type ToggleProps = Omit<React.ComponentProps<"button">, "color"> & {
     | "destructive"
     | "outline"
     | "link";
-  provider: SearchProvider;
+  provider?: SearchProvider;
+  providerKey?: "documentation" | "knowledgeBase";
   placeholder?: string;
   enableHotkey?: boolean;
 };
@@ -27,11 +29,18 @@ export function SearchToggle({
   size = "icon-sm",
   color = "ghost",
   provider,
+  providerKey,
   placeholder,
   enableHotkey = false,
   ...props
 }: ToggleProps) {
   const [open, setOpen] = useState(false);
+
+  const resolvedProvider: SearchProvider = provider
+    ? provider
+    : providerKey === "documentation"
+      ? documentationProvider
+      : knowledgeBaseProvider;
 
   useEffect(() => {
     if (!enableHotkey) return;
@@ -60,7 +69,8 @@ export function SearchToggle({
         onOpenChange={setOpen}
         open={open}
         placeholder={placeholder}
-        provider={provider}
+        provider={resolvedProvider}
+        searchType={providerKey === "documentation" ? "documentation" : "knowledgeBase"}
       />
     </>
   );
@@ -69,16 +79,24 @@ export function SearchToggle({
 export function LargeSearchToggle({
   customText,
   provider,
+  providerKey,
   placeholder,
   enableHotkey = true,
   ...props
 }: React.ComponentProps<"button"> & {
   customText?: string;
-  provider: SearchProvider;
+  provider?: SearchProvider;
+  providerKey?: "documentation" | "knowledgeBase";
   placeholder?: string;
   enableHotkey?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+
+  const resolvedProvider: SearchProvider = provider
+    ? provider
+    : providerKey === "documentation"
+      ? documentationProvider
+      : knowledgeBaseProvider;
 
   useEffect(() => {
     if (!enableHotkey) return;
@@ -117,7 +135,8 @@ export function LargeSearchToggle({
         onOpenChange={setOpen}
         open={open}
         placeholder={placeholder}
-        provider={provider}
+        provider={resolvedProvider}
+        searchType={providerKey === "documentation" ? "documentation" : "knowledgeBase"}
       />
     </>
   );

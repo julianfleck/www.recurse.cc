@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { SearchResultsList } from "@/components/search-results-list";
 import {
   CommandDialog,
   CommandEmpty,
@@ -10,6 +9,8 @@ import {
 } from "@/components/ui/command";
 import { isOnAuthPage } from "@/lib/auth-utils";
 import type { SearchProvider } from "./types";
+import { DocumentationResults } from "./results/documentation";
+import { KnowledgeBaseResults } from "./results/knowledge-base";
 
 type SearchCommandDialogProps = {
   open: boolean;
@@ -17,6 +18,7 @@ type SearchCommandDialogProps = {
   provider: SearchProvider;
   placeholder?: string;
   debounceMs?: number;
+  searchType?: "documentation" | "knowledgeBase";
 };
 
 export function SearchCommandDialog({
@@ -25,6 +27,7 @@ export function SearchCommandDialog({
   provider,
   placeholder = "Search...",
   debounceMs = 300,
+  searchType = "knowledgeBase",
 }: SearchCommandDialogProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -86,11 +89,18 @@ export function SearchCommandDialog({
       />
       <CommandList>
         <CommandEmpty>{emptyMessage}</CommandEmpty>
-        <SearchResultsList
-          isLoading={isLoading}
-          results={results as never}
-          searchTerm={searchTerm}
-        />
+        {searchType === "documentation" ? (
+          <DocumentationResults
+            results={results as never}
+            searchTerm={searchTerm}
+            onSelect={() => onOpenChange(false)}
+          />
+        ) : (
+          <KnowledgeBaseResults
+            results={results as never}
+            searchTerm={searchTerm}
+          />
+        )}
       </CommandList>
     </CommandDialog>
   );
