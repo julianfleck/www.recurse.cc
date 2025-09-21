@@ -1,5 +1,6 @@
 import { Book, Brain } from "lucide-react";
 import { DocsLayout } from "@/components/layout/docs";
+import { LargeDocumentationSearchToggle } from "@/components/documentation-search";
 import { docsOptions } from "@/lib/layout.shared";
 import { docsSource } from "@/lib/source";
 
@@ -8,7 +9,13 @@ export default function Layout({ children }: LayoutProps<"/docs">) {
   return (
     <DocsLayout
       {...options}
-      // Use default search toggle (modified to open knowledge base search)
+      // Use documentation search for docs section
+      searchToggle={{
+        enabled: true,
+        components: {
+          lg: <LargeDocumentationSearchToggle customText="Search Documentation" />,
+        },
+      }}
       sidebar={{
         ...(options.sidebar ?? {}),
         tabs: [
