@@ -26,12 +26,13 @@ export const knowledgeBaseProvider: SearchProvider = {
 export const documentationProvider: SearchProvider = {
   async search(query: string) {
     // Proxy through our app route to leverage existing config
-    const url = `/api/search?query=${encodeURIComponent(query)}`;
+    const url = `/api/docs-search?query=${encodeURIComponent(query)}`;
     const res = await fetch(url, { method: "GET" });
     if (!res.ok) {
       throw new Error(`Docs search failed: ${res.statusText}`);
     }
     const data = await res.json();
+    // Fumadocs can return either `{ items: [...] }` or raw array; normalize
     const items: any[] = Array.isArray(data?.items)
       ? data.items
       : Array.isArray(data)
@@ -42,9 +43,21 @@ export const documentationProvider: SearchProvider = {
         ({
           id: it.url || it.id || it.path || crypto.randomUUID(),
           title: it.title || it.heading || it.id,
-          summary: it.description || it.excerpt || it.content || "",
-          type: it.tag || it.section || "doc",
-          metadata: [it.breadcrumbs?.join(" › ")].filter(Boolean) as string[],
+          summary:
+            it.excerpt ||
+            it.description ||
+            (typeof it.content === "string"
+              ? it.content.slice(0, 200)
+              : Array.isArray(it.content)
+                ? it.content.join(" ").slice(0, 200)
+                : ""),
+          type: it.tag || it.section || it.type || "doc",
+          metadata: [
+            Array.isArray(it.breadcrumbs)
+              ? it.breadcrumbs.join(" › ")
+              : it.breadcrumbs,
+            it.path,
+          ].filter(Boolean) as string[],
         }) satisfies SearchItem
     );
   },
