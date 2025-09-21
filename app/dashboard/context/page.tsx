@@ -57,6 +57,7 @@ export default function ContextPage() {
   const [isLoadingNewResults, setIsLoadingNewResults] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [totalFound, setTotalFound] = useState<number | null>(null);
+  const [hasPerformedManualSearch, setHasPerformedManualSearch] = useState(false);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const accessToken = useAuthStore((s) => s.accessToken);
 
@@ -75,6 +76,11 @@ export default function ContextPage() {
         setSearchResults([]);
         setTotalFound(null);
         return;
+      }
+
+      // Mark as manual search if it's not the initial "type:doc" search
+      if (query !== "type:doc") {
+        setHasPerformedManualSearch(true);
       }
 
       // If we have existing results, show loading state in button instead of full loader
@@ -140,12 +146,12 @@ export default function ContextPage() {
     [handleSearch]
   );
 
-  // Initial search on mount - only if authenticated
+  // Initial search on mount - only if authenticated and no manual search performed
   useEffect(() => {
-    if (accessToken) {
+    if (accessToken && !hasPerformedManualSearch) {
       handleSearch("type:doc");
     }
-  }, [handleSearch, accessToken]);
+  }, [handleSearch, accessToken, hasPerformedManualSearch]);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
