@@ -1,7 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { SearchCommandDialog } from "./dialog";
@@ -36,11 +36,13 @@ export function SearchToggle({
 }: ToggleProps) {
   const [open, setOpen] = useState(false);
 
-  const resolvedProvider: SearchProvider = provider
-    ? provider
-    : providerKey === "documentation"
-      ? documentationProvider
-      : knowledgeBaseProvider;
+  const resolvedProvider: SearchProvider = useMemo(() => {
+    return provider
+      ? provider
+      : providerKey === "documentation"
+        ? documentationProvider
+        : knowledgeBaseProvider;
+  }, [provider, providerKey]);
 
   useEffect(() => {
     if (!enableHotkey) return;
@@ -92,11 +94,13 @@ export function LargeSearchToggle({
 }) {
   const [open, setOpen] = useState(false);
 
-  const resolvedProvider: SearchProvider = provider
-    ? provider
-    : providerKey === "documentation"
-      ? documentationProvider
-      : knowledgeBaseProvider;
+  const resolvedProvider: SearchProvider = useMemo(() => {
+    return provider
+      ? provider
+      : providerKey === "documentation"
+        ? documentationProvider
+        : knowledgeBaseProvider;
+  }, [provider, providerKey]);
 
   useEffect(() => {
     if (!enableHotkey) return;

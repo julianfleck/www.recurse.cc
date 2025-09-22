@@ -1,15 +1,35 @@
-import { createFromSource } from "fumadocs-core/search/server";
 import { apiService } from "@/lib/api";
-import { source } from "@/lib/source";
 import type { SearchItem, SearchProvider } from "./types";
 
 // Knowledge base provider: use API service
 export const knowledgeBaseProvider: SearchProvider = {
   async search(query: string) {
-    const params = { query, limit: 20, field_set: "content" } as const;
-    const response = await apiService.get<{ nodes?: any[] }>("/search", params);
+    const params = {
+      query,
+      limit: 50,
+      field_set: "metadata",
+      page: 1,
+    } as const;
+    const response = await apiService.get<{
+      query: string;
+      nodes: any[];
+      total_found: number;
+      search_time_ms: number;
+      filters_applied: string[];
+      pagination: any;
+    }>("/search", params);
     const nodes = response.data?.nodes ?? [];
-    return nodes.map(
+    // Remove duplicates based on id
+    const uniqueNodes = nodes.reduce((acc: any[], node: any) => {
+      // Only deduplicate if the node has a real id (not undefined/null)
+      if (node.id && acc.some((existing) => existing.id === node.id)) {
+        return acc; // Skip this duplicate
+      }
+      acc.push(node);
+      return acc;
+    }, []);
+
+    return uniqueNodes.map(
       (n) =>
         ({
           id: n.id ?? String(Math.random()),
@@ -17,6 +37,7 @@ export const knowledgeBaseProvider: SearchProvider = {
           summary: n.summary ?? n.description ?? "",
           type: n.type,
           metadata: Array.isArray(n.metadata) ? n.metadata : [],
+          similarity_score: n.similarity_score,
         }) satisfies SearchItem
     );
   },
@@ -38,11 +59,12 @@ export const documentationProvider: SearchProvider = {
       : Array.isArray(data)
         ? data
         : [];
-    
+
     // Remove duplicates based on href
     const uniqueItems = items.reduce((acc, it) => {
-      const href = (it.url || it.path || "").toString() + (it.hash ? `#${it.hash}` : "");
-      if (!acc.some(existing => existing.href === href)) {
+      const href =
+        (it.url || it.path || "").toString() + (it.hash ? `#${it.hash}` : "");
+      if (!acc.some((existing) => existing.href === href)) {
         acc.push({
           ...it,
           href,
@@ -55,7 +77,7 @@ export const documentationProvider: SearchProvider = {
       (it) =>
         ({
           id: it.href || crypto.randomUUID(),
-          title: it.title || it.heading || it.id,
+          title: it.title || it.content || it.heading || "Untitled",
           summary:
             it.excerpt ||
             it.description ||
@@ -64,7 +86,8 @@ export const documentationProvider: SearchProvider = {
               : Array.isArray(it.content)
                 ? it.content.join(" ").slice(0, 200)
                 : ""),
-          type: it.tag || it.section || it.type || (it.hash ? "heading" : "page"),
+          type:
+            it.tag || it.section || it.type || (it.hash ? "heading" : "page"),
           metadata: [
             Array.isArray(it.breadcrumbs)
               ? it.breadcrumbs.join(" › ")

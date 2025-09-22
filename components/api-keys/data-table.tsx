@@ -43,12 +43,7 @@ import {
 
 import { cn } from "@/lib/utils";
 
-declare module "@tanstack/react-table" {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  type ColumnMeta<_TData extends RowData, _TValue> = {
-    filterVariant?: "text" | "range" | "select";
-  };
-}
+// NOTE: ColumnMeta declaration moved to a single shared ambient declaration to avoid duplication
 
 type Item = {
   id: string;

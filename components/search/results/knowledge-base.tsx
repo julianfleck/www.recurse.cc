@@ -1,33 +1,41 @@
 "use client";
 
-import { CommandItem } from "@/components/ui/command";
 import { Badge } from "@/components/ui/badge";
+import { CommandItem } from "@/components/ui/command";
+import { getNodeIcon } from "@/components/graph-view/config/icon-config";
 import type { SearchItem } from "../types";
 
-interface KnowledgeBaseResultsProps {
+type KnowledgeBaseResultsProps = {
   results: SearchItem[];
-  searchTerm: string;
-}
+};
+
+const PERCENTAGE_MULTIPLIER = 100;
 
 export function KnowledgeBaseResults({
   results,
-  searchTerm,
 }: KnowledgeBaseResultsProps) {
   return (
     <>
-      {results.map((result, idx) => (
-        <CommandItem
-          key={`kb-${result.id}-${idx}`}
-          value={result.title || result.id}
-          className="flex-col items-start gap-1 px-4 py-3 data-[selected=true]:bg-accent/60"
-        >
-          <div className="flex w-full items-center gap-2">
-            <span className="font-medium text-sm">
+      {results.map((result, idx) => {
+        // Create unique key using id, title, type, and index to avoid collisions
+        const uniqueKey = `kb-${result.id || 'no-id'}-${(result.title || '').slice(0, 20)}-${result.type || 'no-type'}-${idx}`;
+        
+        return (
+          <CommandItem
+            className="flex-col items-start gap-1 px-4 py-3 data-[selected=true]:bg-accent/60"
+            key={uniqueKey}
+            value={result.title || result.id}
+          >
+          <div className="flex w-full items-center gap-3">
+            <div className="h-4 w-4 flex-shrink-0 text-muted-foreground">
+              {getNodeIcon(result.type || "unknown", { size: "h-4 w-4" }).icon}
+            </div>
+            <span className="flex-1 text-sm font-medium">
               {result.title || result.id}
             </span>
             {result.type && (
-              <Badge variant="secondary" className="text-xs">
-                {result.type}
+              <Badge className="text-xs" variant="secondary">
+                {getNodeIcon(result.type || "unknown").label}
               </Badge>
             )}
           </div>
@@ -47,16 +55,17 @@ export function KnowledgeBaseResults({
             </div>
           )}
 
-          {(result as any).similarity_score && (
-            <div className="flex items-center justify-between text-muted-foreground text-xs mt-1">
+          {result.similarity_score && (
+            <div className="mt-1 flex items-center justify-between text-muted-foreground text-xs">
               <span>Similarity</span>
-              <Badge variant="outline" className="text-xs">
-                {((result as any).similarity_score * 100).toFixed(1)}%
+              <Badge className="text-xs" variant="outline">
+                {(result.similarity_score * PERCENTAGE_MULTIPLIER).toFixed(1)}%
               </Badge>
             </div>
           )}
         </CommandItem>
-      ))}
+        );
+      })}
     </>
   );
 }

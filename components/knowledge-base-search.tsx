@@ -1,16 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useAuthStore } from "@/components/auth/auth-store";
+import { SearchResultsList } from "@/components/search-results-list";
 import {
   CommandDialog,
   CommandEmpty,
   CommandInput,
   CommandList,
 } from "@/components/ui/command";
-import { SearchResultsList } from "@/components/search-results-list";
 import { apiService } from "@/lib/api";
 import { isOnAuthPage } from "@/lib/auth-utils";
-import { useAuthStore } from "@/components/auth/auth-store";
 
 interface KnowledgeBaseSearchProps {
   open: boolean;
@@ -91,20 +91,21 @@ export function KnowledgeBaseSearch({
   }, [open]);
 
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange}>
+    <CommandDialog onOpenChange={onOpenChange} open={open}>
       <CommandInput
+        onValueChange={setSearchTerm}
         placeholder="Search knowledge base..."
         value={searchTerm}
-        onValueChange={setSearchTerm}
       />
       <CommandList>
         <CommandEmpty>
-          {error || (searchTerm ? "No results found." : "Start typing to search...")}
+          {error ||
+            (searchTerm ? "No results found." : "Start typing to search...")}
         </CommandEmpty>
         <SearchResultsList
+          isLoading={isLoading}
           results={searchResults}
           searchTerm={searchTerm}
-          isLoading={isLoading}
         />
       </CommandList>
     </CommandDialog>

@@ -149,7 +149,8 @@ export class GraphApiClient {
       params[key] = value;
     });
 
-    return await this.search(params);
+    const res = await this.search(params);
+    return res as ApiResponse<GraphDataPayload>;
   }
 
   async postGraphData(

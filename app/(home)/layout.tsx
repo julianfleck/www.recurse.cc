@@ -23,7 +23,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               customText="Search Documentation"
               enableHotkey={false}
               placeholder="Search documentation..."
-              provider={documentationProvider}
+              providerKey="documentation"
             />
           ),
           lg: (
@@ -31,7 +31,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               customText="Search Documentation"
               enableHotkey
               placeholder="Search documentation..."
-              provider={documentationProvider}
+              providerKey="documentation"
             />
           ),
         },

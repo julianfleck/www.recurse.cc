@@ -2,20 +2,19 @@
 
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/cn";
 import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/cn";
 
 type DocumentationSearchProps = {
   hideIfDisabled?: boolean;
   size?: "icon-sm" | "sm" | "default" | "lg";
-  color?: "ghost" | "default" | "secondary" | "destructive" | "outline" | "link";
+  variant?: "ghost" | "default" | "secondary" | "destructive" | "outline" | "link";
 };
 
 export function DocumentationSearchToggle({
   hideIfDisabled,
   size = "icon-sm",
-  color = "ghost",
-  ...props
+  variant = "ghost",
 }: DocumentationSearchProps) {
   const [open, setOpen] = useState(false);
 
@@ -23,13 +22,7 @@ export function DocumentationSearchToggle({
     <>
       <button
         aria-label="Open Documentation Search"
-        className={cn(
-          buttonVariants({
-            size,
-            color,
-          }),
-          props.className
-        )}
+        className={cn(buttonVariants({ size, variant }))}
         data-search=""
         onClick={() => {
           setOpen(true);
@@ -122,10 +115,6 @@ function DocumentationSearchDialog({
   }
 
   return (
-    <SearchDialog
-      open={open}
-      onOpenChange={onOpenChange}
-      api="/api/search"
-    />
+    <SearchDialog api="/api/search" onOpenChange={onOpenChange} open={open} />
   );
 }

@@ -28,7 +28,7 @@ import { UserProfile } from "@/components/user-profile";
 import { cn } from "../../../lib/cn";
 import { LanguageToggle } from "../../language-toggle";
 import { type Option, RootToggle } from "../../root-toggle";
-import { LargeSearchToggle } from "../../search-toggle";
+import { LargeSearchToggle as LegacySearchToggle } from "../../search-toggle";
 import {
   Sidebar,
   SidebarCollapseTrigger,
@@ -420,7 +420,7 @@ function DocsNavbar({
           <div className="flex items-center md:hidden">
             {searchToggle.enabled !== false &&
               (searchToggle.components?.sm ?? (
-                <LargeSearchToggle
+                <LegacySearchToggle
                   customText={searchText || "Search Documentation"}
                   hideIfDisabled
                 />
@@ -436,12 +436,13 @@ function DocsNavbar({
                 <Languages className="size-4.5 text-fd-muted-foreground" />
               </LanguageToggle>
             ) : null}
-            {searchToggle.enabled !== false && (
-              <LargeSearchToggle
-                customText={searchText || "Search Documentation"}
-                hideIfDisabled
-              />
-            )}
+            {searchToggle.enabled !== false &&
+              (searchToggle.components?.lg ?? (
+                <LegacySearchToggle
+                  customText={searchText || "Search Documentation"}
+                  hideIfDisabled
+                />
+              ))}
             {props.disableDocActions ? null : <HeaderViewOptions />}
             {props.disableDocActions ? null : <HeaderLLMCopyButton />}
             {themeSwitch.enabled !== false &&

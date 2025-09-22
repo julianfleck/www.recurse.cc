@@ -19,7 +19,7 @@ export default function Layout({ children }: LayoutProps<"/docs">) {
               customText="Search Documentation"
               enableHotkey={false}
               placeholder="Search documentation..."
-              provider={documentationProvider}
+              providerKey="documentation"
             />
           ),
           lg: (
@@ -27,7 +27,7 @@ export default function Layout({ children }: LayoutProps<"/docs">) {
               customText="Search Documentation"
               enableHotkey
               placeholder="Search documentation..."
-              provider={documentationProvider}
+              providerKey="documentation"
             />
           ),
         },

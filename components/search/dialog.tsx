@@ -1,5 +1,6 @@
 "use client";
 
+import { SearchIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import {
   CommandDialog,
@@ -7,10 +8,11 @@ import {
   CommandInput,
   CommandList,
 } from "@/components/ui/command";
+import { Spinner } from "@/components/ui/spinner";
 import { isOnAuthPage } from "@/lib/auth-utils";
-import type { SearchProvider } from "./types";
 import { DocumentationResults } from "./results/documentation";
 import { KnowledgeBaseResults } from "./results/knowledge-base";
+import type { SearchProvider } from "./types";
 
 type SearchCommandDialogProps = {
   open: boolean;
@@ -32,6 +34,7 @@ export function SearchCommandDialog({
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
   const [results, setResults] = useState<
     ReturnType<SearchProvider["search"]> extends Promise<infer R> ? R : never
   >([] as never);
@@ -41,6 +44,7 @@ export function SearchCommandDialog({
       setSearchTerm("");
       setResults([] as never);
       setError(null);
+      setHasSearched(false);
     }
   }, [open]);
 
@@ -49,14 +53,17 @@ export function SearchCommandDialog({
       if (!searchTerm.trim()) {
         setResults([] as never);
         setError(null);
+        setHasSearched(false);
         return;
       }
 
       setIsLoading(true);
       setError(null);
+      setResults([] as never); // Clear previous results immediately when starting new search
       try {
         const data = await provider.search(searchTerm);
         setResults(data as never);
+        setHasSearched(true);
       } catch (err) {
         if (err instanceof Error && err.name === "AuthenticationError") {
           if (!isOnAuthPage()) {
@@ -66,6 +73,7 @@ export function SearchCommandDialog({
         }
         setError(err instanceof Error ? err.message : "Search failed");
         setResults([] as never);
+        setHasSearched(true);
       } finally {
         setIsLoading(false);
       }
@@ -75,31 +83,45 @@ export function SearchCommandDialog({
   }, [searchTerm, provider, debounceMs]);
 
   const emptyMessage = useMemo(() => {
-    return (
-      error || (searchTerm ? "No results found." : "Start typing to search...")
-    );
-  }, [error, searchTerm]);
+    if (error) {
+      return error;
+    }
+    if (searchTerm && !isLoading && hasSearched && results.length === 0) {
+      return "No results found.";
+    }
+    return null; // Don't show anything when not searching, loading, or haven't searched yet
+  }, [error, searchTerm, isLoading, hasSearched, results.length]);
 
   return (
-    <CommandDialog onOpenChange={onOpenChange} open={open}>
-      <CommandInput
-        onValueChange={setSearchTerm}
-        placeholder={placeholder}
-        value={searchTerm}
-      />
+    <CommandDialog
+      onOpenChange={onOpenChange}
+      open={open}
+      showCloseButton={!isLoading}
+    >
+      <div className="relative">
+        <CommandInput
+          onValueChange={setSearchTerm}
+          placeholder={placeholder}
+          value={searchTerm}
+        />
+        {isLoading && (
+          <div className="-translate-y-1/2 absolute top-1/2 right-3">
+            <Spinner size={16} strokeWidth={2} />
+          </div>
+        )}
+      </div>
       <CommandList>
-        <CommandEmpty>{emptyMessage}</CommandEmpty>
-        {searchType === "documentation" ? (
-          <DocumentationResults
-            results={results as never}
-            searchTerm={searchTerm}
-            onSelect={() => onOpenChange(false)}
-          />
-        ) : (
-          <KnowledgeBaseResults
-            results={results as never}
-            searchTerm={searchTerm}
-          />
+        {emptyMessage && <CommandEmpty>{emptyMessage}</CommandEmpty>}
+        {searchTerm && !isLoading && results.length > 0 && (
+          searchType === "documentation" ? (
+            <DocumentationResults
+              onSelect={() => onOpenChange(false)}
+              results={results as never}
+              searchTerm={searchTerm}
+            />
+          ) : (
+            <KnowledgeBaseResults results={results as never} />
+          )
         )}
       </CommandList>
     </CommandDialog>

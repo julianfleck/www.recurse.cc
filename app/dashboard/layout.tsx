@@ -20,10 +20,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         components: {
           sm: (
             <LargeSearchToggle
-              customText="Search Knowledge Base"
+              customText="Search"
               enableHotkey={false}
-              placeholder="Search knowledge base..."
-              provider={knowledgeBaseProvider}
+              placeholder="Search..."
+              providerKey="knowledgeBase"
             />
           ),
           lg: (
@@ -31,7 +31,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               customText="Search Knowledge Base"
               enableHotkey
               placeholder="Search knowledge base..."
-              provider={knowledgeBaseProvider}
+              providerKey="knowledgeBase"
             />
           ),
         },

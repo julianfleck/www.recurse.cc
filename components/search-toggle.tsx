@@ -2,7 +2,7 @@
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "../lib/cn";
-import { KnowledgeBaseSearch } from "./knowledge-base-search";
+// Deprecated: replaced by components/search/toggle.tsx with providers
 import { buttonVariants } from "./ui/button";
 
 interface SearchToggleProps
@@ -39,7 +39,7 @@ export function SearchToggle({
       >
         <Search />
       </button>
-      <KnowledgeBaseSearch onOpenChange={setOpen} open={open} />
+      {/* Deprecated */}
     </>
   );
 }
@@ -92,7 +92,7 @@ export function LargeSearchToggle({
           <kbd className="rounded-md border bg-fd-background px-1.5">K</kbd>
         </div>
       </button>
-      <KnowledgeBaseSearch onOpenChange={setOpen} open={open} />
+      {/* Deprecated */}
     </>
   );
 }

@@ -7,6 +7,7 @@ export type SearchItem = {
   href?: string;
   breadcrumbs?: string[];
   highlight?: string;
+  similarity_score?: number;
 };
 
 export type SearchProvider = {

@@ -84,7 +84,16 @@ export function AuthInit() {
           if (process.env.NODE_ENV === "development") {
             console.log("[AuthInit] Got token from Auth0, setting in store");
           }
-          setAuth(token, "auth0", user);
+          const accessToken = typeof token === "string" ? token : (token as unknown as { access_token?: string })?.access_token ?? "";
+          const normalizedUser = user
+            ? ({
+                sub: user.sub || "",
+                name: user.name,
+                email: user.email,
+                picture: user.picture,
+              } as const)
+            : undefined;
+          setAuth(accessToken, "auth0", normalizedUser);
           // API auth getter will be set up by the separate effect above
         })
         .catch((tokenError) => {

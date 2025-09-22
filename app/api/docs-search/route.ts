@@ -10,5 +10,3 @@ export async function GET(request: NextRequest) {
   // Always use Fumadocs search here
   return fumadocsGet(request);
 }
-
-
