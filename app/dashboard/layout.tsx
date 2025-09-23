@@ -1,7 +1,6 @@
 import { Book, Brain } from "lucide-react";
 import { ProtectedContent } from "@/components/auth/protected";
 import { DocsLayout } from "@/components/layout/docs";
-import { knowledgeBaseProvider } from "@/components/search/providers";
 import { LargeSearchToggle } from "@/components/search/toggle";
 import { DocumentCountStatus } from "@/components/status-components";
 import { docsOptions } from "@/lib/layout.shared";
