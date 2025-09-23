@@ -9,8 +9,8 @@ import { select } from "d3-selection";
 import { zoom } from "d3-zoom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthStore } from "@/components/auth/auth-store";
+import { DefaultSpinner } from "@/components/loaders/default-spinner";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { Spinner } from "@/components/ui/spinner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { graphApiClient } from "../api";
 import {
@@ -392,7 +392,12 @@ export function GraphView({
   // Listen for authentication changes and load data when auth becomes ready
   useEffect(() => {
     const loadDataWhenAuthReady = async () => {
-      if (!dataManagerRef.current || hasLoadedDataRef.current || data || dataUrl) {
+      if (
+        !dataManagerRef.current ||
+        hasLoadedDataRef.current ||
+        data ||
+        dataUrl
+      ) {
         console.log("[GraphCanvas] Skipping API load:", {
           hasDataManager: !!dataManagerRef.current,
           hasLoadedData: hasLoadedDataRef.current,
@@ -402,8 +407,11 @@ export function GraphView({
       }
 
       const accessToken = useAuthStore.getState().accessToken;
-      console.log("[GraphCanvas] Checking auth for API load. Token available:", !!accessToken);
-      
+      console.log(
+        "[GraphCanvas] Checking auth for API load. Token available:",
+        !!accessToken
+      );
+
       if (accessToken) {
         console.log("[GraphCanvas] Loading data from API...");
         await dataManagerRef.current.loadInitialDocuments();
@@ -421,10 +429,12 @@ export function GraphView({
         hasToken: !!state.accessToken,
         tokenChanged: !prevState.accessToken && state.accessToken,
       });
-      
+
       // Only trigger if accessToken changed from undefined to defined
       if (!prevState.accessToken && state.accessToken) {
-        console.log("[GraphCanvas] Auth token became available, loading data...");
+        console.log(
+          "[GraphCanvas] Auth token became available, loading data..."
+        );
         loadDataWhenAuthReady();
       }
     });
@@ -1986,7 +1996,7 @@ export function GraphView({
 
           {!isInitialized && (
             <div className={getLoadingOverlayClasses()}>
-              <Spinner size={32} />
+              <DefaultSpinner />
             </div>
           )}
 

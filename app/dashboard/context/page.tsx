@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthStore } from "@/components/auth/auth-store";
 import { GenericTooltipLayout } from "@/components/graph-view/components/node-tooltip";
+import { DefaultSpinner } from "@/components/loaders/default-spinner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
@@ -181,14 +182,11 @@ export default function ContextPage() {
       return (
         <motion.div
           animate={{ opacity: 1 }}
-          className="flex justify-center py-12"
+          className="py-12"
           exit={{ opacity: 0 }}
           initial={{ opacity: 0 }}
         >
-          <div className="space-y-2 text-center">
-            <div className="mx-auto h-8 w-8 animate-spin rounded-full border-primary border-b-2" />
-            <p className="text-muted-foreground">Searching...</p>
-          </div>
+          <DefaultSpinner text="Searching..." />
         </motion.div>
       );
     }
