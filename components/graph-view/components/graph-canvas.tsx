@@ -145,6 +145,7 @@ export function GraphView({
   zoomModifier = "",
 }: GraphViewProps) {
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
+  const [hasLoadCompleted, setHasLoadCompleted] = useState(false);
   // Graph state management
   const graphState = useGraphState();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -380,9 +381,12 @@ export function GraphView({
           await dataManagerRef.current.loadFromJSON(jsonData);
         } catch (_error) {
           // Error handling for data loading - intentionally empty as errors are handled elsewhere
+        } finally {
+          setHasLoadCompleted(true);
         }
       } else if (data) {
         await dataManagerRef.current.loadFromJSON(data);
+        setHasLoadCompleted(true);
       }
     };
 
@@ -417,6 +421,7 @@ export function GraphView({
         await dataManagerRef.current.loadInitialDocuments();
         hasLoadedDataRef.current = true;
         console.log("[GraphCanvas] API data load completed");
+        setHasLoadCompleted(true);
       } else {
         console.log("[GraphCanvas] No auth token available, waiting...");
       }
@@ -1996,7 +2001,18 @@ export function GraphView({
 
           {!isInitialized && (
             <div className={getLoadingOverlayClasses()}>
-              <DefaultSpinner />
+              {hasLoadCompleted && visibleNodes.length === 0 ? (
+                <div className={getLoadingContentClasses()}>
+                  <div className={getLoadingTitleClasses()}>
+                    Knowledge base is empty
+                  </div>
+                  <p className={getLoadingSubtitleClasses()}>
+                    Add documents to see them visualized here.
+                  </p>
+                </div>
+              ) : (
+                <DefaultSpinner />
+              )}
             </div>
           )}
 

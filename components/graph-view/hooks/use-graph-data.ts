@@ -96,6 +96,9 @@ export function useGraphData({
   const visibleLinks = useMemo(() => {
     const finalIds = new Set<string>(visibleNodes.map((n) => n.id));
     const filtered = finalAllLinks.filter((l) => {
+      if (!(l && l.source && l.target)) {
+        return false;
+      }
       const sourceId = typeof l.source === "string" ? l.source : l.source.id;
       const targetId = typeof l.target === "string" ? l.target : l.target.id;
       return finalIds.has(sourceId) && finalIds.has(targetId);

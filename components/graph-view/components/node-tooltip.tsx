@@ -132,14 +132,29 @@ export function deriveConnectedMetadataTitles(
   const result = new Set<string>();
 
   for (const e of edges) {
-    // Extract source and target IDs
-    const sourceId = typeof e.source === "string" ? e.source : e.source.id;
-    const targetId = typeof e.target === "string" ? e.target : e.target.id;
+    if (!(e && e.source && e.target)) {
+      continue;
+    }
+    const sId =
+      typeof e.source === "string"
+        ? e.source
+        : (e.source as { id?: string }).id;
+    const tId =
+      typeof e.target === "string"
+        ? e.target
+        : (e.target as { id?: string }).id;
+    if (!(sId && tId)) {
+      continue;
+    }
 
-    // Find the other node in this edge
-    const otherId = sourceId === nodeData.id ? targetId : sourceId;
-    if (otherId === nodeData.id) {
-      continue; // Skip if it's the same node
+    // Only consider edges that involve this node
+    if (sId !== nodeData.id && tId !== nodeData.id) {
+      continue;
+    }
+
+    const otherId = sId === nodeData.id ? tId : sId;
+    if (!otherId || otherId === nodeData.id) {
+      continue;
     }
 
     const other = nodesById.get(otherId);

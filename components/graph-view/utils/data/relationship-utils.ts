@@ -16,7 +16,10 @@ export const isMetadata = (idOrNode: string | DataNode): boolean => {
     return true;
   }
 
-  const lower = id.toLowerCase();
+  if (!id) {
+    return false;
+  }
+  const lower = String(id).toLowerCase();
   return (
     lower.startsWith("tag:") ||
     lower.startsWith("hyponym:") ||
@@ -244,24 +247,48 @@ export const buildTreeFromNodes = (
 
     // Check if this node has a parent
     const hasParent = links.some((link) => {
+      if (!(link && link.target)) {
+        return false;
+      }
+      const target = link.target as unknown;
       const targetId =
-        typeof link.target === "string" ? link.target : link.target.id;
+        typeof target === "string"
+          ? (target as string)
+          : (target as { id?: string }).id;
+      if (!targetId) {
+        return false;
+      }
       return targetId === node.id;
     });
 
     if (hasParent) {
       // Find parent and add as child
       const parentLink = links.find((link) => {
+        if (!(link && link.target)) {
+          return false;
+        }
+        const target = link.target as unknown;
         const targetId =
-          typeof link.target === "string" ? link.target : link.target.id;
+          typeof target === "string"
+            ? (target as string)
+            : (target as { id?: string }).id;
+        if (!targetId) {
+          return false;
+        }
         return targetId === node.id;
       });
 
       if (parentLink) {
+        if (!parentLink.source) {
+          // Missing source; cannot assign parent, treat as root
+          rootNodes.push(nodeWithChildren);
+          continue;
+        }
+        const source = parentLink.source as unknown;
         const parentId =
-          typeof parentLink.source === "string"
-            ? parentLink.source
-            : parentLink.source.id;
+          typeof source === "string"
+            ? (source as string)
+            : (source as { id?: string }).id;
         const parentNode = nodeMap.get(parentId);
         if (parentNode?.children) {
           parentNode.children.push(nodeWithChildren);

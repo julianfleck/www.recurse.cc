@@ -60,6 +60,9 @@ export function calculateVisibleNodeIds({
   // 2) Compute metadata connections
   const metaConnections = new Map<string, Set<string>>(); // metaId -> set(contentId)
   for (const l of allLinks) {
+    if (!(l && l.source && l.target)) {
+      continue;
+    }
     const s = typeof l.source === "string" ? l.source : l.source.id;
     const t = typeof l.target === "string" ? l.target : l.target.id;
     const sIsMeta = isMetadata(s);
