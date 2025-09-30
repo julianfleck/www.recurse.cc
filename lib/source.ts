@@ -16,6 +16,7 @@ import {
   Info,
   Lightbulb,
   Rocket,
+  Rss,
   Share2,
   UserPlus,
 } from "lucide-react";
@@ -94,6 +95,8 @@ function resolveIcon(icon?: string) {
       return createElement(Book, { className: "size-4" });
     case "rocket":
       return createElement(Rocket, { className: "size-4" });
+    case "rss":
+      return createElement(Rss, { className: "size-4" });
     case "bot":
       return createElement(Bot, { className: "size-4" });
     case "share2":

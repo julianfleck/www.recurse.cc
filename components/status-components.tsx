@@ -20,6 +20,10 @@ const DOCUMENT_COUNT_REFRESH_MINUTES = 5;
 const MILLISECONDS_PER_MINUTE = 60_000;
 const DOCUMENT_COUNT_REFRESH_INTERVAL_MS =
   DOCUMENT_COUNT_REFRESH_MINUTES * MILLISECONDS_PER_MINUTE;
+const AUTH_SUBSCRIBE_DELAY_MS = 100;
+const INITIAL_CHECK_DELAY_MS = 50;
+const HEALTH_RETRY_BASE_DELAY_MS = 2500;
+const DOCUMENT_RETRY_BASE_DELAY_MS = 3000;
 
 // Auth initialization delay constants
 const _AUTH_INIT_DELAY_MS = 1000; // 1 second for health status
@@ -41,6 +45,40 @@ type DocumentSearchResponse = {
   };
 };
 
+// Shared retry scheduling helper with simple linear backoff
+function scheduleRetry(opts: {
+  retryCount: number;
+  maxRetries: number;
+  retryRef: React.MutableRefObject<NodeJS.Timeout | null>;
+  baseDelayMs: number;
+  onRetry: () => void;
+}): boolean {
+  const { retryCount, maxRetries, retryRef, baseDelayMs, onRetry } = opts;
+  if (retryCount >= maxRetries || retryRef.current) {
+    return false;
+  }
+  const delay = baseDelayMs * (retryCount + 1);
+  retryRef.current = setTimeout(() => {
+    retryRef.current = null;
+    onRetry();
+  }, delay);
+  return true;
+}
+
+function redirectToLoginIfAuthError(err: unknown): boolean {
+  if (err instanceof Error && err.name === "AuthenticationError") {
+    if (!isOnAuthPage()) {
+      window.location.href = "/login";
+    }
+    return true;
+  }
+  return false;
+}
+
+function isAuthHttpError(message: string): boolean {
+  return message.includes("401") || message.includes("403");
+}
+
 export function HealthStatus() {
   const [health, setHealth] = useState<HealthStatus | null>(null);
   const [loading, setLoading] = useState(true);
@@ -49,8 +87,13 @@ export function HealthStatus() {
 
   // Prevent multiple simultaneous retries
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isFetchingRef = useRef(false);
 
   const fetchHealth = useCallback(async (retryCount = 0) => {
+    if (isFetchingRef.current) {
+      return;
+    }
+    isFetchingRef.current = true;
     try {
       const response = await apiService.get<HealthStatus>("/health");
 
@@ -63,27 +106,27 @@ export function HealthStatus() {
       if (
         err instanceof Error &&
         (errorMessage.includes("401") || errorMessage.includes("403")) &&
-        retryCount < 2 &&
-        !retryTimeoutRef.current
+        scheduleRetry({
+          retryCount,
+          maxRetries: 2,
+          retryRef: retryTimeoutRef,
+          baseDelayMs: HEALTH_RETRY_BASE_DELAY_MS,
+          onRetry: () => fetchHealth(retryCount + 1),
+        })
       ) {
-        const delay = 2500 * (retryCount + 1); // 2.5s, 5s delays
-
-        retryTimeoutRef.current = setTimeout(() => {
-          retryTimeoutRef.current = null;
-          fetchHealth(retryCount + 1);
-        }, delay);
         return;
       }
 
       setError(true);
     } finally {
       setLoading(false);
+      isFetchingRef.current = false;
     }
   }, []);
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-    let intervalId: NodeJS.Timeout;
+    let timeoutId: NodeJS.Timeout | null = null;
+    let intervalId: NodeJS.Timeout | null = null;
     let isMounted = true;
 
     const fetchIfAuthenticated = () => {
@@ -92,7 +135,7 @@ export function HealthStatus() {
       }
 
       const token = useAuthStore.getState().accessToken;
-      if (token && !loading) {
+      if (token) {
         fetchHealth();
       }
     };
@@ -100,18 +143,19 @@ export function HealthStatus() {
     const unsubscribe = useAuthStore.subscribe((state) => {
       if (state.accessToken) {
         // Add a small delay to ensure auth is stable
-        timeoutId = setTimeout(fetchIfAuthenticated, 100);
+        timeoutId = setTimeout(
+          fetchIfAuthenticated,
+          AUTH_SUBSCRIBE_DELAY_MS
+        );
       }
     });
 
     // Check immediately with a small delay to ensure component is ready
-    timeoutId = setTimeout(fetchIfAuthenticated, 50);
+    timeoutId = setTimeout(fetchIfAuthenticated, INITIAL_CHECK_DELAY_MS);
 
     // Set up interval for polling
     intervalId = setInterval(() => {
-      if (isMounted) {
-        fetchHealth();
-      }
+      fetchHealth();
     }, HEALTH_CHECK_INTERVAL_MS);
 
     return () => {
@@ -128,7 +172,7 @@ export function HealthStatus() {
       }
       unsubscribe();
     };
-  }, [fetchHealth, loading]);
+  }, [fetchHealth]);
 
   // Map health status to Kibo status
   const getKiboStatus = (): StatusState => {
@@ -171,8 +215,13 @@ export function DocumentCountStatus() {
 
   // Prevent multiple simultaneous retries
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isFetchingRef = useRef(false);
 
   const fetchDocumentCount = useCallback(async (retryCount = 0) => {
+    if (isFetchingRef.current) {
+      return;
+    }
+    isFetchingRef.current = true;
     try {
       setIsLoading(true);
       setError(null);
@@ -189,10 +238,7 @@ export function DocumentCountStatus() {
       setDocumentCount(response.data.pagination.total_count);
     } catch (err) {
       // Handle authentication errors by redirecting to login (but not when already on auth pages)
-      if (err instanceof Error && err.name === "AuthenticationError") {
-        if (!isOnAuthPage()) {
-          window.location.href = "/login";
-        }
+      if (redirectToLoginIfAuthError(err)) {
         return;
       }
 
@@ -202,28 +248,28 @@ export function DocumentCountStatus() {
       // If it's an authentication error and we haven't retried yet, wait a bit and retry
       if (
         err instanceof Error &&
-        (errorMessage.includes("401") || errorMessage.includes("403")) &&
-        retryCount < 2 &&
-        !retryTimeoutRef.current
+        isAuthHttpError(errorMessage) &&
+        scheduleRetry({
+          retryCount,
+          maxRetries: 2,
+          retryRef: retryTimeoutRef,
+          baseDelayMs: DOCUMENT_RETRY_BASE_DELAY_MS,
+          onRetry: () => fetchDocumentCount(retryCount + 1),
+        })
       ) {
-        const delay = 3000 * (retryCount + 1); // 3s, 6s delays
-
-        retryTimeoutRef.current = setTimeout(() => {
-          retryTimeoutRef.current = null;
-          fetchDocumentCount(retryCount + 1);
-        }, delay);
         return;
       }
 
       setError(errorMessage);
     } finally {
       setIsLoading(false);
+      isFetchingRef.current = false;
     }
   }, []);
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-    let intervalId: NodeJS.Timeout;
+    let timeoutId: NodeJS.Timeout | null = null;
+    let intervalId: NodeJS.Timeout | null = null;
     let isMounted = true;
 
     const fetchIfAuthenticated = () => {
@@ -232,7 +278,7 @@ export function DocumentCountStatus() {
       }
 
       const token = useAuthStore.getState().accessToken;
-      if (token && !isLoading) {
+      if (token) {
         fetchDocumentCount();
       }
     };
@@ -240,18 +286,19 @@ export function DocumentCountStatus() {
     const unsubscribe = useAuthStore.subscribe((state) => {
       if (state.accessToken) {
         // Add a small delay to ensure auth is stable
-        timeoutId = setTimeout(fetchIfAuthenticated, 100);
+        timeoutId = setTimeout(
+          fetchIfAuthenticated,
+          AUTH_SUBSCRIBE_DELAY_MS
+        );
       }
     });
 
     // Check immediately with a small delay to ensure component is ready
-    timeoutId = setTimeout(fetchIfAuthenticated, 50);
+    timeoutId = setTimeout(fetchIfAuthenticated, INITIAL_CHECK_DELAY_MS);
 
     // Set up interval for refreshing
     intervalId = setInterval(() => {
-      if (isMounted) {
-        fetchDocumentCount();
-      }
+      fetchDocumentCount();
     }, DOCUMENT_COUNT_REFRESH_INTERVAL_MS);
 
     return () => {
@@ -268,7 +315,7 @@ export function DocumentCountStatus() {
       }
       unsubscribe();
     };
-  }, [fetchDocumentCount, isLoading]);
+  }, [fetchDocumentCount]);
 
   let displayText: string;
   if (isLoading) {
