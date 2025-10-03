@@ -95,7 +95,7 @@ export function HealthStatus() {
     }
     isFetchingRef.current = true;
     try {
-      const response = await apiService.get<HealthStatus>("/health");
+      const response = await apiService.get<HealthStatus>("/health", undefined, { requireAuth: false });
 
       setHealth(response.data);
       setLastUpdated(new Date());
