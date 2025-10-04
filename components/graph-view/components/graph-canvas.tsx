@@ -723,13 +723,19 @@ export function GraphView({
 
   const buildParentMapFromLinks = useCallback((): Map<string, string> => {
     const parentByChild = new Map<string, string>();
-    for (const l of allLinks) {
+    for (const l of visibleLinks) {
+      if (!(l && l.source && l.target)) {
+        continue;
+      }
       const s = typeof l.source === "string" ? l.source : l.source.id;
       const t = typeof l.target === "string" ? l.target : l.target.id;
+      if (!s || !t) {
+        continue;
+      }
       parentByChild.set(t, s);
     }
     return parentByChild;
-  }, [allLinks]);
+  }, [visibleLinks]);
 
   // draw edges via utility
   const renderEdges = useCallback(() => {
