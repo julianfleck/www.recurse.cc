@@ -289,6 +289,7 @@ export const buildTreeFromNodes = (
           typeof source === "string"
             ? (source as string)
             : (source as { id?: string }).id;
+        if (!parentId) continue;
         const parentNode = nodeMap.get(parentId);
         if (parentNode?.children) {
           parentNode.children.push(nodeWithChildren);

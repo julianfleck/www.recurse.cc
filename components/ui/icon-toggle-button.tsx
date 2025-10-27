@@ -13,7 +13,7 @@ type IconToggleButtonProps = {
   onClick?: () => void;
   className?: string;
   buttonProps?: React.ComponentProps<typeof Button>;
-  tooltip?: string;
+  tooltip?: React.ReactNode;
   icon1ClassName?: string;
   icon2ClassName?: string;
 };

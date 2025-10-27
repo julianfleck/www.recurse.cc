@@ -35,7 +35,7 @@ type GraphNodeRendererProps = {
   onNodeClick: (nodeId: string) => void;
   onNodeMouseEnter: (nodeId: string) => void;
   onNodeMouseLeave: () => void;
-  startDrag: (nodeId: string, event: React.PointerEvent) => void;
+  startDrag: (nodeId: string, event: React.PointerEvent<HTMLElement>) => void;
   getNodeTailwindClasses: (props: {
     id: string;
     title: string;

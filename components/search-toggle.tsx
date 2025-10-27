@@ -9,13 +9,13 @@ interface SearchToggleProps
   extends Omit<React.ComponentProps<"button">, "color"> {
   hideIfDisabled?: boolean;
   size?: "icon-sm" | "sm" | "default" | "lg";
-  color?: "ghost" | "default" | "secondary" | "destructive" | "outline" | "link";
+  variant?: "ghost" | "default" | "secondary" | "destructive" | "outline" | "link";
 }
 
 export function SearchToggle({
   hideIfDisabled,
   size = "icon-sm",
-  color = "ghost",
+  variant = "ghost",
   ...props
 }: SearchToggleProps) {
   const [open, setOpen] = useState(false);
@@ -27,7 +27,7 @@ export function SearchToggle({
         className={cn(
           buttonVariants({
             size,
-            color,
+            variant,
           }),
           props.className
         )}

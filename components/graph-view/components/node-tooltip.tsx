@@ -100,7 +100,7 @@ export function GraphTooltipLayout({
       className={className}
       metadata={connectedMetadataTitles}
       showIcon={false}
-      summary={nodeData.summary}
+      summary={nodeData.summary ?? undefined}
       title={nodeData.title || nodeData.id}
       type={nodeData.type}
     />

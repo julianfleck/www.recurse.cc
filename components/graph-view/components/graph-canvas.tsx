@@ -1,6 +1,7 @@
 "use client";
 
 import type {
+  ForceLink,
   Simulation,
   SimulationLinkDatum,
   SimulationNodeDatum,
@@ -646,11 +647,7 @@ export function GraphView({
   const healLayout = useCallback(() => {
     healLayoutUtil(
       {
-        simulationRef:
-          simulationRef as unknown as React.MutableRefObject<Simulation<
-            unknown,
-            unknown
-          > | null>,
+        simulationRef,
       },
       layoutMode
     );
@@ -1764,17 +1761,17 @@ export function GraphView({
               expandedNodes,
               buildTreeIndex(treeData)
             )}
-            highlightedNodeId={highlightedNodeId}
+            highlightedNodeId={highlightedNodeId ?? undefined}
             mode={data || dataUrl ? "json" : "api"}
             onExpandedIdsChange={(expandedIds) => {
               // Build a quick children map from current tree data
               const childrenById = new Map<string, string[]>();
-              const walk = (nodes: DataNode[]) => {
+              const walk = (nodes: Array<DataNode & { children?: DataNode[] }>) => {
                 for (const n of nodes) {
                   if (Array.isArray(n.children) && n.children.length > 0) {
                     childrenById.set(
                       n.id,
-                      n.children.map((c: DataNode) => c.id)
+                      n.children.map((c) => c.id)
                     );
                     walk(n.children);
                   } else {
@@ -1896,8 +1893,8 @@ export function GraphView({
                     // Suppress layout-fit briefly so it doesn't override this subgraph fit
                     suppressLayoutFitUntilRef.current = Date.now() + 1500;
                     if (targetId) {
-                      const ids = computeSubgraphIds([targetId]);
-                      resetZoomToFit(Array.from(ids), 140, "sidebar-expand");
+                      const ids = computeSubgraphIds(targetId);
+                      resetZoomToFit(ids, 140, "sidebar-expand");
                     }
                   }, delay);
                 }
@@ -1916,8 +1913,8 @@ export function GraphView({
                     window.setTimeout(() => {
                       suppressLayoutFitUntilRef.current = Date.now() + 1500;
                       if (targetId) {
-                        const ids = computeSubgraphIds([targetId]);
-                        resetZoomToFit(Array.from(ids), 140, "sidebar-expand");
+                        const ids = computeSubgraphIds(targetId);
+                        resetZoomToFit(ids, 140, "sidebar-expand");
                       }
                     }, delay);
                   }
@@ -1987,7 +1984,7 @@ export function GraphView({
                   edges={edges}
                   filteredNodeIds={new Set<string>()}
                   getNodeTailwindClasses={getNodeTailwindClasses}
-                  highlightedNodeId={highlightedNodeId}
+                  highlightedNodeId={highlightedNodeId ?? undefined}
                   isNodeExpandable={isNodeExpandable}
                   key={n.id}
                   layoutMode={layoutMode}

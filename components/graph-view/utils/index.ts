@@ -1,6 +1,6 @@
 // Utils exports
 
 export * from "./data";
-export * from "./layout";
+export { findNodeToExpand, type GraphEdge, type GraphNode as LayoutGraphNode } from "./layout";
 export * from "./styling";
 export * from "./utils";

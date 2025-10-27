@@ -12,7 +12,7 @@ export type FocusDeps = {
   suppressNextFitRef: React.MutableRefObject<boolean>;
 
   // Utilities
-  computeSubgraphIds: (ids: string[]) => Set<string>;
+  computeSubgraphIds: (rootId: string) => string[];
   scheduleFitToView: (ids: string[], padding: number, reason?: string) => void;
 };
 
@@ -51,7 +51,7 @@ export function applyFocusChange(deps: FocusDeps): void {
   const isExpanded = expandedNodes.has(focusedNodeId);
   scheduleFitToView(
     isExpanded
-      ? Array.from(computeSubgraphIds([focusedNodeId]))
+      ? computeSubgraphIds(focusedNodeId)
       : [focusedNodeId],
     isExpanded ? 140 : 80,
     "focus-change"

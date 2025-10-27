@@ -12,8 +12,6 @@ import {
   type Simulation,
 } from "d3-force";
 import type { Selection } from "d3-selection";
-import "d3-transition";
-import type { Transition } from "d3-transition";
 import { type ZoomBehavior, zoom, zoomIdentity } from "d3-zoom";
 import type { GraphLink, GraphNode } from "../utils/data/data-manager";
 
@@ -356,11 +354,7 @@ export class GraphRenderer {
       .translate(-centerX, -centerY);
 
     // Animate to new transform
-    (
-      this.svg as Selection<SVGSVGElement, unknown, null, undefined> & {
-        transition(): Transition<SVGSVGElement, unknown, null, undefined>;
-      }
-    )
+    (this.svg as any)
       .transition()
       .duration(duration)
       .call(this.zoomBehavior.transform, newTransform);
@@ -482,14 +476,14 @@ export class GraphRenderer {
       });
 
     // Animate child nodes to parent position
-    childNodes
+    (childNodes as any)
       .transition()
       .duration(400)
       .attr("transform", `translate(${parentNode.x}, ${parentNode.y})`)
       .style("opacity", 0);
 
     // Animate child links to collapse
-    childLinks
+    (childLinks as any)
       .transition()
       .duration(400)
       .attr("x1", parentNode.x)

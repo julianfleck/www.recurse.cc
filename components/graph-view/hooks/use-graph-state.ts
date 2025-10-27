@@ -5,14 +5,14 @@ import type {
 } from "d3-force";
 import type { Selection } from "d3-selection";
 import type { ZoomBehavior } from "d3-zoom";
-import { useRef, useState } from "react";
-import type { Point } from "../types/types";
+import { useRef, useState, type Dispatch, type SetStateAction } from "react";
 import type {
-  DataLink,
-  DataNode,
+  GraphLink as DataLink,
+  GraphNode as DataNode,
   GraphDataManager,
 } from "../utils/data/data-manager";
 import type { HierarchicalLayout } from "../utils/layout/tree-layout";
+import type { Point } from "../utils/styling/viewport-utils";
 
 export type GraphState = {
   // Refs
@@ -33,7 +33,7 @@ export type GraphState = {
   transformRef: React.MutableRefObject<{ x: number; y: number; k: number }>;
   simulationRef: React.MutableRefObject<Simulation<
     SimulationNodeDatum & { x?: number; y?: number; fx?: number; fy?: number },
-    SimulationLinkDatum & { source: string; target: string }
+    SimulationLinkDatum<SimulationNodeDatum & { x?: number; y?: number; fx?: number; fy?: number }> & { source: string; target: string }
   > | null>;
   positionsRef: React.MutableRefObject<Map<string, Point>>;
   rafRef: React.MutableRefObject<number | null>;
@@ -65,35 +65,33 @@ export type GraphState = {
 
   // State
   isInitialized: boolean;
-  setIsInitialized: (value: boolean) => void;
+  setIsInitialized: Dispatch<SetStateAction<boolean>>;
   isExpanding: boolean;
-  setIsExpanding: (value: boolean) => void;
+  setIsExpanding: Dispatch<SetStateAction<boolean>>;
   isCollapsing: boolean;
-  setIsCollapsing: (value: boolean) => void;
+  setIsCollapsing: Dispatch<SetStateAction<boolean>>;
   expansionProgress: { current: number; total: number } | null;
-  setExpansionProgress: (
-    value: { current: number; total: number } | null
-  ) => void;
+  setExpansionProgress: Dispatch<SetStateAction<{ current: number; total: number } | null>>;
   isBatchOperation: boolean;
-  setIsBatchOperation: (value: boolean) => void;
+  setIsBatchOperation: Dispatch<SetStateAction<boolean>>;
   simulationPaused: boolean;
-  setSimulationPaused: (value: boolean) => void;
+  setSimulationPaused: Dispatch<SetStateAction<boolean>>;
   nodesById: Map<string, DataNode>;
-  setNodesById: (value: Map<string, DataNode>) => void;
+  setNodesById: Dispatch<SetStateAction<Map<string, DataNode>>>;
   edges: DataLink[];
-  setEdges: (value: DataLink[]) => void;
+  setEdges: Dispatch<SetStateAction<DataLink[]>>;
   expandedNodes: Set<string>;
-  setExpandedNodes: (value: Set<string>) => void;
+  setExpandedNodes: Dispatch<SetStateAction<Set<string>>>;
   highlightedNodeId: string | null;
-  setHighlightedNodeId: (value: string | null) => void;
+  setHighlightedNodeId: Dispatch<SetStateAction<string | null>>;
   focusedNodeId: string | null;
-  setFocusedNodeId: (value: string | null) => void;
+  setFocusedNodeId: Dispatch<SetStateAction<string | null>>;
   filteredNodeIds: Set<string> | null;
-  setFilteredNodeIds: (value: Set<string> | null) => void;
+  setFilteredNodeIds: Dispatch<SetStateAction<Set<string> | null>>;
   highlightSource: "graph" | "sidepanel" | null;
-  setHighlightSource: (value: "graph" | "sidepanel" | null) => void;
+  setHighlightSource: Dispatch<SetStateAction<"graph" | "sidepanel" | null>>;
   layoutMode: "force" | "hierarchical";
-  setLayoutMode: (value: "force" | "hierarchical") => void;
+  setLayoutMode: Dispatch<SetStateAction<"force" | "hierarchical">>;
 };
 
 export function useGraphState(): GraphState {
@@ -116,7 +114,7 @@ export function useGraphState(): GraphState {
   });
   const simulationRef = useRef<Simulation<
     SimulationNodeDatum & { x?: number; y?: number; fx?: number; fy?: number },
-    SimulationLinkDatum & { source: string; target: string }
+    SimulationLinkDatum<SimulationNodeDatum & { x?: number; y?: number; fx?: number; fy?: number }> & { source: string; target: string }
   > | null>(null);
   const positionsRef = useRef<Map<string, Point>>(new Map());
   const rafRef = useRef<number | null>(null);

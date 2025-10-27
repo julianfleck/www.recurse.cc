@@ -164,7 +164,7 @@ export function DocsLayout(props: DocsLayoutProps) {
           <SidebarCollapseTrigger
             className={cn(
               buttonVariants({
-                color: "ghost",
+                variant: "ghost",
                 size: "icon-sm",
                 className:
                   "mt-1 mb-auto bg-transparent text-fd-muted-foreground hover:bg-transparent hover:text-foreground",
@@ -220,7 +220,7 @@ export function DocsLayout(props: DocsLayoutProps) {
               className={cn(
                 buttonVariants({
                   size: "icon-sm",
-                  color: "ghost",
+                  variant: "ghost",
                   className: "lg:hidden",
                 })
               )}
@@ -242,7 +242,7 @@ export function DocsLayout(props: DocsLayoutProps) {
             className={cn(
               buttonVariants({
                 size: "icon-sm",
-                color: "ghost",
+                variant: "ghost",
                 className: "ms-auto text-fd-muted-foreground",
               })
             )}
@@ -263,7 +263,7 @@ export function DocsLayout(props: DocsLayoutProps) {
               className={cn(
                 buttonVariants({
                   size: "icon-sm",
-                  color: "ghost",
+                  variant: "ghost",
                 }),
                 "text-fd-muted-foreground lg:hidden",
                 i === iconLinks.length - 1 && "me-auto"
@@ -364,7 +364,7 @@ function DocsNavbar({
             <SidebarCollapseTrigger
               className={cn(
                 buttonVariants({
-                  color: "ghost",
+                  variant: "ghost",
                   size: "icon-sm",
                 }),
                 "bg-transparent text-fd-muted-foreground hover:bg-transparent hover:text-foreground data-[collapsed=false]:hidden max-md:hidden"
@@ -407,7 +407,7 @@ function DocsNavbar({
               <BaseLinkItem
                 aria-label={item.label}
                 className={cn(
-                  buttonVariants({ size: "icon-sm", color: "ghost" }),
+                  buttonVariants({ size: "icon-sm", variant: "ghost" }),
                   "text-fd-muted-foreground max-lg:hidden"
                 )}
                 item={item}
@@ -452,7 +452,7 @@ function DocsNavbar({
               <SidebarCollapseTrigger
                 className={cn(
                   buttonVariants({
-                    color: "secondary",
+                    variant: "secondary",
                     size: "icon-sm",
                   }),
                   "-me-1.5 rounded-full text-fd-muted-foreground"

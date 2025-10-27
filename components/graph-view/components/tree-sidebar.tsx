@@ -33,11 +33,11 @@ const TreeNodeComponent = ({
   const hasChildren = Array.isArray(node.children) && node.children.length > 0;
   const isHighlighted = highlightedNodeId === node.id;
   const spec = getVisualForLabel(
-    String(node.type || node.label || ""),
+    String(node.type || ""),
     defaultGraphVisualConfig
   );
 
-  const nodeTypeKey = normalizeTypeLabel(String(node.type || node.label || ""));
+  const nodeTypeKey = normalizeTypeLabel(String(node.type || ""));
   const { iconClosed, iconOpen } = getNodeIcons(nodeTypeKey, {
     size: "h-4 w-4",
     strokeWidth: 1.5,
@@ -66,7 +66,7 @@ const TreeNodeComponent = ({
         />
         <TreeLabel className="truncate">
           {String(
-            node.title || node.name || node.label || spec?.uiLabel || node.id
+            node.title || spec?.uiLabel || node.id
           )}
         </TreeLabel>
         {/* <Badge

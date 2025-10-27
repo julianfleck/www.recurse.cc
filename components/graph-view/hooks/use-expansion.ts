@@ -68,7 +68,7 @@ export async function expandLevel(deps: ExpansionDeps): Promise<void> {
   // Build child map and root list from treeData
   const childMap = new Map<string, string[]>();
   const rootIds: string[] = [];
-  const walkTree = (nodes: DataNode[], parentId?: string) => {
+  const walkTree = (nodes: Array<DataNode & { children?: DataNode[] }>, parentId?: string) => {
     for (const n of nodes) {
       const id = n.id as string;
       if (parentId) {

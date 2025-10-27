@@ -8,13 +8,15 @@ export function useSocialLogin() {
 
   const go = (connection: string) =>
     loginWithRedirect({
-      authorizationParams: { connection },
+      authorizationParams: {
+        connection,
+        // Force callback to /dashboard to avoid landing on '/'
+        redirect_uri:
+          typeof window !== "undefined"
+            ? `${window.location.origin}/dashboard`
+            : undefined,
+      },
       appState: { returnTo: "/dashboard" },
-      // Force callback to /dashboard to avoid landing on '/'
-      redirectUri:
-        typeof window !== "undefined"
-          ? `${window.location.origin}/dashboard`
-          : undefined,
     });
 
   return {

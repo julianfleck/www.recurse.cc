@@ -331,15 +331,15 @@ export class GraphDataManager {
       };
 
       // Process the provided JSON data
-      if (jsonData?.nodes) {
-        for (const root of jsonData.nodes) {
+      if (jsonData && typeof jsonData === "object" && "nodes" in jsonData && Array.isArray((jsonData as any).nodes)) {
+        for (const root of (jsonData as any).nodes) {
           walk(root, undefined);
         }
       }
 
       // Process external links if provided (for graph format data)
-      if (jsonData?.links && Array.isArray(jsonData.links)) {
-        for (const link of jsonData.links) {
+      if (jsonData && typeof jsonData === "object" && "links" in jsonData && Array.isArray((jsonData as any).links)) {
+        for (const link of (jsonData as any).links) {
           if (link.source && link.target) {
             const sourceId =
               typeof link.source === "string" ? link.source : link.source.id;
@@ -390,18 +390,18 @@ export class GraphDataManager {
           }
         }
       };
-      if (jsonData.nodes) {
-        collectNodeIds(jsonData.nodes);
+      if (jsonData && typeof jsonData === "object" && "nodes" in jsonData && Array.isArray((jsonData as any).nodes)) {
+        collectNodeIds((jsonData as any).nodes);
       }
       for (const nodeId of allNodeIds) {
         this.fetchedNodes.add(nodeId);
       }
 
       this.onDataUpdate?.({ nodes, links });
-      return { nodes, links };
+      return Promise.resolve({ nodes, links });
     } catch (error) {
       this.onError(error as Error);
-      return { nodes: [], links: [] };
+      return Promise.resolve({ nodes: [], links: [] });
     }
   }
 
@@ -559,7 +559,12 @@ export class GraphDataManager {
         }
 
         // Create/ensure owner node with canonical id
-        ensureNode({ ...sn, id: nodeIdToUse });
+        ensureNode({ 
+          ...sn, 
+          id: nodeIdToUse,
+          title: sn.title ?? null,
+          type: sn.type ?? ""
+        });
         if (parentId) {
           links.push({ source: parentId, target: nodeIdToUse });
         }
@@ -598,7 +603,7 @@ export class GraphDataManager {
       );
 
       for (const root of nodes_from_api) {
-        walk(root, undefined);
+        walk(root as any, undefined);
       }
 
       // Sort nodes for stable presentation: documents first, then by index/title
@@ -636,16 +641,16 @@ export class GraphDataManager {
           }
         }
       };
-      collectNodeIds(nodes_from_api);
+      collectNodeIds(nodes_from_api as any);
       for (const nodeId of allNodeIds) {
         this.fetchedNodes.add(nodeId);
       }
 
       this.onDataUpdate?.({ nodes, links });
-      return { nodes, links };
+      return Promise.resolve({ nodes, links });
     } catch (error) {
       this.onError(error as Error);
-      return { nodes: [], links: [] };
+      return Promise.resolve({ nodes: [], links: [] });
     }
   }
 
@@ -803,7 +808,12 @@ export class GraphDataManager {
           }
         }
 
-        ensureNode({ ...sn, id: nodeIdToUse });
+        ensureNode({ 
+          ...sn, 
+          id: nodeIdToUse,
+          title: sn.title ?? null,
+          type: sn.type ?? ""
+        });
         if (parentId) {
           // Only treat direct children of the requested node as children
           if (parentId === rootId) {
@@ -828,7 +838,7 @@ export class GraphDataManager {
       const nodes_from_api = responseData?.nodes || [];
 
       for (const root of nodes_from_api) {
-        walk(root, undefined, 1);
+        walk(root as any, undefined, 1);
       }
 
       // Mark as fetched and track children

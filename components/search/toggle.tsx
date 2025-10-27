@@ -8,10 +8,10 @@ import { SearchCommandDialog } from "./dialog";
 import { documentationProvider, knowledgeBaseProvider } from "./providers";
 import type { SearchProvider } from "./types";
 
-type ToggleProps = Omit<React.ComponentProps<"button">, "color"> & {
+type ToggleProps = Omit<React.ComponentProps<"button">, "variant"> & {
   hideIfDisabled?: boolean;
   size?: "icon-sm" | "sm" | "default" | "lg";
-  color?:
+  variant?:
     | "ghost"
     | "default"
     | "secondary"
@@ -27,7 +27,7 @@ type ToggleProps = Omit<React.ComponentProps<"button">, "color"> & {
 export function SearchToggle({
   hideIfDisabled,
   size = "icon-sm",
-  color = "ghost",
+  variant = "ghost",
   provider,
   providerKey,
   placeholder,
@@ -60,7 +60,7 @@ export function SearchToggle({
     <>
       <button
         aria-label="Open Search"
-        className={cn(buttonVariants({ size, color }), props.className)}
+        className={cn(buttonVariants({ size, variant }), props.className)}
         onClick={() => setOpen(true)}
         type="button"
       >

@@ -71,7 +71,7 @@ export function normalizeTypeLabel(raw: string): string {
   }
   // Prefer the last segment when colon-delimited (e.g., "document:article" → "article")
   const parts = s.split(":").filter(Boolean);
-  const candidate = parts.length > 1 ? parts.at(-1) : parts[0];
+  const candidate = parts.length > 1 ? (parts.at(-1) ?? "") : (parts[0] ?? "");
   // Map common aliases/synonyms
   if (candidate === "doc") {
     return "document";

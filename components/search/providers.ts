@@ -64,7 +64,7 @@ export const documentationProvider: SearchProvider = {
     const uniqueItems = items.reduce((acc, it) => {
       const href =
         (it.url || it.path || "").toString() + (it.hash ? `#${it.hash}` : "");
-      if (!acc.some((existing) => existing.href === href)) {
+      if (!acc.some((existing: any) => existing.href === href)) {
         acc.push({
           ...it,
           href,
@@ -74,7 +74,7 @@ export const documentationProvider: SearchProvider = {
     }, [] as any[]);
 
     return uniqueItems.map(
-      (it) =>
+      (it: any) =>
         ({
           id: it.href || crypto.randomUUID(),
           title: it.title || it.content || it.heading || "Untitled",

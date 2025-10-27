@@ -80,7 +80,7 @@ export function resetZoomToFit(
         tr: typeof t
       ) => void;
     };
-    sel.transition().duration(400).call(zoomBehavior.transform, t);
+    (sel as any).transition().duration(400).call(zoomBehavior.transform, t);
   }
 }
 
@@ -124,7 +124,7 @@ export function zoomIn(deps: ZoomDeps): void {
       p: [number, number]
     ) => void;
   };
-  sel
+  (sel as any)
     .transition()
     .duration(300)
     .call(zoomBehavior.scaleBy, 1.2, [cx, cy] as [number, number]);
@@ -151,7 +151,7 @@ export function zoomOut(deps: ZoomDeps): void {
       p: [number, number]
     ) => void;
   };
-  sel
+  (sel as any)
     .transition()
     .duration(300)
     .call(zoomBehavior.scaleBy, 1 / 1.2, [cx, cy] as [number, number]);

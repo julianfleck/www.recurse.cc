@@ -25,7 +25,7 @@ export function calculateVisibleNodeIds({
 }: VisibleNodesParams): Set<string> {
   // 1) Derive visible content nodes from treeData + expandedNodes (same rule as side panel)
   const contentVisible = new Set<string>();
-  const walkTreeVisible = (nodes: DataNode[]) => {
+  const walkTreeVisible = (nodes: Array<DataNode & { children?: DataNode[] }>) => {
     for (const n of nodes) {
       const id = String(n.id);
       contentVisible.add(id);

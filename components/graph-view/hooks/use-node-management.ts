@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import type { DataLink } from "../utils/data/data-manager";
+import type { GraphLink as DataLink } from "../utils/data/data-manager";
 
 export type UseNodeManagementParams = {
   allLinks: DataLink[];

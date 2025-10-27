@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { DataLink, DataNode } from "../utils/data/data-manager";
+import type { GraphLink as DataLink, GraphNode as DataNode } from "../utils/data/data-manager";
 import { buildTreeFromNodes } from "../utils/data/relationship-utils";
 import { calculateVisibleNodeIds } from "../utils/visible-nodes-utils";
 import { useGraphDataProcessing } from "./use-data-processing";
@@ -21,7 +21,7 @@ export type GraphDataResult = {
   visibleNodes: DataNode[];
   treeData: DataNode[];
   visibleLinks: DataLink[];
-  computeSubgraphIds: (rootIds: string[]) => Set<string>;
+  computeSubgraphIds: (rootId: string) => string[];
 };
 
 export function useGraphData({

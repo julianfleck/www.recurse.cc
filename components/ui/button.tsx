@@ -55,7 +55,7 @@ function Button({
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
-    tooltip?: string;
+    tooltip?: React.ReactNode;
     tooltipSide?: "top" | "right" | "bottom" | "left";
     tooltipSideOffset?: number;
     icon?: React.ReactNode;

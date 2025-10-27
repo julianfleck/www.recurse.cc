@@ -3,7 +3,7 @@ import type {
   NodeLayoutMode,
   NodeVisualData,
   NodeVisualState,
-} from "../types/visual-types";
+} from "../../types/visual-types";
 
 // Node styling utilities
 export function computeEdgeStrokeWidth(currentZoomLevel: number): number {
