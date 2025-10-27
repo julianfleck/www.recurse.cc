@@ -48,8 +48,15 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   );
 }
 
+export const dynamicParams = true; // Allow dynamic params for pages not in generateStaticParams
+
 export async function generateStaticParams() {
-  return source.generateParams();
+  // Only generate non-API documentation pages statically
+  const allParams = source.generateParams();
+  return allParams.filter(param => {
+    const slug = param.slug;
+    return !slug || !slug[0]?.startsWith('api-documentation');
+  });
 }
 
 export async function generateMetadata(

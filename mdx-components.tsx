@@ -108,11 +108,24 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     GraphView,
     ExampleGraphs,
     AnimatedGraphExample,
-    APIPage: (props) => (
-      <div className="fd-openapi">
-        <APIPage {...openapi.getAPIPageProps(props)} />
-      </div>
-    ),
+    APIPage: (props) => {
+      try {
+        const apiProps = openapi.getAPIPageProps(props);
+        return (
+          <div className="fd-openapi">
+            <APIPage {...apiProps} />
+          </div>
+        );
+      } catch (error) {
+        // Skip API page rendering during build if OpenAPI doc is not available
+        console.warn("Skipping APIPage rendering:", error);
+        return (
+          <div className="fd-openapi">
+            <p className="text-muted-foreground">API documentation unavailable during build</p>
+          </div>
+        );
+      }
+    },
     img: (props) => <ImageZoom {...(props as any)} />,
     ...components,
   };
