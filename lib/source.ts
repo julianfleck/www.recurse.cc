@@ -1,7 +1,6 @@
 import { IconApi, IconRun, IconUserScreen } from "@tabler/icons-react";
 import { loader } from "fumadocs-core/source";
 import { transformerOpenAPI } from "fumadocs-openapi/server";
-import { openapi } from "./openapi";
 import {
   Book,
   Bot,
@@ -30,7 +29,7 @@ export const docsSource = loader({
   source: docs.toFumadocsSource(),
   pageTree: {
     transformers: [
-      transformerOpenAPI(openapi),
+      transformerOpenAPI(),
       // Custom transformer to support sidebar_label
       {
         name: "sidebar-label",
