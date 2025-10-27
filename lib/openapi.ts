@@ -8,7 +8,9 @@ import minimalAccentLight from "../styles/minimal-accent-light.json" with {
 
 export const openapi = createOpenAPI({
   // the OpenAPI schema, you can also give it an external URL.
-  input: ["http://localhost:8000/openapi.json"],
+  input: process.env.NEXT_PUBLIC_API_BASE_URL 
+    ? [`${process.env.NEXT_PUBLIC_API_BASE_URL}/openapi.json`]
+    : [],
   shikiOptions: {
     themes: {
       light: minimalAccentLight as unknown as any,
