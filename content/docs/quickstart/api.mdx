@@ -49,7 +49,8 @@ Upload text content directly to your knowledge base.
       -d '{
         "title": "Getting Started Guide",
         "text": "# Getting Started\n\nThis is a simple guide to help you get started with our platform. Here are the basic steps:\n\n1. Sign up for an account\n2. Generate your API key\n3. Make your first API call\n\nThat'\''s it! You'\''re ready to go.",
-        "document_type_hint": "guide"
+        "document_type_hint": "guide",
+        "collection": "mycollection"
       }'
     ```
   </Tab>
@@ -76,7 +77,8 @@ Upload content from web URLs or files.
       -H "Content-Type: multipart/form-data" \
       -H "X-API-Key: YOUR_API_KEY" \
       -F "url=https://example.com/blog-post.html" \
-      -F "document_type_hint=article"
+      -F "document_type_hint=article" \
+      -F "collection=mycollection"
     ```
   </Tab>
 
@@ -91,6 +93,12 @@ Upload content from web URLs or files.
     ```
   </Tab>
 </Tabs>
+
+---
+
+## Using Collections
+
+The optional 'collection' parameter lets you organize uploaded content into named groups. You can then filter searches to specific collections for scoped retrieval.
 
 ---
 

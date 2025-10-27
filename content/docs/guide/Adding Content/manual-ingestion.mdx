@@ -83,6 +83,7 @@ For programmatic content addition, use the documents API endpoint:
         "title": "My Research Notes",
         "text": "# Research Findings\n\nHere are my key findings from the study...",
         "document_type_hint": "research",
+        "collection": "mycollection",
         "metadata": {
           "tags": ["research", "findings"],
           "source": "personal_notes"
@@ -105,6 +106,7 @@ For programmatic content addition, use the documents API endpoint:
         "title": "My Research Notes",
         "text": "# Research Findings\n\nHere are my key findings from the study...",
         "document_type_hint": "research",
+        "collection": "mycollection",
         "metadata": {
             "tags": ["research", "findings"],
             "source": "personal_notes"
@@ -128,6 +130,7 @@ For programmatic content addition, use the documents API endpoint:
         title: 'My Research Notes',
         text: '# Research Findings\n\nHere are my key findings from the study...',
         document_type_hint: 'research',
+        collection: 'mycollection',
         metadata: {
           tags: ['research', 'findings'],
           source: 'personal_notes'
@@ -152,7 +155,8 @@ Automatically fetch and process content from web URLs:
       -H "Content-Type: multipart/form-data" \
       -H "X-API-Key: YOUR_API_KEY" \
       -F "url=https://example.com/article.html" \
-      -F "document_type_hint=article"
+      -F "document_type_hint=article" \
+      -F "collection=mycollection"
     ```
   </Tab>
 
@@ -204,6 +208,12 @@ RAGE takes care of all the annoying metadata collection, tagging, and making sen
 - Organizing by topic or project
 
 RAGE handles all of this automatically, learning from your content to make better connections over time.
+
+---
+
+## Using Collections for Retrieval
+
+When you specify a collection during upload, you can later filter your searches and retrievals to that specific collection. This allows you to organize content into groups (like projects or topics) and query them separately. See the search API documentation for how to filter by collection.
 
 ---
 

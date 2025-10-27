@@ -80,6 +80,7 @@ _openapi:
           | `reference_document` | Documentation and reference materials |
           Technical content |
 
+          You can optionally include a "collection" field (string) in the request body to scope the ingested material to a specific collection tied to your user account.
 
           ## Request Examples
 
@@ -94,12 +95,16 @@ _openapi:
               "text": "Your document content here...",
               "title": "Document Title",
               "document_type_hint": "research_paper",
+              "collection": "my-research",
               "metadata": {"author": "John Doe", "tags": ["AI", "research"]}
             }'
           ```
 
 
           Returns a job ID for tracking processing status.
+
+          ## Using Collections for Retrieval
+          If you specify a collection during upload, you can later filter search and retrieval operations to only include content from that specific collection. This helps organize and scope your knowledge base for different projects or topics. For example, use the collection parameter in search endpoints to retrieve only from 'my-research'.
 ---
 
 {/* AUTO-GENERATED: fumadocs-openapi (safe to overwrite) */}
@@ -140,6 +145,8 @@ This endpoint triggers the complete RAGE for document analysis and processing.
 | `personal_note` | Informal notes and reflections | Personal knowledge |
 | `reference_document` | Documentation and reference materials | Technical content |
 
+You can optionally include a "collection" field (string) in the request body to scope the ingested material to a specific collection tied to your user account.
+
 ## Request Examples
 
 **Example Usage:**
@@ -150,10 +157,14 @@ curl -X POST http://localhost:8000/documents \
     "text": "Your document content here...",
     "title": "Document Title",
     "document_type_hint": "research_paper",
+    "collection": "my-research",
     "metadata": {"author": "John Doe", "tags": ["AI", "research"]}
   }'
 ```
 
 Returns a job ID for tracking processing status.
+
+## Using Collections for Retrieval
+If you specify a collection during upload, you can later filter search and retrieval operations to only include content from that specific collection. This helps organize and scope your knowledge base for different projects or topics. For example, use the collection parameter in search endpoints to retrieve only from 'my-research'.
 
 <APIPage document={"http://localhost:8000/openapi.json"} operations={[{"path":"/documents","method":"post"}]} webhooks={[]} hasHead={false} />

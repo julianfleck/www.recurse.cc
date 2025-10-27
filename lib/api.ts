@@ -46,8 +46,7 @@ export class ApiService {
    */
   async get<T = unknown>(
     endpoint: string,
-    params?: Record<string, string | number | boolean>,
-    options: { requireAuth?: boolean } = { requireAuth: true }
+    params?: Record<string, string | number | boolean>
   ): Promise<ApiResponse<T>> {
     try {
       // Build query string from params
@@ -72,8 +71,6 @@ export class ApiService {
         "Content-Type": "application/json",
       };
 
-      let hasAuth = false;
-
       if (authToken) {
         // Validate that it's a JWT token (3 parts separated by dots)
         const tokenParts = authToken.split(".");
@@ -90,15 +87,13 @@ export class ApiService {
             }
 
             headers.Authorization = `Bearer ${authToken}`;
-            hasAuth = true;
           } catch (_error) {
             headers.Authorization = `Bearer ${authToken}`;
-            hasAuth = true;
           }
         } else {
           throw new ApiError("Invalid token format", 401);
         }
-      } else if (options.requireAuth) {
+      } else {
         const authError = new ApiError(
           "No authentication token available",
           401
@@ -112,7 +107,9 @@ export class ApiService {
       const response = await fetch(url, {
         method: "GET",
         headers,
-        credentials: hasAuth ? "include" : "omit",
+        // Include credentials for CORS requests
+        credentials: "include",
+        // Set mode to handle CORS
         mode: "cors",
       });
 

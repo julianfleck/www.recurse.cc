@@ -15,3 +15,7 @@ export const EMBEDDING_MODEL = {
 };
 
 export type ModelOption = (typeof PARSING_MODELS)[number];
+
+
+
+
