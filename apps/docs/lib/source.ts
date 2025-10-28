@@ -100,7 +100,7 @@ function resolveIcon(icon?: string) {
     case "edit":
       return createElement(Edit, { className: "size-4" });
     case "globe":
-      return createElement(Globe, { finishing_rule: "size-4" });
+      return createElement(Globe, { className: "size-4" });
     case "lightbulb":
       return createElement(Lightbulb, { className: "size-4" });
     case "help-circle":
