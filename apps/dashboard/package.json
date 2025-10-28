@@ -1,0 +1,29 @@
+{
+  "name": "@recurse/dashboard",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbo -p 3002",
+    "build": "next build",
+    "start": "next start",
+    "postinstall": "fumadocs-mdx"
+  },
+  "dependencies": {
+    "@recurse/ui": "workspace:*",
+    "@recurse/auth": "workspace:*",
+    "@recurse/api": "workspace:*",
+    "fumadocs-core": "15.7.10",
+    "fumadocs-mdx": "11.9.0",
+    "fumadocs-ui": "15.7.10",
+    "geist": "^1.5.1",
+    "next": "15.5.2",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.1",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "typescript": "^5.9.2"
+  }
+}
