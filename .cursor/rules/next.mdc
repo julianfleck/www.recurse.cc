@@ -1,0 +1,259 @@
+---
+description: "Next.js 15 App Router patterns and conventions"
+globs: ["apps/**/app/**/*.{ts,tsx}", "apps/**/next.config.{js,mjs,ts}"]
+alwaysApply: false
+lastVerified: 2025-10-28T03:15:00Z
+sources:
+  - name: "Next.js 15 App Router Research"
+    url: "docs/research/2025-10-28/02-nextjs-15-patterns.md"
+    accessedAt: 2025-10-28T02:55:29Z
+  - name: "Current Next.js Configuration"
+    url: "apps/docs/next.config.mjs"
+    accessedAt: 2025-10-28T02:55:29Z
+---
+
+# Next.js 15 App Router Conventions
+
+## Purpose
+
+Establish consistent Next.js 15 patterns across all apps (www, docs, dashboard) in the recurse.cc monorepo. Focus on App Router conventions, Server Components, data fetching, and metadata patterns.
+
+## Scope
+
+All Next.js files in:
+- `apps/**/app/**/*.{ts,tsx}`
+- `apps/**/next.config.{js,mjs,ts}`
+
+## Hard Requirements
+
+### App Router Structure
+
+```typescript
+// ✅ Good: Route group for organization
+app/
+  (home)/
+    page.tsx      # Landing page
+  docs/
+    [[...slug]]/
+      page.tsx    # Catch-all for docs
+  dashboard/
+    page.tsx
+    layout.tsx   # Section-specific layout
+```
+
+- **Route groups** `(group-name)` for organization without affecting URL
+- **Colocate** route-specific components with routes
+- **Shared components** in top-level `components/` directory
+- **API routes** in `app/api/` as `route.ts` files
+
+### Server vs Client Components
+
+```typescript
+// ✅ Good: Server Component (default)
+export default async function Page() {
+  const data = await fetchData();
+  return <div>{data}</div>;
+}
+
+// ✅ Good: Client Component (when needed)
+'use client';
+
+import { useState } from 'react';
+
+export function InteractiveButton() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>{count}</button>;
+}
+```
+
+**Add 'use client' only when:**
+- Event handlers (onClick, onChange)
+- Browser APIs (localStorage, window)
+- React hooks (useState, useEffect, useContext)
+- Third-party libraries requiring client
+
+**Keep Server Components at top** of component tree, pass data as props to Client Components.
+
+### Data Fetching
+
+```typescript
+// ✅ Good: Server Component with async
+export default async function Page() {
+  const [user, posts] = await Promise.all([
+    fetchUser(),
+    fetchPosts(),
+  ]);
+  
+  return <div>{/* ... */}</div>;
+}
+
+// ✅ Good: Route handler
+export async function GET(request: Request) {
+  return NextResponse.json({ data: 'value' });
+}
+```
+
+- **Server Components**: Use async/await directly
+- **Parallel fetching**: Use `Promise.all()`
+- **Route handlers**: Export HTTP method functions (GET, POST, etc.)
+- **Avoid fetch** in Client Components when possible
+
+### Metadata
+
+```typescript
+// ✅ Good: Static metadata
+export const metadata = {
+  title: 'Page Title',
+  description: 'Page description',
+};
+
+// ✅ Good: Dynamic metadata
+export async function generateMetadata(): Promise<Metadata> {
+  const data = await fetchData();
+  return {
+    title: data.title,
+    openGraph: {
+      images: [data.image],
+    },
+  };
+}
+```
+
+- Export `metadata` object from page.tsx
+- Use `generateMetadata()` for dynamic metadata
+- Include OpenGraph and Twitter Card data
+- Set canonical URLs
+
+## Soft Guidelines
+
+### Route Organization
+
+```typescript
+// ✅ Good: Logical grouping
+app/
+  docs/
+    guide/
+      page.tsx
+      loading.tsx    # Route-specific loading
+    api-reference/
+      page.tsx
+```
+
+- Group related routes in folders
+- Add `loading.tsx` for instant loading states
+- Add `error.tsx` for error boundaries
+- Add `not-found.tsx` for 404 pages
+
+### Layouts
+
+```typescript
+// ✅ Good: Root layout
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
+
+// ✅ Good: Nested layout
+export default function DashboardLayout({ children }) {
+  return (
+    <div>
+      <DashboardSidebar />
+      <main>{children}</main>
+    </div>
+  );
+}
+```
+
+- Root layout required (wraps entire app)
+- Nested layouts for sections
+- Layout persistence during navigation
+
+### API Routes
+
+```typescript
+// ✅ Good: HTTP method handlers
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  return NextResponse.json({ message: 'Hello' });
+}
+
+export async function POST(request: Request) {
+  const body = await request.json();
+  return NextResponse.json({ received: body });
+}
+```
+
+- Use `route.ts` files for API endpoints
+- Export HTTP method functions
+- Return `Response` or `NextResponse` objects
+- Use `NextResponse` for cookies/headers
+
+## Monorepo Considerations
+
+### Configuration Per App
+
+Each app has its own `next.config.mjs`:
+
+```javascript
+// apps/www/next.config.mjs
+const config = {
+  // www-specific config
+};
+
+// apps/docs/next.config.mjs
+const config = {
+  // docs-specific config
+};
+```
+
+### Shared Configuration
+
+Create `packages/config/next.config.base.js` for shared settings:
+
+```javascript
+export const baseConfig = {
+  reactStrictMode: true,
+  experimental: {
+    // Shared experimental features
+  },
+};
+```
+
+### Environment Variables
+
+- Use `.env.local` per app
+- Share common variables via `.env` at root
+- Document in `README.md` or `.env.example`
+
+## Integration with TypeScript
+
+Follow typescript.mdc for:
+- Strict mode configuration
+- Type definitions for metadata
+- Type safety in API routes
+- Import/export patterns
+
+## Quality Checks
+
+Before committing Next.js code:
+
+- [ ] Server Components used by default
+- [ ] 'use client' only when necessary
+- [ ] Metadata exported for all pages
+- [ ] Loading/error/not-found states defined
+- [ ] API routes return proper Response objects
+- [ ] Next.js config per app
+
+## Exceptions
+
+- **Prototype routes**: Mark with `// TODO: Complete implementation`
+- **Fumadocs routes**: Follow fumadocs.mdc for MDX routing
+- **Legacy pages**: Document deprecation plan
+
+## Proposed Changes
+
+[Document friction as it emerges during use]

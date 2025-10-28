@@ -1,0 +1,263 @@
+---
+description: "Monorepo patterns and pnpm workspace conventions"
+globs: ["**/package.json", "pnpm-workspace.yaml"]
+alwaysApply: false
+lastVerified: 2025-10-28T03:15:00Z
+sources:
+  - name: "Monorepo Tooling Research"
+    url: "docs/research/2025-10-28/04-monorepo-tooling.md"
+    accessedAt: 2025-10-28T02:55:29Z
+  - name: "pnpm Workspace Documentation"
+    url: "https://pnpm.io/workspaces"
+    accessedAt: 2025-10-28T02:55:29Z
+---
+
+# Monorepo Patterns
+
+## Purpose
+
+Establish conventions for pnpm workspace management, package organization, dependency management, and build orchestration across the recurse.cc monorepo.
+
+## Scope
+
+All monorepo configuration:
+- Root `pnpm-workspace.yaml`
+- All `package.json` files
+- Shared configuration files
+
+## Hard Requirements
+
+### Workspace Structure
+
+```yaml
+# pnpm-workspace.yaml
+packages:
+  - 'apps/*'
+  - 'packages/*'
+```
+
+**Required directories:**
+- `apps/` - Deployable applications
+- `packages/` - Shared libraries
+
+### Workspace Protocol
+
+```json
+// ✅ Good: Use workspace protocol
+{
+  "dependencies": {
+    "@recurse/ui": "workspace:*",
+    "@recurse/auth": "workspace:*",
+    "@recurse/api": "workspace:*"
+  }
+}
+```
+
+- Use `workspace:*` for internal dependencies
+- Automatic version resolution
+- Enables hot reloading during development
+
+### Package Organization
+
+```typescript
+// ✅ Good: Clear package boundaries
+packages/
+  ui/              # UI components
+  auth/            # Authentication logic
+  api/             # API client
+  fumadocs/        # Fumadocs shared config
+  config/          # Shared configurations
+```
+
+**Principles:**
+- Single-purpose packages
+- Clear public API (exports)
+- Minimal dependencies
+- Independent versioning
+
+### Exports Configuration
+
+```json
+// ✅ Good: Define public API
+{
+  "name": "@recurse/ui",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./components": "./src/components/index.ts"
+  }
+}
+```
+
+- Define exports in package.json
+- Use TypeScript source files directly
+- Document public API in README
+
+## Soft Guidelines
+
+### Dependency Management
+
+```json
+// ✅ Good: Shared dependencies at root
+{
+  "dependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  }
+}
+
+// ✅ Good: App-specific dependencies
+{
+  "dependencies": {
+    "next": "15.5.2"
+  }
+}
+```
+
+**Strategy:**
+- Common deps (React, TypeScript) at root when possible
+- App-specific deps in app's package.json
+- Avoid duplicate dependencies
+- Regular dependency audits
+
+### Build Orchestration
+
+```json
+// Root package.json
+{
+  "scripts": {
+    "dev:www": "pnpm --filter @recurse/www dev",
+    "dev:docs": "pnpm --filter docs.recurse.cc dev",
+    "dev:dashboard": "pnpm --filter @recurse/dashboard dev",
+    "dev:all": "pnpm --parallel --filter '@recurse/*' dev",
+    "build": "pnpm -r build"
+  }
+}
+```
+
+**Simple pnpm approach:**
+- No Turborepo (keep it simple initially)
+- Use pnpm filters for app-specific commands
+- Parallel execution with `--parallel`
+- Recursive commands with `-r`
+
+### Shared Configuration
+
+```typescript
+// packages/config/src/tsconfig.base.json
+{
+  "compilerOptions": {
+    "strict": true,
+    "moduleResolution": "bundler"
+  }
+}
+
+// apps/www/tsconfig.json
+{
+  "extends": "@recurse/config/tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
+```
+
+**Shared configs:**
+- `packages/config/tsconfig.base.json` - TypeScript
+- `packages/config/tailwind.config.ts` - Tailwind
+- `packages/config/biome.jsonc` - Biome/Ultracite
+
+Each app extends base config.
+
+### Cross-Package Imports
+
+```typescript
+// ✅ Good: Import from workspace package
+import { Button } from '@recurse/ui';
+import type { ApiResponse } from '@recurse/api';
+
+// ✅ Good: Use path aliases within package
+import { Button } from '@/components/button';
+```
+
+- Import from `@recurse/*` packages
+- Use TypeScript path aliases within apps
+- Avoid circular dependencies
+
+## Git Strategy
+
+**Single Git Repository:**
+- One repo for entire monorepo
+- Atomic commits across apps/packages
+- Simplified dependency management
+- Unified CI/CD and version control
+
+**Benefits:**
+- Single source of truth
+- Cross-app refactoring easier
+- Consistent versioning
+- Simplified releases
+
+## Deployment
+
+### Vercel Configuration
+
+Each app deployed separately:
+
+```yaml
+# .vercel/www.json
+{
+  "buildCommand": "cd apps/www && pnpm build",
+  "outputDirectory": "apps/www/.next"
+}
+```
+
+**Project structure:**
+- `www.recurse.cc` → `apps/www`
+- `docs.recurse.cc` → `apps/docs`
+- `dashboard.recurse.cc` → `apps/dashboard`
+
+Each project configured with:
+- Root directory
+- Build command
+- Output directory
+- Environment variables
+
+## Integration with Other Rules
+
+### TypeScript
+- Follow typescript.mdc for TS config
+- Shared tsconfig.base.json
+- Consistent type exports
+
+### Next.js
+- Follow next.mdc for Next.js patterns
+- Per-app next.config.mjs
+- Shared base config
+
+### Fumadocs
+- Follow fumadocs.mdc for docs setup
+- Shared icon resolver
+- Per-app content directories
+
+## Quality Checks
+
+Before committing monorepo changes:
+
+- [ ] Workspace protocol used for internal deps
+- [ ] No circular dependencies
+- [ ] Shared configs extended properly
+- [ ] Package exports defined
+- [ ] Build scripts work recursively
+
+## Exceptions
+
+- **Testing strategy**: TBD (can be added later)
+- **Versioning**: All packages can use `0.0.0` initially
+- **Turborepo**: Optional, start simple with pnpm
+
+## Proposed Changes
+
+[Document friction as it emerges during use]

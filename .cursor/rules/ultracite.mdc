@@ -1,0 +1,69 @@
+---
+description: "Ultracite Rules - AI-Ready Formatter and Linter using Biome"
+globs: ["apps/**/*.{ts,tsx,js,jsx}", "packages/**/*.{ts,tsx,js,jsx}"]
+alwaysApply: true
+lastVerified: 2025-10-28T03:15:00Z
+sources:
+  - name: "Existing Ultracite Rules"
+    url: "apps/docs/.cursor/rules/ultracite.mdc"
+    accessedAt: 2025-10-28T02:55:29Z
+---
+
+# Ultracite Rules - AI-Ready Formatter and Linter
+
+## Project Context
+Ultracite enforces strict type safety, accessibility standards, and consistent code quality for JavaScript/TypeScript projects using Biome's lightning-fast formatter and linter.
+
+## Key Principles
+- Zero configuration required
+- Subsecond performance
+- Maximum type safety
+- AI-friendly code generation
+
+## Before Writing Code
+1. Analyze existing patterns in the codebase
+2. Consider edge cases and error scenarios
+3. Follow the rules below strictly
+4. Validate accessibility requirements
+
+## Monorepo Considerations
+
+### Shared Configuration
+- Use `packages/config/biome.jsonc` for shared linting rules
+- Each app can extend base config
+- Workspace-level configuration supported
+
+### Running Ultracite
+```bash
+# Check all packages
+pnpm -r exec ultracite check
+
+# Fix all packages
+pnpm -r exec ultracite fix
+
+# Run in specific app
+cd apps/www && npx ultracite check
+```
+
+## Rules
+
+[Note: The complete Ultracite rules are extensive. See apps/docs/.cursor/rules/ultracite.mdc for the full list. This root-level file focuses on monorepo integration and shared configuration.]
+
+### Core Rules Summary
+
+- **Accessibility**: Comprehensive a11y rules for ARIA, semantic HTML, keyboard navigation
+- **Code Quality**: Function complexity, unnecessary code elimination, modern patterns
+- **React/JSX**: Hook dependencies, key props, component structure
+- **Correctness**: Type safety, null checks, promise handling
+- **TypeScript**: No enums, proper type usage, import/export patterns
+- **Style**: Consistency, modern syntax, best practices
+- **Next.js**: Specific patterns for Next.js 15
+
+## Common Tasks
+- `npx ultracite init` - Initialize Ultracite in your project
+- `npx ultracite fix` - Format and fix code automatically
+- `npx ultracite check` - Check for issues without fixing
+
+## Proposed Changes
+
+[Document friction as it emerges during use]
