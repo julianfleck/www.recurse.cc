@@ -4,9 +4,9 @@
 
 We have three separate Vercel projects connected to the same GitHub repository:
 
-1. **www.recurse.cc** (root project)
-2. **docs** (docs.recurse.cc)
-3. **dashboard** (dashboard.recurse.cc)
+1. **www.recurse.cc** - Marketing website
+2. **docs.recurse.cc** - Documentation site
+3. **dashboard.recurse.cc** - Dashboard application
 
 ## Required Vercel Dashboard Configuration
 
@@ -15,15 +15,15 @@ For each project, you need to configure the following in the Vercel dashboard:
 ### For docs.recurse.cc Project
 
 1. Go to https://vercel.com/dashboard
-2. Select the "docs" project
+2. Select the "docs.recurse.cc" project
 3. Go to **Settings** → **General**
 4. Under **Root Directory**, enter: `apps/docs`
 5. Save changes
 
-### For dashboard Project
+### For dashboard.recurse.cc Project
 
 1. Go to https://vercel.com/dashboard
-2. Select the "dashboard" project
+2. Select the "dashboard.recurse.cc" project
 3. Go to **Settings** → **General**
 4. Under **Root Directory**, enter: `apps/dashboard`
 5. Save changes
@@ -83,7 +83,7 @@ After making changes to the monorepo structure:
 
 ## Project IDs
 
-- **docs**: `prj_xLfC1dClSxlymwRnRrJdrk7DY28B`
-- **dashboard**: `prj_X4hhVFz65uoK3xGMHqo9cANJyrGA`
-- **www**: Check Vercel dashboard
+- **docs.recurse.cc**: `prj_xLfC1dClSxlymwRnRrJdrk7DY28B`
+- **dashboard.recurse.cc**: `prj_X4hhVFz65uoK3xGMHqo9cANJyrGA`
+- **www.recurse.cc**: Check Vercel dashboard
 
