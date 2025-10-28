@@ -140,7 +140,10 @@ packages/
 - **User runs dev servers manually** in separate terminals
 - AI should NOT start dev servers
 - Use scripts for convenience: `pnpm dev:www`, `pnpm dev:docs`, `pnpm dev:dashboard`
-- Each app runs on a different port (www: 3000, docs: 3001, dashboard: 3002)
+- Each app runs on a different port:
+  - www: 3000
+  - dashboard: 3001
+  - docs: 3002
 
 **Simple pnpm approach:**
 - No Turborepo (keep it simple initially)
