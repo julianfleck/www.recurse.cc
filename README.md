@@ -1,45 +1,178 @@
-# docs.recurse.cc
+# recurse.cc Monorepo
 
-This is a Next.js application generated with
-[Create Fumadocs](https://github.com/fuma-nama/fumadocs).
+Monorepo for the Recurse.cc platform, featuring a marketing website, documentation site, and dashboard application.
 
-Run development server:
+## Project Structure
 
-```bash
-npm run dev
-# or
-pnpm dev
-# or
-yarn dev
+```
+recurse.cc/
+├── apps/
+│   ├── www/              # Marketing website (www.recurse.cc)
+│   ├── docs/             # Documentation site (docs.recurse.cc)
+│   └── dashboard/        # Dashboard application (dashboard.recurse.cc)
+├── packages/
+│   ├── ui/               # Shared UI components
+│   ├── auth/             # Authentication logic
+│   ├── api/              # API client
+│   ├── fumadocs/         # Fumadocs shared configuration
+│   └── config/           # Shared configurations
+├── docs/
+│   ├── research/         # Research logs and findings
+│   ├── context/           # Context maps and understanding
+│   ├── tasks/            # Task workflow (planned, active, completed)
+│   └── planning/         # Project documentation
+├── .cursor/rules/        # Cursor rules for AI assistance
+├── overview.yaml         # Project ledger (single source of truth)
+└── CHANGELOG.md          # Auditable trail of changes
 ```
 
-Open http://localhost:3000 with your browser to see the result.
+## Apps
 
-## Explore
+### apps/www
+Marketing website deployed to `www.recurse.cc`
+- Landing page with value proposition
+- Product pages
+- Pricing information
+- Blog (using Fumadocs)
 
-In the project, you can see:
+### apps/docs
+Documentation site deployed to `docs.recurse.cc`
+- RAGE technology documentation
+- API reference
+- Getting started guides
+- Platform documentation
 
-- `lib/source.ts`: Code for content source adapter, [`loader()`](https://fumadocs.dev/docs/headless/source-api) provides the interface to access your content.
-- `lib/layout.shared.tsx`: Shared options for layouts, optional but preferred to keep.
+**Note:** This is currently the primary app with all existing functionality from the original docs.recurse.cc repository.
 
-| Route                     | Description                                            |
-| ------------------------- | ------------------------------------------------------ |
-| `app/(home)`              | The route group for your landing page and other pages. |
-| `app/docs`                | The documentation layout and pages.                    |
-| `app/api/search/route.ts` | The Route Handler for search.                          |
+### apps/dashboard
+Dashboard application deployed to `dashboard.recurse.cc`
+- User management
+- Document management
+- Graph visualization
+- Settings and configuration
 
-### Fumadocs MDX
+## Packages
 
-A `source.config.ts` config file has been included, you can customise different options like frontmatter schema.
+### @recurse/ui
+Shared UI components built on Radix UI
+- Button, Card, Dialog, etc.
+- Theme support
+- Accessible components
 
-Read the [Introduction](https://fumadocs.dev/docs/mdx) for further details.
+### @recurse/auth
+Authentication components and logic
+- NextAuth integration
+- Auth forms (login, signup, forgot password)
+- Auth store (Zustand)
+- Protected route utilities
 
-## Learn More
+### @recurse/api
+API client and type definitions
+- REST API client
+- Type-safe request/response handling
+- Error handling utilities
 
-To learn more about Next.js and Fumadocs, take a look at the following
-resources:
+### @recurse/fumadocs
+Shared Fumadocs configuration
+- Icon resolver
+- Syntax highlighting themes
+- MDX transformers
+- Shared utilities
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js
-  features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [Fumadocs](https://fumadocs.vercel.app) - learn about Fumadocs
+### @recurse/config
+Shared configurations
+- TypeScript base config
+- Tailwind CSS config
+- Biome/Ultracite linting config
+
+## Technology Stack
+
+- **Frontend**: Next.js 15 with App Router
+- **Documentation**: Fumadocs
+- **Styling**: Tailwind CSS 4
+- **Linting**: Ultracite (Biome)
+- **Package Manager**: pnpm with workspaces
+- **TypeScript**: 5.x with strict mode
+
+## Development
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm 8+
+
+### Setup
+
+```bash
+# Install dependencies
+pnpm install
+
+# Run all apps in development
+pnpm dev:all
+
+# Run specific app
+pnpm dev:www     # apps/www
+pnpm dev:docs    # apps/docs
+pnpm dev:dashboard # apps/dashboard
+```
+
+### Build
+
+```bash
+# Build all apps
+pnpm build
+
+# Build specific app
+cd apps/www && pnpm build
+```
+
+## Cursor Rules
+
+This project uses comprehensive cursor rules to guide AI assistance:
+
+- **general.mdc**: Recursive Bootstrapping Protocol
+- **typescript.mdc**: TypeScript conventions
+- **next.mdc**: Next.js 15 patterns
+- **routing.mdc**: App Router patterns
+- **fumadocs.mdc**: Fumadocs framework
+- **ultracite.mdc**: Linting and formatting
+- **monorepo.mdc**: Monorepo patterns
+
+See `.cursor/rules/` for complete documentation.
+
+## Documentation
+
+### Research Logs
+External and internal research documented in `docs/research/YYYY-MM-DD/`
+
+### Context Maps
+Progressive understanding captured in `docs/context/`
+
+### Task Tracking
+Workflow management in `docs/tasks/` (planned, active, completed)
+
+### Project Ledger
+Complete inventory in `overview.yaml`
+
+### Changelog
+Auditable trail in `CHANGELOG.md`
+
+## Deployment
+
+Each app is deployed separately on Vercel:
+
+- `www.recurse.cc` → `apps/www`
+- `docs.recurse.cc` → `apps/docs`
+- `dashboard.recurse.cc` → `apps/dashboard`
+
+## Contributing
+
+1. Follow the Recursive Bootstrapping Protocol (see `.cursor/rules/general.mdc`)
+2. Research before implementing (document in `docs/research/`)
+3. Update context maps as understanding evolves
+4. Log all changes in `CHANGELOG.md`
+5. Keep `overview.yaml` up to date
+
+## License
+
+Private repository - All rights reserved
