@@ -3,7 +3,7 @@ project:
   description: "Documentation, marketing, and dashboard for Recurse.cc RAGE platform"
   domain: "mixed"
   owners:
-    - name: "Julian"
+    - name: "Julian Fleck"
       role: "Lead Developer"
 
 inventory:

@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useAuthStore } from "@/components/auth/auth-store";
-import { Status as KiboStatus } from "@/components/ui/kibo-ui/status";
-import { apiService } from "@/lib/api";
-import { isOnAuthPage } from "@/lib/auth-utils";
+import { useAuthStore } from '@recurse/auth';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Status as KiboStatus } from '@/components/ui/kibo-ui/status';
+import { apiService } from '@/lib/api';
+import { isOnAuthPage } from '@/lib/auth-utils';
 
 type HealthStatus = {
-  status: "healthy" | "unhealthy" | "degraded";
+  status: 'healthy' | 'unhealthy' | 'degraded';
   timestamp: string;
   overall_health: string;
 };
 
-type StatusState = "online" | "offline" | "maintenance" | "degraded";
+type StatusState = 'online' | 'offline' | 'maintenance' | 'degraded';
 
 // Constants
 const HEALTH_CHECK_INTERVAL_MS = 30_000;
@@ -57,17 +57,17 @@ function _HealthStatusDisabled() {
 
   const fetchHealth = useCallback(async (retryCount = 0) => {
     try {
-      const response = await apiService.get<HealthStatus>("/health");
+      const response = await apiService.get<HealthStatus>('/health');
 
       setHealth(response.data);
       setLastUpdated(new Date());
       setError(false);
     } catch (err) {
       // If it's an authentication error and we haven't retried yet, wait a bit and retry
-      const errorMessage = err instanceof Error ? err.message : "Unknown error";
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       if (
         err instanceof Error &&
-        (errorMessage.includes("401") || errorMessage.includes("403")) &&
+        (errorMessage.includes('401') || errorMessage.includes('403')) &&
         retryCount < 2 &&
         !retryTimeoutRef.current
       ) {
@@ -138,21 +138,21 @@ function _HealthStatusDisabled() {
   // Map health status to Kibo status
   const getKiboStatus = (): StatusState => {
     if (loading) {
-      return "maintenance";
+      return 'maintenance';
     }
     if (error || !health) {
-      return "offline";
+      return 'offline';
     }
 
     switch (health.status) {
-      case "healthy":
-        return "online";
-      case "degraded":
-        return "degraded";
-      case "unhealthy":
-        return "offline";
+      case 'healthy':
+        return 'online';
+      case 'degraded':
+        return 'degraded';
+      case 'unhealthy':
+        return 'offline';
       default:
-        return "offline";
+        return 'offline';
     }
   };
 
@@ -182,9 +182,9 @@ export function DocumentCountStatus() {
       setIsLoading(true);
       setError(null);
       const response = await apiService.get<DocumentSearchResponse>(
-        "/search/document",
+        '/search/document',
         {
-          field_set: "basic",
+          field_set: 'basic',
           depth: 0,
           min_score: 0,
           limit: 1,
@@ -194,20 +194,20 @@ export function DocumentCountStatus() {
       setDocumentCount(response.data.pagination.total_count);
     } catch (err) {
       // Handle authentication errors by redirecting to login (but not when already on auth pages)
-      if (err instanceof Error && err.name === "AuthenticationError") {
+      if (err instanceof Error && err.name === 'AuthenticationError') {
         if (!isOnAuthPage()) {
-          window.location.href = "/login";
+          window.location.href = '/login';
         }
         return;
       }
 
       const errorMessage =
-        err instanceof Error ? err.message : "Failed to load document count";
+        err instanceof Error ? err.message : 'Failed to load document count';
 
       // If it's an authentication error and we haven't retried yet, wait a bit and retry
       if (
         err instanceof Error &&
-        (errorMessage.includes("401") || errorMessage.includes("403")) &&
+        (errorMessage.includes('401') || errorMessage.includes('403')) &&
         retryCount < 2 &&
         !retryTimeoutRef.current
       ) {
@@ -277,9 +277,9 @@ export function DocumentCountStatus() {
 
   let displayText: string;
   if (isLoading) {
-    displayText = "Loading...";
+    displayText = 'Loading...';
   } else if (error) {
-    displayText = "Error";
+    displayText = 'Error';
   } else {
     displayText = `${documentCount?.toLocaleString() ?? 0} documents`;
   }
@@ -292,7 +292,7 @@ export function DocumentCountStatus() {
     <KiboStatus
       className="mt-2"
       showTooltip={true}
-      status={error ? "offline" : "online"}
+      status={error ? 'offline' : 'online'}
       title={tooltipTitle}
     >
       {documentCount?.toLocaleString() ?? displayText}

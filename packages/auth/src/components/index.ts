@@ -1,11 +1,4 @@
-// Auth components exports
-export * from './auth-gate';
-export * from './auth-init';
-export * from './auth-shared';
-export * from './auth-shell';
-export * from './forgot-password-form';
-export * from './login-form';
-export * from './protected';
-export * from './signup-form';
-export * from './use-social-login';
-
+// Auth components exports - only share the store from lib
+// Dashboard-specific auth pages should remain in apps/dashboard
+// Re-export from lib to avoid duplication
+export * from '../lib/auth-store';

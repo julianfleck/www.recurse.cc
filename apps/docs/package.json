@@ -12,6 +12,7 @@
     "regen:openapi": "pnpm clean:openapi && pnpm generate:openapi"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^2.5.0",
     "@recurse/api": "workspace:*",
     "@recurse/auth": "workspace:*",
     "@recurse/config": "workspace:*",
