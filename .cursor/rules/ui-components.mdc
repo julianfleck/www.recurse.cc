@@ -182,10 +182,33 @@ pnpm dlx shadcn@latest add button --cwd apps/docs/components/ui
 pnpm dlx shadcn@latest add @reui/avatar --cwd apps/docs/components/ui
 ```
 
-### MCP Integration
-Currently no specific MCP server for Shadcn. Use CLI commands above.
+### MCP Integration (Shadcn MCP Server)
+The Shadcn MCP server is configured and enables AI assistants to browse, search, and install components.
 
-Future consideration: Create internal MCP server for component installation.
+**Configuration:** `.cursor/mcp.json` (already set up)
+
+**Capabilities:**
+- Browse available components from registries
+- Search for specific components
+- Install components using natural language
+- Support for multiple registries (shadcn, ReUI, custom)
+
+**Usage Examples:**
+- "Show me all available components in the shadcn registry"
+- "Add the button, dialog and card components to my project"
+- "Create a contact form using components from the shadcn registry"
+- "Find me a login form from the shadcn registry"
+
+**Registry Configuration:** Configure in `components.json`:
+```json
+{
+  "registries": {
+    "@reui": "https://reui.io/{name}.json"
+  }
+}
+```
+
+**Official Documentation:** https://ui.shadcn.com/docs/mcp
 
 ## Best Practices
 
