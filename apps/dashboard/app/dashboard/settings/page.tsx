@@ -28,7 +28,7 @@ import {
   EMBEDDING_MODEL,
   type ModelOption,
   PARSING_MODELS,
-} from "@/config/models";
+} from "@recurse/config/models";
 import { cn } from "@/lib/utils";
 
 export default function SettingsPage() {

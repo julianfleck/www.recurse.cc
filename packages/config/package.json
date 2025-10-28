@@ -8,7 +8,8 @@
     ".": "./index.ts",
     "./tsconfig": "./tsconfig.base.json",
     "./tailwind": "./tailwind.config.ts",
-    "./biome": "./biome.jsonc"
+    "./biome": "./biome.jsonc",
+    "./models": "./models.ts"
   }
 }
 
