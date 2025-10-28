@@ -1,0 +1,241 @@
+---
+description: "Next.js App Router patterns and route organization"
+globs: ["apps/**/app/**/*.{ts,tsx}"]
+alwaysApply: false
+lastVerified: 2025-10-28T03:15:00Z
+sources:
+  - name: "Next.js 15 App Router Research"
+    url: "docs/research/2025-10-28/02-nextjs-15-patterns.md"
+    accessedAt: 2025-10-28T02:55:29Z
+---
+
+# Next.js App Router Patterns
+
+## Purpose
+
+Standardize route organization and patterns across all apps in the recurse.cc monorepo. Focus on route groups, dynamic routes, middleware, and special files.
+
+## Scope
+
+All route files in:
+- `apps/**/app/**/*.{ts,tsx}`
+
+## Hard Requirements
+
+### Route Groups
+
+```typescript
+// ✅ Good: Use route groups for organization
+app/
+  (home)/
+    page.tsx           # / route
+  (docs)/
+    docs/
+      [[...slug]]/
+        page.tsx        # /docs/* routes
+  (dashboard)/
+    dashboard/
+      page.tsx          # /dashboard routes
+```
+
+- **Route groups** `(group-name)` don't affect URL
+- Use for organizing shared layouts
+- Use for separating app sections
+
+### Dynamic Routes
+
+```typescript
+// ✅ Good: Dynamic segment
+app/
+  users/
+    [id]/
+      page.tsx         # /users/:id
+
+// ✅ Good: Catch-all
+app/
+  docs/
+    [[...slug]]/
+      page.tsx         # /docs/* (can be empty)
+
+// ✅ Good: Optional catch-all
+app/
+  shop/
+    [[...slug]]/
+      page.tsx         # /shop and /shop/*
+```
+
+**Conventions:**
+- `[slug]` - Required dynamic segment
+- `[[...slug]]` - Optional catch-all
+- `[...slug]` - Required catch-all
+
+### Special Files
+
+```typescript
+// ✅ Good: Route-specific files
+app/
+  dashboard/
+    page.tsx           # Page component
+    layout.tsx        # Section layout
+    loading.tsx       # Loading UI
+    error.tsx         # Error boundary
+    not-found.tsx     # 404 page
+    route.ts          # API route
+```
+
+**File purposes:**
+- `page.tsx` - Renders the page
+- `layout.tsx` - Shared layout for route segment
+- `loading.tsx` - Loading UI (Suspense boundary)
+- `error.tsx` - Error boundary
+- `not-found.tsx` - 404 page
+- `route.ts` - HTTP route handler
+
+### Route Handlers
+
+```typescript
+// ✅ Good: Named exports for HTTP methods
+import { NextResponse } from 'next/server';
+
+export async function GET(request: Request) {
+  return NextResponse.json({ data: 'value' });
+}
+
+export async function POST(request: Request) {
+  const body = await request.json();
+  return NextResponse.json({ data: body });
+}
+```
+
+- Export HTTP method functions (GET, POST, PUT, DELETE, PATCH)
+- Return `Response` or `NextResponse`
+- Access params via second argument
+
+### Middleware
+
+```typescript
+// ✅ Good: Middleware for auth/protection
+import { NextResponse } from 'next/server';
+
+export function middleware(request: NextRequest) {
+  const token = request.cookies.get('token');
+  
+  if (!token && request.nextUrl.pathname.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+  
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ['/dashboard/:path*'],
+};
+```
+
+- Run before request completes
+- Access to request/response
+- Can redirect, rewrite, modify headers
+- Configure matcher for route patterns
+
+## Soft Guidelines
+
+### Route Organization
+
+```typescript
+// ✅ Good: Logical nesting
+app/
+  dashboard/
+    api-keys/
+      page.tsx
+    context/
+      page.tsx
+    settings/
+      page.tsx
+```
+
+- Group related routes in folders
+- Keep routes flat when possible
+- Use layout.tsx for shared UI
+
+### Parallel Routes
+
+```typescript
+// ✅ Good: Parallel routes with slots
+app/
+  dashboard/
+    @analytics/
+      page.tsx
+    @team/
+      page.tsx
+    layout.tsx
+```
+
+- Use `@folder` for parallel routes
+- Combined in layout.tsx
+- Useful for multi-column layouts
+
+### Route Separation
+
+**Keep routes separate:**
+- Public pages: `/`, `/docs`, `/blog`
+- Auth pages: `/login`, `/signup`
+- App pages: `/dashboard/*`
+
+**Use route groups** to separate without affecting URLs.
+
+## Monorepo Considerations
+
+### Per-App Routing
+
+Each app has its own routing concerns:
+
+- **apps/www**: Marketing pages (`/`, `/product`, `/pricing`, `/blog`)
+- **apps/docs**: Documentation (`/docs/*`)
+- **apps/dashboard**: Application (`/dashboard/*`, `/login`, `/signup`)
+
+### Shared Layouts
+
+Avoid sharing layouts across apps (they're separate deployments).
+
+### Cross-App Navigation
+
+```typescript
+// ✅ Good: Absolute URLs for cross-app links
+<Link href="https://docs.recurse.cc/getting-started">
+  Documentation
+</Link>
+
+// ✅ Good: Relative links within same app
+<Link href="/dashboard/settings">
+  Settings
+</Link>
+```
+
+- Use absolute URLs for cross-app links
+- Use relative links within same app
+
+## Integration with Next.js
+
+Follow next.mdc for:
+- Server/Client Component patterns
+- Data fetching in routes
+- Metadata configuration
+
+## Quality Checks
+
+Before committing route changes:
+
+- [ ] Route groups don't affect URLs
+- [ ] Dynamic routes properly typed
+- [ ] Special files used appropriately
+- [ ] Middleware configured correctly
+- [ ] Cross-app links use absolute URLs
+
+## Exceptions
+
+- **Fumadocs routes**: Follow fumadocs.mdc for MDX routing
+- **Protected routes**: Document in README or route comments
+
+## Proposed Changes
+
+[Document friction as it emerges during use]

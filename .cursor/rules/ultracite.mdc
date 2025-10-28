@@ -1,10 +1,26 @@
 ---
+<<<<<<< HEAD
 description: Ultracite Rules - AI-Ready Formatter and Linter
 globs: "**/*.{ts,tsx,js,jsx}"
 alwaysApply: true
 ---
 
 # Project Context
+=======
+description: "Ultracite Rules - AI-Ready Formatter and Linter using Biome"
+globs: ["apps/**/*.{ts,tsx,js,jsx}", "packages/**/*.{ts,tsx,js,jsx}"]
+alwaysApply: true
+lastVerified: 2025-10-28T03:15:00Z
+sources:
+  - name: "Existing Ultracite Rules"
+    url: "apps/docs/.cursor/rules/ultracite.mdc"
+    accessedAt: 2025-10-28T02:55:29Z
+---
+
+# Ultracite Rules - AI-Ready Formatter and Linter
+
+## Project Context
+>>>>>>> 7c906f9 (Bootstrap: Cursor rules and documentation infrastructure)
 Ultracite enforces strict type safety, accessibility standards, and consistent code quality for JavaScript/TypeScript projects using Biome's lightning-fast formatter and linter.
 
 ## Key Principles
@@ -19,6 +35,7 @@ Ultracite enforces strict type safety, accessibility standards, and consistent c
 3. Follow the rules below strictly
 4. Validate accessibility requirements
 
+<<<<<<< HEAD
 ## Rules
 
 ### Accessibility (a11y)
@@ -307,12 +324,47 @@ Ultracite enforces strict type safety, accessibility standards, and consistent c
 - Don't use focused tests.
 - Make sure the assertion function, like expect, is placed inside an it() function call.
 - Don't use disabled tests.
+=======
+## Monorepo Considerations
+
+### Shared Configuration
+- Use `packages/config/biome.jsonc` for shared linting rules
+- Each app can extend base config
+- Workspace-level configuration supported
+
+### Running Ultracite
+```bash
+# Check all packages
+pnpm -r exec ultracite check
+
+# Fix all packages
+pnpm -r exec ultracite fix
+
+# Run in specific app
+cd apps/www && npx ultracite check
+```
+
+## Rules
+
+[Note: The complete Ultracite rules are extensive. See apps/docs/.cursor/rules/ultracite.mdc for the full list. This root-level file focuses on monorepo integration and shared configuration.]
+
+### Core Rules Summary
+
+- **Accessibility**: Comprehensive a11y rules for ARIA, semantic HTML, keyboard navigation
+- **Code Quality**: Function complexity, unnecessary code elimination, modern patterns
+- **React/JSX**: Hook dependencies, key props, component structure
+- **Correctness**: Type safety, null checks, promise handling
+- **TypeScript**: No enums, proper type usage, import/export patterns
+- **Style**: Consistency, modern syntax, best practices
+- **Next.js**: Specific patterns for Next.js 15
+>>>>>>> 7c906f9 (Bootstrap: Cursor rules and documentation infrastructure)
 
 ## Common Tasks
 - `npx ultracite init` - Initialize Ultracite in your project
 - `npx ultracite fix` - Format and fix code automatically
 - `npx ultracite check` - Check for issues without fixing
 
+<<<<<<< HEAD
 ## Example: Error Handling
 ```typescript
 // ✅ Good: Comprehensive error handling
@@ -331,3 +383,8 @@ try {
   console.log(e);
 }
 ```
+=======
+## Proposed Changes
+
+[Document friction as it emerges during use]
+>>>>>>> 7c906f9 (Bootstrap: Cursor rules and documentation infrastructure)
