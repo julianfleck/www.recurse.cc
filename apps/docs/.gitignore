@@ -58,3 +58,4 @@ biome.jsonc
 
 # Vercel (commented out - needed for root directory config)
 # .vercel
+.vercel
