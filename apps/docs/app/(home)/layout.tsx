@@ -2,6 +2,7 @@ import { HomeLayout } from "fumadocs-ui/layouts/home";
 import { documentationProvider } from "@/components/search/providers";
 import { LargeSearchToggle } from "@/components/search/toggle";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { UserProfile } from "@/components/user-profile";
 import { baseOptions } from "@/lib/layout.shared";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -32,7 +33,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       }}
       themeSwitch={{
         enabled: true,
-        component: <ThemeToggle />,
+        component: (
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <UserProfile />
+          </div>
+        ),
       }}
     >
       {children}
