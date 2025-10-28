@@ -107,13 +107,18 @@ Shared configurations
 # Install dependencies
 pnpm install
 
-# Run all apps in development
-pnpm dev:all
+# Copy .env.local to each app (one-time setup)
+cp .env.local apps/www/.env.local
+cp .env.local apps/docs/.env.local
+cp .env.local apps/dashboard/.env.local
 
-# Run specific app
-pnpm dev:www     # apps/www
-pnpm dev:docs    # apps/docs
-pnpm dev:dashboard # apps/dashboard
+# Run apps in separate terminals
+pnpm dev:www      # Marketing site on port 3000
+pnpm dev:dashboard # Dashboard app on port 3001
+pnpm dev:docs     # Documentation site on port 3002
+
+# Or run all apps in parallel (not recommended for dev)
+pnpm dev:all
 ```
 
 ### Build
