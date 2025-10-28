@@ -1,0 +1,234 @@
+---
+description: "UI Component Framework Guidelines - ReUI, Shadcn, and Custom Components"
+globs: ["apps/**/components/**/*.{ts,tsx}", "packages/ui/**/*.{ts,tsx}"]
+alwaysApply: true
+lastVerified: 2025-10-28T05:00:00Z
+sources:
+  - name: "ReUI Documentation"
+    url: "https://reui.io/docs/avatar"
+    accessedAt: 2025-10-28T05:00:00Z
+  - name: "Shadcn UI Documentation"
+    url: "https://ui.shadcn.com"
+    accessedAt: 2025-10-28T05:00:00Z
+---
+
+# UI Component Framework Guidelines
+
+## Priority Order
+
+### 1. ReUI (Preferred) 🎨
+Elegant, production-ready components via the Shadcn registry.
+
+**When to use:**
+- Adding new UI components
+- Wanting polished, styled components
+- Need advanced variants (Avatar with indicators, badges, status)
+
+**Installation:**
+```bash
+# Add ReUI component via Shadcn CLI
+pnpm dlx shadcn@latest add @reui/<component-name>
+
+# Example: Add Avatar component
+pnpm dlx shadcn@latest add @reui/avatar
+```
+
+**Usage:**
+```tsx
+import { Avatar, AvatarFallback, AvatarIndicator } from "@/components/ui/avatar";
+```
+
+**Official Registry:** https://reui.io
+
+### 2. Shadcn (Fallback) 📦
+Standard Shadcn components when ReUI variant doesn't exist.
+
+**When to use:**
+- ReUI doesn't have the component
+- Need basic Radix UI wrapper
+- Custom components require standard patterns
+
+**Installation:**
+```bash
+# Add Shadcn component
+pnpm dlx shadcn@latest add <component-name>
+
+# Example: Add Button component
+pnpm dlx shadcn@latest add button
+```
+
+**Usage:**
+```tsx
+import { Button } from "@/components/ui/button";
+```
+
+**Official Registry:** https://ui.shadcn.com
+
+### 3. Packages/UI (Shared) 🔄
+Monorepo-shared components from `packages/ui`.
+
+**When to use:**
+- Component already exists in `packages/ui`
+- Need to share across multiple apps
+- Avoiding duplication
+
+**Usage:**
+```tsx
+// IN PACKAGES:
+import { Button } from "@recurse/ui/components/button";
+
+// IN APPS (only when packages/ui is fully set up):
+import { Button } from "@recurse/ui";
+```
+
+**Current Status:** ⚠️ Under migration - prefer local imports for now.
+
+## Component Organization
+
+### App-Level Components
+```
+apps/docs/components/ui/     # Local UI components
+apps/docs/components/         # App-specific components
+```
+
+### Shared Components
+```
+packages/ui/src/components/   # Shared UI components
+packages/ui/src/lib/         # Shared utilities (cn, etc.)
+```
+
+## Adding New Components
+
+### Step 1: Check Existing Components
+- Search `packages/ui/src/components/` for existing component
+- Check app-level `components/ui/` directories
+- Review component needs vs available options
+
+### Step 2: Choose Framework
+1. **ReUI** - If component exists (check https://reui.io)
+2. **Shadcn** - If ReUI doesn't have it
+3. **Custom** - If neither framework fits needs
+
+### Step 3: Install and Use
+```bash
+# ReUI (preferred)
+pnpm dlx shadcn@latest add @reui/avatar
+
+# Shadcn (fallback)
+pnpm dlx shadcn@latest add avatar
+```
+
+### Step 4: Import Pattern
+```tsx
+// Local app components
+import { Avatar } from "@/components/ui/avatar";
+
+// Shared packages (once migration complete)
+import { Avatar } from "@recurse/ui";
+```
+
+## Component Guidelines
+
+### Avatar Component (Example)
+
+**ReUI Variants:**
+- `@reui/avatar-default` - Basic avatar
+- `@reui/avatar-fallback` - With fallback initials
+- `@reui/avatar-indicator` - With status indicator
+- `@reui/avatar-status` - With status badge
+- `@reui/avatar-badge` - With badge overlay
+- `@reui/avatar-group` - Multiple avatars
+
+**Usage Pattern:**
+```tsx
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+<Avatar>
+  <AvatarImage src="/user.jpg" alt="User" />
+  <AvatarFallback>JD</AvatarFallback>
+</Avatar>
+```
+
+## Migration Strategy
+
+### Current State
+- Apps use local imports from `@/components/ui/`
+- Shared components exist in `packages/ui` but incomplete
+- Mix of ReUI and Shadcn components
+
+### Target State
+- All apps import from `@recurse/ui`
+- Consistent ReUI > Shadcn priority
+- Shared utilities centralized
+
+### Migration Steps
+1. ✅ Identify missing components in `packages/ui`
+2. 🔄 Add ReUI components to `packages/ui`
+3. 🔄 Update app imports to use `@recurse/ui`
+4. 🔄 Remove duplicate app-level components
+5. 🔄 Add documentation for each component
+
+## Tool Usage
+
+### Shadcn CLI
+```bash
+# Add component (will prompt for location)
+pnpm dlx shadcn@latest add <component-name>
+
+# Add to specific location
+pnpm dlx shadcn@latest add button --cwd apps/docs/components/ui
+
+# Add ReUI component
+pnpm dlx shadcn@latest add @reui/avatar --cwd apps/docs/components/ui
+```
+
+### MCP Integration
+Currently no specific MCP server for Shadcn. Use CLI commands above.
+
+Future consideration: Create internal MCP server for component installation.
+
+## Best Practices
+
+1. **Always check ReUI first** - Better styled components
+2. **Use Shadcn CLI** - Avoid manual component copying
+3. **Follow app-level imports** - Use `@/components/ui/` until migration complete
+4. **Document custom variants** - Add props examples in component files
+5. **Share across apps** - Add to `packages/ui` if used in multiple apps
+
+## Current Component Inventory
+
+### In packages/ui
+- avatar, badge, button, calendar, card, checkbox, collapsible, command
+- copy-button, dialog, dropdown-menu, icon-toggle-button, input
+- label, popover, progress-circle, radio-group, scroll-area, select
+- spinner, switch, table, theme-toggle, toc, toc-clerk, toc-thumb, tooltip
+- kibo-ui components (announcement, kbd, pill, status)
+
+### In apps (local)
+- All apps have their own `components/ui/` directories
+- Some duplication exists (being migrated)
+
+## Troubleshooting
+
+### Import Errors
+- Check component exists in target location
+- Verify path alias (`@/` resolves correctly)
+- Ensure workspace package is installed (`pnpm install`)
+
+### Style Issues
+- Verify Tailwind config includes component styles
+- Check if component needs CSS import
+- Review component source for required dependencies
+
+### Framework Confusion
+- **ReUI** = Better styled, more variants
+- **Shadcn** = Standard, more control
+- **Shared** = Reusable across apps
+
+## Proposed Changes
+
+- [ ] Set up internal MCP server for component installation
+- [ ] Complete migration to `@recurse/ui` imports
+- [ ] Document all ReUI variants
+- [ ] Create component showcase/migration guide
+- [ ] Add TypeScript types for all components
