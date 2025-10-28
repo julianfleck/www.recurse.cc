@@ -19,11 +19,11 @@ sources:
 
 ## Priority Order
 
-### 1. ReUI (Preferred) 🎨
-Elegant, production-ready components via the Shadcn registry.
+### 1. ReUI (Default) 🎨
+Elegant, production-ready components via the Shadcn registry. **Always check ReUI first.**
 
 **When to use:**
-- Adding new UI components
+- Adding new UI components (default choice)
 - Wanting polished, styled components
 - Need advanced variants (Avatar with indicators, badges, status)
 
@@ -48,12 +48,12 @@ Standard Shadcn components when ReUI variant doesn't exist.
 
 **When to use:**
 - ReUI doesn't have the component
+- ReUI doesn't have a suitable variant
 - Need basic Radix UI wrapper
-- Custom components require standard patterns
 
 **Installation:**
 ```bash
-# Add Shadcn component
+# Add Shadcn component (only if ReUI unavailable)
 pnpm dlx shadcn@latest add <component-name>
 
 # Example: Add Button component
@@ -165,8 +165,8 @@ packages/ui/src/lib/         # Shared utilities (cn, etc.)
 - Review component needs vs available options
 
 ### Step 2: Choose Framework
-1. **ReUI** - If component exists (check https://reui.io)
-2. **Shadcn** - If ReUI doesn't have it
+1. **ReUI (Default)** - Always check first (https://reui.io)
+2. **Shadcn (Fallback)** - Only if ReUI doesn't have it
 3. **Custom** - If neither framework fits needs
 
 ### Step 3: Install Using MCP or CLI
@@ -236,8 +236,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 ## Best Practices
 
-1. **Use MCP for installation** - Ask AI to install components naturally
-2. **Always check ReUI first** - Better styled components
+1. **ReUI is default** - Always check ReUI first before falling back to Shadcn
+2. **Use MCP for installation** - Ask AI to install components naturally
 3. **Use Shadcn CLI as fallback** - When MCP isn't available
 4. **Follow app-level imports** - Use `@/components/ui/` until migration complete
 5. **Document custom variants** - Add props examples in component files
