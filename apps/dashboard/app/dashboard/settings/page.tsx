@@ -1,9 +1,14 @@
-"use client";
+'use client';
 
-import { CheckIcon, ChevronsUpDownIcon, HelpCircle } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { useAuthStore } from "@/components/auth/auth-store";
-import { Button } from "@/components/ui/button";
+import {
+  EMBEDDING_MODEL,
+  type ModelOption,
+  PARSING_MODELS,
+} from '@recurse/config/models';
+import { CheckIcon, ChevronsUpDownIcon, HelpCircle } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { useAuthStore } from '@/components/auth/auth-store';
+import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -11,25 +16,20 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/command';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from '@/components/ui/popover';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  EMBEDDING_MODEL,
-  type ModelOption,
-  PARSING_MODELS,
-} from "@recurse/config/models";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 export default function SettingsPage() {
   // Seed defaults (could be loaded from API/local storage later)
@@ -38,15 +38,15 @@ export default function SettingsPage() {
   const initialState = useMemo(
     () => ({
       defaultParsingModel:
-        PARSING_MODELS.find((m) => m.value === "gpt-4o")?.value ||
+        PARSING_MODELS.find((m) => m.value === 'gpt-4o')?.value ||
         PARSING_MODELS[0]?.value ||
-        "",
-      parsingModelApiKey: "",
-      contextModel: PARSING_MODELS[0]?.value ?? "",
-      contextModelApiKey: "",
+        '',
+      parsingModelApiKey: '',
+      contextModel: PARSING_MODELS[0]?.value ?? '',
+      contextModelApiKey: '',
       embeddingModel: EMBEDDING_MODEL.value,
-      email: authUser?.email ?? "",
-      password: "",
+      email: authUser?.email ?? '',
+      password: '',
     }),
     [authUser?.email]
   );
@@ -58,8 +58,8 @@ export default function SettingsPage() {
 
   useEffect(() => {
     // If auth user changes (e.g. after login), re-seed email baseline/state
-    setState((prev) => ({ ...prev, email: authUser?.email ?? "" }));
-    setBaseline((prev) => ({ ...prev, email: authUser?.email ?? "" }));
+    setState((prev) => ({ ...prev, email: authUser?.email ?? '' }));
+    setBaseline((prev) => ({ ...prev, email: authUser?.email ?? '' }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authUser?.email]);
 
@@ -71,14 +71,14 @@ export default function SettingsPage() {
   const parsingModelLabel = useMemo(() => {
     return (
       PARSING_MODELS.find((m) => m.value === state.defaultParsingModel)
-        ?.label || "Select model..."
+        ?.label || 'Select model...'
     );
   }, [state.defaultParsingModel]);
 
   const contextModelLabel = useMemo(() => {
     return (
       PARSING_MODELS.find((m) => m.value === state.contextModel)?.label ||
-      "Select model..."
+      'Select model...'
     );
   }, [state.contextModel]);
 
@@ -100,7 +100,7 @@ export default function SettingsPage() {
   return (
     <div
       className="flex flex-col"
-      style={{ minHeight: "calc(100vh - var(--fd-nav-height))" }}
+      style={{ minHeight: 'calc(100vh - var(--fd-nav-height))' }}
     >
       <div className="container mx-auto flex flex-1 flex-col p-8">
         <div className="mb-8">
@@ -135,8 +135,15 @@ export default function SettingsPage() {
                         <HelpCircle className="size-4" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent className="max-w-[260px]" side="top" sideOffset={4}>
-                      The parsing model is used to ingest content into RAGE. For long-form documents, using a smaller model (e.g. gpt-4o-mini) can save costs, while larger models produce better quality. Recommendation: gpt-4o.
+                    <TooltipContent
+                      className="max-w-[260px]"
+                      side="top"
+                      sideOffset={4}
+                    >
+                      The parsing model is used to ingest content into RAGE. For
+                      long-form documents, using a smaller model (e.g.
+                      gpt-4o-mini) can save costs, while larger models produce
+                      better quality. Recommendation: gpt-4o.
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -150,7 +157,7 @@ export default function SettingsPage() {
                         <PopoverTrigger asChild>
                           <Button
                             aria-expanded={openParsingModel}
-                            className={cn("flex-1", "justify-between")}
+                            className={cn('flex-1', 'justify-between')}
                             id="default-parsing-model"
                             role="combobox"
                             type="button"
@@ -176,11 +183,11 @@ export default function SettingsPage() {
                                   >
                                     <CheckIcon
                                       className={cn(
-                                        "mr-2 h-4 w-4",
+                                        'mr-2 h-4 w-4',
                                         state.defaultParsingModel ===
                                           model.value
-                                          ? "opacity-100"
-                                          : "opacity-0"
+                                          ? 'opacity-100'
+                                          : 'opacity-0'
                                       )}
                                     />
                                     {model.label}
@@ -228,8 +235,14 @@ export default function SettingsPage() {
                         <HelpCircle className="size-4" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent className="max-w-[260px]" side="top" sideOffset={4}>
-                      The context model retrieves from the knowledge base and answers questions. Since the provided context is accurate, smaller models are often sufficient here.
+                    <TooltipContent
+                      className="max-w-[260px]"
+                      side="top"
+                      sideOffset={4}
+                    >
+                      The context model retrieves from the knowledge base and
+                      answers questions. Since the provided context is accurate,
+                      smaller models are often sufficient here.
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -243,7 +256,7 @@ export default function SettingsPage() {
                         <PopoverTrigger asChild>
                           <Button
                             aria-expanded={openContextModel}
-                            className={cn("flex-1", "justify-between")}
+                            className={cn('flex-1', 'justify-between')}
                             id="context-model"
                             role="combobox"
                             type="button"
@@ -269,10 +282,10 @@ export default function SettingsPage() {
                                   >
                                     <CheckIcon
                                       className={cn(
-                                        "mr-2 h-4 w-4",
+                                        'mr-2 h-4 w-4',
                                         state.contextModel === model.value
-                                          ? "opacity-100"
-                                          : "opacity-0"
+                                          ? 'opacity-100'
+                                          : 'opacity-0'
                                       )}
                                     />
                                     {model.label}
@@ -320,7 +333,11 @@ export default function SettingsPage() {
                         <HelpCircle className="size-4" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent className="max-w-[260px]" side="top" sideOffset={4}>
+                    <TooltipContent
+                      className="max-w-[260px]"
+                      side="top"
+                      sideOffset={4}
+                    >
                       We currently support only one embedding model, but custom
                       providers are coming soon.
                     </TooltipContent>
@@ -328,7 +345,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex items-center gap-2 sm:col-span-2">
                   <Button
-                    className={cn("justify-between", "flex-1")}
+                    className={cn('justify-between', 'flex-1')}
                     disabled
                     id="embedding-model"
                     role="combobox"

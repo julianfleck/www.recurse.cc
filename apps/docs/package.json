@@ -14,6 +14,7 @@
   "dependencies": {
     "@recurse/api": "workspace:*",
     "@recurse/auth": "workspace:*",
+    "@recurse/config": "workspace:*",
     "@recurse/fumadocs": "workspace:*",
     "@recurse/ui": "workspace:*",
     "@radix-ui/react-accordion": "^1.2.12",
