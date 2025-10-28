@@ -136,6 +136,12 @@ packages/
 }
 ```
 
+**Development Server Execution:**
+- **User runs dev servers manually** in separate terminals
+- AI should NOT start dev servers
+- Use scripts for convenience: `pnpm dev:www`, `pnpm dev:docs`, `pnpm dev:dashboard`
+- Each app runs on a different port (www: 3000, docs: 3001, dashboard: 3002)
+
 **Simple pnpm approach:**
 - No Turborepo (keep it simple initially)
 - Use pnpm filters for app-specific commands
@@ -170,6 +176,27 @@ packages/
 - `packages/config/biome.jsonc` - Biome/Ultracite
 
 Each app extends base config.
+
+### Environment Variables
+
+**Shared `.env.local` at root:**
+- Single `.env.local` file at monorepo root (`~/Code/www.recurse.cc/.env.local`)
+- Next.js reads env files from the app directory, not the root
+- **Solution:** Copy `.env.local` to each app directory:
+  - `apps/www/.env.local`
+  - `apps/docs/.env.local`
+  - `apps/dashboard/.env.local`
+
+**Environment variables:**
+- `NEXT_PUBLIC_API_BASE_URL` - API endpoint URL
+- `NEXT_PUBLIC_AUTH0_DOMAIN` - Auth0 domain
+- `NEXT_PUBLIC_AUTH0_CLIENT_ID` - Auth0 client ID
+- `NEXT_PUBLIC_AUTH0_AUDIENCE` - Auth0 API audience
+- `NEXTAUTH_URL` - NextAuth base URL
+- `NEXTAUTH_SECRET` - NextAuth secret
+- Other app-specific variables
+
+**Important:** When updating env vars, remember to update all app `.env.local` files or create a symlink.
 
 ### Cross-Package Imports
 

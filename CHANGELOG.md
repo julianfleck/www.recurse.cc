@@ -1,5 +1,21 @@
 # Changelog
 
+## [2025-10-28T04:27:55Z] — Add: Dashboard App Setup
+
+**Context:** Setting up apps/dashboard as separate dashboard application
+
+**Changes:**
+- Copied components, lib, content, styles from apps/docs to apps/dashboard
+- Created root layout and providers for dashboard app
+- Updated package.json with all required dependencies
+- Dashboard dev server runs on port 3002
+- Root redirects to /dashboard
+
+**Impact:** Dashboard app structure ready for testing and development
+
+**Files touched:**
+- apps/dashboard/ (entire directory structure)
+
 ## [2025-10-28T03:20:00Z] — Add: README and Git Infrastructure
 
 **Context:** Completing bootstrap with README and Git setup

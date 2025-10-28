@@ -1,0 +1,11 @@
+{
+  "title": "Adding Content",
+  "icon": "folderplus",
+  "pages": [
+    "manual-ingestion",
+    "automatic-ingestion",
+    "browser-extension",
+    "messagers",
+    "proxy-ingestion"
+  ]
+}
