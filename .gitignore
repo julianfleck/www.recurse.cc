@@ -59,3 +59,12 @@ biome.jsonc
 # Vercel (commented out - needed for root directory config)
 # .vercel
 .vercel
+
+# System directories
+.atom/
+.cache/
+.config/
+.cursor/
+.luna/
+.npm/
+.Trash/
