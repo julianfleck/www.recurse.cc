@@ -12,6 +12,11 @@ export * from './dialog';
 export * from './dropdown-menu';
 export * from './icon-toggle-button';
 export * from './input';
+// Kibo UI components
+export * from './kibo-ui/announcement';
+export * from './kibo-ui/kbd';
+export * from './kibo-ui/pill';
+export * from './kibo-ui/status';
 export * from './label';
 export * from './popover';
 export * from './progress-circle';
@@ -22,14 +27,7 @@ export * from './spinner';
 export * from './switch';
 export * from './table';
 export * from './theme-toggle';
+export * from './toc';
 export * from './toc-clerk';
 export * from './toc-thumb';
-export * from './toc';
 export * from './tooltip';
-
-// Kibo UI components
-export * from './kibo-ui/announcement';
-export * from './kibo-ui/kbd';
-export * from './kibo-ui/pill';
-export * from './kibo-ui/status';
-
