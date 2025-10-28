@@ -62,10 +62,24 @@ This ensures deployments only trigger when files in the specific app directory c
 
 ## Troubleshooting
 
-If you see "No Next.js version detected", check:
-1. Root Directory setting is correct
+### "No Next.js version detected" Error
+Check:
+1. Root Directory setting is correct in Vercel dashboard
 2. The `package.json` exists in the specified root directory
 3. The `package.json` contains "next" in dependencies or devDependencies
+
+### Missing Dependencies Error
+If you see module not found errors (e.g., `@tanstack/react-table`):
+- Make sure dashboard-specific components are NOT in `apps/docs`
+- Each app should only have components it actually uses
+- Dashboard-specific features belong only in `apps/dashboard`
+
+### Fixing Build Errors
+After making changes to the monorepo structure:
+1. Clean up cross-app dependencies
+2. Ensure each app only imports what it needs
+3. Commit and push changes
+4. Vercel will automatically redeploy
 
 ## Project IDs
 
