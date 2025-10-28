@@ -89,3 +89,4 @@ Create typescript.mdc with:
 - Error handling guidelines
 - Integration with existing Ultracite rules
 
+

@@ -124,3 +124,4 @@ Create fumadocs.mdc with:
 - Shared package integration
 - Reference to docs-writing-rules.mdc for content guidelines
 
+

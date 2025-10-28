@@ -74,3 +74,4 @@ Auditing cursor rules to ensure apply patterns and globs make sense. We don't wa
 
 Update rules with more specific globs to avoid overloading agent while maintaining guidance.
 
+

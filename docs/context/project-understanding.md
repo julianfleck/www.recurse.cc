@@ -125,3 +125,4 @@ The current codebase lives entirely in `apps/docs` and includes:
 - Existing rules: `apps/docs/.cursor/rules/`
 - Migration plan: See CHANGELOG.md and research logs
 
+

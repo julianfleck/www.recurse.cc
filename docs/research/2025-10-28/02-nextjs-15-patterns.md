@@ -119,3 +119,4 @@ Create next.mdc with:
 - Layout organization
 - Monorepo-specific configuration
 
+
