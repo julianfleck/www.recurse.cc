@@ -1,0 +1,136 @@
+"use client";
+
+import type { ComponentProps, HTMLAttributes } from "react";
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+
+// Use theme colors for status indicators
+const getStatusColor = (status: string): string => {
+  switch (status) {
+    case "online":
+      return "var(--color-status-online)";
+    case "maintenance":
+      return "var(--color-status-maintenance)";
+    case "degraded":
+      return "var(--color-status-degraded)";
+    case "offline":
+      return "var(--color-status-offline)";
+    default:
+      return "var(--color-status-offline)";
+  }
+};
+
+const getStatusLabel = (status: string): string => {
+  switch (status) {
+    case "online":
+      return "All systems normal";
+    case "maintenance":
+      return "Maintenance";
+    case "degraded":
+      return "Degraded";
+    case "offline":
+      return "Offline";
+    default:
+      return "Offline";
+  }
+};
+
+export type StatusProps = ComponentProps<typeof Badge> & {
+  status: "online" | "offline" | "maintenance" | "degraded";
+  icon?: React.ComponentType<{ className?: string }>;
+  showTooltip?: boolean;
+  title?: string;
+};
+
+export const Status = ({
+  className,
+  status,
+  icon: Icon,
+  showTooltip = false,
+  title,
+  ...props
+}: StatusProps) => {
+  const IconComponent = Icon;
+  const tooltipTitle = title || getStatusLabel(status);
+
+  const badge = (
+    <Badge
+      className={cn("flex items-center gap-2 px-2", "group", status)}
+      variant="secondary"
+      {...props}
+    >
+      <StatusIndicator status={status} />
+      <StatusLabel />
+    </Badge>
+  );
+
+  return (
+    <div className={cn("flex items-center gap-2", className)}>
+      {IconComponent && <IconComponent className="h-5 w-5" />}
+      {showTooltip ? (
+        <Tooltip>
+          <TooltipTrigger asChild>{badge}</TooltipTrigger>
+          <TooltipContent>
+            <p>{tooltipTitle}</p>
+          </TooltipContent>
+        </Tooltip>
+      ) : (
+        badge
+      )}
+    </div>
+  );
+};
+
+export type StatusIndicatorProps = HTMLAttributes<HTMLSpanElement> & {
+  status?: "online" | "offline" | "maintenance" | "degraded";
+};
+
+export const StatusIndicator = ({
+  className,
+  status = "offline",
+  ...props
+}: StatusIndicatorProps) => {
+  const color = getStatusColor(status);
+
+  return (
+    <span className="relative flex h-2 w-2" {...props}>
+      <span
+        className={cn(
+          "absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
+        )}
+        style={{ backgroundColor: color }}
+      />
+      <span
+        className={cn("relative inline-flex h-2 w-2 rounded-full")}
+        style={{ backgroundColor: color }}
+      />
+    </span>
+  );
+};
+
+export type StatusLabelProps = HTMLAttributes<HTMLSpanElement>;
+
+export const StatusLabel = ({
+  className,
+  children,
+  ...props
+}: StatusLabelProps) => (
+  <span
+    className={cn("cursor-default text-muted-foreground text-xs", className)}
+    {...props}
+  >
+    {children ?? (
+      <>
+        <span className="hidden group-[.online]:block">Online</span>
+        <span className="hidden group-[.offline]:block">Offline</span>
+        <span className="hidden group-[.maintenance]:block">Maintenance</span>
+        <span className="hidden group-[.degraded]:block">Degraded</span>
+      </>
+    )}
+  </span>
+);

@@ -1,0 +1,11 @@
+{
+  "title": "Guide",
+  "defaultOpen": true,
+  "pages": [
+    "setup",
+    "Adding Content",
+    "Retrieving Content",
+    "source-subscriptions",
+    "Applications"
+  ]
+}

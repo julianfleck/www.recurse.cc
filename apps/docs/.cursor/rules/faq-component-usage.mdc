@@ -1,0 +1,132 @@
+# FAQ Component System
+
+The FAQ component system provides a reusable way to display frequently asked questions across the documentation using accordions.
+
+## Overview
+
+The FAQ system consists of three main parts:
+
+1. **FAQ Data Structure** (`lib/faq-data.ts`) - Contains all FAQ items with IDs and content
+2. **FAQ Component** (`components/faq.tsx`) - Renders FAQ items using Accordions
+3. **MDX Integration** - Registered in `mdx-components.tsx` for use in documentation
+
+## Usage
+
+### Basic Usage
+
+```mdx
+<FAQ items="upload-not-working,content-not-appearing" />
+```
+
+### Multiple Items
+
+```mdx
+<FAQ items="how-to-signup,where-to-get-invites,account-verification,api-authentication" />
+```
+
+### With Custom Styling
+
+```mdx
+<FAQ items="billing-plans,usage-tracking" className="my-custom-class" />
+```
+
+## Adding New FAQ Items
+
+To add new FAQ items, edit `lib/faq-data.ts`:
+
+```typescript
+{
+  id: "new-faq-item",
+  title: "What's the new question?",
+  content: `This is the answer. It can include **markdown formatting** and \`code snippets\`.`,
+  category: "new-category" // Optional: for organizing
+}
+```
+
+## Available FAQ Items
+
+### Registration & Account
+- `how-to-signup`
+- `where-to-get-invites`
+- `account-verification`
+
+### Upload & Content
+- `upload-not-working`
+- `content-not-appearing`
+- `supported-file-types`
+- `large-files`
+
+### Search & Retrieval
+- `search-not-finding-content`
+- `search-depth-parameter`
+
+### API & Integration
+- `api-authentication`
+- `api-rate-limits`
+- `integration-options`
+- `webhook-setup`
+
+### Billing & Usage
+- `billing-plans`
+- `usage-tracking`
+
+## Categories
+
+FAQs are organized by category for easier management:
+- `registration`
+- `upload`
+- `search`
+- `api`
+- `billing`
+
+## Best Practices
+
+1. **Use specific FAQ IDs** - Reference exact FAQ items rather than categories
+2. **Group related questions** - Place similar FAQs together on the same page
+3. **Keep content concise** - FAQs should be scannable and actionable
+4. **Test on different pages** - Ensure FAQs render correctly in various contexts
+5. **Update data file** - Add new FAQs to `lib/faq-data.ts` rather than inline
+
+## Example Implementation
+
+### Troubleshooting Section
+
+```mdx
+## Troubleshooting
+
+<FAQ items="upload-not-working,content-not-appearing,api-rate-limits" />
+
+## Need More Help?
+
+If you can't find the answer here, check our [comprehensive FAQ](/docs/faq) or contact support.
+```
+
+### Category-Based FAQ Page
+
+```mdx
+# API Integration FAQ
+
+## Authentication
+<FAQ items="api-authentication,api-rate-limits" />
+
+## Webhooks
+<FAQ items="webhook-setup" />
+
+## Troubleshooting
+<FAQ items="integration-options" />
+```
+
+## Technical Details
+
+- **Component**: `components/faq.tsx`
+- **Data Source**: `lib/faq-data.ts`
+- **Registration**: `mdx-components.tsx`
+- **Dependencies**: `@radix-ui/react-accordion`, `fumadocs-ui/components/accordion`
+- **Type Safety**: Full TypeScript support with interfaces
+
+The system automatically handles:
+- Accordion state management
+- Content formatting with prose styles
+- Error handling for missing FAQ items
+- Responsive design
+- Accessibility features

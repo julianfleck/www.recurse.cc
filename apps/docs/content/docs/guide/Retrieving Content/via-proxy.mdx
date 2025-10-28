@@ -1,0 +1,250 @@
+---
+title: Via Proxy
+description: Route OpenAI API compatible requests through Recurse to add your knowledge without changing your app
+---
+
+Use Recurse as an OpenAI‑compatible proxy. Keep your existing SDKs, UI, and tools—just point your OpenAI client at Recurse and your requests gain smart context from your knowledge base.
+
+**Add context to your AI agents by simply swapping your API base URL.**
+
+
+---
+
+## How it works
+
+Recurse sits between your app and the OpenAI API. When you send a standard Chat Completions request, Recurse:
+
+- Retrieves relevant context from your knowledge base using RAGE
+- Assembles a clean, source‑linked context window
+- Forwards your request (plus context) to the OpenAI‑compatible backend
+- Returns the normal OpenAI‑style response
+
+No prompt engineering or schema changes required.
+
+---
+
+## Quick start
+
+<div className='fd-steps [&_h4]:fd-step'>
+#### 1) Set the proxy base URL
+Point your client at `https://api.recurse.cc/proxy/[provider_url]`.
+For example, with OpenAI: `https://api.recurse.cc/proxy/https://api.openai.com/v1/`.
+
+#### 2) Add authentication
+Send your Recurse API key on every request using the `X-API-Key` header.
+
+#### 3) Choose your scope
+Provide a `scope` so Recurse knows which content to use. Send it via the `X-Recurse-Scope` header (preferred). A scope can be a user ID, a team, or a collection/tag.
+</div>
+
+---
+
+## Examples
+
+<Tabs items={['JavaScript', 'Python', 'cURL']} defaultIndex={0}>
+  <Tab value="JavaScript">
+    ```javascript
+    import OpenAI from 'openai';
+
+    const client = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+      baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
+      defaultHeaders: {
+        'X-API-Key': process.env.RECURSE_API_KEY,
+        // Scope can be a user id, a collection, or any label
+        'X-Recurse-Scope': 'user_123'
+      }
+    });
+
+    const completion = await client.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'user', content: 'Summarize our onboarding docs for a teammate.' }
+      ]
+      // You may also include a custom top-level `scope` field
+      // scope: 'user_123'
+    });
+
+    console.log(completion.choices[0].message);
+    ```
+  </Tab>
+
+  <Tab value="Python">
+    ```python
+    from openai import OpenAI
+    import os
+
+    client = OpenAI(
+        api_key=os.getenv('OPENAI_API_KEY'),
+        base_url='https://api.recurse.cc/proxy/https://api.openai.com/v1/',
+        default_headers={
+            'X-API-Key': os.getenv('RECURSE_API_KEY'),
+            'X-Recurse-Scope': 'user_123',
+        },
+    )
+
+    resp = client.chat.completions.create(
+        model='gpt-4o-mini',
+        messages=[{'role': 'user', 'content': 'Draft a response based on our product FAQ.'}],
+        # scope='user_123',  # Optional custom field
+    )
+
+    print(resp.choices[0].message)
+    ```
+  </Tab>
+
+  <Tab value="cURL">
+    ```bash
+    curl -X POST "https://api.recurse.cc/proxy/https://api.openai.com/v1/chat/completions" \
+      -H "Authorization: Bearer $OPENAI_API_KEY" \
+      -H "X-API-Key: $RECURSE_API_KEY" \
+      -H "Content-Type: application/json" \
+      -H "X-Recurse-Scope: user_123" \
+      -d '{
+        "model": "gpt-4o-mini",
+        "messages": [
+          {"role": "user", "content": "What are the key points from our pricing page?"}
+        ]
+      }'
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Provider URLs
+
+Copy the correct URL for your provider:
+
+<Tabs items={['OpenAI', 'Anthropic', 'OpenRouter', 'Groq', 'Google Gemini']} defaultIndex={0}>
+  <Tab value="OpenAI">
+    ```text
+    https://api.recurse.cc/proxy/https://api.openai.com/v1/
+    ```
+  </Tab>
+  <Tab value="Anthropic">
+    ```text
+    https://api.recurse.cc/proxy/https://api.anthropic.com/v1/
+    ```
+  </Tab>
+  <Tab value="OpenRouter">
+    ```text
+    https://api.recurse.cc/proxy/https://openrouter.ai/api/v1/
+    ```
+  </Tab>
+  <Tab value="Groq">
+    ```text
+    https://api.recurse.cc/proxy/https://api.groq.com/openai/v1/
+    ```
+  </Tab>
+  <Tab value="Google Gemini">
+    ```text
+    https://api.recurse.cc/proxy/https://generativelanguage.googleapis.com/v1beta/openai/
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Pre‑load context via API
+
+Upload documents and data using the API, then chat via the proxy—use the same `scope` to keep context aligned. A scope can represent a person, a team, or a collection/tag.
+
+```bash 
+# Add content via API
+curl -X POST "https://api.recurse.cc/documents" \
+  -H "X-API-Key: $RECURSE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Product Docs",
+    "content": "https://your-company.com/product-docs.pdf",
+    "metadata": {"type": "documentation", "collections": ["product_docs"]}
+  }'
+
+# Later, use the proxy with a matching scope (e.g., collection name)
+curl -X POST "https://api.recurse.cc/proxy/https://api.openai.com/v1/chat/completions" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "X-API-Key: $RECURSE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "X-Recurse-Scope: product_docs" \
+  -d '{
+    "model": "gpt-4o-mini",
+    "messages": [{"role": "user", "content": "How does enterprise pricing work?"}]
+  }'
+```
+
+Why this works: both API ingestion and the proxy read from the same knowledge base, filtered by `scope`. Keep your scope consistent.
+
+---
+
+## Best practices
+
+| Topic | Recommendation | Why |
+|---|---|---|
+| **Scope strategy** | Use a clear `scope` (header `X-Recurse-Scope` or request `scope`) | Targets the right content—per user, team, or collection |
+| **Security** | Treat API keys like secrets; rotate regularly | Protects your data |
+| **Cold starts** | Pre‑load important docs via API before first chat | Faster, higher‑quality answers |
+| **Fallbacks** | If no relevant context exists, responses behave like normal OpenAI | Zero risk to existing flows |
+
+<Accordions type="single">
+  <Accordion title="Supported endpoints & models">
+    Works with standard OpenAI‑compatible Chat Completions requests. Most model names pass through unchanged. Check your dashboard for currently supported models and endpoints.
+  </Accordion>
+  <Accordion title="Persist generated answers to your knowledge graph">
+    You can ask Recurse to persist the assistant’s final message to your knowledge graph. This is off by default.
+
+    | Option | Where | Values | Default |
+    |---|---|---|---|
+    | `X-Recurse-Persist` | HTTP header | `true` / `false` | `false` |
+    | `persist` | Request body (custom field) | `true` / `false` | `false` |
+
+    ```bash
+    curl -X POST "https://api.recurse.cc/proxy/https://api.openai.com/v1/chat/completions" \
+      -H "Authorization: Bearer $OPENAI_API_KEY" \
+      -H "X-API-Key: $RECURSE_API_KEY" \
+      -H "X-Recurse-Scope: user_123" \
+      -H "X-Recurse-Persist: true" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "model": "gpt-4o-mini",
+        "messages": [{"role": "user", "content": "Summarize our latest release notes."}]
+      }'
+    ```
+
+    Note: Persisting generated answers consumes storage allowance more quickly. Use thoughtfully.
+  </Accordion>
+  <Accordion title="Scope options">
+    | Option | Where | Notes |
+    |---|---|---|
+    | `X-Recurse-Scope` | HTTP header | Preferred—clear and explicit |
+    | `scope` | Request body (custom field) | Read by the proxy if present |
+  </Accordion>
+  <Accordion title="Troubleshooting">
+    | Issue | Fix |
+    |---|---|
+    | 401 Unauthorized | Missing/invalid `X-API-Key` |
+    | No context applied | Ensure `scope` matches how your content is organized |
+    | Slow responses | Large contexts—trim sources or split by audience |
+  </Accordion>
+  <Accordion title="Privacy & control">
+    Context is assembled just‑in‑time and includes source attribution. You control what’s ingested and which users can access which knowledge.
+  </Accordion>
+  
+</Accordions>
+
+---
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/guide/Retrieving Content/via-api" title="Via API" icon="code">
+    Add and manage content programmatically
+  </Card>
+  <Card href="/docs/guide/Retrieving Content/via-mcp" title="Via MCP" icon="bot">
+    Connect Recurse to AI agents via Model Context Protocol
+  </Card>
+  <Card href="/docs/api-documentation/search" title="Search API Reference" icon="filetext">
+    Full search parameters and response formats
+  </Card>
+</Cards>
+

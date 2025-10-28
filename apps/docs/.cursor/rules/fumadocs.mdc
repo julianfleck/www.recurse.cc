@@ -1,0 +1,255 @@
+---
+description: "Fumadocs framework configuration and MDX patterns"
+globs: ["apps/**/content/**/*.mdx", "apps/**/content/**/meta.json", "apps/**/source.config.ts"]
+alwaysApply: false
+lastVerified: 2025-10-28T03:15:00Z
+sources:
+  - name: "Fumadocs Integration Research"
+    url: "docs/research/2025-10-28/03-fumadocs-integration.md"
+    accessedAt: 2025-10-28T02:55:29Z
+  - name: "Official Fumadocs Documentation"
+    url: "https://fumadocs.vercel.app/"
+    accessedAt: 2025-10-28T02:55:29Z
+  - name: "Existing Fumadocs Rules"
+    url: "apps/docs/.cursor/rules/fumadocs-folder-structure.mdc"
+    accessedAt: 2025-10-28T02:55:29Z
+---
+
+# Fumadocs Framework Guide
+
+## Purpose
+
+Standardize Fumadocs usage across apps (docs, www/blog, dashboard/help) in the recurse.cc monorepo. This rule links to official docs and references existing comprehensive rules.
+
+## Scope
+
+All Fumadocs configuration and content:
+- `**/source.config.ts`
+- `**/content/**/*.mdx`
+- `**/meta.json`
+
+## Official Documentation
+
+**Always refer to:** https://fumadocs.vercel.app/
+
+The official documentation is the source of truth for:
+- Configuration options
+- Component APIs
+- Latest features and updates
+
+## Hard Requirements
+
+### Source Configuration
+
+```typescript
+// ✅ Good: Define content collections
+import { defineDocs } from 'fumadocs-mdx/config';
+
+export const docs = defineDocs({
+  dir: 'content/docs',
+  docs: {
+    schema: frontmatterSchema,
+  },
+  meta: {
+    schema: metaSchema,
+  },
+});
+```
+
+Each app should have its own `source.config.ts` with:
+- Content directory location
+- Custom frontmatter schema (if needed)
+- Meta schema
+
+### Content Organization
+
+```typescript
+// ✅ Good: Folder structure
+content/
+  docs/
+    introduction.mdx
+    quickstart/
+      meta.json
+      api.mdx
+      ui.mdx
+    meta.json (root)
+```
+
+- Root `meta.json` controls sidebar order
+- Nested folders with own `meta.json`
+- MDX files for content
+
+### Meta.json Structure
+
+```json
+{
+  "pages": [
+    "introduction",
+    "quickstart",
+    "---Guides---",
+    "...guide",
+    "[External Link](https://example.com)"
+  ]
+}
+```
+
+**Common patterns:**
+- `"filename"` - Direct file reference
+- `"...folder"` - Extract all items from folder
+- `"---Label---"` - Separator
+- `"[Text](url)"` - External link
+
+**See:** `apps/docs/.cursor/rules/fumadocs-folder-structure.mdc` for complete guide
+
+### Icon Registration
+
+```typescript
+// ✅ Good: Register icons in source.ts
+import { Book, Rocket } from 'lucide-react';
+
+function resolveIcon(icon?: string) {
+  switch (icon?.toLowerCase()) {
+    case 'book':
+      return <Book className="size-4" />;
+    case 'rocket':
+      return <Rocket className="size-4" />;
+    default:
+      return;
+  }
+}
+```
+
+- Register icons in `lib/source.ts`
+- Support Lucide React and Tabler Icons
+- Reference in meta.json
+
+## Soft Guidelines
+
+### MDX Components
+
+```mdx
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Steps } from 'fumadocs-ui/components/steps';
+
+<Cards>
+  <Card href="/docs/getting-started" title="Getting Started">
+    Learn the basics
+  </Card>
+</Cards>
+```
+
+**Common components:**
+- `<Card>`, `<Cards>` - Navigation cards
+- `<Steps>` - Procedural instructions
+- `<Accordion>`, `<Accordions>` - Progressive disclosure
+- `<Tabs>` - Multi-option content
+- Code blocks - Automatic syntax highlighting
+
+**See:** `apps/docs/.cursor/rules/fumadocs-mdx-reference.mdc` for complete component guide
+
+### Frontmatter
+
+```mdx
+---
+title: Page Title
+description: Page description
+icon: book
+sidebar_label: Short Label
+---
+```
+
+- Use `sidebar_label` for shorter sidebar text
+- Provide `description` for SEO
+- Set `icon` for visual identification
+
+### Content Guidelines
+
+Follow `apps/docs/.cursor/rules/docs-writing-rules.mdc` for:
+- User-centric language
+- Typography conventions
+- Blacklisted words/phrases
+- Brand voice consistency
+
+## Monorepo Considerations
+
+### Shared Configuration
+
+```typescript
+// packages/fumadocs/src/config/
+export const iconResolver = { /* ... */ };
+export const transformers = [ /* ... */ ];
+```
+
+- Icon resolver in `packages/fumadocs`
+- Shared transformers
+- App-specific source.config.ts imports shared config
+
+### Per-App Content
+
+```typescript
+// apps/docs/content/docs/
+// apps/www/content/blog/
+// apps/dashboard/content/help/
+```
+
+Each app has own content directory:
+- **apps/docs**: `/docs/*` documentation
+- **apps/www**: `/blog/*` blog posts
+- **apps/dashboard**: Optional in-app help
+
+### Code Highlighting Themes
+
+```typescript
+// ✅ Good: Shared themes
+import minimalAccentDark from '@recurse/fumadocs/styles/minimal-accent-dark.json';
+
+mdxOptions: {
+  rehypeCodeOptions: {
+    themes: {
+      dark: minimalAccentDark,
+    },
+  },
+}
+```
+
+- Store themes in `packages/fumadocs/src/styles/`
+- Import into each app's source.config.ts
+
+## Integration with Next.js
+
+Fumadocs works within Next.js App Router:
+
+- Configure MDX in `next.config.mjs`
+- Use Fumadocs layouts for docs pages
+- Server Components render MDX content
+
+Follow next.mdc and routing.mdc for:
+- App Router patterns
+- Route organization
+- Server/Client Component guidelines
+
+## Quality Checks
+
+Before committing Fumadocs content:
+
+- [ ] Meta.json structure valid
+- [ ] Icons registered in source.ts
+- [ ] Frontmatter schema matches expectations
+- [ ] Links point to correct routes
+- [ ] Content follows writing guidelines
+
+## Exceptions
+
+- **Blog posts**: Simpler meta.json structure acceptable
+- **In-app help**: Optional, may not need full Fumadocs setup
+
+## References
+
+- **Official Docs**: https://fumadocs.vercel.app/
+- **Folder Structure**: `apps/docs/.cursor/rules/fumadocs-folder-structure.mdc`
+- **MDX Components**: `apps/docs/.cursor/rules/fumadocs-mdx-reference.mdc`
+- **Writing Guidelines**: `apps/docs/.cursor/rules/docs-writing-rules.mdc`
+
+## Proposed Changes
+
+[Document friction as it emerges during use]

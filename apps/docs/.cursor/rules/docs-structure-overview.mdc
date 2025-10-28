@@ -1,0 +1,215 @@
+---
+description: Recurse.cc Documentation Structure Overview
+globs: *.md,*.mdx
+alwaysApply: false
+---
+# Recurse.cc Documentation Structure Overview
+
+## Current Documentation Status
+
+Based on the content/docs directory structure, here's what exists and what needs to be created:
+
+## ✅ Completed / Auto-Generated Content
+
+### API Documentation (Auto-generated from OpenAPI specs)
+Based on the API documentation meta.json, only specific endpoint groups are included in the user-facing documentation. These are the endpoints that users should reference when integrating with Recurse.
+
+**Status**: Auto-generated via OpenAPI specs
+**Location**: `content/docs/(API Documentation)/`
+**Included Categories**: health, documents, search, writing, auth, users, api-keys, extract
+
+#### Health Check
+- `health/get.mdx` - System health status endpoint
+
+#### Documents (8 files)
+- `documents/doc_id-delete.mdx` - Delete specific document
+- `documents/doc_id-get.mdx` - Get document details
+- `documents/doc_id-processing-status-get.mdx` - Check processing status
+- `documents/doc_id-resume-processing-post.mdx` - Resume document processing
+- `documents/get.mdx` - List all documents
+- `documents/list-post.mdx` - List documents with filters
+- `documents/post.mdx` - Create new document
+- `documents/upload-post.mdx` - Upload document file
+
+#### Search (7 files)
+- `search/candidates-post.mdx` - Search for content candidates
+- `search/document-get.mdx` - Search within specific document
+- `search/frames-get.mdx` - Search for semantic frames
+- `search/get.mdx` - General search endpoint
+- `search/semantic-get.mdx` - Semantic search
+- `search/tags-get.mdx` - Search by tags
+- `search/text-get.mdx` - Text-based search
+
+#### Writing Assistance (3 files)
+- `writing/answer-get.mdx` - Generate answers using knowledge
+- `writing/complete-get.mdx` - Complete text using context
+- `writing/rephrase-get.mdx` - Rephrase text with context
+
+#### Authentication & Users (OAuth + Users)
+- `oauth/callback-get.mdx` - OAuth callback
+- `oauth/login-get.mdx` - OAuth login
+- `oauth/logout-get.mdx` - OAuth logout
+- `oauth/logout-post.mdx` - OAuth logout (POST)
+- `oauth/me-get.mdx` - Get current user info
+- `oauth/refresh-post.mdx` - Refresh OAuth token
+- `users/me-get.mdx` - Get user profile
+- `users/me-usage-get.mdx` - Get usage statistics
+- `users/me-api-keys-get.mdx` - List API keys
+- `users/me-api-keys-post.mdx` - Create API key
+- `users/me-api-keys-key_id-delete.mdx` - Delete API key
+
+#### Content Extraction (9 files)
+- `extract/embeddings-post.mdx` - Generate embeddings
+- `extract/frames-post.mdx` - Extract semantic frames
+- `extract/frames-status-job_id-get.mdx` - Check frame extraction status
+- `extract/frames-sync-post.mdx` - Extract frames synchronously
+- `extract/metadata-post.mdx` - Extract metadata
+- `extract/metadata-status-job_id-get.mdx` - Check metadata extraction status
+- `extract/metadata-sync-post.mdx` - Extract metadata synchronously
+- `extract/sections-post.mdx` - Extract document sections
+- `extract/status-get.mdx` - Check extraction service status
+
+#### Excluded Endpoints
+The following endpoint categories are available in the API but **not included** in the user documentation:
+- Admin endpoints (internal use only)
+- Graph operations (system management)
+- Node operations (system management)
+- Tree navigation (system management)
+- Vault operations (system management)
+- Job management (internal monitoring)
+
+**Total User-Facing API Documentation**: ~37 endpoint files across the included categories above
+
+
+## 🚧 Needs Content Creation
+
+### Core Pages (High Priority)
+**Location**: `content/docs/`
+
+#### ✅ Introduction
+- **File**: `introduction.mdx`
+- **Status**: Exists but needs rewrite (currently too technical)
+- **Purpose**: Main landing page explaining what Recurse is
+
+#### ❓ Quickstart
+- **File**: `quickstart.mdx`
+- **Status**: Exists but needs review/rewrite
+- **Purpose**: Get users to first success quickly
+
+### Guide Section (Medium Priority)
+**Location**: `content/docs/(Guide)/`
+
+#### Adding Content (4 articles + meta)
+- **✅ Source subscriptions**: `automatic-ingestion.mdx` (exists, needs review)
+- **❓ Manual ingestion**: `manual-ingestion.mdx` (exists, needs content)
+- **❓ Browser extension**: `browser-extension.mdx` (exists, needs content)
+- **❓ Messengers**: `messagers.mdx` (exists, needs content)
+
+#### Applications (5 articles + meta)
+- **❓ AI Agents**: `ai-agents.mdx` (exists, needs content)
+- **❓ Chatbots**: `chatbots.mdx` (exists, needs content)
+- **❓ Context Transfer**: `context-transfer.mdx` (exists, needs content)
+- **❓ Reasoning**: `reasoning.mdx` (exists, needs content)
+- **❓ Use Cases**: `use-cases.mdx` (exists, needs content)
+
+#### Retrieving Content (3 articles + meta)
+- **❓ Via API**: `via-api.mdx` (exists, needs content)
+- **❓ Via MCP**: `via-mcp.mdx` (exists, needs content)
+- **❓ Via Proxy**: `via-proxy.mdx` (exists, needs content)
+
+#### Setup Guide
+- **❓ Setup**: `setup.mdx` (exists, needs content)
+
+### About Section (Lower Priority)
+**Location**: `content/docs/About/`
+
+#### ❓ About Us
+- **File**: `about-us.mdx` (exists, needs content)
+- **Purpose**: Company story, mission, team
+
+#### ❓ Pricing
+- **File**: `pricing.mdx` (exists, needs content)
+- **Purpose**: Pricing plans, features, billing
+
+#### ❓ Why RAGE
+- **File**: `why-rage.mdx` (exists, needs content)
+- **Purpose**: Explain the technology value proposition
+
+## Content Creation Priority Matrix
+
+### Phase 1: Foundation (Week 1-2)
+1. **Rewrite Introduction** - Main value proposition and overview
+2. **Enhance Quickstart** - Get users to first success
+3. **Complete Setup Guide** - How to get started
+
+### Phase 2: Core User Journeys (Week 3-4)
+4. **Adding Content Guides** - All 4 articles
+   - Manual ingestion
+   - Browser extension
+   - Messengers
+   - Review automatic ingestion
+
+### Phase 3: Applications & Use Cases (Week 5-6)
+5. **Applications Section** - All 5 articles
+   - AI Agents
+   - Chatbots
+   - Context Transfer
+   - Reasoning
+   - Use Cases
+
+### Phase 4: Advanced Usage (Week 7-8)
+6. **Retrieving Content** - All 3 articles
+   - Via API
+   - Via MCP
+   - Via Proxy
+
+### Phase 5: Supporting Content (Week 9-10)
+7. **About Section** - All 3 articles
+   - About Us
+   - Pricing
+   - Why RAGE
+
+## Content Gaps Analysis
+
+### Current Introduction Issues
+- Too technical (mentions "frames", "embeddings", "graphs")
+- API-focused rather than user benefit-focused
+- Lacks compelling value proposition
+- Missing user journey flow
+
+### Missing User Journey Content
+- **Onboarding**: How new users get started
+- **Core workflows**: Upload → Process → Query → Use
+- **Integration patterns**: How to use with existing AI tools
+- **Success stories**: Real user examples and outcomes
+
+### Integration Documentation Needed
+- **MCP (Model Context Protocol)**: How to connect via MCP
+- **API integration**: Beyond basic examples
+- **Proxy usage**: OpenAI-compatible proxy setup
+- **Browser extension**: Installation and usage
+- **Messenger integration**: Various chat platforms
+
+## Success Metrics for Documentation
+
+### Completion Criteria
+- [ ] All 18 user-written articles have content
+- [ ] Content follows established writing rules
+- [ ] No unexplained technical jargon
+- [ ] Each article has working examples
+- [ ] Cross-linking between related articles
+- [ ] User feedback on clarity and usefulness
+
+### Quality Metrics
+- [ ] Flesch-Kincaid readability score ≤ 8
+- [ ] Average session duration on docs pages
+- [ ] User completion rates for guided tutorials
+- [ ] Reduction in support tickets for basic questions
+
+## Next Steps
+
+1. **Start with Introduction rewrite** - Establish the foundation
+2. **Create content templates** - For consistent structure across articles
+3. **Set up review process** - For quality assurance
+4. **Plan content creation schedule** - Based on priority matrix
+5. **Establish success metrics** - Track documentation effectiveness

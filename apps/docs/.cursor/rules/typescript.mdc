@@ -1,0 +1,217 @@
+---
+description: "TypeScript 5.x conventions and best practices for strict type safety"
+globs: ["apps/**/*.{ts,tsx}", "packages/**/*.{ts,tsx}"]
+alwaysApply: false
+lastVerified: 2025-10-28T03:15:00Z
+sources:
+  - name: "TypeScript 5.x Best Practices Research"
+    url: "docs/research/2025-10-28/01-typescript-best-practices.md"
+    accessedAt: 2025-10-28T02:55:29Z
+  - name: "Current tsconfig.json"
+    url: "apps/docs/tsconfig.json"
+    accessedAt: 2025-10-28T02:55:29Z
+---
+
+# TypeScript Conventions
+
+## Purpose
+
+Enforce strict type safety and consistent TypeScript patterns across all apps and packages in the recurse.cc monorepo. This rule complements ultracite.mdc, which handles linting. Focus here is on conventions and patterns.
+
+## Scope
+
+All TypeScript files in:
+- `apps/**/*.{ts,tsx}`
+- `packages/**/*.{ts,tsx}`
+
+## Hard Requirements
+
+### Strict Mode
+
+**Must be enabled in all tsconfig.json files:**
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noPropertyAccessFromIndexSignature": true
+  }
+}
+```
+
+### Type Safety
+
+- **Never use `any`**: Prefer `unknown` when type is truly unknown
+- **Use `export type`** for type-only exports
+- **Use `import type`** for type-only imports
+- **Define explicit return types** for public functions
+- **Avoid type assertions** (`as` keyword), prefer type guards
+
+### Module Patterns
+
+- **Prefer named exports** over default exports (better tree-shaking)
+- **Use `type` for unions and primitives**
+- **Use `interface` for object shapes** (extensible)
+- **ESM modules**: `"module": "ESNext"`
+- **Bundler resolution**: `"moduleResolution": "bundler"` (for Next.js 15)
+
+### Type Definitions
+
+```typescript
+// ✅ Good: Interface for extensible object shapes
+interface User {
+  id: string;
+  name: string;
+}
+
+// ✅ Good: Type for unions/primitives
+type Status = 'pending' | 'active' | 'inactive';
+
+// ✅ Good: Type-only import
+import type { User } from './types';
+
+// ❌ Bad: Using any
+function process(data: any) {}
+
+// ✅ Good: Using unknown with type guard
+function process(data: unknown) {
+  if (isUser(data)) {
+    // Now safely typed
+  }
+}
+```
+
+## Soft Guidelines
+
+### Import Organization
+
+Order imports: external → internal → types → relative
+
+```typescript
+// External packages
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+
+// Internal packages
+import { cn } from '@recurse/ui';
+
+// Types (with 'type' keyword)
+import type { User } from '@recurse/api';
+
+// Relative imports
+import { getUser } from './utils';
+```
+
+### Function Return Types
+
+```typescript
+// ✅ Good: Explicit return type for public functions
+export async function getUser(id: string): Promise<User> {
+  return fetch(`/api/users/${id}`).then(r => r.json());
+}
+
+// ✅ Good: Infer return type for internal functions
+async function fetchData() {
+  return await fetch('/api/data');
+}
+```
+
+### Error Handling
+
+```typescript
+// ✅ Good: Discriminated union for results
+type Result<T> = 
+  | { success: true; data: T }
+  | { success: false; error: string };
+
+// ✅ Good: Custom error types
+class ApiError extends Error {
+  constructor(
+    public statusCode: number,
+    message: string
+  ) {
+    super(message);
+  }
+}
+```
+
+### Generics
+
+```typescript
+// ✅ Good: Constrained generics
+function getValue<T extends string | number>(key: string): T | undefined {
+  return getValueFromStore(key) as T;
+}
+
+// ✅ Good: Clear generic names
+function cacheValue<TValue>(key: string, value: TValue): void {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+```
+
+## Monore Scope Considerations
+
+### Path Aliases
+
+Use consistent path aliases across all packages:
+
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"],
+      "@/components/*": ["./components/*"],
+      "@/lib/*": ["./lib/*"]
+    }
+  }
+}
+```
+
+### Cross-Package Imports
+
+```typescript
+// ✅ Good: Import from workspace package
+import { Button } from '@recurse/ui';
+import type { ApiResponse } from '@recurse/api';
+
+// ✅ Good: Use workspace protocol
+// In package.json: "@recurse/ui": "workspace:*"
+```
+
+### Shared Types
+
+- **Option 1**: Define in `packages/api/src/types.ts`
+- **Option 2**: Create `packages/types` for shared type definitions
+- **Consistency**: All apps reference shared types from packages
+
+## Integration with Ultracite
+
+This rule complements ultracite.mdc:
+
+- **ultracite.mdc**: Handles linting (no-any, etc.)
+- **typescript.mdc**: Handles conventions (import order, naming, etc.)
+
+Both rules work together for complete TypeScript guidance.
+
+## Quality Checks
+
+Before committing TypeScript code:
+
+- [ ] All strict mode flags enabled
+- [ ] No `any` types used
+- [ ] Return types defined for public functions
+- [ ] `import type` used for type-only imports
+- [ ] Path aliases configured consistently
+- [ ] Cross-package imports use workspace protocol
+
+## Exceptions
+
+- **Prototype code**: Mark with `// TODO: Type this properly`
+- **Third-party types**: Accept vendor type definitions (may include `any`)
+- **Migration**: Temporarily allow `any` with `@ts-expect-error` and ticket number
+
+## Proposed Changes
+
+[Document friction as it emerges during use]
