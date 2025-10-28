@@ -1,0 +1,400 @@
+---
+description: Recurse.cc Documentation Writing Rules
+globs: *.md,*.mdx
+alwaysApply: false
+---
+# Recurse.cc Documentation Writing Rules
+
+## Overview
+This document outlines the rules and guidelines for writing user-facing documentation for Recurse.cc. The documentation should be easy to understand, focus on practical value, and highlight RAGE's unique features while avoiding technical complexity.
+
+## Core Principles
+
+### 1. User-Centric Focus
+- **Write for beginners first**: Assume readers have basic technical knowledge but are new to RAGE/Recurse
+- **Focus on problems solved**: Start with user pain points, then show how Recurse solves them
+- **Practical over theoretical**: Emphasize immediate benefits and use cases over technical architecture
+- **Action-oriented language**: Use verbs like "build", "connect", "analyze", "discover" instead of passive constructions
+
+### 2. Simplify RAGE's Complexity
+- **Avoid technical jargon**: Don't mention "frames", "embeddings", "graphs", or "recursive structures"
+- **Use analogies**: Compare RAGE to familiar concepts like "personal memory for AI" or "smart note-taking"
+- **Focus on outcomes**: Talk about what users can achieve, not how the system works internally
+- **Progressive disclosure**: Start simple, provide deeper details only when needed
+
+### 3. Brand Consistency
+- **Platform name**: Use "Recurse" for the platform, "RAGE" only when explaining the technology
+- **Value proposition**: "Turn your documents into living context for AI systems"
+- **Unique selling points**:
+  - Context portability between AI systems
+  - Knowledge that grows smarter over time
+  - Privacy-first approach with user ownership
+  - Works with existing AI tools and workflows
+
+## Content Structure Rules
+
+### Frontmatter
+Every MDX file must include:
+```yaml
+---
+title: Clear, descriptive title
+description: One sentence explaining what this page helps users accomplish
+---
+```
+
+### Document Organization
+1. **Hook**: Start with a compelling problem statement or benefit
+2. **Overview**: Brief explanation of what the feature/page does
+3. **How it works**: Simple explanation (avoid technical details)
+4. **Use cases**: Concrete examples of what users can achieve
+5. **Getting started**: Step-by-step instructions
+6. **Next steps**: Links to related content or additional features
+
+### Headings Hierarchy
+- `# Main Title` (only in frontmatter)
+- `## Section Header`
+- `### Subsection Header`
+- `#### Step Header` (for numbered steps)
+
+## Writing Style Guidelines
+
+### Language Rules
+- **Active voice**: "Upload your document" not "Documents can be uploaded"
+- **Present tense**: "Recurse helps you" not "Recurse will help you"
+- **Second person**: "You can upload" not "Users can upload"
+- **Simple words**: Use "build" instead of "construct", "fix" instead of "resolve"
+- **Short sentences**: Aim for 15-20 words per sentence
+
+### Typography Rules
+- **Smart quotes and apostrophes**: Always use real apostrophes (') and smart quotes ("") instead of straight quotes
+- **En-dashes for ranges**: Use en-dashes (–) for ranges like "5–10 minutes" instead of hyphens or em-dashes
+- **Em-dashes for interruptions**: Use em-dashes (—) sparingly for interruptions or parenthetical thoughts
+- **Consistent punctuation**: Maintain consistent use of punctuation marks throughout
+
+### Blacklisted Words and Phrases
+Avoid these overused, empty, or meaningless words and phrases. Use specific, concrete language instead:
+
+#### Marketing Buzzwords (Avoid)
+- **Breakthrough**: Use "advancement" or "improvement" with specific details
+- **Cutting-edge**: Use "current" or "modern" with specifics
+- **Revolutionary**: Use "new approach" with concrete benefits
+- **Game-changing**: Use "important change" with measurable impact
+- **Transformative**: Use "changes how" with specific examples
+- **Innovative**: Use "new method" with technical details
+- **Disruptive**: Use "changes industry" with evidence
+- **Next-generation**: Use "new version" with version numbers
+- **State-of-the-art**: Use "current standard" with comparisons
+- **Leading-edge**: Use "most recent" with timelines
+- **Bleeding-edge**: Use "experimental" with risks
+- **Fundamental shift**: Use "major change" with specifics
+
+#### Empty Corporate Jargon (Avoid)
+- **Sophisticated**: Use "complex" or "detailed" with examples
+- **Robust**: Use "reliable" or "thorough" with metrics
+- **Scalable**: Use "handles growth" with numbers
+- **Flexible**: Use "adapts to" with use cases
+- **Dynamic**: Use "changes with" with triggers
+- **Intelligent**: Use "analyzes" or "learns" with methods
+- **Smart**: Use "automated" or "efficient" with specifics
+- **Advanced**: Use "improved" with comparisons
+- **Comprehensive**: Use "complete" or "thorough" with scope
+- **Holistic**: Use "complete view" with components
+- **Synergistic**: Use "works together" with mechanisms
+- **Strategic**: Use "planned" with goals
+- **Visionary**: Use "forward-looking" with predictions
+
+#### Overused Impact Words (Avoid)
+- **Impactful**: Use "affects" or "changes" with measurements
+- **Meaningful**: Use "important" or "valuable" with reasons
+- **Valuable**: Use "useful" or "beneficial" with outcomes
+- **Powerful**: Use "effective" or "capable" with examples
+- **Exceptional**: Use "better than average" with benchmarks
+- **Outstanding**: Use "above expectations" with metrics
+- **Remarkable**: Use "unusual" or "notable" with specifics
+- **Impressive**: Use "better than expected" with comparisons
+
+#### Empty Adjectives (Avoid)
+- **Amazing**: Use "surprising" or "unexpected" with details
+- **Awesome**: Use "impressive" or "effective" with reasons
+- **Fantastic**: Use "excellent" or "very good" with criteria
+- **Incredible**: Use "hard to believe" with evidence
+- **Unbelievable**: Use "surprising" with verification
+- **Phenomenal**: Use "exceptional" with measurements
+- **Extraordinary**: Use "unusual" with context
+- **Unprecedented**: Use "first time" with historical comparison
+- **Unique**: Use "different from others" with specifics
+- **One-of-a-kind**: Use "only example" with category
+
+#### Corporate Status Words (Avoid)
+- **Best-in-class**: Use "better than competitors" with evidence
+- **World-class**: Use "high quality" with standards
+- **Industry-leading**: Use "top performer" with market share
+- **Market-leading**: Use "largest" or "most popular" with data
+- **Top-tier**: Use "highest quality" with rankings
+- **Premium**: Use "higher quality" with price justification
+- **Elite**: Use "select group" with criteria
+- **Exclusive**: Use "limited to" with restrictions
+
+#### Technology Hype Words (Avoid)
+- **Future-proof**: Use "designed for growth" with timelines
+- **Tomorrow's**: Use "upcoming" with dates
+- **Ahead**: Use "leading" with timeframes
+- **Forward-thinking**: Use "anticipates" with predictions
+- **Progressive**: Use "advances" with pace
+- **Pioneering**: Use "first to" with achievements
+- **Trailblazing**: Use "leads in" with areas
+- **Groundbreaking**: Use "new approach" with precedents
+
+#### Process Words (Avoid)
+- **Leverage**: Use "use" or "take advantage of" with methods
+- **Empower**: Use "enable" or "give ability to" with specifics
+- **Enable**: Use "allow" or "make possible" with conditions
+- **Facilitate**: Use "make easier" with mechanisms
+- **Optimize**: Use "improve" with metrics
+- **Streamline**: Use "simplify" with steps removed
+- **Seamlessly**: Use "smoothly" with integration details
+
+#### Structure Words (Avoid)
+- **Paradigm**: Use "approach" or "method" with examples
+- **Shift**: Use "change" with direction and magnitude
+- **Etc.**: Use "and others" or list specific examples
+- **Etc**: Use "and similar" with category
+
+#### Why These Words Are Problematic
+- **Empty meaning**: Words that sound good but convey little specific information
+- **Overused**: Readers tune them out because they're so common
+- **Unmeasurable**: Hard to verify or quantify claims
+- **Unspecific**: Don't help users understand actual benefits or differences
+- **Corporate speak**: Create distance between writer and reader
+
+#### Better Alternatives
+Instead of blacklisted words, use:
+- **Specific details**: Numbers, examples, comparisons
+- **Measurable outcomes**: "Reduces time by 50%" vs "streamlines process"
+- **Concrete benefits**: "Upload 100 documents at once" vs "scalable solution"
+- **Technical specifics**: "Uses vector embeddings" vs "effective system"
+- **User outcomes**: "Complete tasks 3x faster" vs "powerful platform"
+
+### Tone Guidelines
+- **Friendly and approachable**: Like explaining to a colleague
+- **Confident but not arrogant**: Show capability without overwhelming
+- **Helpful and supportive**: Guide users toward success
+- **Professional but conversational**: No corporate jargon
+
+### Formatting Preferences
+- **Favor tables over lists**: Tables are easier to scan and read than bullet lists
+- **Use accordions for progressive disclosure**: Break complex information into expandable sections using Accordions. Perfect for FAQs, detailed explanations, and optional advanced content
+- **Use cards for feature comparisons**: Replace bullet lists with Cards components for better visual hierarchy
+- **Use horizontal rules**: `---` to divide major sections visually
+- **Text flow over fragmentation**: Prefer paragraphs to bullet points when explaining concepts
+- **Visual hierarchy**: Use proper heading levels and spacing
+
+## RAGE API Structure Notes
+
+### Core Concepts (from OpenAPI description)
+- **Semantic Blocks**: Documents become networks of purpose-driven content units
+- **Knowledge Graph**: Information connects naturally with relationships maintained
+- **Source Attribution**: Complete traceability from semantic blocks back to source documents
+- **Multi-Strategy Retrieval**: Different search approaches for different discovery needs
+
+### Key Endpoints Structure
+Based on the OpenAPI spec, the API is organized around:
+- **Documents**: Upload, manage, and process documents
+- **Search**: Intelligent semantic search with multiple strategies
+- **Graph**: Knowledge graph navigation and relationships
+- **Tree**: Hierarchical navigation through document structure
+- **Node**: Individual semantic block operations
+- **Users**: Authentication and user management
+- **Writing**: AI-assisted content generation
+
+### Positioning Against RAG/GraphRAG
+- **RAG**: Basic retrieval, returns flat text chunks
+- **GraphRAG**: Structured retrieval with predefined relationship types
+- **RAGE**: Living knowledge substrate with nested trees/subgraphs, automatic semantic extraction
+
+## Icon Usage and Registration
+
+### Adding Icons to Pages and Cards
+
+**For Page Icons:** Add `icon: "icon-name"` to the frontmatter of any MDX file. The icon must be registered in `lib/source.ts`.
+
+**For Card Icons:** Use `icon` prop on Card components: `<Card icon="icon-name" ...>`
+
+### Registering New Icons
+
+To use icons in pages or cards, you must register them in `lib/source.ts`:
+
+```typescript
+// In lib/source.ts, add to the resolveIcon switch statement:
+case "new-icon":
+    return createElement(NewIcon, { className: "size-4" });
+
+// Import the icon at the top:
+import { NewIcon } from "lucide-react"; // or @tabler/icons-react
+```
+
+### Supported Icon Libraries
+
+You can use icons from either:
+- **Lucide React** (currently configured): `import { IconName } from "lucide-react"`
+- **Tabler Icons**: `import { IconName } from "@tabler/icons-react"`
+
+### Currently Registered Icons
+**Lucide Icons:**
+- `book`, `rocket`, `bot`, `share2`, `brain`, `info`, `filetext`, `userplus`, `folderplus`, `download`, `code`, `hand-metal`, `edit`, `globe`, `lightbulb`
+
+**Tabler Icons:**
+- `api`, `user-screen`
+
+## MDX Formatting Rules
+
+### Fumadocs Components Usage
+
+#### Cards for Navigation/Features
+```jsx
+<Cards>
+  <Card href="/link" title="Feature Title" icon="rocket">
+    Brief description of what this feature does
+  </Card>
+  <Card href="/another-link" title="Another Feature" icon="brain">
+    Another description
+  </Card>
+</Cards>
+```
+
+**Card Icon Options:**
+- Use registered icon names from `lib/source.ts`
+- Icons are optional but enhance visual hierarchy
+- Common icons: `rocket`, `brain`, `book`, `code`, `share2`, and others
+
+#### Steps for Procedures
+```jsx
+<div className='fd-steps [&_h4]:fd-step'>
+#### Step 1 Title
+Description of what to do in this step
+
+#### Step 2 Title
+Description of what to do in this step
+</div>
+```
+
+#### Accordions for Progressive Disclosure
+```jsx
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+<Accordions type="single">
+  <Accordion title="FAQ Question">
+    Answer or detailed explanation here
+  </Accordion>
+  <Accordion title="Advanced Details">
+    Optional advanced information
+  </Accordion>
+</Accordions>
+```
+
+**Use accordions for:**
+- Troubleshooting sections
+- FAQs
+- Optional advanced details
+- Complex explanations that users can explore at their own pace
+- Reducing visual clutter on main content
+
+#### Code Examples
+```bash
+# Use backticks for code blocks
+curl -X POST "https://api.recurse.cc/documents" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{"content": "Your document content"}'
+```
+
+### Text Formatting
+- **Bold**: Use for UI elements like **Upload Button**
+- **Italics**: Use sparingly for emphasis
+- **Inline code**: Use for `parameter names`, `file paths`, `api endpoints`
+- **Links**: Use relative paths: `[Quickstart](./quickstart.mdx)`
+
+## Content Categories
+
+### 1. Introduction & Quickstart
+- Focus on getting users to first success quickly
+- Emphasize ease of use and immediate value
+- Include working code examples
+
+### 2. Guides (Adding Content, Applications, Retrieving Content)
+- **Problem-solution format**: Start with pain point, end with solution
+- **Progressive complexity**: Basic usage first, additional features later
+- **Cross-references**: Link related concepts and next steps
+
+### 3. API Documentation
+- **Auto-generated**: Let OpenAPI specs handle technical details
+- **Add context**: Include use case examples and common patterns
+- **Practical examples**: Show real-world scenarios
+
+### 4. About Section
+- **Company story**: Focus on mission and values
+- **User benefits**: What makes Recurse different
+- **Trust signals**: Privacy, security, reliability
+
+## Quality Assurance
+
+### Before Publishing
+- [ ] Read aloud: Does it sound natural?
+- [ ] Simplify check: Can a beginner understand it?
+- [ ] Value check: Does it clearly show user benefits?
+- [ ] Link check: All internal links work?
+- [ ] Example check: Code examples are tested and working?
+
+### Content Review Checklist
+- [ ] No unexplained jargon or technical terms
+- [ ] Examples are concrete and actionable
+- [ ] Steps are numbered and easy to follow
+- [ ] Links to next steps and related content
+- [ ] Consistent with brand voice and other docs
+
+## Common Patterns to Avoid
+
+### ❌ Technical Explanations
+"RAGE uses recursive frame embeddings to create a dynamic knowledge graph that..."
+
+### ✅ User-Focused Explanations
+"Your documents become smarter over time. Recurse learns from your questions and automatically connects related ideas."
+
+### ❌ Feature Lists
+"Recurse provides: semantic search, vector embeddings, graph traversal, frame extraction..."
+
+### ✅ Benefit Stories
+"Imagine asking your AI about a research paper from 6 months ago. With Recurse, it remembers not just the content, but how it connects to your current project."
+
+### ❌ Abstract Concepts
+"RAGE represents a new approach to how AI systems work with knowledge."
+
+### ✅ Concrete Value
+"Stop losing context when switching between ChatGPT and Claude. Recurse keeps your knowledge portable."
+
+## Tools and Workflow
+
+### Writing Process
+1. **Research**: Understand the feature and user needs
+2. **Outline**: Plan the document structure
+3. **Draft**: Write in simple, conversational language
+4. **Simplify**: Remove technical details and jargon
+5. **Test**: Have someone unfamiliar with RAGE read it
+6. **Iterate**: Refine based on feedback
+
+### File Organization
+- `content/docs/introduction.mdx` - Main introduction
+- `content/docs/quickstart.mdx` - Getting started guide
+- `content/docs/(Guide)/` - User guides
+- `content/docs/(API Documentation)/` - Auto-generated API docs
+- `content/docs/About/` - Company and product information
+
+## Success Metrics
+
+### Documentation Quality Goals
+- **Readability**: Flesch-Kincaid grade level ≤ 8
+- **Completion rate**: Users can follow instructions successfully
+- **User feedback**: Positive comments about clarity
+- **Support tickets**: Reduction in "how do I..." questions
+- **Time to value**: Users achieve first success within 10 minutes
+
+Remember: Good documentation doesn't just inform—it helps users succeed with your product.

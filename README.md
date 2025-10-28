@@ -42,6 +42,11 @@ Documentation site deployed to `docs.recurse.cc`
 - Getting started guides
 - Platform documentation
 
+<<<<<<< HEAD
+=======
+**Note:** This is currently the primary app with all existing functionality from the original docs.recurse.cc repository.
+
+>>>>>>> bootstrap/add-cursor-rules
 ### apps/dashboard
 Dashboard application deployed to `dashboard.recurse.cc`
 - User management
@@ -174,4 +179,7 @@ Each app is deployed separately on Vercel:
 ## License
 
 Private repository - All rights reserved
+<<<<<<< HEAD
 
+=======
+>>>>>>> bootstrap/add-cursor-rules

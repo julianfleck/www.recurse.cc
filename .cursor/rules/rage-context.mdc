@@ -1,0 +1,389 @@
+---
+description: Comprehensive RAGE Context Dump for AI Models
+globs: *.mdx,*.md
+alwaysApply: false
+---
+
+# RAGE CONTEXT DUMP
+# Comprehensive Knowledge Base for Recurse.cc/RAGE System
+# Generated: 2025-01-27
+# Purpose: Complete context for AI models working with RAGE/Recurse documentation
+
+## CORE IDENTITY
+
+### Brand Positioning
+- **Platform Name**: Recurse (user-facing platform)
+- **Technology Name**: RAGE (Recursive, Agentic Graph Embeddings)
+- **Value Proposition**: "Turn your documents into living context for AI systems. Keep your knowledge portable across any AI tool."
+- **Unique Selling Points**:
+  - Context portability between AI systems
+  - Knowledge that grows smarter over time
+  - Privacy-first approach with user ownership
+  - Works with existing AI tools and workflows
+
+### Positioning vs Competitors
+- **vs Standard RAG**: Flat text chunks → Basic retrieval, loses context
+- **vs GraphRAG**: Predefined relationships → Structured but rigid connections
+- **RAGE Advantage**: Living knowledge substrate → Automatic semantic extraction, nested relationships
+
+## TECHNICAL ARCHITECTURE
+
+### Core Components
+- **Backend**: FastAPI (REST API), Neo4j (graph database), Redis (queuing), Celery (workers)
+- **Embeddings**: HuggingFace E5-mistral-7b-instruct (4096 dimensions)
+- **Frontend**: Next.js with Fumadocs documentation
+- **Infrastructure**: Docker Compose, Nginx reverse proxy
+
+### Data Flow
+1. **Input**: Documents uploaded via REST API
+2. **Processing**: SHA-256 deduplication, Markdown/Obsidian parsing, section hierarchy
+3. **Extraction**: AI structured output with Pydantic models, frame classification
+4. **Storage**: Neo4j graph with relationships, vector embeddings
+5. **Retrieval**: Multi-index search (content + summaries), graph traversal, confidence scoring
+
+### Frame System (22 Types)
+#### Core Proposition Frames (3)
+- claim: Central arguments and assertions
+- hypothesis: Research hypotheses
+- thesis: Main theses
+
+#### Support & Reasoning Frames (8)
+- evidence: Supporting information
+- reference: Citations and sources
+- method: Methodological procedures
+- method_step: Individual method steps
+- tool: Tools and instruments
+- assumption: Underlying assumptions
+- justification: Explanations and rationale
+
+#### Contrast & Opposition Frames (3)
+- counterclaim: Opposing viewpoints
+- limitation: Constraints and limitations
+- critique: Critical analysis
+
+#### Elaboration & Framing Frames (5)
+- definition: Concept definitions
+- example: Illustrative examples
+- analogy: Comparative analogies
+- pattern: Recognized patterns
+- principle: Fundamental principles
+
+#### Navigational & Meta Frames (5)
+- summary: Content summaries
+- question: Questions and inquiries
+- instruction: Guidance and instructions
+- context: Background information
+- future_work: Future work and next steps
+- meta: Metadata information
+
+#### Complex Structural Frames (2)
+- claim_support_structure: Complex claim-evidence relationships
+- argumentation_structure: Argumentation frameworks
+
+## API ENDPOINTS (User-Facing Only)
+
+### Health Check (1 endpoint)
+- GET /health: System health status
+
+### Documents (8 endpoints)
+- POST /documents: Create document
+- GET /documents: List documents
+- GET /documents/{id}: Get document details
+- DELETE /documents/{id}: Delete document
+- GET /documents/{id}/processing-status: Check processing status
+- POST /documents/{id}/resume-processing: Resume processing
+- POST /documents/list: List with filters
+- POST /documents/upload: Upload file
+
+### Search (7 endpoints)
+- GET /search: General search
+- POST /search/candidates: Search candidates
+- GET /search/document: Search in document
+- GET /search/frames: Search frames
+- GET /search/semantic: Semantic search
+- GET /search/tags: Search by tags
+- GET /search/text: Text search
+
+### Writing Assistance (3 endpoints)
+- GET /writing/answer: Generate answers
+- GET /writing/complete: Complete text
+- GET /writing/rephrase: Rephrase text
+
+### Authentication & Users (10 endpoints)
+- POST /oauth/login: OAuth login
+- GET /oauth/login: OAuth login page
+- GET /oauth/logout: OAuth logout
+- POST /oauth/logout: OAuth logout
+- GET /oauth/callback: OAuth callback
+- GET /oauth/me: Get user info
+- POST /oauth/refresh: Refresh token
+- GET /users/me: Get profile
+- GET /users/me/usage: Get usage stats
+- GET /users/me/api-keys: List API keys
+- POST /users/me/api-keys: Create API key
+- DELETE /users/me/api-keys/{id}: Delete API key
+
+### Content Extraction (9 endpoints)
+- POST /extract/embeddings: Generate embeddings
+- POST /extract/frames: Extract frames
+- POST /extract/frames/sync: Extract frames synchronously
+- GET /extract/frames/status/{id}: Check frame extraction status
+- POST /extract/metadata: Extract metadata
+- POST /extract/metadata/sync: Extract metadata synchronously
+- GET /extract/metadata/status/{id}: Check metadata status
+- POST /extract/sections: Extract sections
+- GET /extract/status: Check extraction service status
+
+## VISION AND GOALS
+
+### Central Vision: Universal Memory Layer
+- **Problem**: Agent provider lock-in - knowledge trapped in walled gardens
+- **Solution**: User-owned knowledge infrastructure with context portability
+- **Example Workflow**:
+  1. Research with Claude → Extract structured context
+  2. Writing with Manus → Access same research context
+  3. Implementation with specialized agent → Reference same knowledge
+
+### Cryptographic Data Ownership
+- **Blockchain Attestation**: Cryptographic ownership proofs
+- **Zero-Knowledge Proofs**: Prove existence without revealing content
+- **Smart Contract Access Control**: Permission-based sharing
+- **Philosophy**: Transparency over accumulation, user agency
+
+### Practical Implementation Strategy
+- **MCP Integration**: Model Context Protocol for programmatic access
+- **One-Click Export**: Intelligent context assembly for any AI system
+- **Export Formats**: JSON, YAML, specialized formats for AI providers
+- **Integration Reality**: Build infrastructure while positioning for deeper integrations
+
+## TECHNICAL INNOVATION GOALS
+
+### Self-Evolving Knowledge Representation
+- **Vision**: Move beyond static schemas to adaptive knowledge representation
+- **Self-Bootstrapping Frame Registry**: Dynamic schema discovery and registration
+- **Archetypal Learning**: Continuous refinement based on validated examples
+- **Domain Adaptation**: Specialized frames for academic research, software development, creative writing
+
+### Executable Knowledge Operations
+- **Operations as Graph Entities**: Frame-associated operations on the graph
+- **Context-Aware Operation Selection**: Relevant operations based on content
+- **Compositional Reasoning**: Compound operations for complex workflows
+- **Examples**: Generate test cases, find contradictions, assess methodology strength
+
+### Collaborative Knowledge Construction
+- **Multi-Agent Knowledge Building**: Different AI systems contribute to same graph
+- **Collaborative Verification**: Collective validation and refinement
+- **Provenance Tracking**: Attribution and confidence scoring
+
+## DEVELOPMENT ROADMAP
+
+### Phase 1: Core Backend ✅ COMPLETED
+- Working system with frame extraction, graph storage, semantic search
+- FastAPI, Neo4j, Redis, Celery architecture
+- Docker Compose deployment
+
+### Phase 2: Advanced Features (Current Priority)
+1. **Executable Operations Engine**: Operation schema system and execution engine
+2. **Self-Bootstrapping Frame Registry**: Graph-based dynamic schema registration
+3. **Archetypal Embedding System**: Dynamic archetype computation and updates
+4. **Advanced Graph Operations**: Complex traversal and reasoning algorithms
+5. **Codebase Analysis Pipeline**: AST parsers for multiple languages
+
+### Phase 3: Domain-Specific Applications
+- Research paper pipeline specialization
+- Multi-modal support (images, diagrams)
+- Collaborative features (multi-user editing)
+- Advanced reasoning (causal inference, analogical reasoning)
+
+### Phase 4: Production Scalability
+- Performance optimization (caching, indexing)
+- Distributed processing (horizontal scaling)
+- Monitoring and observability
+- Security and access control (multi-tenant)
+
+## USER JOURNEY AND POSITIONING
+
+### Target Users
+- **Individual Researchers**: Context continuity across AI systems
+- **Teams**: Shared knowledge with individual ownership
+- **Developers**: Clean API integration with existing systems
+- **Knowledge Workers**: Enhanced productivity through structured knowledge
+
+### Key Pain Points Solved
+- **Context Loss**: Switching between AI systems without losing accumulated knowledge
+- **Manual Reconstruction**: Avoiding repetitive context rebuilding
+- **Knowledge Fragmentation**: Connecting related ideas across different sources
+- **Vendor Lock-in**: Freedom from provider-specific walled gardens
+
+### Success Metrics
+- **Context Continuity**: Reduction in context loss when switching AI systems
+- **Knowledge Quality**: Improvement in reasoning quality through structured representation
+- **User Agency**: Increase in user control over intellectual property
+- **Adoption Rate**: User retention and feature utilization growth
+
+## DOCUMENTATION GUIDELINES
+
+### Writing Rules
+- **User-Centric Focus**: Write for beginners, focus on problems solved
+- **Simplify Complexity**: Avoid technical jargon, use analogies
+- **Active Voice**: "Upload your document" not "Documents can be uploaded"
+- **Simple Words**: "Build" instead of "construct", "fix" instead of "resolve"
+- **Short Sentences**: Aim for 15-20 words per sentence
+
+### Typography Rules
+- **Smart Quotes**: Use real apostrophes (') and smart quotes ("")
+- **En-Dashes**: Use for ranges (5–10 minutes) instead of hyphens
+- **Em-Dashes**: Use sparingly for interruptions (feature—while powerful—is optional)
+- **Consistent Punctuation**: Maintain consistent use throughout
+
+### Content Structure
+- **Frontmatter Required**: title, description for every MDX file
+- **Document Organization**: Hook → Overview → How it Works → Use Cases → Getting Started → Next Steps
+- **Headings Hierarchy**: # Main → ## Section → ### Subsection → #### Step
+- **Progressive Disclosure**: Start simple, provide deeper details when needed
+
+### Formatting Preferences
+- **Tables over Lists**: Easier to scan and read
+- **Horizontal Rules**: --- to divide major sections visually
+- **Text Flow over Fragmentation**: Prefer paragraphs to bullet points
+- **Visual Hierarchy**: Proper heading levels and spacing
+
+## TECHNICAL IMPLEMENTATION DETAILS
+
+### Frame Extraction Process
+- **AI Structured Output**: Pydantic models with confidence scoring
+- **Case Normalization**: Handle AI labeling variations
+- **Confidence Factors**: Text match, slot completeness, contextual fit
+- **Nested Structures**: Frames containing other frames (recursive)
+
+### Search and Retrieval
+- **Multi-Index Search**: Frame content and summaries
+- **Graph Traversal**: Expand context around candidate frames
+- **Re-Ranking**: Confidence-based weighting and frame type boosting
+- **Citation Tracking**: Precise source attribution with numbered references
+
+### Vector Embeddings
+- **Model**: HuggingFace E5-mistral-7b-instruct
+- **Dimensions**: 4096
+- **Purpose**: Semantic similarity for effective search
+- **Integration**: Neo4j vector search capabilities
+
+### Processing Pipeline
+1. **Document Upload**: REST API endpoint
+2. **Deduplication**: SHA-256 content hashing
+3. **Section Parsing**: Markdown/Obsidian parsers with hierarchy preservation
+4. **Frame Extraction**: AI classification with Pydantic validation
+5. **Graph Storage**: Neo4j with relationship indexing
+6. **Embedding Generation**: Vector creation for semantic search
+7. **Background Processing**: Celery workers with progress tracking
+
+## USE CASES AND APPLICATIONS
+
+### Research Paper Understanding
+- **Problem**: Hours reading papers, struggling to understand relationships
+- **Solution**: Extracted research structure (claims, evidence, methods, relationships)
+- **Example**: "What approaches handle imbalanced datasets in medical diagnosis?"
+- **Result**: Specific claims, evidence comparison, effectiveness analysis
+
+### Codebase Analysis and Optimization
+- **Problem**: Large codebases difficult to understand and maintain
+- **Solution**: Semantic structure extraction (methods, classes, functions, relationships)
+- **Example**: "Which functions are never called?" or "How does authentication work?"
+- **Result**: Call graph traversal, coherent system explanations
+
+### Personal Knowledge Management
+- **Problem**: Information accumulation without effective organization
+- **Solution**: Meaningful structure and relationship extraction
+- **Example**: Meeting notes + articles + conversations → connected insights
+- **Result**: Contextual recall with implications and dependencies
+
+## CHALLENGES AND SOLUTIONS
+
+### Frame Type Identification
+- **Challenge**: Accurate classification into frame types
+- **Current**: Static schema matching with AI structured outputs
+- **Future**: Dynamic archetypal embeddings from validated instances
+- **Risk**: Over/under-classification affecting graph quality
+
+### Self-Bootstrapping Complexity
+- **Challenge**: Reliable discovery and registration of new frame types
+- **Solution**: Careful validation with human-in-the-loop confirmation
+- **Risk**: Schema proliferation or inconsistent frame types
+
+### Scalability Challenges
+- **Challenge**: Efficient processing of large codebases/documents
+- **Current**: Celery workers with parallel section processing
+- **Future**: Incremental processing, caching, distributed architecture
+- **Risk**: Performance degradation at scale
+
+### Graph Complexity Management
+- **Challenge**: Managing deeply nested frame structures
+- **Solution**: Multi-resolution views, summarization, effective navigation
+- **Risk**: Information overload and poor user experience
+
+## FUTURE VISION
+
+### Long-Term Goals
+- **Knowledge Portability**: Intellectual work follows across any AI system
+- **Collaborative Intelligence**: Humans and AI as genuine intellectual partners
+- **Cumulative Understanding**: Knowledge builds on itself over time
+- **User-Controlled Data**: Complete ownership and control over knowledge graphs
+- **Distributed Innovation**: No single organization controls human knowledge infrastructure
+
+### Societal Impact
+- **Democratizing Reasoning**: Access to sophisticated reasoning capabilities
+- **Preventing Monopolization**: User ownership prevents concentration of derived knowledge
+- **Educational Transformation**: Persistent knowledge structures across learning
+- **Human-AI Collaboration**: AI as intellectual partners, not autocomplete systems
+
+### Knowledge Commercialization
+- **Expert Knowledge Graphs**: Domain experts license structured knowledge
+- **Collaborative Building**: Multiple experts contribute with attribution
+- **Intellectual Property Protection**: Cryptographic ownership verification
+
+## IMPLEMENTATION STATUS SUMMARY
+
+### ✅ Completed (Phase 1)
+- Modern backend that handles growth (FastAPI, Neo4j, Redis, Celery)
+- Comprehensive frame system (22 frame types)
+- Document processing pipeline with deduplication
+- Semantic search with multi-index retrieval
+- API documentation generation
+- Docker Compose deployment
+
+### 🔄 Current Priority (Phase 2)
+- Executable Operations Engine
+- Self-Bootstrapping Frame Registry
+- Archetypal Embedding System
+- Advanced Graph Operations
+- Codebase Analysis Pipeline
+
+### 📋 Planned (Phase 3-4)
+- Domain-specific applications
+- Multi-modal support
+- Collaborative features
+- Production scalability
+- Advanced reasoning capabilities
+
+## KEY DIFFERENTIATORS
+
+### vs Traditional RAG
+- **RAG**: Flat text chunks, basic retrieval, loses context
+- **RAGE**: Nested trees/subgraphs, effective relationships, context preservation
+
+### vs GraphRAG
+- **GraphRAG**: Predefined relationships, rigid structure
+- **RAGE**: Dynamic frame generation, recursive nesting, adaptive schemas
+
+### Unique Capabilities
+- **Living Knowledge Substrate**: Evolves and grows with usage
+- **Context Portability**: Seamless transfer between AI systems
+- **User Ownership**: Cryptographic data ownership and control
+- **Recursive Structures**: Frames containing frames for hierarchical meaning
+- **Executable Operations**: Knowledge about how to work with knowledge
+
+## CONCLUSION
+
+RAGE represents a major change from static information storage to dynamic knowledge understanding. By creating a living knowledge substrate that interconnects information automatically, preserves context across AI systems, and enables detailed reasoning workflows, RAGE provides the foundation for effective AI-human collaboration. The system's recursive frame-based architecture, combined with user ownership and portability, positions it as an advancement in knowledge representation that can scale from individual researchers to enterprise knowledge management.
+
+The complete technical foundation, clear development roadmap, and focus on user agency make RAGE uniquely positioned to solve the key challenges of AI memory, context continuity, and knowledge portability that limit current AI systems.
