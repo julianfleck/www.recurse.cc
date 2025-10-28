@@ -56,9 +56,10 @@ biome.jsonc
 # Cursor
 .cursorrules
 
-# Vercel (commented out - needed for root directory config)
-# .vercel
-.vercel
+# Vercel - ignore root .vercel but allow apps/*/.vercel
+/.vercel/
+# Allow apps/*/.vercel directories for app-specific configs
+!apps/*/.vercel/
 
 # System directories
 .atom/
