@@ -3,4 +3,3 @@
   "outputDirectory": ".next",
   "installCommand": "cd ../.. && pnpm install"
 }
-
