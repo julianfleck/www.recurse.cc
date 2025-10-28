@@ -10,6 +10,9 @@ sources:
   - name: "Shadcn UI Documentation"
     url: "https://ui.shadcn.com"
     accessedAt: 2025-10-28T05:00:00Z
+  - name: "Shadcn MCP Server"
+    url: "https://ui.shadcn.com/docs/mcp"
+    accessedAt: 2025-10-28T05:00:00Z
 ---
 
 # UI Component Framework Guidelines
@@ -83,6 +86,63 @@ import { Button } from "@recurse/ui";
 
 **Current Status:** ⚠️ Under migration - prefer local imports for now.
 
+## Using MCP Server for Component Installation
+
+### Setup
+The Shadcn MCP server is configured in `.cursor/mcp.json` and enables AI assistants to browse, search, and install components using natural language.
+
+### MCP Capabilities
+- **Browse Components** - List all available components from any configured registry
+- **Search Across Registries** - Find specific components by name or functionality
+- **Install with Natural Language** - Add components using conversational prompts
+- **Support for Multiple Registries** - Access shadcn, ReUI, and custom registries
+
+### Example Prompts
+
+**Browse & Search:**
+- "Show me all available components in the shadcn registry"
+- "Find me a login form from the shadcn registry"
+- "List all avatar variants in the ReUI registry"
+
+**Install Components:**
+- "Add the button, dialog and card components to my project"
+- "Create a contact form using components from the shadcn registry"
+- "Install the Avatar component with status indicator from ReUI"
+
+**Work with Namespaces:**
+- "Show me components from ReUI registry"
+- "Install @reui/avatar-status"
+- "Build me a landing page using hero, features and testimonials sections"
+
+### Manual Installation
+
+If MCP isn't available or you prefer CLI:
+
+```bash
+# ReUI (preferred)
+pnpm dlx shadcn@latest add @reui/avatar
+
+# Shadcn (fallback)
+pnpm dlx shadcn@latest add avatar
+
+# Specify target directory
+pnpm dlx shadcn@latest add @reui/avatar --cwd apps/docs/components/ui
+```
+
+### Registry Configuration
+
+Registries are configured in `components.json`:
+
+```json
+{
+  "registries": {
+    "@reui": "https://reui.io/{name}.json"
+  }
+}
+```
+
+All apps should have their own `components.json` with appropriate registries configured.
+
 ## Component Organization
 
 ### App-Level Components
@@ -109,7 +169,13 @@ packages/ui/src/lib/         # Shared utilities (cn, etc.)
 2. **Shadcn** - If ReUI doesn't have it
 3. **Custom** - If neither framework fits needs
 
-### Step 3: Install and Use
+### Step 3: Install Using MCP or CLI
+
+**Via MCP (Preferred):**
+- Ask: "Add the avatar component from ReUI to apps/docs"
+- AI will handle installation automatically
+
+**Via CLI:**
 ```bash
 # ReUI (preferred)
 pnpm dlx shadcn@latest add @reui/avatar
@@ -168,55 +234,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 4. 🔄 Remove duplicate app-level components
 5. 🔄 Add documentation for each component
 
-## Tool Usage
-
-### Shadcn CLI
-```bash
-# Add component (will prompt for location)
-pnpm dlx shadcn@latest add <component-name>
-
-# Add to specific location
-pnpm dlx shadcn@latest add button --cwd apps/docs/components/ui
-
-# Add ReUI component
-pnpm dlx shadcn@latest add @reui/avatar --cwd apps/docs/components/ui
-```
-
-### MCP Integration (Shadcn MCP Server)
-The Shadcn MCP server is configured and enables AI assistants to browse, search, and install components.
-
-**Configuration:** `.cursor/mcp.json` (already set up)
-
-**Capabilities:**
-- Browse available components from registries
-- Search for specific components
-- Install components using natural language
-- Support for multiple registries (shadcn, ReUI, custom)
-
-**Usage Examples:**
-- "Show me all available components in the shadcn registry"
-- "Add the button, dialog and card components to my project"
-- "Create a contact form using components from the shadcn registry"
-- "Find me a login form from the shadcn registry"
-
-**Registry Configuration:** Configure in `components.json`:
-```json
-{
-  "registries": {
-    "@reui": "https://reui.io/{name}.json"
-  }
-}
-```
-
-**Official Documentation:** https://ui.shadcn.com/docs/mcp
-
 ## Best Practices
 
-1. **Always check ReUI first** - Better styled components
-2. **Use Shadcn CLI** - Avoid manual component copying
-3. **Follow app-level imports** - Use `@/components/ui/` until migration complete
-4. **Document custom variants** - Add props examples in component files
-5. **Share across apps** - Add to `packages/ui` if used in multiple apps
+1. **Use MCP for installation** - Ask AI to install components naturally
+2. **Always check ReUI first** - Better styled components
+3. **Use Shadcn CLI as fallback** - When MCP isn't available
+4. **Follow app-level imports** - Use `@/components/ui/` until migration complete
+5. **Document custom variants** - Add props examples in component files
+6. **Share across apps** - Add to `packages/ui` if used in multiple apps
 
 ## Current Component Inventory
 
@@ -248,10 +273,23 @@ The Shadcn MCP server is configured and enables AI assistants to browse, search,
 - **Shadcn** = Standard, more control
 - **Shared** = Reusable across apps
 
+### MCP Not Working
+- Restart Cursor after MCP configuration
+- Check `.cursor/mcp.json` exists and is valid
+- Verify `components.json` has registry configuration
+- Run `/mcp` command in Cursor to debug
+
+## References
+
+- **ReUI:** https://reui.io
+- **Shadcn:** https://ui.shadcn.com
+- **MCP Server:** https://ui.shadcn.com/docs/mcp
+- **Registry Config:** https://ui.shadcn.com/docs/registry
+
 ## Proposed Changes
 
-- [ ] Set up internal MCP server for component installation
 - [ ] Complete migration to `@recurse/ui` imports
 - [ ] Document all ReUI variants
 - [ ] Create component showcase/migration guide
 - [ ] Add TypeScript types for all components
+- [ ] Set up automated component testing
