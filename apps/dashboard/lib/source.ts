@@ -1,6 +1,5 @@
 import { IconApi, IconRun, IconUserScreen } from '@tabler/icons-react';
 import { loader } from 'fumadocs-core/source';
-import { transformerOpenAPI } from 'fumadocs-openapi/server';
 import {
   Book,
   Bot,
@@ -22,13 +21,12 @@ import {
 import { createElement } from 'react';
 import { dashboard, docs } from '@/.source';
 
-// Docs source for documentation pages only
+// Docs source for documentation pages only (without API docs transformer)
 export const docsSource = loader({
   baseUrl: '/docs',
   source: docs.toFumadocsSource(),
   pageTree: {
     transformers: [
-      transformerOpenAPI(),
       // Custom transformer to support sidebar_label
       {
         name: 'sidebar-label',
@@ -119,13 +117,12 @@ function resolveIcon(icon?: string) {
   }
 }
 
-// Dashboard source for dashboard pages
+// Dashboard source for dashboard pages (without API docs transformer)
 export const dashboardSource = loader({
   baseUrl: '/dashboard',
   source: dashboard.toFumadocsSource(),
   pageTree: {
     transformers: [
-      transformerOpenAPI(),
       // Custom transformer to support sidebar_label
       {
         name: 'sidebar-label',

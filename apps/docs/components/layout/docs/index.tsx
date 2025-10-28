@@ -447,7 +447,7 @@ function DocsNavbar({
             {props.disableDocActions ? null : <HeaderLLMCopyButton />}
             {themeSwitch.enabled !== false &&
               (themeSwitch.component ?? <ThemeToggle />)}
-            <UserProfile showDashboardLink />
+            <UserProfile />
             {sidebarCollapsible && navMode === "top" && (
               <SidebarCollapseTrigger
                 className={cn(
