@@ -1,5 +1,25 @@
 # Changelog
 
+## [2025-10-28T05:00:00Z] — Fix: Environment Variables and Dashboard Setup
+
+**Context:** Fixed dashboard app environment variable issues and updated monorepo documentation
+
+**Changes:**
+- Fixed duplicate 'type: json' import attribute in apps/dashboard/source.config.ts
+- Copied .env.local to all apps (www, docs, dashboard) for shared env vars
+- Updated monorepo rules to clarify dev server execution and env var handling
+- Documented that user runs dev servers manually in separate terminals
+- Added environment variables section to monorepo rules
+
+**Impact:** Dashboard app now has proper environment configuration, env vars documented
+
+**Files touched:**
+- apps/dashboard/source.config.ts
+- apps/www/.env.local
+- apps/docs/.env.local
+- apps/dashboard/.env.local
+- .cursor/rules/monorepo.mdc
+
 ## [2025-10-28T04:27:55Z] — Add: Dashboard App Setup
 
 **Context:** Setting up apps/dashboard as separate dashboard application
