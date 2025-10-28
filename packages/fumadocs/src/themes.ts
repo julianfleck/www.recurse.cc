@@ -1,8 +1,10 @@
 // Import the JSON themes
 import minimalAccentDark from '../styles/minimal-accent-dark.json' with {
   type: 'json',
+  type: 'json',
 };
 import minimalAccentLight from '../styles/minimal-accent-light.json' with {
+  type: 'json',
   type: 'json',
 };
 
@@ -16,4 +18,3 @@ export const themes = {
 };
 
 export { minimalAccentDark, minimalAccentLight };
-

@@ -1,4 +1,4 @@
-import { Node } from 'fumadocs-core/source';
+import type { Node } from 'fumadocs-core/source';
 
 /**
  * Custom transformer to support sidebar_label in frontmatter
@@ -34,4 +34,3 @@ export function sidebarLabelTransformer() {
     },
   };
 }
-
