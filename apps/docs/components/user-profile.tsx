@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Avatar, AvatarFallback } from "@recurse/ui/components/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,7 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@recurse/ui/components/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { LogIn, UserPlus } from "lucide-react";
 
 export function UserProfile() {
