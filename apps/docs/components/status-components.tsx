@@ -42,6 +42,11 @@ type DocumentSearchResponse = {
 };
 
 export function HealthStatus() {
+  // Docs site doesn't need health status - return null
+  return null;
+}
+
+function _HealthStatusDisabled() {
   const [health, setHealth] = useState<HealthStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
