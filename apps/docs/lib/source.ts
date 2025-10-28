@@ -4,7 +4,6 @@ import { transformerOpenAPI } from "fumadocs-openapi/server";
 import {
   Book,
   Bot,
-  Brain,
   Code,
   Download,
   Edit,
@@ -21,9 +20,9 @@ import {
   UserPlus,
 } from "lucide-react";
 import { createElement } from "react";
-import { dashboard, docs } from "@/.source";
+import { docs } from "@/.source";
 
-// Docs source for documentation pages
+// Docs source for documentation pages only
 export const docsSource = loader({
   baseUrl: "/docs",
   source: docs.toFumadocsSource(),
@@ -67,23 +66,6 @@ export const docsSource = loader({
   },
 });
 
-// Dashboard source for dashboard pages
-export const dashboardSource = loader({
-  baseUrl: "/dashboard",
-  source: dashboard.toFumadocsSource(),
-  pageTree: {
-    resolveIcon(icon) {
-      return resolveIcon(icon);
-    },
-  },
-});
-
-// Combined source for layouts that need both
-export const combinedSource = {
-  docs: docsSource,
-  dashboard: dashboardSource,
-};
-
 // Icon resolver function
 function resolveIcon(icon?: string) {
   if (!icon) {
@@ -101,8 +83,6 @@ function resolveIcon(icon?: string) {
       return createElement(Bot, { className: "size-4" });
     case "share2":
       return createElement(Share2, { className: "size-4" });
-    case "brain":
-      return createElement(Brain, { className: "size-4" });
     case "info":
       return createElement(Info, { className: "size-4" });
     case "filetext":
@@ -120,7 +100,7 @@ function resolveIcon(icon?: string) {
     case "edit":
       return createElement(Edit, { className: "size-4" });
     case "globe":
-      return createElement(Globe, { className: "size-4" });
+      return createElement(Globe, { finishing_rule: "size-4" });
     case "lightbulb":
       return createElement(Lightbulb, { className: "size-4" });
     case "help-circle":
@@ -141,17 +121,3 @@ function resolveIcon(icon?: string) {
 
 // Export the docs source as default for backward compatibility
 export const source = docsSource;
-
-// Helper functions to get pages from specific sources
-export function getPages(sourceType: "docs" | "dashboard" = "docs") {
-  const source = sourceType === "docs" ? docsSource : dashboardSource;
-  return source.getPages();
-}
-
-export function getPage(
-  slugs: string[],
-  sourceType: "docs" | "dashboard" = "docs"
-) {
-  const source = sourceType === "docs" ? docsSource : dashboardSource;
-  return source.getPage(slugs);
-}

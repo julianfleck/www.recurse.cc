@@ -1,4 +1,4 @@
-import { Book, Brain } from "lucide-react";
+import { Book } from "lucide-react";
 import { DocsLayout } from "@/components/layout/docs";
 import { documentationProvider } from "@/components/search/providers";
 import { LargeSearchToggle } from "@/components/search/toggle";
@@ -31,21 +31,6 @@ export default function Layout({ children }: LayoutProps<"/docs">) {
             />
           ),
         },
-      }}
-      sidebar={{
-        ...(options.sidebar ?? {}),
-        tabs: [
-          {
-            title: "Documentation",
-            url: "/docs",
-            icon: <Book className="size-4" />,
-          },
-          {
-            title: "Dashboard",
-            url: "/dashboard",
-            icon: <Brain className="size-4" />,
-          },
-        ],
       }}
       tree={docsSource.pageTree}
     >
