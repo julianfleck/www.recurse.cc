@@ -11,11 +11,12 @@ export function Providers({ children }: { children: ReactNode }) {
       authorizationParams={{
         redirect_uri:
           typeof window !== "undefined"
-            ? `${window.location.origin}/dashboard`
+            ? `${window.location.origin}/`
             : "",
         ...(process.env.NEXT_PUBLIC_AUTH0_AUDIENCE
           ? { audience: process.env.NEXT_PUBLIC_AUTH0_AUDIENCE }
           : {}),
+        scope: 'openid profile email offline_access',
       }}
       cacheLocation="localstorage"
       clientId={process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID ?? ""}

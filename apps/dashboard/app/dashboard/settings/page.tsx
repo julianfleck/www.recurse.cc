@@ -47,6 +47,7 @@ export default function SettingsPage() {
       embeddingModel: EMBEDDING_MODEL.value,
       email: authUser?.email ?? '',
       password: '',
+      provider: 'openai',
     }),
     [authUser?.email]
   );
@@ -56,6 +57,16 @@ export default function SettingsPage() {
   const [openParsingModel, setOpenParsingModel] = useState(false);
   const [openContextModel, setOpenContextModel] = useState(false);
 
+  const providers = [
+    { value: 'openai', label: 'OpenAI' },
+    { value: 'openrouter', label: 'OpenRouter' },
+  ];
+
+  const [openProvider, setOpenProvider] = useState(false);
+  const [loadingModels, setLoadingModels] = useState(false);
+  const [modelsError, setModelsError] = useState('');
+  const [fetchedModels, setFetchedModels] = useState<ModelOption[]>([]);
+
   useEffect(() => {
     // If auth user changes (e.g. after login), re-seed email baseline/state
     setState((prev) => ({ ...prev, email: authUser?.email ?? '' }));
@@ -63,17 +74,63 @@ export default function SettingsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authUser?.email]);
 
+  useEffect(() => {
+    if (state.provider !== 'openrouter' || !state.parsingModelApiKey) {
+      setFetchedModels([]);
+      setModelsError('');
+      return;
+    }
+
+    setLoadingModels(true);
+    setModelsError('');
+
+    fetch('https://openrouter.ai/api/v1/models', {
+      headers: {
+        Authorization: `Bearer ${state.parsingModelApiKey}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch models: ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        const models = data.data.map((m: { id: string; name: string }) => ({
+          value: m.id,
+          label: m.name,
+        })) as ModelOption[];
+        setFetchedModels(models);
+      })
+      .catch((err) => {
+        setModelsError(err.message);
+      })
+      .finally(() => {
+        setLoadingModels(false);
+      });
+  }, [state.provider, state.parsingModelApiKey]);
+
+  const currentModels = state.provider === 'openai' ? PARSING_MODELS : fetchedModels;
+
   const isDirty = useMemo(
     () => JSON.stringify(state) !== JSON.stringify(baseline),
     [state, baseline]
   );
 
   const parsingModelLabel = useMemo(() => {
-    return (
-      PARSING_MODELS.find((m) => m.value === state.defaultParsingModel)
-        ?.label || 'Select model...'
-    );
-  }, [state.defaultParsingModel]);
+    if (state.provider === 'openrouter') {
+      if (!state.parsingModelApiKey) {
+        return 'Enter API key to load models';
+      }
+      if (loadingModels) {
+        return 'Loading models...';
+      }
+      if (modelsError) {
+        return 'Error loading models';
+      }
+    }
+    return currentModels.find((m) => m.value === state.defaultParsingModel)?.label || 'Select model...';
+  }, [state.provider, state.defaultParsingModel, state.parsingModelApiKey, loadingModels, modelsError, currentModels]);
 
   const contextModelLabel = useMemo(() => {
     return (
@@ -150,18 +207,57 @@ export default function SettingsPage() {
                 <div className="sm:col-span-2">
                   <div className="flex flex-col items-stretch gap-2 sm:flex-row">
                     <div className="flex items-center gap-2 sm:flex-1">
-                      <Popover
-                        onOpenChange={setOpenParsingModel}
-                        open={openParsingModel}
-                      >
+                      <Popover open={openProvider} onOpenChange={setOpenProvider}>
                         <PopoverTrigger asChild>
                           <Button
-                            aria-expanded={openParsingModel}
-                            className={cn('flex-1', 'justify-between')}
-                            id="default-parsing-model"
-                            role="combobox"
-                            type="button"
                             variant="outline"
+                            role="combobox"
+                            aria-expanded={openProvider}
+                            className="justify-between flex-1"
+                          >
+                            {providers.find(p => p.value === state.provider)?.label || 'Select provider...'}
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                          <Command>
+                            <CommandInput placeholder="Search providers..." />
+                            <CommandList>
+                              <CommandEmpty>No providers found.</CommandEmpty>
+                              <CommandGroup>
+                                {providers.map((p) => (
+                                  <CommandItem
+                                    key={p.value}
+                                    value={p.value}
+                                    onSelect={(currentValue) => {
+                                      setState(s => ({ ...s, provider: currentValue, defaultParsingModel: '' }));
+                                      setOpenProvider(false);
+                                    }}
+                                  >
+                                    <CheckIcon
+                                      className={cn(
+                                        'mr-2 h-4 w-4',
+                                        state.provider === p.value ? 'opacity-100' : 'opacity-0'
+                                      )}
+                                    />
+                                    {p.label}
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                    <div className="flex items-center gap-2 sm:flex-1">
+                      <Popover open={openParsingModel} onOpenChange={setOpenParsingModel}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openParsingModel}
+                            className="justify-between flex-1"
+                            disabled={state.provider === 'openrouter' && (!state.parsingModelApiKey || loadingModels || modelsError)}
                           >
                             {parsingModelLabel}
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -173,21 +269,16 @@ export default function SettingsPage() {
                             <CommandList>
                               <CommandEmpty>No models found.</CommandEmpty>
                               <CommandGroup>
-                                {PARSING_MODELS.map((model: ModelOption) => (
+                                {currentModels.map((model: ModelOption) => (
                                   <CommandItem
                                     key={model.value}
-                                    onSelect={(currentValue) =>
-                                      handleSelectParsingModel(currentValue)
-                                    }
+                                    onSelect={(currentValue) => handleSelectParsingModel(currentValue)}
                                     value={model.value}
                                   >
                                     <CheckIcon
                                       className={cn(
                                         'mr-2 h-4 w-4',
-                                        state.defaultParsingModel ===
-                                          model.value
-                                          ? 'opacity-100'
-                                          : 'opacity-0'
+                                        state.defaultParsingModel === model.value ? 'opacity-100' : 'opacity-0'
                                       )}
                                     />
                                     {model.label}

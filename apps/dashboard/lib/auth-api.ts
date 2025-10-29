@@ -36,7 +36,7 @@ export async function loginWithPassword(
       username,
       password,
       realm: AUTH0_DB_REALM,
-      scope: "openid profile email",
+      scope: "openid profile email offline_access",
     }),
   });
 

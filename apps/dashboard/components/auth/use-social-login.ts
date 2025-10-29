@@ -15,6 +15,7 @@ export function useSocialLogin() {
           typeof window !== "undefined"
             ? `${window.location.origin}/`
             : undefined,
+        scope: 'openid profile email offline_access',
       },
       appState: { returnTo: "/" },
     });

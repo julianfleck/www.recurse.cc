@@ -16,7 +16,7 @@ export function AuthInit() {
   const clear = useAuthStore((s) => s.clear);
   const accessTokenFromStore = useAuthStore((s) => s.accessToken);
   const audience = process.env.NEXT_PUBLIC_AUTH0_AUDIENCE;
-  const scopes = "openid profile email";
+  const scopes = "openid profile email offline_access";
 
   // Don't redirect on auth pages
   const onAuthPage = isOnAuthPage();

@@ -38,13 +38,13 @@ export function ProtectedContent({ children }: { children: ReactNode }) {
     return null;
   }
 
-  // If we have a store token, we're authenticated - no loading screen needed
+  // If we have a store token, we're authenticated
   if (isClientAuthenticated) {
     return <>{children}</>;
   }
 
-  // Only show loading if Auth0 is still loading and we don't have a store token
-  if (isLoading) {
+  // Show loading if Auth0 is loading or we're not on client yet
+  if (!isClient || isLoading) {
     return (
       <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background">
         <div
@@ -61,8 +61,8 @@ export function ProtectedContent({ children }: { children: ReactNode }) {
     );
   }
 
-  // Auth0 finished loading, no store token, not authenticated - redirect will happen via useEffect
-  // Don't render children to prevent API calls during redirect
+  // Not authenticated - redirect will happen via useEffect
+  // Return null to prevent flashing
   return null;
 }
 
