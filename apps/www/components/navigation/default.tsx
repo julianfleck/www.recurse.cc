@@ -2,7 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import * as React from 'react';
+import {
+  type ComponentPropsWithoutRef,
+  type ElementRef,
+  forwardRef,
+  type MouseEvent,
+  useMemo,
+} from 'react';
 import { SearchToggle } from '@/components/search/toggle';
 import { Button } from '@/components/ui/button';
 import {
@@ -51,30 +57,29 @@ interface DefaultNavigationProps {
 }
 
 // Reusable ListItem component
-const ListItem = React.forwardRef<
-  React.ElementRef<'a'>,
-  React.ComponentPropsWithoutRef<'a'>
->(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          className={cn(
-            'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
-            className
-          )}
-          ref={ref}
-          {...props}
-        >
-          <div className="font-medium text-sm leading-none">{title}</div>
-          <p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  );
-});
+const ListItem = forwardRef<ElementRef<'a'>, ComponentPropsWithoutRef<'a'>>(
+  ({ className, title, children, ...props }, ref) => {
+    return (
+      <li>
+        <NavigationMenuLink asChild>
+          <a
+            className={cn(
+              'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+              className
+            )}
+            ref={ref}
+            {...props}
+          >
+            <div className="font-medium text-sm leading-none">{title}</div>
+            <p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
+              {children}
+            </p>
+          </a>
+        </NavigationMenuLink>
+      </li>
+    );
+  }
+);
 ListItem.displayName = 'ListItem';
 
 // Accept isCompact and isHovered props
@@ -90,7 +95,7 @@ export function DefaultNavigation({
   const menuItemTransition = 'transition-all duration-300 ease-in-out';
   const hoverDelayBase = 100; // Base delay for staggered animation
 
-  const handleBetaClick = (e: React.MouseEvent) => {
+  const handleBetaClick = (e: MouseEvent) => {
     e.preventDefault();
     if (pathname === '/') {
       // On home page, scroll to beta section
@@ -290,16 +295,40 @@ export function DefaultNavigation({
               )}
             >
               <NavigationMenuLink asChild>
-                <Link
-                  className={cn(
-                    navigationMenuTriggerStyle(),
-                    'transition-none',
-                    isCompact ? 'h-9 px-2 text-sm' : ''
-                  )}
-                  href={getDocsUrl()}
-                >
-                  Docs
-                </Link>
+                {useMemo(() => {
+                  const docsUrl = getDocsUrl();
+                  const isCrossOrigin =
+                    typeof window !== 'undefined' &&
+                    new URL(docsUrl).origin !== window.location.origin;
+
+                  if (isCrossOrigin) {
+                    return (
+                      <a
+                        className={cn(
+                          navigationMenuTriggerStyle(),
+                          'transition-none',
+                          isCompact ? 'h-9 px-2 text-sm' : ''
+                        )}
+                        href={docsUrl}
+                      >
+                        Docs
+                      </a>
+                    );
+                  }
+
+                  return (
+                    <Link
+                      className={cn(
+                        navigationMenuTriggerStyle(),
+                        'transition-none',
+                        isCompact ? 'h-9 px-2 text-sm' : ''
+                      )}
+                      href={docsUrl}
+                    >
+                      Docs
+                    </Link>
+                  );
+                }, [isCompact])}
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
