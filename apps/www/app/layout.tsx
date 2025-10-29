@@ -19,9 +19,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'recurse.cc - Universal Memory Layer for AI Systems',
+  title: 'recurse.cc - Universal Memory Layer',
   description:
-    'RAGE (Recursive Agentic Graph Embeddings) transforms raw text into persistent, structured memory for AI-native applications.',
+    'RAGE (Recursive Agentic Graph Embeddings) transform raw text into persistent, structured memory for AI-native applications.',
 };
 
 export default function RootLayout({

@@ -49,7 +49,7 @@ export default function HomePage() {
                 initialBlur={8}
               >
                 <h1 className="mb-12 font-medium text-2xl leading-[1.1] tracking-tight md:text-4xl lg:text-6xl">
-                  The Universal Memory Layer for AI
+                  The Universal Memory Substrate for AI and humans
                 </h1>
               </AnimatedContent>
 

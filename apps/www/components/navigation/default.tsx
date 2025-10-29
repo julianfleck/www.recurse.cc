@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
+import { SearchToggle } from '@/components/search/toggle';
 import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
@@ -19,7 +20,6 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import navContent from '@/content/en/navigation.json' with { type: 'json' };
 import { useDemo } from '@/contexts/DemoContext';
 import { useScroll } from '@/contexts/ScrollContext';
-import { SearchToggle } from '@/components/search/toggle';
 import { cn, getDocsUrl } from '@/lib/utils';
 
 // Assert types (basic for now)
@@ -298,7 +298,7 @@ export function DefaultNavigation({
                   )}
                   href={getDocsUrl()}
                 >
-                  Documentation
+                  Docs
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>

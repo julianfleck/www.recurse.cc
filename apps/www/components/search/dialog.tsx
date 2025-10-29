@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/command";
 import { Spinner } from "@/components/ui/spinner";
 import { DocumentationResults } from "./results/documentation";
-import type { SearchProvider } from "../../../docs/components/search/types";
+import type { SearchProvider } from "./types";
 
 type SearchCommandDialogProps = {
   open: boolean;
@@ -83,7 +83,6 @@ export function SearchCommandDialog({
     <CommandDialog
       onOpenChange={onOpenChange}
       open={open}
-      showCloseButton={!isLoading}
     >
       <div className="relative">
         <CommandInput

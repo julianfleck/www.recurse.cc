@@ -6,7 +6,7 @@ import {
   CommandItem,
   CommandSeparator,
 } from "@/components/ui/command";
-import type { SearchItem } from "../../../docs/components/search/types";
+import type { SearchItem } from "../types";
 
 type DocumentationResultsProps = {
   results: SearchItem[];

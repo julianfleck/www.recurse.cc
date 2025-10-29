@@ -311,7 +311,7 @@ export default function SettingsPage() {
                             role="combobox"
                             aria-expanded={openParsingModel}
                             className="justify-between flex-1"
-                            disabled={state.provider === 'openrouter' && (!state.parsingModelApiKey || loadingModels || modelsError)}
+                            disabled={Boolean(state.provider === 'openrouter' && (!state.parsingModelApiKey || loadingModels || modelsError))}
                           >
                             {parsingModelLabel}
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -444,7 +444,7 @@ export default function SettingsPage() {
                             role="combobox"
                             aria-expanded={openContextModel}
                             className="justify-between flex-1"
-                            disabled={state.contextProvider === 'openrouter' && (!state.contextModelApiKey || loadingContextModels || contextModelsError)}
+                            disabled={Boolean(state.contextProvider === 'openrouter' && (!state.contextModelApiKey || loadingContextModels || contextModelsError))}
                           >
                             {contextModelLabel}
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />

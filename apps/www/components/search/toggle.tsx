@@ -6,11 +6,11 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SearchCommandDialog } from "./dialog";
 import { documentationProvider } from "@/lib/search-provider";
-import type { SearchProvider } from "../../../docs/components/search/types";
+import type { SearchProvider } from "./types";
 
 type ToggleProps = Omit<React.ComponentProps<"button">, "variant"> & {
   hideIfDisabled?: boolean;
-  size?: "icon-sm" | "sm" | "default" | "lg";
+  size?: "icon" | "sm" | "default" | "lg";
   variant?:
     | "ghost"
     | "default"
@@ -25,7 +25,7 @@ type ToggleProps = Omit<React.ComponentProps<"button">, "variant"> & {
 
 export function SearchToggle({
   hideIfDisabled,
-  size = "icon-sm",
+  size = "icon",
   variant = "ghost",
   provider,
   placeholder,
