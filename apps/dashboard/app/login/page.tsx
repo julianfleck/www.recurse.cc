@@ -1,16 +1,12 @@
 import { Suspense } from "react";
-import { LoginForm } from "@/components/auth/login-form";
+import { LoginPageClient } from "./login-client";
 
 export default function LoginPage() {
-  // Server components can't use hooks; this is a client-only guard via middleware.
-  // Keep page simple and let Auth0 redirect callback send users to /dashboard.
+  // Server components can't use hooks; delegate to client component
+  // Client component will check for existing auth and auto-redirect if needed
   return (
-    <div className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-hidden bg-muted p-6 md:p-10">
-      <div className="relative z-10 w-full max-w-sm md:max-w-3xl">
-        <Suspense fallback={<div>Loading...</div>}>
-          <LoginForm />
-        </Suspense>
-      </div>
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginPageClient />
+    </Suspense>
   );
 }

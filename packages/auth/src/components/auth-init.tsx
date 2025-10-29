@@ -1,37 +1,37 @@
 "use client";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
-import { setApiAuthGetter } from "@/lib/api";
-import { isOnAuthPage } from "@/lib/auth-utils";
+import { isOnAuthPage } from "../lib/auth-utils";
 import { useAuthStore } from "./auth-store";
 
-const emptyTokenGetter = (): undefined => {
-  return;
-};
+// Note: API auth getter setup should be done by apps that need it (like dashboard)
+// This shared AuthInit focuses on auth state management only
 
-export function AuthInit() {
+export function AuthInit({ skipRedirect = false }: { skipRedirect?: boolean } = {}) {
   const { user, isAuthenticated, isLoading, getAccessTokenSilently, error } =
     useAuth0();
   const setAuth = useAuthStore((s) => s.setAuth);
   const clear = useAuthStore((s) => s.clear);
   const accessTokenFromStore = useAuthStore((s) => s.accessToken);
   const audience = process.env.NEXT_PUBLIC_AUTH0_AUDIENCE;
-  const scopes = "openid profile email";
+  const scopes = "openid profile email offline_access";
 
-  // Don't redirect on auth pages
+  // Don't redirect on auth pages, or if skipRedirect is true (docs/www)
   const onAuthPage = isOnAuthPage();
+  const shouldRedirect = !skipRedirect && !onAuthPage;
 
   // Suppress Auth0 console errors globally
   useEffect(() => {
     const originalConsoleError = console.error;
     console.error = (...args) => {
-      // Suppress Auth0 token refresh errors
-      if (args.some(arg =>
-        typeof arg === 'string' &&
-        arg.includes('Missing Refresh Token') &&
-        arg.includes('audience')
+      // Suppress Auth0 "Missing Refresh Token" errors - these are expected when requesting tokens
+      // with an audience/scope that wasn't included in the initial login
+      const errorMessage = args.find(arg => typeof arg === 'string') as string | undefined;
+      if (errorMessage && (
+        errorMessage.includes('Missing Refresh Token') ||
+        (errorMessage.includes('refresh') && errorMessage.includes('token') && errorMessage.includes('audience'))
       )) {
-        return;
+        return; // Suppress this error silently
       }
       originalConsoleError.apply(console, args);
     };
@@ -41,20 +41,8 @@ export function AuthInit() {
     };
   }, []);
 
-  // Set up API auth getter immediately if we have a token in store
-  useEffect(() => {
-    if (accessTokenFromStore) {
-      if (process.env.NODE_ENV === "development") {
-        console.log("[AuthInit] Setting up API auth getter with existing store token");
-      }
-      setApiAuthGetter(() => useAuthStore.getState().accessToken);
-    } else {
-      if (process.env.NODE_ENV === "development") {
-        console.log("[AuthInit] No store token, clearing API auth getter");
-      }
-      setApiAuthGetter(emptyTokenGetter);
-    }
-  }, [accessTokenFromStore]);
+  // Note: API auth getter setup is handled by individual apps if needed
+  // Dashboard uses its own AuthInit that sets up API service
 
   useEffect(() => {
     // Prefer SDK-based login when available; otherwise respect a client-side token set via email/password flow
@@ -102,9 +90,8 @@ export function AuthInit() {
           }
           // Clear auth state and redirect to login on token refresh failures
           clear();
-          // API auth getter will be cleared by the separate effect above
-          // Redirect to login for authentication errors (but not when already on auth pages)
-          if (!onAuthPage) {
+          // Redirect to login for authentication errors (but not when already on auth pages or if skipRedirect)
+          if (shouldRedirect) {
             window.location.href = "/login";
           }
         });
@@ -113,9 +100,8 @@ export function AuthInit() {
         console.log("[AuthInit] Not authenticated, has Auth0 error, or no store token, clearing auth");
       }
       clear();
-      // API auth getter will be cleared by the separate effect above
-      // Redirect to login if there's an Auth0 error (but not when already on auth pages)
-      if (error && !onAuthPage) {
+      // Redirect to login if there's an Auth0 error (but not when already on auth pages or if skipRedirect)
+      if (error && shouldRedirect) {
         window.location.href = "/login";
       }
     }
@@ -129,7 +115,7 @@ export function AuthInit() {
     accessTokenFromStore,
     audience,
     error,
-    onAuthPage,
+    shouldRedirect,
   ]);
 
   return null;

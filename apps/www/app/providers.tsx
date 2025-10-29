@@ -4,6 +4,22 @@ import type { ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthInit } from "@/components/auth/auth-init";
 
+// Suppress Auth0 "Missing Refresh Token" errors globally - these are expected when
+// requesting tokens with an audience/scope that wasn't included in the initial login
+if (typeof window !== "undefined") {
+  const originalConsoleError = console.error;
+  console.error = (...args) => {
+    const errorMessage = args.find(arg => typeof arg === 'string') as string | undefined;
+    if (errorMessage && (
+      errorMessage.includes('Missing Refresh Token') ||
+      (errorMessage.includes('refresh') && errorMessage.includes('token') && errorMessage.includes('audience'))
+    )) {
+      return; // Suppress this error silently
+    }
+    originalConsoleError.apply(console, args);
+  };
+}
+
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <Auth0Provider
@@ -25,13 +41,14 @@ export function Providers({ children }: { children: ReactNode }) {
           const returnToOrigin = appState?.returnToOrigin;
           const returnTo = appState?.returnTo ?? "/";
           
-          // If user came from a different origin, redirect them back there
+          // Cross-origin redirect: If user came from a different app (docs/dashboard), redirect back there
+          // This works in both dev (different ports) and prod (different domains)
           if (returnToOrigin && returnToOrigin !== window.location.origin) {
             window.location.href = `${returnToOrigin}${returnTo}`;
             return;
           }
           
-          // Otherwise, navigate within current app
+          // Same origin: Navigate within www app to preserve the exact path
           window.history.replaceState({}, "", returnTo);
         }
       }}

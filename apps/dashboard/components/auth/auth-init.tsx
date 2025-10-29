@@ -25,13 +25,14 @@ export function AuthInit() {
   useEffect(() => {
     const originalConsoleError = console.error;
     console.error = (...args) => {
-      // Suppress Auth0 token refresh errors
-      if (args.some(arg =>
-        typeof arg === 'string' &&
-        arg.includes('Missing Refresh Token') &&
-        arg.includes('audience')
+      // Suppress Auth0 "Missing Refresh Token" errors - these are expected when requesting tokens
+      // with an audience/scope that wasn't included in the initial login
+      const errorMessage = args.find(arg => typeof arg === 'string') as string | undefined;
+      if (errorMessage && (
+        errorMessage.includes('Missing Refresh Token') ||
+        (errorMessage.includes('refresh') && errorMessage.includes('token') && errorMessage.includes('audience'))
       )) {
-        return;
+        return; // Suppress this error silently
       }
       originalConsoleError.apply(console, args);
     };

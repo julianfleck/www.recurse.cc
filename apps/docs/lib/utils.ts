@@ -17,26 +17,39 @@ export function getDashboardUrl(): string {
     return process.env.NEXT_PUBLIC_DASHBOARD_URL;
   }
   
-  // In dev, dashboard typically runs on a different port
-  // Assume same origin but might need port adjustment
   if (typeof window !== "undefined") {
     const origin = window.location.origin;
+    const hostname = window.location.hostname;
+    const port = window.location.port;
     
-    // If on docs.recurse.cc, dashboard is dashboard.recurse.cc
-    if (origin.includes("docs.recurse.cc")) {
+    // Production: domain-based routing
+    if (hostname.includes("docs.recurse.cc")) {
       return origin.replace("docs.recurse.cc", "dashboard.recurse.cc");
     }
     
-    // If on www.recurse.cc, dashboard is dashboard.recurse.cc
-    if (origin.includes("www.recurse.cc")) {
+    if (hostname.includes("www.recurse.cc")) {
       return origin.replace("www.recurse.cc", "dashboard.recurse.cc");
     }
     
-    // In dev, assume dashboard is on same origin (or configure ports)
-    // Default to same origin - can be overridden with env var
+    // Development: port-based routing
+    // docs runs on 3000, dashboard on 3001, www on 3002
+    if (hostname === "localhost" || hostname === "127.0.0.1") {
+      if (port === "3000" || !port) {
+        // If on docs (port 3000) or default, dashboard is on 3001
+        return `http://${hostname}:3001`;
+      }
+      if (port === "3002") {
+        // If on www (port 3002), dashboard is on 3001
+        return `http://${hostname}:3001`;
+      }
+      // If already on dashboard port or other, return same
+      return origin;
+    }
+    
+    // Other dev environments - assume same origin
     return origin;
   }
   
   // Server-side fallback
-  return process.env.NEXT_PUBLIC_DASHBOARD_URL || "http://localhost:3000";
+  return process.env.NEXT_PUBLIC_DASHBOARD_URL || "http://localhost:3001";
 }

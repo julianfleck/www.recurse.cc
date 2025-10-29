@@ -7,14 +7,16 @@ export function useSocialLogin() {
   const { loginWithRedirect, isLoading } = useAuth0();
 
   const go = (connection: string) => {
-    // Check for returnTo query param (from external apps like docs/www)
+    // Check for returnTo query param (when redirected from another app like docs/www)
     const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
     const returnToParam = urlParams?.get("returnTo");
     
-    // If returnTo is provided, use it; otherwise use current location
+    // Capture where to return after auth
+    // Default to current location within this app
     let returnToOrigin = typeof window !== "undefined" ? window.location.origin : "";
     let returnToPath = typeof window !== "undefined" ? window.location.pathname + window.location.search : "/";
     
+    // If returnTo param is provided, it means user came from another app
     if (returnToParam) {
       try {
         const decoded = decodeURIComponent(returnToParam);
@@ -24,7 +26,7 @@ export function useSocialLogin() {
           returnToOrigin = url.origin;
           returnToPath = url.pathname + url.search;
         } else {
-          // Relative path, keep current origin
+          // Relative path, keep current origin (this app)
           returnToPath = decoded;
         }
       } catch {
@@ -32,8 +34,16 @@ export function useSocialLogin() {
       }
     }
     
-    // Use current origin for redirect_uri (must be registered in Auth0)
-    // Store where user came from in appState so we can redirect back after auth
+    // Each app uses its own origin for redirect_uri (must be registered in Auth0)
+    // This ensures the callback goes to the correct app's registered callback URL
+    // Production examples:
+    //   - Dashboard: dashboard.recurse.cc/
+    //   - WWW: www.recurse.cc/
+    //   - Docs: docs.recurse.cc/ (if docs had auth)
+    // Dev examples:
+    //   - Dashboard: localhost:3001/
+    //   - WWW: localhost:3002/
+    //   - Docs: localhost:3000/
     loginWithRedirect({
       authorizationParams: {
         connection,

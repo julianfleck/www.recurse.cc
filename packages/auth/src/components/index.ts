@@ -1,4 +1,3 @@
-// Auth components exports - only share the store from lib
-// Dashboard-specific auth pages should remain in apps/dashboard
-// Re-export from lib to avoid duplication
+// Auth components exports
 export * from '../lib/auth-store';
+export { AuthInit } from './auth-init';
