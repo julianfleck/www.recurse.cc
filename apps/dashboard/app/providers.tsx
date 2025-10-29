@@ -21,10 +21,19 @@ export function Providers({ children }: { children: ReactNode }) {
       cacheLocation="localstorage"
       clientId={process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID ?? ""}
       domain={process.env.NEXT_PUBLIC_AUTH0_DOMAIN ?? ""}
-      onRedirectCallback={(appState?: { returnTo?: string }) => {
+      onRedirectCallback={(appState?: { returnTo?: string; returnToOrigin?: string }) => {
         if (typeof window !== "undefined") {
-          const target = appState?.returnTo ?? "/";
-          window.history.replaceState({}, "", target);
+          const returnToOrigin = appState?.returnToOrigin;
+          const returnTo = appState?.returnTo ?? "/";
+          
+          // If user came from a different origin, redirect them back there
+          if (returnToOrigin && returnToOrigin !== window.location.origin) {
+            window.location.href = `${returnToOrigin}${returnTo}`;
+            return;
+          }
+          
+          // Otherwise, navigate within current app
+          window.history.replaceState({}, "", returnTo);
         }
       }}
       useRefreshTokens={true}

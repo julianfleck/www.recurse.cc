@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -17,6 +17,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { loginWithGoogle, loginWithGithub } = useSocialLogin();
   const setAuth = useAuthStore((s) => s.setAuth);
   const [email, setEmail] = useState("");
@@ -42,10 +43,34 @@ export function LoginForm({
       setAuth(accessToken, "auth0", typedUser);
       setEmail("");
       setPassword("");
+      
+      // Check for returnTo query param (from external apps like docs/www)
+      const returnTo = searchParams.get("returnTo");
+      let redirectTarget = "/";
+      
+      if (returnTo) {
+        try {
+          const decoded = decodeURIComponent(returnTo);
+          // If returnTo is a full URL (from another origin), redirect there
+          if (decoded.startsWith("http://") || decoded.startsWith("https://")) {
+            window.location.href = decoded;
+            return;
+          }
+          // Otherwise, use as relative path
+          redirectTarget = decoded;
+        } catch {
+          // Invalid returnTo, fall back to default
+        }
+      }
+      
       // Allow store propagation before navigating
       const STORE_PROPAGATION_DELAY_MS = 50;
       setTimeout(() => {
-        router.push("/");
+        if (returnTo && (returnTo.startsWith("http://") || returnTo.startsWith("https://"))) {
+          // Already handled above
+          return;
+        }
+        router.push(redirectTarget);
       }, STORE_PROPAGATION_DELAY_MS);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");

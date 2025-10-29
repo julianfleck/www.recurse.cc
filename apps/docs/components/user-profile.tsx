@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -11,8 +12,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogIn, UserPlus } from "lucide-react";
+import { getDashboardUrl } from "@/lib/utils";
 
 export function UserProfile() {
+  const pathname = usePathname();
+  const dashboardUrl = getDashboardUrl();
+  
+  // Include current location as returnTo so user comes back here after login
+  const returnTo = typeof window !== "undefined" 
+    ? encodeURIComponent(`${window.location.origin}${pathname}`)
+    : "";
+  const loginUrl = `${dashboardUrl}/login${returnTo ? `?returnTo=${returnTo}` : ""}`;
+  const signupUrl = `${dashboardUrl}/signup${returnTo ? `?returnTo=${returnTo}` : ""}`;
+  
   // For docs site, always show placeholder with login/signup options
   return (
     <DropdownMenu>
@@ -27,13 +39,13 @@ export function UserProfile() {
         <DropdownMenuLabel>Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="https://dashboard.recurse.cc/login" className="flex items-center gap-2">
+          <Link href={loginUrl} className="flex items-center gap-2">
             <LogIn className="size-4" />
             Log In
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="https://dashboard.recurse.cc/signup" className="flex items-center gap-2">
+          <Link href={signupUrl} className="flex items-center gap-2">
             <UserPlus className="size-4" />
             Sign Up
           </Link>
