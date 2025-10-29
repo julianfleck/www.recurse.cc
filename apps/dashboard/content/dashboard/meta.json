@@ -4,14 +4,14 @@
   "root": true,
   "icon": "brain",
   "pages": [
-    "[Brain][Dashboard](/dashboard)",
+    "[Brain][Dashboard](/)",
     "---Knowledge Base---",
-    "[Share2][Graph](/dashboard/graph)",
-    "[Brain][Context](/dashboard/context)",
-    "[Bot][Chat](/dashboard/chat)",
+    "[Share2][Graph](/graph)",
+    "[Brain][Context](/context)",
+    "[Bot][Chat](/chat)",
     "---Account---",
-    "[FileText][Usage](/dashboard/usage)",
-    "[Code][API Keys](/dashboard/api-keys)",
-    "[Edit][Settings](/dashboard/settings)"
+    "[FileText][Usage](/usage)",
+    "[Code][API Keys](/api-keys)",
+    "[Edit][Settings](/settings)"
   ]
 }

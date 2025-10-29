@@ -3,6 +3,7 @@ import { loader } from 'fumadocs-core/source';
 import {
   Book,
   Bot,
+  Brain,
   Code,
   Download,
   Edit,
@@ -79,6 +80,8 @@ function resolveIcon(icon?: string) {
       return createElement(Rss, { className: 'size-4' });
     case 'bot':
       return createElement(Bot, { className: 'size-4' });
+    case 'brain':
+      return createElement(Brain, { className: 'size-4' });
     case 'share2':
       return createElement(Share2, { className: 'size-4' });
     case 'info':
@@ -119,7 +122,7 @@ function resolveIcon(icon?: string) {
 
 // Dashboard source for dashboard pages (without API docs transformer)
 export const dashboardSource = loader({
-  baseUrl: '/dashboard',
+  baseUrl: '/',
   source: dashboard.toFumadocsSource(),
   pageTree: {
     transformers: [

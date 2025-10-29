@@ -44,6 +44,7 @@ export default function SettingsPage() {
       parsingModelApiKey: '',
       contextModel: PARSING_MODELS[0]?.value ?? '',
       contextModelApiKey: '',
+      contextProvider: 'openai',
       embeddingModel: EMBEDDING_MODEL.value,
       email: authUser?.email ?? '',
       password: '',
@@ -66,6 +67,11 @@ export default function SettingsPage() {
   const [loadingModels, setLoadingModels] = useState(false);
   const [modelsError, setModelsError] = useState('');
   const [fetchedModels, setFetchedModels] = useState<ModelOption[]>([]);
+
+  const [openContextProvider, setOpenContextProvider] = useState(false);
+  const [loadingContextModels, setLoadingContextModels] = useState(false);
+  const [contextModelsError, setContextModelsError] = useState('');
+  const [fetchedContextModels, setFetchedContextModels] = useState<ModelOption[]>([]);
 
   useEffect(() => {
     // If auth user changes (e.g. after login), re-seed email baseline/state
@@ -110,7 +116,44 @@ export default function SettingsPage() {
       });
   }, [state.provider, state.parsingModelApiKey]);
 
+  useEffect(() => {
+    if (state.contextProvider !== 'openrouter' || !state.contextModelApiKey) {
+      setFetchedContextModels([]);
+      setContextModelsError('');
+      return;
+    }
+
+    setLoadingContextModels(true);
+    setContextModelsError('');
+
+    fetch('https://openrouter.ai/api/v1/models', {
+      headers: {
+        Authorization: `Bearer ${state.contextModelApiKey}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Failed to fetch models: ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        const models = data.data.map((m: { id: string; name: string }) => ({
+          value: m.id,
+          label: m.name,
+        })) as ModelOption[];
+        setFetchedContextModels(models);
+      })
+      .catch((err) => {
+        setContextModelsError(err.message);
+      })
+      .finally(() => {
+        setLoadingContextModels(false);
+      });
+  }, [state.contextProvider, state.contextModelApiKey]);
+
   const currentModels = state.provider === 'openai' ? PARSING_MODELS : fetchedModels;
+  const currentContextModels = state.contextProvider === 'openai' ? PARSING_MODELS : fetchedContextModels;
 
   const isDirty = useMemo(
     () => JSON.stringify(state) !== JSON.stringify(baseline),
@@ -133,11 +176,22 @@ export default function SettingsPage() {
   }, [state.provider, state.defaultParsingModel, state.parsingModelApiKey, loadingModels, modelsError, currentModels]);
 
   const contextModelLabel = useMemo(() => {
+    if (state.contextProvider === 'openrouter') {
+      if (!state.contextModelApiKey) {
+        return 'Enter API key to load models';
+      }
+      if (loadingContextModels) {
+        return 'Loading models...';
+      }
+      if (contextModelsError) {
+        return 'Error loading models';
+      }
+    }
     return (
-      PARSING_MODELS.find((m) => m.value === state.contextModel)?.label ||
+      currentContextModels.find((m) => m.value === state.contextModel)?.label ||
       'Select model...'
     );
-  }, [state.contextModel]);
+  }, [state.contextProvider, state.contextModel, state.contextModelApiKey, loadingContextModels, contextModelsError, currentContextModels]);
 
   const handleSelectParsingModel = (value: string) => {
     setState((s) => ({ ...s, defaultParsingModel: value }));
@@ -340,18 +394,57 @@ export default function SettingsPage() {
                 <div className="sm:col-span-2">
                   <div className="flex flex-col items-stretch gap-2 sm:flex-row">
                     <div className="flex items-center gap-2 sm:flex-1">
-                      <Popover
-                        onOpenChange={setOpenContextModel}
-                        open={openContextModel}
-                      >
+                      <Popover open={openContextProvider} onOpenChange={setOpenContextProvider}>
                         <PopoverTrigger asChild>
                           <Button
-                            aria-expanded={openContextModel}
-                            className={cn('flex-1', 'justify-between')}
-                            id="context-model"
-                            role="combobox"
-                            type="button"
                             variant="outline"
+                            role="combobox"
+                            aria-expanded={openContextProvider}
+                            className="justify-between flex-1"
+                          >
+                            {providers.find(p => p.value === state.contextProvider)?.label || 'Select provider...'}
+                            <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                          <Command>
+                            <CommandInput placeholder="Search providers..." />
+                            <CommandList>
+                              <CommandEmpty>No providers found.</CommandEmpty>
+                              <CommandGroup>
+                                {providers.map((p) => (
+                                  <CommandItem
+                                    key={p.value}
+                                    value={p.value}
+                                    onSelect={(currentValue) => {
+                                      setState(s => ({ ...s, contextProvider: currentValue, contextModel: '' }));
+                                      setOpenContextProvider(false);
+                                    }}
+                                  >
+                                    <CheckIcon
+                                      className={cn(
+                                        'mr-2 h-4 w-4',
+                                        state.contextProvider === p.value ? 'opacity-100' : 'opacity-0'
+                                      )}
+                                    />
+                                    {p.label}
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                    <div className="flex items-center gap-2 sm:flex-1">
+                      <Popover open={openContextModel} onOpenChange={setOpenContextModel}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openContextModel}
+                            className="justify-between flex-1"
+                            disabled={state.contextProvider === 'openrouter' && (!state.contextModelApiKey || loadingContextModels || contextModelsError)}
                           >
                             {contextModelLabel}
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -363,20 +456,16 @@ export default function SettingsPage() {
                             <CommandList>
                               <CommandEmpty>No models found.</CommandEmpty>
                               <CommandGroup>
-                                {PARSING_MODELS.map((model: ModelOption) => (
+                                {currentContextModels.map((model: ModelOption) => (
                                   <CommandItem
                                     key={model.value}
-                                    onSelect={(currentValue) =>
-                                      handleSelectContextModel(currentValue)
-                                    }
+                                    onSelect={(currentValue) => handleSelectContextModel(currentValue)}
                                     value={model.value}
                                   >
                                     <CheckIcon
                                       className={cn(
                                         'mr-2 h-4 w-4',
-                                        state.contextModel === model.value
-                                          ? 'opacity-100'
-                                          : 'opacity-0'
+                                        state.contextModel === model.value ? 'opacity-100' : 'opacity-0'
                                       )}
                                     />
                                     {model.label}
