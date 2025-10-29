@@ -1,0 +1,839 @@
+import * as React from "react"
+import { ChevronRight, FileText, Database, Brain, HelpCircle } from "lucide-react"
+
+import { Checkbox } from "@/components/ui/checkbox"
+import { Badge } from "@/components/ui/badge"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip"
+
+// Sample data for demo
+const data = {
+  activeDocs: [
+    {
+      id: "doc1",
+      title: "Research Paper.pdf",
+      frameCount: 23,
+      inScope: true,
+    },
+    {
+      id: "doc2", 
+      title: "Meeting Notes.md",
+      frameCount: 8,
+      inScope: true,
+    },
+    {
+      id: "doc3",
+      title: "Product Spec.docx",
+      frameCount: 15,
+      inScope: false,
+    },
+    {
+      id: "doc4",
+      title: "Design Guidelines.pdf",
+      frameCount: 12,
+      inScope: true,
+    },
+    {
+      id: "doc5",
+      title: "User Research Report.docx",
+      frameCount: 31,
+      inScope: false,
+    },
+  ],
+  recentQueries: [
+    "What are the main findings about AI impact?",
+    "How was the data collected for this study?",
+    "What are the Q4 goals mentioned in the meeting?",
+    "Explain the methodology used",
+    "What is the historical context of machine learning?",
+    "How do we measure user engagement?",
+    "What are the design principles?",
+    "Can you summarize the research findings?",
+    "What is the timeline for the project?",
+    "How does this compare to previous studies?",
+    "What are the key performance indicators?",
+    "How do we implement the recommendations?",
+  ],
+  docs: [
+    {
+      title: "Research Paper.pdf",
+      type: "document",
+      inScope: true,
+      sections: [
+        {
+          title: "Introduction",
+          type: "section", 
+          inScope: true,
+          frames: [
+            {
+              title: "AI Impact on Society",
+              type: "concept",
+              inScope: true,
+            },
+            {
+              title: "Historical Context",
+              type: "fact",
+              inScope: true,
+            },
+          ],
+        },
+        {
+          title: "Methodology",
+          type: "section",
+          inScope: true,
+          frames: [
+            {
+              title: "Data Collection Process",
+              type: "relationship",
+              inScope: false,
+            },
+          ],
+        },
+        {
+          title: "Results",
+          type: "section",
+          inScope: true,
+          frames: [
+            {
+              title: "Key Findings",
+              type: "claim",
+              inScope: true,
+            },
+            {
+              title: "Statistical Analysis",
+              type: "fact",
+              inScope: true,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      title: "Meeting Notes.md",
+      type: "document",
+      inScope: true,
+      sections: [
+        {
+          title: "Action Items",
+          type: "section",
+          inScope: true,
+          frames: [
+            {
+              title: "Q4 Goals",
+              type: "claim",
+              inScope: true,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      title: "Design Guidelines.pdf",
+      type: "document",
+      inScope: true,
+      sections: [
+        {
+          title: "Typography",
+          type: "section",
+          inScope: true,
+          frames: [
+            {
+              title: "Font Selection",
+              type: "concept",
+              inScope: true,
+            },
+            {
+              title: "Size Guidelines",
+              type: "fact",
+              inScope: true,
+            },
+          ],
+        },
+        {
+          title: "Color Palette",
+          type: "section",
+          inScope: true,
+          frames: [
+            {
+              title: "Primary Colors",
+              type: "concept",
+              inScope: true,
+            },
+            {
+              title: "Accessibility Standards",
+              type: "fact",
+              inScope: true,
+            },
+          ],
+        },
+      ],
+    },
+  ],
+}
+
+const frameTypeIcons = {
+  document: FileText,
+  section: FileText,
+  concept: Brain,
+  fact: FileText,
+  relationship: Database,
+  claim: Brain,
+}
+
+type TreeItem = {
+  title: string
+  type: string
+  inScope: boolean
+  sections?: TreeItem[]
+  frames?: TreeItem[]
+}
+
+export function FileSidebar({ ...props }: React.ComponentProps<"div">) {
+  const [activeContextOpen, setActiveContextOpen] = React.useState(true)
+  const [knowledgeBaseOpen, setKnowledgeBaseOpen] = React.useState(true)
+  const [recentQueriesOpen, setRecentQueriesOpen] = React.useState(true)
+  const [showAllActiveDocs, setShowAllActiveDocs] = React.useState(false)
+  const [showAllQueries, setShowAllQueries] = React.useState(false)
+  const [docData, setDocData] = React.useState(data)
+  const [collapsibleStates, setCollapsibleStates] = React.useState<Record<string, boolean>>({})
+
+  const visibleQueries = showAllQueries ? docData.recentQueries : docData.recentQueries.slice(0, 3)
+
+  // Function to update item scope with automatic parent-child synchronization
+  const updateItemScope = (itemPath: string, newScope: boolean) => {
+    setDocData(prevData => {
+      const newData = JSON.parse(JSON.stringify(prevData)) // Deep clone
+      
+      // Helper function to recursively update all children
+      const updateAllChildren = (item: TreeItem, scope: boolean) => {
+        item.inScope = scope
+        if (item.sections) {
+          item.sections.forEach(section => {
+            updateAllChildren(section, scope)
+          })
+        }
+        if (item.frames) {
+          item.frames.forEach(frame => {
+            updateAllChildren(frame, scope)
+          })
+        }
+      }
+
+      // Helper function to update parents based on children state
+      const updateParentStates = () => {
+        // Update documents based on their sections
+        for (const doc of newData.docs) {
+          const hasSelectedSections = doc.sections?.some((section: TreeItem) => section.inScope) ?? false
+          
+          if (doc.inScope !== hasSelectedSections) {
+            doc.inScope = hasSelectedSections
+            // Auto-open parent when children are selected, auto-close when none selected
+            setCollapsibleStates(prev => ({
+              ...prev,
+              [`doc-${doc.title}`]: hasSelectedSections
+            }))
+          }
+          
+          // Update sections based on their frames
+          doc.sections?.forEach((section: TreeItem) => {
+            const hasSelectedFrames = section.frames?.some((frame: TreeItem) => frame.inScope) ?? false
+            
+            if (section.inScope !== hasSelectedFrames) {
+              section.inScope = hasSelectedFrames
+              // Auto-open parent when children are selected, auto-close when none selected
+              setCollapsibleStates(prev => ({
+                ...prev,
+                [`section-${section.title}`]: hasSelectedFrames
+              }))
+            }
+            
+            // Update nested frames based on their children
+            const updateNestedFrames = (frames: TreeItem[] | undefined) => {
+              frames?.forEach((frame: TreeItem) => {
+                const hasSelectedChildren = frame.frames?.some((child: TreeItem) => child.inScope) ?? false
+                
+                if (frame.inScope !== hasSelectedChildren && frame.frames && frame.frames.length > 0) {
+                  frame.inScope = hasSelectedChildren
+                  // Auto-open parent when children are selected, auto-close when none selected
+                  setCollapsibleStates(prev => ({
+                    ...prev,
+                    [`frame-${frame.title}`]: hasSelectedChildren
+                  }))
+                }
+                
+                updateNestedFrames(frame.frames)
+              })
+            }
+            
+            updateNestedFrames(section.frames)
+          })
+        }
+      }
+      
+      // Update the specific item that was clicked
+      if (itemPath.startsWith('doc-')) {
+        const docTitle = itemPath.replace('doc-', '')
+        const doc = newData.docs.find((d: TreeItem) => d.title === docTitle)
+        if (doc) {
+          doc.inScope = newScope
+          // When selecting/deselecting a document, update all its children
+          updateAllChildren(doc, newScope)
+        }
+      } else if (itemPath.startsWith('section-')) {
+        const sectionTitle = itemPath.replace('section-', '')
+        for (const doc of newData.docs) {
+          const section = doc.sections?.find((s: TreeItem) => s.title === sectionTitle)
+          if (section) {
+            section.inScope = newScope
+            // When selecting/deselecting a section, update all its children
+            updateAllChildren(section, newScope)
+            break
+          }
+        }
+      } else if (itemPath.startsWith('frame-')) {
+        const frameTitle = itemPath.replace('frame-', '')
+        // Search in all sections and nested frames
+        const findAndUpdateFrame = (frames: TreeItem[] | undefined): boolean => {
+          if (!frames) return false
+          for (const frame of frames) {
+            if (frame.title === frameTitle) {
+              frame.inScope = newScope
+              // When selecting/deselecting a frame, update all its children
+              updateAllChildren(frame, newScope)
+              return true
+            }
+            if (findAndUpdateFrame(frame.frames)) return true
+          }
+          return false
+        }
+        
+        for (const doc of newData.docs) {
+          for (const section of doc.sections || []) {
+            if (findAndUpdateFrame(section.frames)) {
+              break
+            }
+          }
+        }
+      }
+
+      // Always update parent states based on children
+      updateParentStates()
+      
+      return newData
+    })
+  }
+
+  // Get all active (in-scope) items for badges
+  const getActiveItems = () => {
+    const activeItems: Array<{id: string, title: string, type: 'document' | 'section' | 'frame'}> = []
+    
+    // Add active documents
+    docData.docs.forEach(doc => {
+      if (doc.inScope) {
+        activeItems.push({
+          id: `doc-${doc.title}`,
+          title: doc.title,
+          type: 'document'
+        })
+      }
+      
+      // Add active sections and frames
+      doc.sections?.forEach(section => {
+        if (section.inScope) {
+          activeItems.push({
+            id: `section-${section.title}`,
+            title: section.title,
+            type: 'section'
+          })
+        }
+        
+        // Add active frames (including nested ones)
+        const addActiveFrames = (frames: TreeItem[] | undefined) => {
+          frames?.forEach(frame => {
+            if (frame.inScope) {
+              activeItems.push({
+                id: `frame-${frame.title}`,
+                title: frame.title,
+                type: 'frame'
+              })
+            }
+            addActiveFrames(frame.frames)
+          })
+        }
+        
+        addActiveFrames(section.frames)
+      })
+    })
+    
+    return activeItems
+  }
+
+  const activeItems = getActiveItems()
+  const visibleActiveItems = showAllActiveDocs ? activeItems : activeItems.slice(0, 6)
+
+  const scrollToKnowledgeBaseItem = (itemId: string) => {
+    // Ensure Knowledge Base is open
+    setKnowledgeBaseOpen(true)
+    
+    // Helper function to ensure all parent collapsibles are expanded
+    const expandParentsForItem = (targetId: string) => {
+      if (targetId.startsWith('doc-')) {
+        const docTitle = targetId.replace('doc-', '')
+        setCollapsibleStates(prev => ({
+          ...prev,
+          [`doc-${docTitle}`]: true
+        }))
+      } else if (targetId.startsWith('section-')) {
+        const sectionTitle = targetId.replace('section-', '')
+        // Find the parent document for this section
+        for (const doc of docData.docs) {
+          const section = doc.sections?.find((s: TreeItem) => s.title === sectionTitle)
+          if (section) {
+            setCollapsibleStates(prev => ({
+              ...prev,
+              [`doc-${doc.title}`]: true,
+              [`section-${sectionTitle}`]: true
+            }))
+            break
+          }
+        }
+      } else if (targetId.startsWith('frame-')) {
+        const frameTitle = targetId.replace('frame-', '')
+        // Find the parent section and document for this frame
+        for (const doc of docData.docs) {
+          for (const section of doc.sections || []) {
+            const findFrameInSection = (frames: TreeItem[] | undefined, parentPath: string[] = []): boolean => {
+              if (!frames) return false
+              for (const frame of frames) {
+                if (frame.title === frameTitle) {
+                  // Expand all parents in the path
+                  setCollapsibleStates(prev => ({
+                    ...prev,
+                    [`doc-${doc.title}`]: true,
+                    [`section-${section.title}`]: true,
+                    ...parentPath.reduce((acc, parentFrame) => ({
+                      ...acc,
+                      [`frame-${parentFrame}`]: true
+                    }), {})
+                  }))
+                  return true
+                }
+                if (findFrameInSection(frame.frames, [...parentPath, frame.title])) {
+                  return true
+                }
+              }
+              return false
+            }
+            
+            if (findFrameInSection(section.frames)) {
+              return
+            }
+          }
+        }
+      }
+    }
+    
+    // Expand all parent sections first
+    expandParentsForItem(itemId)
+    
+    // Use setTimeout to ensure the collapsible content is rendered
+    setTimeout(() => {
+      // Find the scrollable container (Knowledge Base content area)
+      const scrollContainer = document.querySelector('[data-knowledge-base-scroll]')
+      // Find the target element
+      const targetElement = document.querySelector(`[data-item-id="${itemId}"]`)
+      
+      if (scrollContainer && targetElement) {
+        // Get the position of the target element relative to the scroll container
+        const containerRect = scrollContainer.getBoundingClientRect()
+        const targetRect = targetElement.getBoundingClientRect()
+        const relativeTop = targetRect.top - containerRect.top + scrollContainer.scrollTop
+        
+        // Scroll to position the target at the top of the scroll container
+        scrollContainer.scrollTo({
+          top: relativeTop,
+          behavior: 'smooth'
+        })
+        
+        // Add pulsing highlight effect
+        targetElement.classList.add('animate-pulse', 'bg-accent/30')
+        setTimeout(() => {
+          targetElement.classList.remove('animate-pulse', 'bg-accent/30')
+          targetElement.classList.add('bg-accent/10')
+          setTimeout(() => {
+            targetElement.classList.remove('bg-accent/10')
+          }, 1000)
+        }, 1000)
+      }
+    }, 150)
+  }
+
+  const getBadgeVariant = (): "secondary" => {
+    // Use consistent neutral gray for all badge types
+    return 'secondary'
+  }
+
+  return (
+    <div className="flex-1 flex flex-col min-w-80 bg-sidebar h-full overflow-hidden" {...props}>
+      <div className="flex flex-col h-full overflow-hidden">
+        {/* Active Context Section - Badge-based */}
+        <div className="flex-shrink-0 p-3 border-b border-sidebar-border">
+          <Collapsible open={activeContextOpen} onOpenChange={setActiveContextOpen}>
+            <CollapsibleTrigger asChild>
+              <button className="flex items-center justify-between cursor-pointer hover:bg-sidebar-accent/50 rounded-md p-1 w-full">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-xs font-medium text-sidebar-foreground uppercase tracking-wide">
+                    Active Context
+                  </h3>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-3 w-3 text-sidebar-foreground/50 hover:text-sidebar-foreground/70 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs z-[110]">
+                      <p>This is the context that gets sent to the AI model in order to answer your questions. Only checked items will be included.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary" className="text-xs rounded-full">
+                    {activeItems.length}
+                  </Badge>
+                  <ChevronRight className={`h-3 w-3 transition-transform duration-200 ${activeContextOpen ? 'rotate-90' : ''}`} />
+                </div>
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="mt-2">
+                {visibleActiveItems.length > 0 ? (
+                  <div className="flex flex-wrap gap-y-1 -space-x-1">
+                    {visibleActiveItems.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => scrollToKnowledgeBaseItem(item.id)}
+                        className="group"
+                      >
+                        <Badge 
+                          variant={getBadgeVariant()}
+                          className="cursor-pointer hover:bg-accent/80 transition-colors text-xs scale-90 rounded-full"
+                        >
+                          {item.title}
+                        </Badge>
+                      </button>
+                    ))}
+                    {activeItems.length > 6 && (
+                      <button
+                        onClick={() => setShowAllActiveDocs(!showAllActiveDocs)}
+                        className="group"
+                      >
+                        <Badge 
+                          variant="outline"
+                          className="cursor-pointer hover:bg-accent/80 transition-colors text-xs scale-90 border-dashed rounded-full"
+                        >
+                          {showAllActiveDocs ? 'Show less' : `+${activeItems.length - 6} more`}
+                        </Badge>
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-xs text-sidebar-foreground/60 px-2 py-1">
+                    No active items selected
+                  </p>
+                )}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+        
+        {/* Knowledge Base Section - Takes remaining space with scrollable content */}
+        <div className="flex-1 border-b border-sidebar-border flex flex-col min-h-0">
+          <Collapsible open={knowledgeBaseOpen} onOpenChange={setKnowledgeBaseOpen} className="flex-1 flex flex-col min-h-0">
+            <div className="p-3 flex-shrink-0">
+              <CollapsibleTrigger asChild>
+                <button className="flex items-center justify-between cursor-pointer hover:bg-sidebar-accent/50 rounded-md p-1 w-full">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xs font-medium text-sidebar-foreground uppercase tracking-wide">Knowledge Base</h3>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 text-sidebar-foreground/50 hover:text-sidebar-foreground/70 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent side="right" className="max-w-xs z-[110]">
+                        <p>This is your complete knowledge repository. Browse and select documents, sections, and frames to include in your active context.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <ChevronRight className={`h-3 w-3 transition-transform duration-200 ${knowledgeBaseOpen ? 'rotate-90' : ''}`} />
+                </button>
+              </CollapsibleTrigger>
+            </div>
+            <CollapsibleContent className="flex-1 flex flex-col min-h-0">
+              <div className="flex-1 overflow-y-auto px-3 pb-3" data-knowledge-base-scroll>
+                <div className="space-y-0.5">
+                  {docData.docs.map((doc, index) => (
+                    <DocumentTree key={index} item={doc} updateItemScope={updateItemScope} collapsibleStates={collapsibleStates} setCollapsibleStates={setCollapsibleStates} />
+                  ))}
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+        
+        {/* Recent Queries Section - Natural flow after Knowledge Base */}
+        <div className="flex-shrink-0">
+          <Collapsible open={recentQueriesOpen} onOpenChange={setRecentQueriesOpen}>
+            <div className="p-3">
+              <CollapsibleTrigger asChild>
+                <button className="flex items-center justify-between cursor-pointer hover:bg-sidebar-accent/50 rounded-md p-1 w-full">
+                  <h3 className="text-xs font-medium text-sidebar-foreground uppercase tracking-wide">Recent Queries</h3>
+                  <ChevronRight className={`h-3 w-3 transition-transform duration-200 ${recentQueriesOpen ? 'rotate-90' : ''}`} />
+                </button>
+              </CollapsibleTrigger>
+            </div>
+            <CollapsibleContent>
+              <div className="max-h-48 overflow-y-auto px-3 pb-3">
+                <div className="space-y-1">
+                  {visibleQueries.map((query, index) => (
+                    <div key={index} className="px-2 py-1 hover:bg-sidebar-accent/50 rounded-md cursor-pointer">
+                      <span className="text-sm text-sidebar-foreground truncate block">{query}</span>
+                    </div>
+                  ))}
+                  {docData.recentQueries.length > 3 && (
+                    <button
+                      onClick={() => setShowAllQueries(!showAllQueries)}
+                      className="w-full text-left px-2 py-1 text-xs text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/30 rounded-md transition-colors mt-2"
+                    >
+                      {showAllQueries ? 'Show less' : 'Load older...'}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function DocumentTree({ item, updateItemScope, collapsibleStates, setCollapsibleStates }: { item: TreeItem, updateItemScope: (itemPath: string, newScope: boolean) => void, collapsibleStates: Record<string, boolean>, setCollapsibleStates: React.Dispatch<React.SetStateAction<Record<string, boolean>>> }) {
+  const Icon = frameTypeIcons[item.type as keyof typeof frameTypeIcons] || FileText
+  const hasChildren = item.sections && item.sections.length > 0
+
+  if (!hasChildren) {
+    return (
+      <div className="flex items-center gap-2 px-1 py-0.5" data-item-id={`doc-${item.title}`}>
+        <button 
+          onClick={() => {
+            console.log('Navigate to document:', item.title)
+            // TODO: Add navigation logic here
+          }}
+          className="flex items-center gap-2 flex-1 hover:bg-sidebar-accent/50 rounded-md text-left px-1 py-0.5"
+        >
+          <Icon className="h-4 w-4 shrink-0" />
+          <span className="text-sm truncate flex-1">{item.title}</span>
+        </button>
+        <Checkbox 
+          checked={item.inScope}
+          onCheckedChange={(checked) => updateItemScope(`doc-${item.title}`, !!checked)}
+          className="shrink-0"
+        />
+      </div>
+    )
+  }
+
+  return (
+    <Collapsible
+      className="group/document"
+      open={collapsibleStates[`doc-${item.title}`] ?? (item.type === "document")}
+      onOpenChange={(open) => {
+        setCollapsibleStates(prev => ({
+          ...prev,
+          [`doc-${item.title}`]: open
+        }))
+      }}
+    >
+      <div className="flex items-center gap-0 px-1 py-0.5" data-item-id={`doc-${item.title}`}>
+        {/* Expand/collapse trigger */}
+        <CollapsibleTrigger asChild>
+          <button className="flex items-center justify-center w-5 h-5 hover:bg-sidebar-accent/50 rounded-md">
+            <ChevronRight className="h-3.5 w-3.5 transition-transform group-data-[state=open]/document:rotate-90" />
+          </button>
+        </CollapsibleTrigger>
+        {/* Clickable content area */}
+        <button
+          onClick={() => {
+            console.log('Navigate to document:', item.title)
+            // TODO: Add navigation logic here
+          }}
+          className="flex items-center gap-2 flex-1 hover:bg-sidebar-accent/50 rounded-md text-left px-1 py-0.5"
+        >
+          <Icon className="h-4 w-4 shrink-0" />
+          <span className="truncate flex-1 text-sm">{item.title}</span>
+        </button>
+        <Checkbox 
+          checked={item.inScope}
+          onCheckedChange={(checked) => updateItemScope(`doc-${item.title}`, !!checked)}
+          className="shrink-0"
+        />
+      </div>
+      <CollapsibleContent>
+        <div className="ml-5 space-y-0.5 mt-0.5">
+          {item.sections?.map((section, index) => (
+            <SectionTree key={index} item={section} updateItemScope={updateItemScope} collapsibleStates={collapsibleStates} setCollapsibleStates={setCollapsibleStates} />
+          ))}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
+
+function SectionTree({ item, updateItemScope, collapsibleStates, setCollapsibleStates }: { item: TreeItem, updateItemScope: (itemPath: string, newScope: boolean) => void, collapsibleStates: Record<string, boolean>, setCollapsibleStates: React.Dispatch<React.SetStateAction<Record<string, boolean>>> }) {
+  const Icon = frameTypeIcons[item.type as keyof typeof frameTypeIcons] || FileText
+  const hasFrames = item.frames && item.frames.length > 0
+
+  if (!hasFrames) {
+    return (
+      <div className="flex items-center gap-2 px-1 py-0.5" data-item-id={`section-${item.title}`}>
+        <button
+          onClick={() => {
+            console.log('Navigate to section:', item.title)
+            // TODO: Add navigation logic here
+          }}
+          className="flex items-center gap-2 flex-1 hover:bg-sidebar-accent/50 rounded-md text-left px-1 py-0.5"
+        >
+          <Icon className="h-4 w-4 shrink-0" />
+          <span className="text-sm truncate flex-1">{item.title}</span>
+        </button>
+        <Checkbox 
+          checked={item.inScope}
+          onCheckedChange={(checked) => updateItemScope(`section-${item.title}`, !!checked)}
+          className="shrink-0"
+        />
+      </div>
+    )
+  }
+
+  return (
+    <Collapsible
+      className="group/section"
+      open={collapsibleStates[`section-${item.title}`] ?? true}
+      onOpenChange={(open) => {
+        setCollapsibleStates(prev => ({
+          ...prev,
+          [`section-${item.title}`]: open
+        }))
+      }}
+    >
+      <div className="flex items-center gap-0 px-1 py-0.5" data-item-id={`section-${item.title}`}>
+        {/* Expand/collapse trigger */}
+        <CollapsibleTrigger asChild>
+          <button className="flex items-center justify-center w-5 h-5 hover:bg-sidebar-accent/50 rounded-md">
+            <ChevronRight className="h-3.5 w-3.5 transition-transform group-data-[state=open]/section:rotate-90" />
+          </button>
+        </CollapsibleTrigger>
+        {/* Clickable content area */}
+        <button
+          onClick={() => {
+            console.log('Navigate to section:', item.title)
+            // TODO: Add navigation logic here
+          }}
+          className="flex items-center gap-2 flex-1 hover:bg-sidebar-accent/50 rounded-md text-left px-1 py-0.5"
+        >
+          <Icon className="h-4 w-4 shrink-0" />
+          <span className="truncate flex-1 text-sm">{item.title}</span>
+        </button>
+        <Checkbox 
+          checked={item.inScope}
+          onCheckedChange={(checked) => updateItemScope(`section-${item.title}`, !!checked)}
+          className="shrink-0"
+        />
+      </div>
+      <CollapsibleContent>
+        <div className="ml-5 space-y-0.5 mt-0.5">
+          {item.frames?.map((frame, index) => (
+            <FrameTree key={index} item={frame} updateItemScope={updateItemScope} collapsibleStates={collapsibleStates} setCollapsibleStates={setCollapsibleStates} />
+          ))}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
+
+function FrameTree({ item, updateItemScope, collapsibleStates, setCollapsibleStates }: { item: TreeItem, updateItemScope: (itemPath: string, newScope: boolean) => void, collapsibleStates: Record<string, boolean>, setCollapsibleStates: React.Dispatch<React.SetStateAction<Record<string, boolean>>> }) {
+  const Icon = frameTypeIcons[item.type as keyof typeof frameTypeIcons] || FileText
+  const hasChildren = item.frames && item.frames.length > 0
+
+  if (!hasChildren) {
+    return (
+      <div className="flex items-center gap-2 px-1 py-0.5" data-item-id={`frame-${item.title}`}>
+        <button
+          onClick={() => {
+            console.log('Navigate to frame:', item.title)
+            // TODO: Add navigation logic here
+          }}
+          className="flex items-center gap-2 flex-1 hover:bg-sidebar-accent/50 rounded-md text-left px-1 py-0.5"
+        >
+          <Icon className="h-4 w-4 shrink-0" />
+          <span className="text-sm truncate flex-1">{item.title}</span>
+        </button>
+        <Checkbox 
+          checked={item.inScope}
+          onCheckedChange={(checked) => updateItemScope(`frame-${item.title}`, !!checked)}
+          className="shrink-0"
+        />
+      </div>
+    )
+  }
+
+  return (
+    <Collapsible
+      className="group/frame"
+      open={collapsibleStates[`frame-${item.title}`] ?? true}
+      onOpenChange={(open) => {
+        setCollapsibleStates(prev => ({
+          ...prev,
+          [`frame-${item.title}`]: open
+        }))
+      }}
+    >
+      <div className="flex items-center gap-0 px-1 py-0.5" data-item-id={`frame-${item.title}`}>
+        {/* Expand/collapse trigger */}
+        <CollapsibleTrigger asChild>
+          <button className="flex items-center justify-center w-5 h-5 hover:bg-sidebar-accent/50 rounded-md">
+            <ChevronRight className="h-3.5 w-3.5 transition-transform group-data-[state=open]/frame:rotate-90" />
+          </button>
+        </CollapsibleTrigger>
+        {/* Clickable content area */}
+        <button
+          onClick={() => {
+            console.log('Navigate to frame:', item.title)
+            // TODO: Add navigation logic here
+          }}
+          className="flex items-center gap-2 flex-1 hover:bg-sidebar-accent/50 rounded-md text-left px-1 py-0.5"
+        >
+          <Icon className="h-4 w-4 shrink-0" />
+          <span className="truncate flex-1 text-sm">{item.title}</span>
+        </button>
+        <Checkbox 
+          checked={item.inScope}
+          onCheckedChange={(checked) => updateItemScope(`frame-${item.title}`, !!checked)}
+          className="shrink-0"
+        />
+      </div>
+      <CollapsibleContent>
+        <div className="ml-5 space-y-0.5 mt-0.5">
+          {item.frames?.map((childFrame, index) => (
+            <FrameTree key={index} item={childFrame} updateItemScope={updateItemScope} collapsibleStates={collapsibleStates} setCollapsibleStates={setCollapsibleStates} />
+          ))}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+} 
