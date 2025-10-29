@@ -198,8 +198,8 @@ body {
   --leading-loose: 1.45;
   --leading-none: 1;
 
-  --font-weight-light: 390;
-  --font-weight-regular: 410;
+  --font-weight-light: 320;
+  --font-weight-regular: 360;
   --font-weight-medium: 440;
   --font-weight-semibold: 460;
   --font-weight-bold: 480;
@@ -207,7 +207,7 @@ body {
 
 /* Prose typography overrides (Fumadocs fork consumes these variables) */
 .prose {
-  --tw-prose-body: var(--foreground);
+  --tw-prose-body: color-mix(in oklch, var(--foreground) 95%, transparent);
   --tw-prose-headings: var(--foreground);
   --tw-prose-lead: color-mix(in oklch, var(--foreground) 80%, transparent);
   --tw-prose-links: var(--primary);
@@ -225,8 +225,8 @@ body {
   --tw-prose-kbd-shadows: color-mix(in oklch, var(--primary) 50%, transparent);
 
   font-family: var(--font-sans);
-  font-weight: 350;
-  line-height: 1.45;
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-normal);
 }
 
 .prose :where(h1, h2) {
