@@ -1,13 +1,12 @@
 "use client";
 
 import { File, Hash } from "lucide-react";
-import { useRouter } from "next/navigation";
 import {
   CommandGroup,
   CommandItem,
   CommandSeparator,
 } from "@/components/ui/command";
-import type { SearchItem } from "../types";
+import type { SearchItem } from "../../../docs/components/search/types";
 
 type DocumentationResultsProps = {
   results: SearchItem[];
@@ -46,8 +45,6 @@ export function DocumentationResults({
   searchTerm,
   onSelect,
 }: DocumentationResultsProps) {
-  const router = useRouter();
-
   // Group results by type - prioritize pages first
   const pages = results.filter(
     (r) => r.type === "page" || !r.type || r.type === "doc"
@@ -64,19 +61,8 @@ export function DocumentationResults({
 
   const handleSelect = (href: string) => {
     if (href) {
-      // Check if href is cross-origin (different domain/subdomain)
-      if (typeof window !== "undefined" && (href.startsWith("http://") || href.startsWith("https://"))) {
-        const hrefUrl = new URL(href);
-        const currentUrl = new URL(window.location.href);
-        // If different origin, use full page navigation
-        if (hrefUrl.origin !== currentUrl.origin) {
-          window.location.href = href;
-          onSelect?.();
-          return;
-        }
-      }
-      // Same origin or relative path: use router
-      router.push(href);
+      // Always use window.location for navigation (works for both same-origin and cross-origin)
+      window.location.href = href;
       onSelect?.();
     }
   };
@@ -183,3 +169,4 @@ export function DocumentationResults({
     </>
   );
 }
+

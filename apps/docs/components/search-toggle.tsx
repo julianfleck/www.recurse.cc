@@ -57,7 +57,10 @@ export function LargeSearchToggle({
   // Global keyboard shortcut for search
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "k" && (event.metaKey || event.ctrlKey)) {
+      // Only trigger if "/" is pressed and not typing in an input/textarea
+      const target = event.target as HTMLElement;
+      const isInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA";
+      if (event.key === "/" && !isInput && !target.isContentEditable) {
         event.preventDefault();
         setOpen(true);
       }
@@ -88,8 +91,7 @@ export function LargeSearchToggle({
         <Search />
         {customText || "Search Knowledge Base"}
         <div className="ms-auto inline-flex gap-0.5">
-          <kbd className="rounded-md border bg-fd-background px-1.5">⌘</kbd>
-          <kbd className="rounded-md border bg-fd-background px-1.5">K</kbd>
+          <kbd className="rounded-md border bg-fd-background px-1.5">/</kbd>
         </div>
       </button>
       {/* Deprecated */}

@@ -1,7 +1,6 @@
 "use client";
 
-import { SearchIcon } from "lucide-react";
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -9,15 +8,8 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Spinner } from "@/components/ui/spinner";
-import { isOnAuthPage } from "@/lib/auth-utils";
 import { DocumentationResults } from "./results/documentation";
-import type { SearchProvider } from "./types";
-
-// Lazy import KnowledgeBaseResults to avoid importing graph-view dependencies when not needed
-// This allows www app to use search without graph-view dependencies
-const KnowledgeBaseResults = lazy(() => 
-  import("./results/knowledge-base").then(m => ({ default: m.KnowledgeBaseResults }))
-);
+import type { SearchProvider } from "../../../docs/components/search/types";
 
 type SearchCommandDialogProps = {
   open: boolean;
@@ -25,60 +17,50 @@ type SearchCommandDialogProps = {
   provider: SearchProvider;
   placeholder?: string;
   debounceMs?: number;
-  searchType?: "documentation" | "knowledgeBase";
 };
 
 export function SearchCommandDialog({
   open,
   onOpenChange,
   provider,
-  placeholder = "Search...",
+  placeholder = "Search documentation...",
   debounceMs = 300,
-  searchType = "knowledgeBase",
 }: SearchCommandDialogProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
-  const [results, setResults] = useState<
-    ReturnType<SearchProvider["search"]> extends Promise<infer R> ? R : never
-  >([] as never);
+  const [results, setResults] = useState<Awaited<ReturnType<SearchProvider["search"]>>>([]);
 
   useEffect(() => {
     if (!open) {
       setSearchTerm("");
-      setResults([] as never);
+      setResults([]);
       setError(null);
       setHasSearched(false);
     }
   }, [open]);
 
   useEffect(() => {
-    const timeoutId = setTimeout(async () => {
-      if (!searchTerm.trim()) {
-        setResults([] as never);
-        setError(null);
-        setHasSearched(false);
-        return;
-      }
-
-      setIsLoading(true);
+    if (!searchTerm.trim()) {
+      setResults([]);
       setError(null);
-      setResults([] as never); // Clear previous results immediately when starting new search
+      setHasSearched(false);
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    const timeoutId = setTimeout(async () => {
       try {
-        const data = await provider.search(searchTerm);
-        setResults(data as never);
+        const searchResults = await provider.search(searchTerm);
+        setResults(searchResults);
         setHasSearched(true);
       } catch (err) {
-        if (err instanceof Error && err.name === "AuthenticationError") {
-          if (!isOnAuthPage()) {
-            window.location.href = "/login";
-          }
-          return;
-        }
         setError(err instanceof Error ? err.message : "Search failed");
-        setResults([] as never);
-        setHasSearched(true);
+        setResults([]);
       } finally {
         setIsLoading(false);
       }
@@ -94,7 +76,7 @@ export function SearchCommandDialog({
     if (searchTerm && !isLoading && hasSearched && results.length === 0) {
       return "No results found.";
     }
-    return null; // Don't show anything when not searching, loading, or haven't searched yet
+    return null;
   }, [error, searchTerm, isLoading, hasSearched, results.length]);
 
   return (
@@ -118,19 +100,14 @@ export function SearchCommandDialog({
       <CommandList>
         {emptyMessage && <CommandEmpty>{emptyMessage}</CommandEmpty>}
         {searchTerm && !isLoading && results.length > 0 && (
-          searchType === "documentation" ? (
-            <DocumentationResults
-              onSelect={() => onOpenChange(false)}
-              results={results as never}
-              searchTerm={searchTerm}
-            />
-          ) : (
-            <Suspense fallback={<div>Loading...</div>}>
-              <KnowledgeBaseResults results={results as never} />
-            </Suspense>
-          )
+          <DocumentationResults
+            onSelect={() => onOpenChange(false)}
+            results={results}
+            searchTerm={searchTerm}
+          />
         )}
       </CommandList>
     </CommandDialog>
   );
 }
+

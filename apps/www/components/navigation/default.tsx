@@ -19,7 +19,8 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import navContent from '@/content/en/navigation.json' with { type: 'json' };
 import { useDemo } from '@/contexts/DemoContext';
 import { useScroll } from '@/contexts/ScrollContext';
-import { cn } from '@/lib/utils';
+import { SearchToggle } from '@/components/search/toggle';
+import { cn, getDocsUrl } from '@/lib/utils';
 
 // Assert types (basic for now)
 const contentNav = navContent as {
@@ -275,6 +276,32 @@ export function DefaultNavigation({
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
+
+            {/* Documentation Link */}
+            <NavigationMenuItem
+              className={cn(
+                menuItemTransition,
+                // Stagger delay (adjust index if Home is hidden)
+                isCompact
+                  ? `opacity-100 delay-${hoverDelayBase * (pathname !== '/' ? 5 : 4)}`
+                  : isHovered
+                    ? `opacity-100 delay-${hoverDelayBase * (pathname !== '/' ? 5 : 4)}`
+                    : 'opacity-0'
+              )}
+            >
+              <NavigationMenuLink asChild>
+                <Link
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    'transition-none',
+                    isCompact ? 'h-9 px-2 text-sm' : ''
+                  )}
+                  href={getDocsUrl()}
+                >
+                  Documentation
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
       </div>
@@ -306,6 +333,18 @@ export function DefaultNavigation({
           >
             {contentNav.beta}
           </Button>
+
+          {/* Search Documentation Button */}
+          <SearchToggle
+            className={cn(
+              menuItemTransition,
+              isCompact ? 'h-9 w-9 p-0' : 'h-10 w-10 p-0'
+            )}
+            enableHotkey={true}
+            placeholder="Search documentation..."
+            size={isCompact ? 'sm' : 'default'}
+            variant="ghost"
+          />
 
           {/* FAQ "?" Button */}
           <Link href="/faq">

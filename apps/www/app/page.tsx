@@ -13,6 +13,7 @@ import Link from 'next/link';
 import AnimatedContent from '@/components/animations/AnimatedContent/AnimatedContent';
 import ScrollAnimation from '@/components/animations/ScrollAnimation/ScrollAnimation';
 import { CTASection } from '@/components/common/CTASection';
+import { DocsLinkButton } from '@/components/common/DocsLinkButton';
 import { SignupForm } from '@/components/forms/SignupForm';
 import { FeatureCard } from '@/components/layout/FeatureCard';
 // Import new grid components
@@ -93,13 +94,9 @@ export default function HomePage() {
                         <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </Link>
                     </Button>
-                    <Button
-                      className="group rounded-full px-4 py-3 font-medium text-base"
-                      size="default"
-                      variant="subtle"
-                    >
+                    <DocsLinkButton variant="subtle">
                       Read the docs
-                    </Button>
+                    </DocsLinkButton>
                   </div>
                 </div>
               </AnimatedContent>
