@@ -22,7 +22,7 @@ export function Providers({ children }: { children: ReactNode }) {
       domain={process.env.NEXT_PUBLIC_AUTH0_DOMAIN ?? ""}
       onRedirectCallback={(appState?: { returnTo?: string }) => {
         if (typeof window !== "undefined") {
-          const target = appState?.returnTo ?? "/dashboard";
+          const target = appState?.returnTo ?? "/";
           window.history.replaceState({}, "", target);
         }
       }}

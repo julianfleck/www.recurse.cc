@@ -27,6 +27,7 @@ recurse.cc/ (monorepo root)
 ├── .cursor/
 │   └── rules/
 │       ├── general.mdc          # This file - core protocol
+│       ├── overview.mdc           # MANDATORY: Project structure ledger (always applied)
 │       ├── typescript.mdc       # TypeScript conventions
 │       ├── next.mdc             # Next.js patterns
 │       ├── routing.mdc          # App Router specifics
@@ -54,7 +55,6 @@ recurse.cc/ (monorepo root)
 │   │   ├── active/
 │   │   └── completed/
 │   └── planning/                # Project documentation
-├── overview.yaml                # Externalized structure - project ledger
 └── CHANGELOG.md                 # Externalized evolution - audit trail
 ```
 
@@ -62,8 +62,39 @@ recurse.cc/ (monorepo root)
 
 - **Research first or it didn't happen.** No claims or rule drafts without research (external + internal) and sources.
 - All rules must be **`.mdc` with frontmatter** and live in `.cursor/rules/`.
-- All substantial actions must update the **ledger** (`overview.yaml`) and the **audit trail** (`CHANGELOG.md`).
+- All substantial actions must update the **ledger** (`.cursor/rules/overview.mdc`) and the **audit trail** (`CHANGELOG.md`).
 - **Diverge before converging.** Explore broadly, surface contradictions, keep tension high—then synthesize and decide.
+
+## Mandatory Rule File: overview.mdc
+
+**`.cursor/rules/overview.mdc` is a mandatory rule file that must be kept in sync with the project structure.**
+
+### Status
+- **Location:** `.cursor/rules/overview.mdc`
+- **Exposure:** Included in agent context on every turn (via alwaysApply)
+- **Purpose:** Single source of truth for project structure, inventory, and conventions
+- **Format:** MDC file with YAML content structure preserved
+- **Update Requirement:** Must be updated whenever files are created, deleted, or their purpose changes
+
+### Mandatory Update Triggers
+
+You MUST update `.cursor/rules/overview.mdc` when:
+- Creating new files or directories (add to `inventory`)
+- Deleting files or directories (mark as `deprecated` or remove from `inventory`)
+- Changing file purpose or status (update `purpose` or `status` fields)
+- Adding new rules or documentation (add entries with appropriate `kind`)
+- Completing migration phases (update `status` fields)
+
+### Schema Compliance
+
+The `overview.mdc` contains YAML content following a strict schema (see Schema section below). Maintain:
+- **project:** Basic project metadata
+- **inventory:** Complete list of all significant files/directories
+- **conventions:** Technology stack and standards
+
+### Hard Stop Rule
+
+**If `.cursor/rules/overview.mdc` is out of sync with the filesystem, halt and reconcile before proceeding.** This file is the entry point for progressive context building and must accurately reflect the project state.
 
 ## The Extract-Expand-Map-Evaluate-Compress-Recurse Methodology
 
@@ -124,7 +155,7 @@ Every task follows this recursive cycle:
   - `## Open Questions`
 
 - Create or update rules based on learned practices
-- Update `overview.yaml` with new/changed files
+- Update `.cursor/rules/overview.mdc` with new/changed files (MANDATORY)
 - Append timestamped entry to `CHANGELOG.md`
 
 ### 5. Recurse
@@ -144,15 +175,15 @@ This is **not linear**—it's recursive. Because you see the rules you create on
 
 ### Iteration 1: Orient (Give Overview → Summarize)
 
-**When user points to overview.yaml or high-level docs:**
+**When user points to `.cursor/rules/overview.mdc` or high-level docs:**
 
-1. Read the overview/map file
+1. Read the overview/map file (`.cursor/rules/overview.mdc`)
 2. Use semantic search to understand boundaries
 3. Create initial mental model of project structure
 4. Return summary: "Here's what I understand about this project..."
 5. Don't ask for specific work yet—just orient
 
-**Save this understanding as a context map** (e.g., `docs/context/project-understanding.md`) and link it in `overview.yaml`.
+**Save this understanding as a context map** (e.g., `docs/context/project-understanding.md`) and link it in `.cursor/rules/overview.mdc`.
 
 ### Iteration 2: Map (Assemble Deeper Context → Identify Patterns)
 
@@ -181,7 +212,7 @@ This is **not linear**—it's recursive. Because you see the rules you create on
 
 Each iteration stabilizes context before building on it. You're not guessing at relevance—you have reference points from previous passes.
 
-**This is why `overview.yaml` matters:** it's the entry point for Iteration 1.  
+**This is why `.cursor/rules/overview.mdc` matters:** it's the entry point for Iteration 1 and is always available.  
 **This is why `docs/research/` matters:** research trails help Iteration 2.  
 **This is why `docs/context/` matters:** context maps preserve understanding across sessions.  
 **This is why `docs/tasks/` matters:** workflow tracking connects planning to execution.  
@@ -197,7 +228,7 @@ Throughout progressive context building, create and maintain context maps:
 - **How they're used:** Referenced in later iterations
 - **Why they matter:** They externalize understanding so you (and future agents) can build on stable foundations
 
-**Always link context maps in `overview.yaml`** so they're discoverable.
+**Always link context maps in `.cursor/rules/overview.mdc`** so they're discoverable.
 
 ## The Execution Protocol (after bootstrap)
 
@@ -267,9 +298,9 @@ Always document: what changed, why it changed, sources for new practices.
 - **Task tracking:** `docs/tasks/active/` for current work, move to `docs/tasks/completed/` when done
 - **Rules:** If created or updated, with `lastVerified` timestamp and sources
 - **Changelog:** `CHANGELOG.md` with ≤6 line entry, timestamp, files touched
-- **Overview:** `overview.yaml` if files were created/deleted/changed purpose
+- **Overview:** `.cursor/rules/overview.mdc` if files were created/deleted/changed purpose (MANDATORY)
 
-**Hard stop:** If `overview.yaml` is out of sync with filesystem, halt and reconcile before proceeding.
+**Hard stop:** If `.cursor/rules/overview.mdc` is out of sync with filesystem, halt and reconcile before proceeding.
 
 ### Step 7: Recurse
 
@@ -352,7 +383,12 @@ sources:
 ## Proposed Changes
 ```
 
-### overview.yaml Schema
+### `.cursor/rules/overview.mdc` Schema
+
+**Location:** `.cursor/rules/overview.mdc`  
+**Status:** Mandatory rule file, always applied  
+**Format:** MDC file with YAML content structure  
+**Update Frequency:** Whenever project structure changes
 
 ```yaml
 project:
@@ -381,11 +417,10 @@ conventions:
     framework: "[framework]"
     format: "[format]"
     style: "[style guide]"
+  package_manager: "[pm]"
+  workspace_type: "[monorepo|single-repo]"
 
-provenance:
   last_updated: [YYYY-MM-DDTHH:MM:SSZ]
-  updated_by: "[agent|human]"
-  notes: "[context]"
 ```
 
 ### CHANGELOG.md Format
@@ -465,7 +500,7 @@ Understanding the **purpose** of each directory and file in the bootstrap system
     - **Completed (`docs/tasks/completed/`):** Retroactive documentation of what was done and why
   - **Planning (`docs/planning/`):** Project documentation and migration plans
 
-- **Overview (`overview.yaml`):** Externalized structure - current map of project, single source of truth, entry point for progressive context building
+- **Overview (`.cursor/rules/overview.mdc`):** Externalized structure - current map of project, single source of truth, entry point for progressive context building, mandatory rule file exposed on every turn
 - **Changelog (`CHANGELOG.md`):** Externalized evolution - timestamped updates including reasoning
 
 **The file system IS the context.** The agent navigates through tools, not memory. Progressive context building creates stable foundations across iterations. The hierarchical structure (`docs/`) groups related information while maintaining clear separation between user input and agent output.

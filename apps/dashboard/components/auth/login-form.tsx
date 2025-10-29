@@ -45,7 +45,7 @@ export function LoginForm({
       // Allow store propagation before navigating
       const STORE_PROPAGATION_DELAY_MS = 50;
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push("/");
       }, STORE_PROPAGATION_DELAY_MS);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");

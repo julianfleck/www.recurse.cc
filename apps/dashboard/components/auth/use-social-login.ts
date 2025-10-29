@@ -10,13 +10,13 @@ export function useSocialLogin() {
     loginWithRedirect({
       authorizationParams: {
         connection,
-        // Force callback to /dashboard to avoid landing on '/'
+        // Force callback to / to land on root
         redirect_uri:
           typeof window !== "undefined"
-            ? `${window.location.origin}/dashboard`
+            ? `${window.location.origin}/`
             : undefined,
       },
-      appState: { returnTo: "/dashboard" },
+      appState: { returnTo: "/" },
     });
 
   return {
