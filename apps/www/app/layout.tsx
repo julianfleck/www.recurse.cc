@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { JetBrains_Mono } from 'next/font/google';
-import './globals.css';
+import "./globals.css";
 import { Analytics } from '@vercel/analytics/next';
 import Aurora from '@/components/backgrounds/Aurora/Aurora';
 import Particles from '@/components/backgrounds/Particles/Particles';

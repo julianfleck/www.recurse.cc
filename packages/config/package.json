@@ -9,6 +9,7 @@
     "./tsconfig": "./tsconfig.base.json",
     "./tailwind": "./tailwind.config.ts",
     "./biome": "./biome.jsonc",
-    "./models": "./models.ts"
+    "./models": "./models.ts",
+    "./styles/global.css": "./styles/global.css"
   }
 }

@@ -1,8 +1,8 @@
 "use client";
 import { Auth0Provider } from "@auth0/auth0-react";
 import type { ReactNode } from "react";
-import { Toaster } from "sonner";
-import { AuthInit } from "@recurse/auth";
+import { Toaster } from "@/components/ui/sonner";
+import { AuthInit } from "@/components/auth/auth-init";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
