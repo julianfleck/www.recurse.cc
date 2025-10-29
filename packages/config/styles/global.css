@@ -1,3 +1,5 @@
+@import "./switzer.css";
+
 :root {
   --background: oklch(0.98 0 0);
   --foreground: oklch(0.371 0 0);
@@ -31,10 +33,10 @@
   --sidebar-accent-foreground: oklch(0 0 0);
   --sidebar-border: oklch(0.9401 0 0);
   --sidebar-ring: oklch(0 0 0);
-  --font-sans: Geist, ui-sans-serif, sans-serif, system-ui;
+  --font-sans: Switzer, ui-sans-serif, system-ui, sans-serif;
   --font-serif: Georgia, serif;
-  --font-mono: Geist Mono, monospace;
-  --radius: 0.2rem;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+  --radius: 0.5rem;
   --shadow-x: 0px;
   --shadow-y: 0px;
   --shadow-blur: 10px;
@@ -59,7 +61,7 @@
     0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.1), 0px 8px 10px -1px
     hsl(223.8136 0.0000% 83.1444% / 0.1);
   --shadow-2xl: 0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.25);
-  --tracking-normal: -0.01em;
+  --tracking-normal: -0.02em;
   --spacing: 0.25rem;
 }
 
@@ -88,7 +90,7 @@
   --chart-3: oklch(0.75 0.183 55.934);
   --chart-4: oklch(0.559 0 0);
   --chart-5: oklch(0.4386 0 0);
-  --sidebar: oklch(0.22 0 0);
+  --sidebar: oklch(0.17 0 0);
   --sidebar-foreground: oklch(0.708 0 0);
   --sidebar-primary: oklch(0.97 0 0);
   --sidebar-primary-foreground: oklch(0 0 0);
@@ -96,10 +98,10 @@
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(0.24 0 0);
   --sidebar-ring: oklch(0.7187 0 0);
-  --font-sans: Geist, ui-sans-serif, sans-serif, system-ui;
+  --font-sans: Switzer, ui-sans-serif, system-ui, sans-serif;
   --font-serif: Georgia, serif;
-  --font-mono: Geist Mono, monospace;
-  --radius: 0.2rem;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+  --radius: 0.5rem;
   --shadow-x: 0px;
   --shadow-y: 0px;
   --shadow-blur: 10px;
