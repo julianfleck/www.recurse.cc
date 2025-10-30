@@ -8,6 +8,7 @@
     "dev:dashboard": "pnpm --filter @recurse/dashboard dev",
     "dev:all": "pnpm --parallel --filter '@recurse/*' dev",
     "build": "pnpm -r build",
+    "build:check": "node scripts/check-builds.mjs",
     "lint": "pnpm -r exec ultracite check",
     "fix": "pnpm -r exec ultracite fix"
   },

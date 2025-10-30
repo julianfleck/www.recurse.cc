@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@recurse/ui/components";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+} from "@recurse/ui/components";
+import { cn } from "@recurse/ui/lib";
 
 type IconToggleButtonProps = {
   icon1: React.ComponentType<{ className?: string; strokeWidth?: number }>;

@@ -11,7 +11,7 @@ import {
   Trigger as DialogTriggerPrimitive,
 } from "@radix-ui/react-dialog";
 import { XIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@recurse/ui/lib";
 
 function Dialog(props: React.ComponentProps<typeof DialogRoot>) {
   return <DialogRoot data-slot="dialog" {...props} />;

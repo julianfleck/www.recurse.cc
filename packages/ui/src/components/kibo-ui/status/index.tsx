@@ -1,13 +1,13 @@
 "use client";
 
 import type { ComponentProps, HTMLAttributes } from "react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@recurse/ui/components";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+} from "@recurse/ui/components";
+import { cn } from "@recurse/ui/lib";
 
 // Use theme colors for status indicators
 const getStatusColor = (status: string): string => {

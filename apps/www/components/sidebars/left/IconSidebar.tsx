@@ -13,7 +13,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { useUIStore } from '@/stores/uiStore';
+import { useUIStore } from '@recurse/ui/lib';
 
 export function IconSidebar({ ...props }: React.ComponentProps<'div'>) {
   const {

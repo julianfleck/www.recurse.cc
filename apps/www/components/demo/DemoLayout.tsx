@@ -7,7 +7,7 @@ import { useDemoApp } from '@/contexts/DemoAppContext';
 import { useSession } from '@/contexts/SessionContext';
 import { useViewer } from '@/contexts/ViewerContext';
 import { cn } from '@/lib/utils';
-import { useUIStore } from '@/stores/uiStore';
+import { useUIStore } from '@recurse/ui/lib';
 
 interface DemoLayoutProps {
   children: React.ReactNode;

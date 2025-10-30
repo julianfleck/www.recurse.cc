@@ -2,7 +2,7 @@
 
 import type * as React from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@recurse/ui/lib";
 
 interface TableProps extends React.ComponentProps<"table"> {
   stickyHeader?: boolean;

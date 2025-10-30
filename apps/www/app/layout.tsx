@@ -8,7 +8,7 @@ import { DemoPopover } from '@/components/common/DemoPopover';
 import { Footer } from '@/components/common/Footer';
 import { Header } from '@/components/common/header';
 import { OverlayBlurWrapper } from '@/components/common/OverlayBlurWrapper';
-import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeProvider } from '@recurse/ui/components';
 import { DemoProvider } from '@/contexts/DemoContext';
 import { ScrollProvider } from '@/contexts/ScrollContext';
 import { Providers } from './providers';
@@ -38,6 +38,7 @@ export default function RootLayout({
             defaultTheme="system"
             disableTransitionOnChange
             enableSystem
+            storageKey="theme"
           >
             <DemoProvider>
               <ScrollProvider>

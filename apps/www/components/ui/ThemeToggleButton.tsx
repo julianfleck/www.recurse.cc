@@ -1,26 +1,38 @@
 'use client';
 
 import { Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useThemeSync, useUIStore } from '@/stores/uiStore';
 
 interface ThemeToggleButtonProps {
   className?: string;
 }
 
 export function ThemeToggleButton({ className }: ThemeToggleButtonProps) {
-  // Sync the store with next-themes
-  useThemeSync();
+  const { setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-  // Use the store
-  const isDarkMode = useUIStore((state) => state.isDarkMode);
-  const toggleDarkMode = useUIStore((state) => state.toggleDarkMode);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Don't render anything until mounted to prevent hydration mismatch
+  if (!mounted) {
+    return null;
+  }
+
+  const isDarkMode = resolvedTheme === 'dark';
+
+  const toggleTheme = () => {
+    setTheme(isDarkMode ? 'light' : 'dark');
+  };
 
   return (
     <Button
       className={cn('group relative h-8 w-8 overflow-hidden p-0', className)}
-      onClick={toggleDarkMode}
+      onClick={toggleTheme}
       variant="ghost"
     >
       <span className="sr-only">Toggle theme</span>

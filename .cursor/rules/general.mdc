@@ -62,6 +62,7 @@ recurse.cc/ (monorepo root)
 
 - **Research first or it didn't happen.** No claims or rule drafts without research (external + internal) and sources.
 - All rules must be **`.mdc` with frontmatter** and live in `.cursor/rules/`.
+- **CRITICAL: ALWAYS keep `.cursor/rules/overview.mdc` in sync** - This file is exposed on every turn via `alwaysApply: true` and must accurately reflect project structure. Any file creation, deletion, or purpose change REQUIRES an immediate update to `overview.mdc`.
 - All substantial actions must update the **ledger** (`.cursor/rules/overview.mdc`) and the **audit trail** (`CHANGELOG.md`).
 - **Diverge before converging.** Explore broadly, surface contradictions, keep tension high—then synthesize and decide.
 
@@ -264,6 +265,7 @@ Every task follows these steps. **Remember: diverge before you converge.**
 - Confirm: output format, audience, success criteria
 - Take **smallest useful step** first
 - Prefer small, incremental changes
+- **Before finishing:** Check if any files were created/deleted/changed purpose → Update `.cursor/rules/overview.mdc` immediately
 
 ### Step 5: Check if Rules Need Updating
 
@@ -298,7 +300,9 @@ Always document: what changed, why it changed, sources for new practices.
 - **Task tracking:** `docs/tasks/active/` for current work, move to `docs/tasks/completed/` when done
 - **Rules:** If created or updated, with `lastVerified` timestamp and sources
 - **Changelog:** `CHANGELOG.md` with ≤6 line entry, timestamp, files touched
-- **Overview:** `.cursor/rules/overview.mdc` if files were created/deleted/changed purpose (MANDATORY)
+- **Overview:** `.cursor/rules/overview.mdc` if files were created/deleted/changed purpose (MANDATORY - NO EXCEPTIONS)
+
+**CRITICAL REMINDER:** `.cursor/rules/overview.mdc` is exposed in agent context on EVERY turn via `alwaysApply: true`. It is the single source of truth for project structure. Failure to keep it in sync degrades the agent's ability to understand the codebase.
 
 **Hard stop:** If `.cursor/rules/overview.mdc` is out of sync with filesystem, halt and reconcile before proceeding.
 
@@ -500,7 +504,7 @@ Understanding the **purpose** of each directory and file in the bootstrap system
     - **Completed (`docs/tasks/completed/`):** Retroactive documentation of what was done and why
   - **Planning (`docs/planning/`):** Project documentation and migration plans
 
-- **Overview (`.cursor/rules/overview.mdc`):** Externalized structure - current map of project, single source of truth, entry point for progressive context building, mandatory rule file exposed on every turn
+- **Overview (`.cursor/rules/overview.mdc`):** Externalized structure - current map of project, single source of truth, entry point for progressive context building, mandatory rule file exposed on every turn via `alwaysApply: true`. **MUST be kept in sync with filesystem at all times - any file creation/deletion/purpose change REQUIRES immediate update.**
 - **Changelog (`CHANGELOG.md`):** Externalized evolution - timestamped updates including reasoning
 
 **The file system IS the context.** The agent navigates through tools, not memory. Progressive context building creates stable foundations across iterations. The hierarchical structure (`docs/`) groups related information while maintaining clear separation between user input and agent output.

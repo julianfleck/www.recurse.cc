@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@recurse/ui/lib";
 
 interface SpinnerProps extends React.ComponentProps<"svg"> {
   size?: number;

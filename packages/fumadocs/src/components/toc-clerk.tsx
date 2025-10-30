@@ -3,8 +3,8 @@ import type { TOCItemType } from "fumadocs-core/server";
 import * as Primitive from "fumadocs-core/toc";
 import { useI18n } from "fumadocs-ui/contexts/i18n";
 import { type ComponentProps, useEffect, useRef, useState } from "react";
-import { cn } from "../../lib/cn";
-import { mergeRefs } from "../../lib/merge-refs";
+import { cn } from "@recurse/ui/lib";
+import { mergeRefs } from "@recurse/ui/lib";
 import { useTOCItems } from "./toc";
 import { TocThumb } from "./toc-thumb";
 
@@ -188,3 +188,4 @@ function TOCItem({
     </Primitive.TOCItem>
   );
 }
+

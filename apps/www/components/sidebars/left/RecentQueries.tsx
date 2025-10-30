@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useViewer } from '@/contexts/ViewerContext';
 import { cn } from '@/lib/utils';
-import { useUIStore } from '@/stores/uiStore';
+import { useUIStore } from '@recurse/ui/lib';
 
 export interface QuerySession {
   id: string;

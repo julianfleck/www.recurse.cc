@@ -82,3 +82,4 @@ export function TocThumb({
 
   return <div ref={thumbRef} role="none" {...props} />;
 }
+

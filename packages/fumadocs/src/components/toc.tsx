@@ -3,8 +3,8 @@ import type { TOCItemType } from "fumadocs-core/server";
 import * as Primitive from "fumadocs-core/toc";
 import { useI18n } from "fumadocs-ui/contexts/i18n";
 import { type ComponentProps, createContext, useContext, useRef } from "react";
-import { cn } from "../../lib/cn";
-import { mergeRefs } from "../../lib/merge-refs";
+import { cn } from "@recurse/ui/lib";
+import { mergeRefs } from "@recurse/ui/lib";
 import { TocThumb } from "./toc-thumb";
 
 const TOCContext = createContext<TOCItemType[]>([]);
@@ -100,3 +100,4 @@ function TOCItem({ item }: { item: TOCItemType }) {
     </Primitive.TOCItem>
   );
 }
+

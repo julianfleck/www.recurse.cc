@@ -27,8 +27,6 @@ export * from './spinner';
 export * from './switch';
 export * from './table';
 export * from './theme-toggle';
-export * from './toc';
-export * from './toc-clerk';
-export * from './toc-thumb';
+export * from './theme-provider';
 export * from './tooltip';
 

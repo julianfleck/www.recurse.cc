@@ -9,8 +9,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
+} from "@recurse/ui/components";
+import { cn } from "@recurse/ui/lib";
 
 function Command({
   className,
