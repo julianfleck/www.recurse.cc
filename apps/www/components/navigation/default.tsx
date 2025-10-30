@@ -7,7 +7,6 @@ import {
   type ElementRef,
   forwardRef,
   type MouseEvent,
-  useMemo,
 } from 'react';
 import { SearchToggle } from '@/components/search/toggle';
 import { Button } from '@/components/ui/button';
@@ -26,7 +25,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import navContent from '@/content/en/navigation.json' with { type: 'json' };
 import { useDemo } from '@/contexts/DemoContext';
 import { useScroll } from '@/contexts/ScrollContext';
-import { cn, getDocsUrl } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 // Assert types (basic for now)
 const contentNav = navContent as {
@@ -295,40 +294,16 @@ export function DefaultNavigation({
               )}
             >
               <NavigationMenuLink asChild>
-                {useMemo(() => {
-                  const docsUrl = getDocsUrl();
-                  const isCrossOrigin =
-                    typeof window !== 'undefined' &&
-                    new URL(docsUrl).origin !== window.location.origin;
-
-                  if (isCrossOrigin) {
-                    return (
-                      <a
-                        className={cn(
-                          navigationMenuTriggerStyle(),
-                          'transition-none',
-                          isCompact ? 'h-9 px-2 text-sm' : ''
-                        )}
-                        href={docsUrl}
-                      >
-                        Docs
-                      </a>
-                    );
-                  }
-
-                  return (
-                    <Link
-                      className={cn(
-                        navigationMenuTriggerStyle(),
-                        'transition-none',
-                        isCompact ? 'h-9 px-2 text-sm' : ''
-                      )}
-                      href={docsUrl}
-                    >
-                      Docs
-                    </Link>
-                  );
-                }, [isCompact])}
+                <Link
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    'transition-none',
+                    isCompact ? 'h-9 px-2 text-sm' : ''
+                  )}
+                  href="/docs"
+                >
+                  Docs
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
