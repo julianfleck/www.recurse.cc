@@ -1,4 +1,4 @@
-import { Spinner } from "@/components/ui/spinner";
+import { Spinner } from "@recurse/ui/components/spinner";
 import { cn } from "@/lib/utils";
 
 type DefaultSpinnerProps = {

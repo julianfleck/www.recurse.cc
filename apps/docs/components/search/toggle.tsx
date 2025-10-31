@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@recurse/ui/components/button";
 import { cn } from "@/lib/cn";
 import { SearchCommandDialog } from "./dialog";
 import { documentationProvider, knowledgeBaseProvider } from "./providers";

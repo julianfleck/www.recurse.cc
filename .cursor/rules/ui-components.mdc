@@ -2,7 +2,7 @@
 description: "UI Component Framework Guidelines - ReUI, Shadcn, and Custom Components"
 globs: ["apps/**/components/**/*.{ts,tsx}", "packages/ui/**/*.{ts,tsx}"]
 alwaysApply: true
-lastVerified: 2025-10-28T05:00:00Z
+lastVerified: 2025-10-31T02:50:00Z
 sources:
   - name: "ReUI Documentation"
     url: "https://reui.io/docs/avatar"

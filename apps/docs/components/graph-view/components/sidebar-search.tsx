@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@recurse/ui/components/input";
 import type {
   GraphLink as DataLink,
   GraphNode as DataNode,

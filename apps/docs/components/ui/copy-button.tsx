@@ -3,7 +3,7 @@
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { useState } from "react";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@recurse/ui/components/button";
 import { cn } from "@/lib/cn";
 
 const COPY_SUCCESS_DURATION_MS = 2000;

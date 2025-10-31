@@ -9,7 +9,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@recurse/ui/components/dialog";
 import { cn } from "@/lib/utils";
 
 function Command({

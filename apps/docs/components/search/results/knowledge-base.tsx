@@ -1,7 +1,7 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { CommandItem } from "@/components/ui/command";
+import { Badge } from "@recurse/ui/components/badge";
+import { CommandItem } from "@recurse/ui/components/command";
 import { getNodeIcon } from "@/components/graph-view/config/icon-config";
 import type { SearchItem } from "../types";
 

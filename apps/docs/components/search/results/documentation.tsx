@@ -6,7 +6,7 @@ import {
   CommandGroup,
   CommandItem,
   CommandSeparator,
-} from "@/components/ui/command";
+} from "@recurse/ui/components/command";
 import type { SearchItem } from "../types";
 
 type DocumentationResultsProps = {

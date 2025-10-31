@@ -1,7 +1,7 @@
 import { HomeLayout } from "fumadocs-ui/layouts/home";
 import { documentationProvider } from "@/components/search/providers";
 import { LargeSearchToggle } from "@/components/search/toggle";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { ThemeToggle } from "@recurse/ui/components/theme-toggle";
 import { UserProfile } from "@/components/user-profile";
 import { baseOptions } from "@/lib/layout.shared";
 
