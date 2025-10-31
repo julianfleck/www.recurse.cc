@@ -5,20 +5,25 @@
   "tsx": true,
   "tailwind": {
     "config": "",
-    "css": "src/app/globals.css",
-    "baseColor": "gray",
+    "css": "",
+    "baseColor": "neutral",
     "cssVariables": true,
     "prefix": ""
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components/ui",
-    "lib": "@/lib",
-    "hooks": "@/hooks"
+    "components": "./src/components",
+    "utils": "./src/lib",
+    "ui": "./src/components",
+    "lib": "./src/lib"
   },
   "registries": {
     "@reui": "https://reui.io/r/{name}.json"
+  },
+  "resolvedPaths": {
+    "components": "./src/components",
+    "utils": "./src/lib",
+    "ui": "./src/components",
+    "lib": "./src/lib"
   }
 }

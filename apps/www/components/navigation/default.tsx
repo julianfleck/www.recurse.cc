@@ -1,5 +1,7 @@
 'use client';
 
+import { Button } from '@recurse/ui/components';
+import { HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -9,7 +11,6 @@ import {
   type MouseEvent,
 } from 'react';
 import { SearchToggle } from '@/components/search/toggle';
-import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -346,8 +347,8 @@ export function DefaultNavigation({
             )}
             enableHotkey={true}
             placeholder="Search documentation..."
-            size={isCompact ? 'sm' : 'default'}
-            variant="ghost"
+            size={isCompact ? 'icon-sm' : 'icon'}
+            variant="outline"
           />
 
           {/* FAQ "?" Button */}
@@ -357,10 +358,11 @@ export function DefaultNavigation({
                 menuItemTransition,
                 isCompact ? 'h-9 w-9 p-0' : 'h-10 w-10 p-0'
               )}
-              size={isCompact ? 'sm' : 'default'}
-              variant="ghost"
+              size={isCompact ? 'icon-sm' : 'icon'}
+              tooltip="Frequently Asked Questions"
+              variant="outline"
             >
-              FAQ
+              <HelpCircle className="h-4 w-4" />
             </Button>
           </Link>
 

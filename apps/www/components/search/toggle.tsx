@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@recurse/ui/components";
 import { cn } from "@/lib/utils";
 import { SearchCommandDialog } from "./dialog";
 import { documentationProvider } from "@/lib/search-provider";
@@ -10,7 +10,7 @@ import type { SearchProvider } from "./types";
 
 type ToggleProps = Omit<React.ComponentProps<"button">, "variant"> & {
   hideIfDisabled?: boolean;
-  size?: "icon" | "sm" | "default" | "lg";
+  size?: "icon" | "icon-sm" | "sm" | "default" | "lg";
   variant?:
     | "ghost"
     | "default"
@@ -25,8 +25,8 @@ type ToggleProps = Omit<React.ComponentProps<"button">, "variant"> & {
 
 export function SearchToggle({
   hideIfDisabled,
-  size = "icon",
-  variant = "ghost",
+  size = "icon-sm",
+  variant = "outline",
   provider,
   placeholder,
   enableHotkey = true,
@@ -55,14 +55,16 @@ export function SearchToggle({
 
   return (
     <>
-      <button
+      <Button
         aria-label="Open Search"
-        className={cn(buttonVariants({ size, variant }), props.className)}
+        className={props.className}
         onClick={() => setOpen(true)}
-        type="button"
+        size={size}
+        tooltip="Search documentation (Press /)"
+        variant={variant}
       >
         <Search />
-      </button>
+      </Button>
       <SearchCommandDialog
         debounceMs={300}
         onOpenChange={setOpen}

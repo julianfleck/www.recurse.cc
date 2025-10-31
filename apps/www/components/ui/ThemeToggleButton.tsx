@@ -3,7 +3,7 @@
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@recurse/ui/components';
 import { cn } from '@/lib/utils';
 
 interface ThemeToggleButtonProps {
@@ -33,6 +33,9 @@ export function ThemeToggleButton({ className }: ThemeToggleButtonProps) {
     <Button
       className={cn('group relative h-8 w-8 overflow-hidden p-0', className)}
       onClick={toggleTheme}
+      size="icon"
+      tooltip={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+      tooltipSide="bottom"
       variant="ghost"
     >
       <span className="sr-only">Toggle theme</span>

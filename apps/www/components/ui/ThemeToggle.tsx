@@ -41,6 +41,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       icon2={Sun}
       isIcon2Showing={isDarkMode}
       onClick={toggleTheme}
+      tooltip={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
     />
   );
 }

@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@recurse/ui/components';
 import { cn } from '@/lib/utils';
 
 interface IconToggleButtonProps {
@@ -8,6 +8,8 @@ interface IconToggleButtonProps {
   isIcon2Showing?: boolean;
   onClick?: () => void;
   className?: string;
+  tooltip?: React.ReactNode;
+  tooltipSide?: "top" | "right" | "bottom" | "left";
   buttonProps?: React.ComponentProps<typeof Button>;
 }
 
@@ -17,6 +19,8 @@ export function IconToggleButton({
   isIcon2Showing = false,
   onClick,
   className,
+  tooltip,
+  tooltipSide = "bottom",
   buttonProps,
 }: IconToggleButtonProps) {
   return (
@@ -28,8 +32,10 @@ export function IconToggleButton({
       )}
       onClick={onClick}
       size="icon"
+      tooltip={tooltip}
       variant="outline"
       {...buttonProps}
+      tooltipSide={buttonProps?.tooltipSide ?? tooltipSide}
     >
       <div className="relative flex h-5 w-5 items-center justify-center transition-all duration-200 ease-out">
         <Icon1
