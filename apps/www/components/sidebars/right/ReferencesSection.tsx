@@ -2,7 +2,7 @@
 
 import { Loader2 } from 'lucide-react';
 import * as React from 'react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@recurse/ui/components/badge';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import {

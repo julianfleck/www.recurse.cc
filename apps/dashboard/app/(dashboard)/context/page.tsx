@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthStore } from "@/components/auth/auth-store";
 import { GenericTooltipLayout } from "@/components/graph-view/components/node-tooltip";
 import { DefaultSpinner } from "@/components/loaders/default-spinner";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@recurse/ui/components/badge";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
 import { Input } from "@/components/ui/input";

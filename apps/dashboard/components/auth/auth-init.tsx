@@ -98,10 +98,30 @@ export function AuthInit() {
           // API auth getter will be set up by the separate effect above
         })
         .catch((tokenError) => {
+          // Check if this is a "Missing Refresh Token" error - these are expected and should be handled gracefully
+          const errorMessage = tokenError instanceof Error ? tokenError.message : String(tokenError);
+          const isMissingRefreshToken = errorMessage.includes('Missing Refresh Token') || 
+            (errorMessage.includes('refresh') && errorMessage.includes('token') && errorMessage.includes('audience'));
+          
+          if (isMissingRefreshToken) {
+            // Missing refresh token is expected when requesting tokens with audience/scope not in initial login
+            // Auth0 will handle this by triggering a new login flow if needed
+            // Don't clear auth or redirect - let Auth0 handle it or use existing token if available
+            if (process.env.NODE_ENV === "development") {
+              console.log("[AuthInit] Missing refresh token (expected), will attempt to use existing token or Auth0 will handle login");
+            }
+            // If we have a token in store, keep using it - don't clear auth
+            if (!accessTokenFromStore && !onAuthPage) {
+              // Only redirect if we truly have no token at all
+              window.location.href = "/login";
+            }
+            return;
+          }
+          
           if (process.env.NODE_ENV === "development") {
             console.error("[AuthInit] Failed to get token from Auth0:", tokenError);
           }
-          // Clear auth state and redirect to login on token refresh failures
+          // Clear auth state and redirect to login on other token refresh failures
           clear();
           // API auth getter will be cleared by the separate effect above
           // Redirect to login for authentication errors (but not when already on auth pages)

@@ -19,6 +19,7 @@ export * from './kibo-ui/pill';
 export * from './kibo-ui/status';
 export * from './label';
 export * from './popover';
+export * from './progress';
 export * from './progress-circle';
 export * from './radio-group';
 export * from './scroll-area';

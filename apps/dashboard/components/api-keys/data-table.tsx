@@ -20,8 +20,8 @@ import {
 import { SearchIcon } from "lucide-react";
 import { useId, useMemo, useState } from "react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@recurse/ui/components/avatar";
+import { Badge } from "@recurse/ui/components/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

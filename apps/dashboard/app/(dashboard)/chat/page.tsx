@@ -2,7 +2,7 @@
 
 import { BookOpen, Brain, ChevronLeft, ChevronRight, Send } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@recurse/ui/components/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";

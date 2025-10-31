@@ -27,7 +27,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ApiKeyDialog } from "@/components/api-keys/api-key-dialog";
 import { useAuthStore } from "@/components/auth/auth-store";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@recurse/ui/components/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {

@@ -13,13 +13,13 @@ import {
 } from 'lucide-react';
 import * as React from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@recurse/ui/components/badge';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { Progress } from '@/components/ui/progress';
+import { Progress } from '@recurse/ui/components/progress';
 import {
   Sidebar,
   SidebarContent,

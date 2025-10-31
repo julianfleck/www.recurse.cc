@@ -11,6 +11,7 @@ import {
 import { Spinner } from "@recurse/ui/components/spinner";
 import { isOnAuthPage } from "@/lib/auth-utils";
 import { DocumentationResults } from "./results/documentation";
+import { DocumentationSuggestions } from "./suggestions";
 import type { SearchProvider } from "./types";
 
 // Lazy import KnowledgeBaseResults to avoid importing graph-view dependencies when not needed
@@ -116,6 +117,7 @@ export function SearchCommandDialog({
         )}
       </div>
       <CommandList>
+        {!searchTerm && <DocumentationSuggestions onSelect={() => onOpenChange(false)} />}
         {emptyMessage && <CommandEmpty>{emptyMessage}</CommandEmpty>}
         {searchTerm && !isLoading && results.length > 0 && (
           searchType === "documentation" ? (

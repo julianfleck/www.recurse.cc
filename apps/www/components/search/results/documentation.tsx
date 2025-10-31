@@ -5,7 +5,7 @@ import {
   CommandGroup,
   CommandItem,
   CommandSeparator,
-} from "@/components/ui/command";
+} from "@recurse/ui/components/command";
 import type { SearchItem } from "../types";
 
 type DocumentationResultsProps = {
@@ -73,27 +73,12 @@ export function DocumentationResults({
         <CommandGroup heading="Pages">
           {finalPages.map((result, idx) => (
             <CommandItem
-              className="flex items-center gap-3 px-4 py-3"
               key={`page-${result.id}-${idx}`}
               onSelect={() => handleSelect(result.href || "")}
               value={`${result.title} ${result.summary}`}
             >
               <File className="h-4 w-4 text-muted-foreground" />
-              <div className="min-w-0 flex-1">
-                <div className="font-medium text-sm">
-                  {highlightText(result.title || "Untitled", searchTerm)}
-                </div>
-                {result.breadcrumbs && result.breadcrumbs.length > 0 && (
-                  <div className="mt-0.5 text-muted-foreground text-xs">
-                    {result.breadcrumbs.join(" › ")}
-                  </div>
-                )}
-                {result.summary && (
-                  <div className="mt-1 line-clamp-2 text-muted-foreground text-xs">
-                    {highlightText(result.summary, searchTerm)}
-                  </div>
-                )}
-              </div>
+              <span>{highlightText(result.title || "Untitled", searchTerm)}</span>
             </CommandItem>
           ))}
         </CommandGroup>
@@ -105,27 +90,12 @@ export function DocumentationResults({
           <CommandGroup heading="Headings">
             {finalHeadings.map((result, idx) => (
               <CommandItem
-                className="flex items-center gap-3 px-4 py-3"
                 key={`heading-${result.id}-${idx}`}
                 onSelect={() => handleSelect(result.href || "")}
                 value={`${result.title} ${result.summary}`}
               >
                 <Hash className="h-4 w-4 text-muted-foreground" />
-                <div className="min-w-0 flex-1">
-                  <div className="font-medium text-sm">
-                    {highlightText(result.title || "Untitled", searchTerm)}
-                  </div>
-                  {result.breadcrumbs && result.breadcrumbs.length > 0 && (
-                    <div className="mt-0.5 text-muted-foreground text-xs">
-                      {result.breadcrumbs.join(" › ")}
-                    </div>
-                  )}
-                  {result.summary && (
-                    <div className="mt-1 line-clamp-2 text-muted-foreground text-xs">
-                      {highlightText(result.summary, searchTerm)}
-                    </div>
-                  )}
-                </div>
+                <span>{highlightText(result.title || "Untitled", searchTerm)}</span>
               </CommandItem>
             ))}
           </CommandGroup>
@@ -138,29 +108,12 @@ export function DocumentationResults({
           <CommandGroup heading="Content">
             {finalTextMatches.map((result, idx) => (
               <CommandItem
-                className="flex items-center gap-3 px-4 py-3"
                 key={`text-${result.id}-${idx}`}
                 onSelect={() => handleSelect(result.href || "")}
                 value={`${result.title} ${result.summary}`}
               >
-                <div className="flex h-4 w-4 items-center justify-center">
-                  <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="font-medium text-sm">
-                    {highlightText(result.title || "Untitled", searchTerm)}
-                  </div>
-                  {result.breadcrumbs && result.breadcrumbs.length > 0 && (
-                    <div className="mt-0.5 text-muted-foreground text-xs">
-                      {result.breadcrumbs.join(" › ")}
-                    </div>
-                  )}
-                  {result.summary && (
-                    <div className="mt-1 line-clamp-2 text-muted-foreground text-xs">
-                      {highlightText(result.summary, searchTerm)}
-                    </div>
-                  )}
-                </div>
+                <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground" />
+                <span>{highlightText(result.title || "Untitled", searchTerm)}</span>
               </CommandItem>
             ))}
           </CommandGroup>

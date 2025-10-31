@@ -2,7 +2,7 @@
 
 import { Brain, Database, FileText, Lightbulb } from 'lucide-react';
 import type * as React from 'react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@recurse/ui/components/badge';
 import {
   Sidebar,
   SidebarContent,

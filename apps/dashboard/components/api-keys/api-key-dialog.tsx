@@ -14,7 +14,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "@recurse/ui/components/command";
 import {
   Dialog,
   DialogContent,

@@ -2,7 +2,7 @@
 
 import { Box, FileText, Hash, Loader2 } from 'lucide-react';
 import * as React from 'react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@recurse/ui/components/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { api } from '@/services/apiConfig';
 
