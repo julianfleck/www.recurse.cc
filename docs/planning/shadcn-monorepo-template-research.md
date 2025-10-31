@@ -1,94 +1,90 @@
-# Shadcn Monorepo Template Research
+# Shadcn Monorepo Template Research & Implementation
 
-## Current Situation
+## ✅ Implementation Complete
 
-We're currently installing components to `apps/www` and copying to `packages/ui` because shadcn CLI validation fails when trying to install directly to `packages/ui`.
+We've successfully configured `packages/ui` to allow direct installation of shadcn/ReUI components without needing to copy from apps.
 
-## The `next-monorepo` Template Option
+## What Changed
 
-### What is it?
-
-**Confirmed:** The shadcn CLI supports `--template next-monorepo` option (verified via `shadcn init --help`)
-
-The `shadcn init --template next-monorepo` command creates a monorepo structure with:
-- `apps/` directory for Next.js applications
-- `packages/` directory for shared packages (including UI components)
-- Turborepo configured as the build system (likely)
-- Proper shadcn CLI support for installing directly to packages
-
-### How It Works
-
-When you initialize with the monorepo template:
-1. Creates proper monorepo structure
-2. Sets up Turborepo for builds (assumed, needs verification)
-3. Configures `components.json` to support installing to `packages/ui`
-4. Components can be installed directly to shared packages
-
-### Installation Process
-
-```bash
-# Initialize with monorepo template
-pnpm dlx shadcn@latest init --template next-monorepo
-
-# Then install components directly to packages
-pnpm dlx shadcn@latest add @reui/tooltip-default
+### 1. `packages/ui/components.json`
+**Changed aliases from file paths to workspace package names:**
+```json
+{
+  "aliases": {
+    "components": "@recurse/ui/components",
+    "utils": "@recurse/ui/lib/utils",
+    "hooks": "@recurse/ui/hooks",
+    "lib": "@recurse/ui/lib",
+    "ui": "@recurse/ui/components"
+  }
+}
 ```
 
-**Note:** This would need to be tested in a branch to see the exact structure it creates and how it differs from our current setup.
+### 2. `packages/ui/package.json`
+**Added wildcard exports for shadcn to resolve component paths:**
+```json
+{
+  "exports": {
+    ".": "./src/index.ts",
+    "./lib": "./src/lib/index.ts",
+    "./lib/*": "./src/lib/*.ts",
+    "./components": "./src/components/index.ts",
+    "./components/*": "./src/components/*.tsx",
+    "./hooks/*": "./src/hooks/*.ts"
+  }
+}
+```
 
-### What Would Change?
+**Key:** Both direct exports (`./components`) and wildcard exports (`./components/*`) are needed:
+- Direct exports: For app imports like `@recurse/ui/components`
+- Wildcard exports: For shadcn to resolve `@recurse/ui/components/tooltip` → `src/components/tooltip.tsx`
 
-**If we migrate to this template:**
+### 3. `packages/ui/tsconfig.json`
+**Updated path mapping to use wildcard pattern:**
+```json
+{
+  "paths": {
+    "@recurse/ui/*": ["./src/*"]
+  }
+}
+```
 
-1. **Project Structure:**
-   - Would create/update monorepo structure
-   - Might add Turborepo configuration
-   - Would restructure how components are organized
+## How It Works
 
-2. **components.json:**
-   - Would need to be configured for monorepo pattern
-   - Aliases would point to `@workspace/ui` or similar
-   - Validation would pass because framework detection works
+When shadcn installs a component:
+1. Resolves `@recurse/ui/components/tooltip` using package.json exports
+2. Wildcard export `./components/*` matches `./components/tooltip`
+3. Maps to `./src/components/tooltip.tsx`
+4. Writes component file to correct location
+5. Uses workspace aliases for imports (e.g., `@recurse/ui/lib/utils`)
 
-3. **Build System:**
-   - Might introduce Turborepo (if not already present)
-   - Could change how packages are built/linked
+## Usage
 
-4. **Migration Effort:**
-   - Need to verify compatibility with existing structure
-   - Might need to adjust import paths
-   - Could require updating CI/CD
+**Install components directly to packages/ui:**
+```bash
+cd packages/ui
+pnpm dlx shadcn@latest add @reui/<component-name> --yes
+```
 
-### Pros and Cons
+**No more copying needed!** Components install directly where they belong.
 
-**Pros:**
-- ✅ Direct installation to `packages/ui` works
-- ✅ No manual copying needed
-- ✅ Proper monorepo patterns
-- ✅ Better developer experience
+## Why This Works
 
-**Cons:**
-- ⚠️ Requires project restructure
-- ⚠️ May introduce Turborepo (new dependency)
-- ⚠️ Migration risk
-- ⚠️ Need to verify compatibility with current setup
+The shadcn CLI:
+- Uses package.json `exports` to resolve where to write files
+- Uses `components.json` aliases for import paths in generated code
+- Requires wildcard exports (`./components/*`) to resolve subpaths
+- Works in monorepo packages when configured correctly
 
-## Recommendation
+## Benefits
 
-**For now:** Keep the current workflow (install to www, copy to packages/ui)
-- It works reliably
-- No structural changes needed
-- Low risk
+✅ **Direct installation** - No copying from apps  
+✅ **Clean workflow** - Single command installs to correct location  
+✅ **Consistent imports** - Uses workspace package names  
+✅ **Backward compatible** - Existing imports still work via direct exports
 
-**Future consideration:** Research and test the monorepo template in a branch
-- See if it's compatible with our current structure
-- Evaluate migration effort
-- Test if it solves the installation issue without breaking things
+## Future Improvements
 
-## Next Steps
-
-1. Test `shadcn init --template next-monorepo` in a test branch
-2. Compare resulting structure with current setup
-3. Evaluate migration complexity
-4. Document findings
-
+- Document this pattern in README
+- Create helper script for common component installations
+- Verify all apps can use components correctly
