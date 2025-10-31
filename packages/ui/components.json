@@ -13,7 +13,7 @@
   "iconLibrary": "lucide",
   "aliases": {
     "components": "@recurse/ui/components",
-    "utils": "@recurse/ui/lib/utils",
+    "utils": "@recurse/ui/lib",
     "hooks": "@recurse/ui/hooks",
     "lib": "@recurse/ui/lib",
     "ui": "@recurse/ui/components"

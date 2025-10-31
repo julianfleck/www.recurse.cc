@@ -7,6 +7,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./lib": "./src/lib/index.ts",
+    "./lib/utils": "./src/lib/utils.ts",
     "./lib/*": "./src/lib/*.ts",
     "./components": "./src/components/index.ts",
     "./components/*": "./src/components/*.tsx",
