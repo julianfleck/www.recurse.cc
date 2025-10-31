@@ -28,12 +28,24 @@ Elegant, production-ready components via the Shadcn registry. **Always check ReU
 - Need advanced variants (Avatar with indicators, badges, status)
 
 **Installation:**
+
+**Direct installation to packages/ui (Recommended):**
 ```bash
-# Add ReUI component via Shadcn CLI
-pnpm dlx shadcn@latest add @reui/<component-name>
+cd packages/ui
+pnpm dlx shadcn@latest add @reui/<component-name> --yes
 
 # Example: Add Avatar component
-pnpm dlx shadcn@latest add @reui/avatar
+pnpm dlx shadcn@latest add @reui/avatar --yes
+```
+
+**⚠️ Important:** Do NOT use `--overwrite` flag unless you intentionally want to replace an existing custom component (like button). The `--overwrite` flag will replace our custom implementations.
+
+**Fallback (if direct installation fails):**
+```bash
+# Install to app first, then copy
+cd apps/www
+pnpm dlx shadcn@latest add @reui/<component-name> --yes
+# Then copy to packages/ui and update imports
 ```
 
 **Usage:**
@@ -52,13 +64,17 @@ Standard Shadcn components when ReUI variant doesn't exist.
 - Need basic Radix UI wrapper
 
 **Installation:**
-```bash
-# Add Shadcn component (only if ReUI unavailable)
-pnpm dlx shadcn@latest add <component-name>
 
-# Example: Add Button component
-pnpm dlx shadcn@latest add button
+**Direct installation to packages/ui (Recommended):**
+```bash
+cd packages/ui
+pnpm dlx shadcn@latest add <component-name> --yes
+
+# Example: Add Button component (if needed)
+pnpm dlx shadcn@latest add button --yes
 ```
+
+**⚠️ Important:** Do NOT use `--overwrite` flag unless you intentionally want to replace an existing custom component.
 
 **Usage:**
 ```tsx
@@ -172,25 +188,47 @@ packages/ui/src/lib/         # Shared utilities (cn, etc.)
 ### Step 3: Install Using MCP or CLI
 
 **Via MCP (Preferred):**
-- Ask: "Add the avatar component from ReUI to apps/docs"
+- Ask: "Add the avatar component from ReUI to packages/ui"
 - AI will handle installation automatically
 
 **Via CLI:**
 ```bash
-# ReUI (preferred)
-pnpm dlx shadcn@latest add @reui/avatar
+# ReUI (preferred) - Install directly to packages/ui
+cd packages/ui
+pnpm dlx shadcn@latest add @reui/avatar --yes
 
-# Shadcn (fallback)
-pnpm dlx shadcn@latest add avatar
+# Shadcn (fallback) - Install directly to packages/ui
+cd packages/ui
+pnpm dlx shadcn@latest add avatar --yes
+
+# ⚠️ Important: Do NOT use --overwrite unless replacing custom components
 ```
 
-### Step 4: Import Pattern
-```tsx
-// Local app components
-import { Avatar } from "@/components/ui/avatar";
+### Step 4: Fix Import Paths
 
-// Shared packages (once migration complete)
-import { Avatar } from "@recurse/ui";
+After installation, check and fix import paths in the generated component:
+```typescript
+// shadcn may generate:
+import { cn } from '@recurse/ui/lib/utils';
+
+// Keep if utils.ts exists, or change to:
+import { cn } from '@recurse/ui/lib';
+```
+
+### Step 5: Update Exports
+
+Add to `packages/ui/src/components/index.ts`:
+```typescript
+export * from './<component-name>';
+```
+
+### Step 6: Import Pattern
+```tsx
+// ✅ Use shared package (preferred)
+import { Avatar } from "@recurse/ui/components";
+
+// Or full path
+import { Avatar } from "@recurse/ui/components/avatar";
 ```
 
 ## Component Guidelines
@@ -237,11 +275,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 ## Best Practices
 
 1. **ReUI is default** - Always check ReUI first before falling back to Shadcn
-2. **Use MCP for installation** - Ask AI to install components naturally
-3. **Use Shadcn CLI as fallback** - When MCP isn't available
-4. **Follow app-level imports** - Use `@/components/ui/` until migration complete
-5. **Document custom variants** - Add props examples in component files
-6. **Share across apps** - Add to `packages/ui` if used in multiple apps
+2. **Install directly to packages/ui** - Use `cd packages/ui && pnpm dlx shadcn@latest add @reui/<name> --yes`
+3. **Never use --overwrite** - Unless intentionally replacing a custom component
+4. **Use MCP for installation** - Ask AI to install components naturally
+5. **Use Shadcn CLI as fallback** - When MCP isn't available
+6. **Use shared imports** - Import from `@recurse/ui/components` (not app-level)
+7. **Fix import paths** - Check generated imports and update to match our structure
+8. **Update exports** - Always add to `packages/ui/src/components/index.ts`
+9. **Document custom variants** - Add props examples in component files
 
 ## Current Component Inventory
 
