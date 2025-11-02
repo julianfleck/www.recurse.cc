@@ -4,7 +4,7 @@ import { I18nLabel } from "fumadocs-ui/contexts/i18n";
 import { Edit } from "lucide-react";
 import { type ComponentProps, forwardRef, type ReactNode } from "react";
 import { cn } from "../../lib/cn";
-import { buttonVariants } from "../ui/button";
+import { buttonVariants } from "@recurse/ui/components/button";
 import {
   type BreadcrumbProps,
   type FooterProps,

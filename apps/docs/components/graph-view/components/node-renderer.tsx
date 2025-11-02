@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@recurse/ui/components/tooltip";
 import type {
   GraphLink as DataLink,
   GraphNode as DataNode,

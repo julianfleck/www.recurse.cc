@@ -4,7 +4,40 @@
 
 **Why?** The shadcn CLI requires framework detection (Next.js) and validates `components.json`. Since `packages/ui` is a library package (not an app), it fails validation. Installing to `apps/www` works because it's a Next.js app with proper framework detection.
 
-## Installation Steps
+## ✅ NEW: Direct Installation (Recommended)
+
+**Install components directly to packages/ui:**
+```bash
+cd packages/ui
+pnpm dlx shadcn@latest add @reui/<component-name> --yes
+```
+
+**⚠️ Important:** Do NOT use `--overwrite` flag when installing to packages/ui if we already have custom implementations (like button). Use `--overwrite` only for new components or when you intentionally want to replace existing ones.
+
+### Update import paths after installation
+shadcn will generate imports using `@recurse/ui/lib/utils`. Check and update if needed:
+```typescript
+// shadcn generates:
+import { cn } from '@recurse/ui/lib/utils';
+
+// Should be (if utils.ts exists):
+import { cn } from '@recurse/ui/lib/utils';
+
+// Or (if using index.ts):
+import { cn } from '@recurse/ui/lib';
+```
+
+### Update exports
+Add to `packages/ui/src/components/index.ts`:
+```typescript
+export * from './<component-name>';
+```
+
+---
+
+## ⚠️ OLD METHOD: Install to www, Copy to packages/ui (Fallback)
+
+**Use this only if direct installation fails:**
 
 ### Step 1: Install to www app
 ```bash

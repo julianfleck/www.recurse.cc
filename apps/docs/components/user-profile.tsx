@@ -3,7 +3,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@recurse/ui/components/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +11,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@recurse/ui/components/dropdown-menu";
 import { LogIn, LogOut, UserPlus } from "lucide-react";
 import { useAuthStore } from "@recurse/auth";
 import { getDashboardUrl } from "@/lib/utils";

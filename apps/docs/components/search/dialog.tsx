@@ -7,10 +7,11 @@ import {
   CommandEmpty,
   CommandInput,
   CommandList,
-} from "@/components/ui/command";
-import { Spinner } from "@/components/ui/spinner";
+} from "@recurse/ui/components/command";
+import { Spinner } from "@recurse/ui/components/spinner";
 import { isOnAuthPage } from "@/lib/auth-utils";
 import { DocumentationResults } from "./results/documentation";
+import { DocumentationSuggestions } from "./suggestions";
 import type { SearchProvider } from "./types";
 
 // Lazy import KnowledgeBaseResults to avoid importing graph-view dependencies when not needed
@@ -103,19 +104,18 @@ export function SearchCommandDialog({
       open={open}
       showCloseButton={!isLoading}
     >
-      <div className="relative">
         <CommandInput
           onValueChange={setSearchTerm}
           placeholder={placeholder}
           value={searchTerm}
         />
+      <CommandList>
+        {!searchTerm && <DocumentationSuggestions onSelect={() => onOpenChange(false)} />}
         {isLoading && (
-          <div className="-translate-y-1/2 absolute top-1/2 right-3">
+          <div className="flex items-center justify-center py-6">
             <Spinner size={16} strokeWidth={2} />
           </div>
         )}
-      </div>
-      <CommandList>
         {emptyMessage && <CommandEmpty>{emptyMessage}</CommandEmpty>}
         {searchTerm && !isLoading && results.length > 0 && (
           searchType === "documentation" ? (

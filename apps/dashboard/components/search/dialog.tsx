@@ -7,7 +7,7 @@ import {
   CommandEmpty,
   CommandInput,
   CommandList,
-} from "@/components/ui/command";
+} from "@recurse/ui/components/command";
 import { Spinner } from "@/components/ui/spinner";
 import { isOnAuthPage } from "@/lib/auth-utils";
 import { DocumentationResults } from "./results/documentation";

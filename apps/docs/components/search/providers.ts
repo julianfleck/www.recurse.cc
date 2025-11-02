@@ -1,5 +1,6 @@
 import { apiService } from "@/lib/api";
 import type { SearchItem, SearchProvider } from "./types";
+import { filterStaticPages } from "./static-pages";
 
 // Knowledge base provider: use API service
 export const knowledgeBaseProvider: SearchProvider = {
@@ -46,57 +47,80 @@ export const knowledgeBaseProvider: SearchProvider = {
 // Documentation provider: use fumadocs server search API via our route
 export const documentationProvider: SearchProvider = {
   async search(query: string) {
+    // Get static pages first for instant results
+    const staticResults = filterStaticPages(query, 5);
+
     // Proxy through our app route to leverage existing config
     const url = `/api/docs-search?query=${encodeURIComponent(query)}`;
-    const res = await fetch(url, { method: "GET" });
-    if (!res.ok) {
-      throw new Error(`Docs search failed: ${res.statusText}`);
-    }
-    const data = await res.json();
-    // Fumadocs can return either `{ items: [...] }` or raw array; normalize
-    const items: any[] = Array.isArray(data?.items)
-      ? data.items
-      : Array.isArray(data)
-        ? data
-        : [];
-
-    // Remove duplicates based on href
-    const uniqueItems = items.reduce((acc, it) => {
-      const href =
-        (it.url || it.path || "").toString() + (it.hash ? `#${it.hash}` : "");
-      if (!acc.some((existing: any) => existing.href === href)) {
-        acc.push({
-          ...it,
-          href,
-        });
+    try {
+      const res = await fetch(url, { method: "GET" });
+      if (!res.ok) {
+        // If API fails, return static results only
+        return staticResults;
       }
-      return acc;
-    }, [] as any[]);
+      const data = await res.json();
+      // Fumadocs can return either `{ items: [...] }` or raw array; normalize
+      const items: any[] = Array.isArray(data?.items)
+        ? data.items
+        : Array.isArray(data)
+          ? data
+          : [];
 
-    return uniqueItems.map(
-      (it: any) =>
-        ({
-          id: it.href || crypto.randomUUID(),
-          title: it.title || it.content || it.heading || "Untitled",
-          summary:
-            it.excerpt ||
-            it.description ||
-            (typeof it.content === "string"
-              ? it.content.slice(0, 200)
-              : Array.isArray(it.content)
-                ? it.content.join(" ").slice(0, 200)
-                : ""),
-          type:
-            it.tag || it.section || it.type || (it.hash ? "heading" : "page"),
-          metadata: [
-            Array.isArray(it.breadcrumbs)
-              ? it.breadcrumbs.join(" › ")
-              : it.breadcrumbs,
-          ].filter(Boolean) as string[],
-          href: it.href,
-          breadcrumbs: Array.isArray(it.breadcrumbs) ? it.breadcrumbs : [],
-          highlight: it.highlight || "",
-        }) satisfies SearchItem
-    );
+      // Remove duplicates based on href
+      const uniqueItems = items.reduce((acc, it) => {
+        const href =
+          (it.url || it.path || "").toString() + (it.hash ? `#${it.hash}` : "");
+        if (!acc.some((existing: any) => existing.href === href)) {
+          acc.push({
+            ...it,
+            href,
+          });
+        }
+        return acc;
+      }, [] as any[]);
+
+      const apiResults = uniqueItems.map(
+        (it: any) =>
+          ({
+            id: it.href || crypto.randomUUID(),
+            title: it.title || it.content || it.heading || "Untitled",
+            summary:
+              it.excerpt ||
+              it.description ||
+              (typeof it.content === "string"
+                ? it.content.slice(0, 200)
+                : Array.isArray(it.content)
+                  ? it.content.join(" ").slice(0, 200)
+                  : ""),
+            type:
+              it.tag || it.section || it.type || (it.hash ? "heading" : "page"),
+            metadata: [
+              Array.isArray(it.breadcrumbs)
+                ? it.breadcrumbs.join(" › ")
+                : it.breadcrumbs,
+            ].filter(Boolean) as string[],
+            href: it.href,
+            breadcrumbs: Array.isArray(it.breadcrumbs) ? it.breadcrumbs : [],
+            highlight: it.highlight || "",
+            // Preserve page title from fumadocs for content results
+            pageTitle: it.page || (Array.isArray(it.breadcrumbs) && it.breadcrumbs.length > 0 ? it.breadcrumbs[it.breadcrumbs.length - 1] : undefined),
+          }) satisfies SearchItem
+      );
+
+      // Merge static and API results, removing duplicates by href
+      const allResults = [...staticResults, ...apiResults];
+      const seenHrefs = new Set<string>();
+      return allResults.filter((item) => {
+        if (!item.href || seenHrefs.has(item.href)) {
+          return false;
+        }
+        seenHrefs.add(item.href);
+        return true;
+      });
+    } catch (error) {
+      // If fetch fails, return static results
+      console.error("Documentation search error:", error);
+      return staticResults;
+    }
   },
 };

@@ -1,4 +1,8 @@
-// UI Components - exported from packages/ui
+// Auto-generated exports - DO NOT EDIT MANUALLY
+// Run `pnpm generate-exports` to regenerate this file
+
+// UI Components
+export * from './alert';
 export * from './avatar';
 export * from './badge';
 export * from './button';
@@ -12,13 +16,10 @@ export * from './dialog';
 export * from './dropdown-menu';
 export * from './icon-toggle-button';
 export * from './input';
-// Kibo UI components
-export * from './kibo-ui/announcement';
-export * from './kibo-ui/kbd';
-export * from './kibo-ui/pill';
-export * from './kibo-ui/status';
 export * from './label';
+export * from './navigation-menu';
 export * from './popover';
+export * from './progress';
 export * from './progress-circle';
 export * from './radio-group';
 export * from './scroll-area';
@@ -26,7 +27,6 @@ export * from './select';
 export * from './spinner';
 export * from './switch';
 export * from './table';
-export * from './theme-toggle';
 export * from './theme-provider';
+export * from './theme-toggle';
 export * from './tooltip';
-

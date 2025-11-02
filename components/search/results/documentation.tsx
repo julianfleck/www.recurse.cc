@@ -1,12 +1,12 @@
 "use client";
 
-import { File, Hash } from "lucide-react";
-import { useRouter } from "next/navigation";
 import {
   CommandGroup,
   CommandItem,
   CommandSeparator,
-} from "@/components/ui/command";
+} from "@recurse/ui/components/command";
+import { File, Hash } from "lucide-react";
+import { useRouter } from "next/navigation";
 import type { SearchItem } from "../types";
 
 type DocumentationResultsProps = {
@@ -21,8 +21,8 @@ function highlightText(text: string, searchTerm: string) {
   }
 
   const regex = new RegExp(
-    `(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
-    "gi"
+    `(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`,
+    'gi'
   );
   const parts = text.split(regex);
 
@@ -50,15 +50,16 @@ export function DocumentationResults({
 
   // Group results by type - prioritize pages first
   const pages = results.filter(
-    (r) => r.type === "page" || !r.type || r.type === "doc"
+    (r) => r.type === 'page' || !r.type || r.type === 'doc'
   );
-  const headings = results.filter((r) => r.type === "heading");
+  const headings = results.filter((r) => r.type === 'heading');
   const textMatches = results.filter(
-    (r) => r.type === "text" || r.type === "content"
+    (r) => r.type === 'text' || r.type === 'content'
   );
-  
+
   // If no explicit pages found, treat all non-heading results as pages
-  const finalPages = pages.length > 0 ? pages : results.filter((r) => r.type !== "heading");
+  const finalPages =
+    pages.length > 0 ? pages : results.filter((r) => r.type !== 'heading');
   const finalHeadings = pages.length > 0 ? headings : [];
   const finalTextMatches = pages.length > 0 ? textMatches : [];
 
@@ -77,22 +78,17 @@ export function DocumentationResults({
             <CommandItem
               className="flex items-center gap-3 px-4 py-3"
               key={`page-${result.id}-${idx}`}
-              onSelect={() => handleSelect(result.href || "")}
+              onSelect={() => handleSelect(result.href || '')}
               value={`${result.title} ${result.summary}`}
             >
-              <File className="h-4 w-4 text-muted-foreground" />
+              <File className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
               <div className="min-w-0 flex-1">
                 <div className="font-medium text-sm">
-                  {highlightText(result.title || "Untitled", searchTerm)}
+                  {result.title || 'Untitled'}
                 </div>
                 {result.breadcrumbs && result.breadcrumbs.length > 0 && (
                   <div className="mt-0.5 text-muted-foreground text-xs">
-                    {result.breadcrumbs.join(" › ")}
-                  </div>
-                )}
-                {result.summary && (
-                  <div className="mt-1 line-clamp-2 text-muted-foreground text-xs">
-                    {highlightText(result.summary, searchTerm)}
+                    {result.breadcrumbs.join(' › ')}
                   </div>
                 )}
               </div>
@@ -109,22 +105,17 @@ export function DocumentationResults({
               <CommandItem
                 className="flex items-center gap-3 px-4 py-3"
                 key={`heading-${result.id}-${idx}`}
-                onSelect={() => handleSelect(result.href || "")}
+                onSelect={() => handleSelect(result.href || '')}
                 value={`${result.title} ${result.summary}`}
               >
-                <Hash className="h-4 w-4 text-muted-foreground" />
+                <Hash className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
                 <div className="min-w-0 flex-1">
                   <div className="font-medium text-sm">
-                    {highlightText(result.title || "Untitled", searchTerm)}
+                    {result.title || 'Untitled'}
                   </div>
                   {result.breadcrumbs && result.breadcrumbs.length > 0 && (
                     <div className="mt-0.5 text-muted-foreground text-xs">
-                      {result.breadcrumbs.join(" › ")}
-                    </div>
-                  )}
-                  {result.summary && (
-                    <div className="mt-1 line-clamp-2 text-muted-foreground text-xs">
-                      {highlightText(result.summary, searchTerm)}
+                      {result.breadcrumbs.join(' › ')}
                     </div>
                   )}
                 </div>
@@ -136,35 +127,66 @@ export function DocumentationResults({
 
       {finalTextMatches.length > 0 && (
         <>
-          {(finalPages.length > 0 || finalHeadings.length > 0) && <CommandSeparator />}
+          {(finalPages.length > 0 || finalHeadings.length > 0) && (
+            <CommandSeparator />
+          )}
           <CommandGroup heading="Content">
-            {finalTextMatches.map((result, idx) => (
-              <CommandItem
-                className="flex items-center gap-3 px-4 py-3"
-                key={`text-${result.id}-${idx}`}
-                onSelect={() => handleSelect(result.href || "")}
-                value={`${result.title} ${result.summary}`}
-              >
-                <div className="flex h-4 w-4 items-center justify-center">
-                  <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="font-medium text-sm">
-                    {highlightText(result.title || "Untitled", searchTerm)}
-                  </div>
-                  {result.breadcrumbs && result.breadcrumbs.length > 0 && (
-                    <div className="mt-0.5 text-muted-foreground text-xs">
-                      {result.breadcrumbs.join(" › ")}
+            {finalTextMatches.map((result, idx) => {
+              // For content results, extract page title from various sources
+              // Priority: pageTitle field > last breadcrumb > metadata > URL path > fallback to "Untitled"
+              let pageTitle = 'Untitled';
+              
+              if (result.pageTitle) {
+                pageTitle = result.pageTitle;
+              } else if (result.breadcrumbs && result.breadcrumbs.length > 0) {
+                pageTitle = result.breadcrumbs[result.breadcrumbs.length - 1];
+              } else if (result.metadata && result.metadata.length > 0) {
+                // Parse metadata which might be "Breadcrumb › Breadcrumb"
+                const lastMeta = result.metadata[result.metadata.length - 1];
+                const parts = lastMeta.split(' › ');
+                pageTitle = parts[parts.length - 1] || lastMeta;
+              } else if (result.href) {
+                // Extract from URL path as last resort
+                try {
+                  const url = new URL(result.href, window.location.origin);
+                  const pathParts = url.pathname.split('/').filter(Boolean);
+                  if (pathParts.length > 0) {
+                    // Get last path segment and format it
+                    const lastSegment = pathParts[pathParts.length - 1];
+                    pageTitle = lastSegment
+                      .split('-')
+                      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(' ');
+                  }
+                } catch (e) {
+                  // If URL parsing fails, keep "Untitled"
+                }
+              }
+              
+              return (
+                <CommandItem
+                  className="flex items-center gap-3 px-4 py-3"
+                  key={`text-${result.id}-${idx}`}
+                  onSelect={() => handleSelect(result.href || '')}
+                  value={`${pageTitle} ${result.title} ${result.summary}`}
+                >
+                  <File className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                  <div className="min-w-0 flex-1">
+                    <div className="font-medium text-sm">
+                      {pageTitle}
                     </div>
-                  )}
-                  {result.summary && (
+                    {result.breadcrumbs && result.breadcrumbs.length > 1 && (
+                      <div className="mt-0.5 text-muted-foreground text-xs">
+                        {result.breadcrumbs.slice(0, -1).join(' › ')}
+                      </div>
+                    )}
                     <div className="mt-1 line-clamp-2 text-muted-foreground text-xs">
-                      {highlightText(result.summary, searchTerm)}
+                      {highlightText(result.title || result.summary || '', searchTerm)}
                     </div>
-                  )}
-                </div>
-              </CommandItem>
-            ))}
+                  </div>
+                </CommandItem>
+              );
+            })}
           </CommandGroup>
         </>
       )}

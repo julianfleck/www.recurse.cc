@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@recurse/ui/components/badge';
 
 interface ActiveContextProps {
   activeItems: Array<{

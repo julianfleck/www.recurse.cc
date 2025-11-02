@@ -8,8 +8,7 @@
     "moduleResolution": "bundler",
     "types": ["react", "react-dom"],
     "paths": {
-      "@recurse/ui/components": ["./src/components/index.ts"],
-      "@recurse/ui/lib": ["./src/lib/index.ts"]
+      "@recurse/ui/*": ["./src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],

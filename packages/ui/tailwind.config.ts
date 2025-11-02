@@ -1,12 +1,17 @@
+import type { Config } from 'tailwindcss';
 import typography from '@tailwindcss/typography';
+import { fileURLToPath } from 'url';
+import { dirname, join, resolve } from 'path';
 
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './contexts/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Get monorepo root (two levels up from packages/ui/tailwind.config.ts)
+const rootDir = resolve(__dirname, '../..');
+
+const config: Config = {
+  // Note: Content paths are now specified via @source directives in CSS files (Tailwind v4 CSS-first approach)
+  // Each app's globals.css includes @source directives for its own components and packages/ui
   theme: {
     extend: {
       fontFamily: {
@@ -80,3 +85,6 @@ export default {
     },
   ],
 };
+
+export default config;
+

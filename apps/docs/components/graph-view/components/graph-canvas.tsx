@@ -11,8 +11,8 @@ import { select } from 'd3-selection';
 import { zoom } from 'd3-zoom';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { DefaultSpinner } from '@/components/loaders/default-spinner';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import { Dialog, DialogContent, DialogTitle } from '@recurse/ui/components/dialog';
+import { TooltipProvider } from '@recurse/ui/components/tooltip';
 import { graphApiClient } from '../api';
 import {
   buildTreeIndex,

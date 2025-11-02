@@ -124,7 +124,7 @@ export function SidebarContent(props: ComponentProps<"aside">) {
       id="nd-sidebar"
       {...props}
       className={cn(
-        "fixed top-(--fd-sidebar-top) bottom-(--fd-sidebar-margin) left-0 z-20 flex flex-col items-end border-e bg-sidebar text-sm opacity-70 transition-[top,opacity,translate,width] duration-200 *:w-(--fd-sidebar-width) hover:opacity-100 max-md:hidden rtl:right-(--removed-body-scroll-bar-size,0) rtl:left-auto",
+        "fixed top-(--fd-sidebar-top) bottom-(--fd-sidebar-margin) left-0 z-20 flex flex-col items-end border-e bg-sidebar text-sm transition-[top,opacity,translate,width] duration-200 *:w-(--fd-sidebar-width) max-md:hidden rtl:right-(--removed-body-scroll-bar-size,0) rtl:left-auto",
         collapsed && [
           "rtl:-translate-x-(--fd-sidebar-offset) translate-x-(--fd-sidebar-offset) rounded-xl border",
           hover ? "z-50 shadow-lg" : "opacity-0",

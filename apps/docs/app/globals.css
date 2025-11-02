@@ -1,8 +1,8 @@
-@import "tailwindcss";
+/* Import centralized base styles */
+@import "@recurse/ui/styles";
+
+/* App-specific third-party imports */
 @import "fumadocs-ui/css/shadcn.css";
 @import "fumadocs-ui/css/preset.css";
 @import "fumadocs-openapi/css/preset.css";
 @import "tw-animate-css";
-
-@import "@recurse/config/styles/global.css";
-

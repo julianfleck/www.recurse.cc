@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { CommandItem } from "@/components/ui/command";
+import { CommandItem } from "@recurse/ui/components/command";
 
 export interface SearchResult {
   id: string;

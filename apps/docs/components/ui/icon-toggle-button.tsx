@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@recurse/ui/components/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@recurse/ui/components/tooltip";
 import { cn } from "@/lib/utils";
 
 type IconToggleButtonProps = {

@@ -47,9 +47,9 @@ import {
   SidebarTrigger,
   SidebarViewport,
 } from "../../sidebar";
-import { buttonVariants } from "../../ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
-import { ThemeToggle } from "../../ui/theme-toggle";
+import { buttonVariants } from "@recurse/ui/components/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@recurse/ui/components/popover";
+import { ThemeToggle } from "@recurse/ui/components/theme-toggle";
 import {
   type BaseLayoutProps,
   BaseLinkItem,

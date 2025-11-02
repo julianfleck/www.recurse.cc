@@ -1,0 +1,28 @@
+/**
+ * Switzer Variable Font
+ * Designed by: Jérémie Hornus
+ * URL: https://www.fontshare.com/fonts/switzer
+ * © 2025 Indian Type Foundry
+ */
+
+/* Switzer Variable Font - fonts should be in each app's public/fonts/Switzer/ folder */
+@font-face {
+  font-family: "Switzer";
+  src:
+    url("/fonts/Switzer/Switzer-Variable.woff2") format("woff2"),
+    url("/fonts/Switzer/Switzer-Variable.woff") format("woff");
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Switzer";
+  src:
+    url("/fonts/Switzer/Switzer-VariableItalic.woff2") format("woff2"),
+    url("/fonts/Switzer/Switzer-VariableItalic.woff") format("woff");
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: italic;
+}
+

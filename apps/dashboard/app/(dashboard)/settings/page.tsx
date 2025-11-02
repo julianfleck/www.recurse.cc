@@ -16,7 +16,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
+} from '@recurse/ui/components/command';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {

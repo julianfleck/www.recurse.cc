@@ -1,0 +1,12 @@
+/* Base Tailwind CSS import */
+@import "tailwindcss";
+
+/* Tailwind v4 content sources - scans all apps and packages */
+@source "../../../apps/www/components/**/*.{js,ts,jsx,tsx,mdx}";
+@source "../../../apps/www/app/**/*.{js,ts,jsx,tsx,mdx}";
+@source "../../../apps/docs/components/**/*.{js,ts,jsx,tsx,mdx}";
+@source "../../../apps/docs/app/**/*.{js,ts,jsx,tsx,mdx}";
+@source "../../../apps/dashboard/components/**/*.{js,ts,jsx,tsx,mdx}";
+@source "../../../apps/dashboard/app/**/*.{js,ts,jsx,tsx,mdx}";
+@source "../src/**/*.{js,ts,jsx,tsx,mdx}";
+

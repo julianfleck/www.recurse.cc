@@ -8,6 +8,7 @@ export type SearchItem = {
   breadcrumbs?: string[];
   highlight?: string;
   similarity_score?: number;
+  pageTitle?: string; // For content results, the actual page title
 };
 
 export type SearchProvider = {

@@ -2,7 +2,7 @@
 description: "UI Component Framework Guidelines - ReUI, Shadcn, and Custom Components"
 globs: ["apps/**/components/**/*.{ts,tsx}", "packages/ui/**/*.{ts,tsx}"]
 alwaysApply: true
-lastVerified: 2025-10-28T05:00:00Z
+lastVerified: 2025-10-31T02:50:00Z
 sources:
   - name: "ReUI Documentation"
     url: "https://reui.io/docs/avatar"
@@ -28,12 +28,23 @@ Elegant, production-ready components via the Shadcn registry. **Always check ReU
 - Need advanced variants (Avatar with indicators, badges, status)
 
 **Installation:**
-```bash
-# Add ReUI component via Shadcn CLI
-pnpm dlx shadcn@latest add @reui/<component-name>
 
-# Example: Add Avatar component
-pnpm dlx shadcn@latest add @reui/avatar
+```bash
+cd packages/ui
+pnpm dlx shadcn@latest add @reui/<component-name> --yes
+
+# Exports auto-generated on next dev/build
+# Or generate manually: pnpm generate-exports
+```
+
+**Example:**
+```bash
+cd packages/ui
+pnpm dlx shadcn@latest add @reui/avatar --yes
+
+# Start dev server (exports auto-generated)
+cd ../..
+pnpm dev:www
 ```
 
 **Usage:**
@@ -52,12 +63,13 @@ Standard Shadcn components when ReUI variant doesn't exist.
 - Need basic Radix UI wrapper
 
 **Installation:**
-```bash
-# Add Shadcn component (only if ReUI unavailable)
-pnpm dlx shadcn@latest add <component-name>
 
-# Example: Add Button component
-pnpm dlx shadcn@latest add button
+```bash
+cd packages/ui
+pnpm dlx shadcn@latest add <component-name> --yes
+
+# Exports auto-generated on next dev/build
+# Or generate manually: pnpm generate-exports
 ```
 
 **Usage:**
@@ -169,28 +181,23 @@ packages/ui/src/lib/         # Shared utilities (cn, etc.)
 2. **Shadcn (Fallback)** - Only if ReUI doesn't have it
 3. **Custom** - If neither framework fits needs
 
-### Step 3: Install Using MCP or CLI
+### Step 3: Install Component
 
-**Via MCP (Preferred):**
-- Ask: "Add the avatar component from ReUI to apps/docs"
-- AI will handle installation automatically
-
-**Via CLI:**
 ```bash
-# ReUI (preferred)
-pnpm dlx shadcn@latest add @reui/avatar
+cd packages/ui
+pnpm dlx shadcn@latest add @reui/<component> --yes
 
-# Shadcn (fallback)
-pnpm dlx shadcn@latest add avatar
+# Exports are auto-generated when you:
+# - Start a dev server (pnpm dev:www, pnpm dev:docs, etc.)
+# - Run a build (pnpm build)
+# - Or manually: pnpm generate-exports
 ```
 
-### Step 4: Import Pattern
-```tsx
-// Local app components
-import { Avatar } from "@/components/ui/avatar";
+### Step 4: Use in Any App
 
-// Shared packages (once migration complete)
-import { Avatar } from "@recurse/ui";
+Component is automatically available after export generation:
+```tsx
+import { ComponentName } from "@recurse/ui/components";
 ```
 
 ## Component Guidelines
@@ -237,24 +244,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 ## Best Practices
 
 1. **ReUI is default** - Always check ReUI first before falling back to Shadcn
-2. **Use MCP for installation** - Ask AI to install components naturally
-3. **Use Shadcn CLI as fallback** - When MCP isn't available
-4. **Follow app-level imports** - Use `@/components/ui/` until migration complete
-5. **Document custom variants** - Add props examples in component files
-6. **Share across apps** - Add to `packages/ui` if used in multiple apps
+2. **Install to packages/ui** - Use `cd packages/ui && pnpm dlx shadcn@latest add @reui/<name> --yes`
+3. **Exports auto-generate** - Run on every dev/build, no manual step needed
+4. **Never use --overwrite** - Unless intentionally replacing a custom component
+5. **Use shared imports** - Import from `@recurse/ui/components`
+6. **Fix import paths if needed** - Check generated imports match our structure
+7. **Icons from @recurse/ui** - Import Lucide from `lucide-react`, Tabler from `@tabler/icons-react`
 
 ## Current Component Inventory
 
 ### In packages/ui
-- avatar, badge, button, calendar, card, checkbox, collapsible, command
+- alert, avatar, badge, button, calendar, card, checkbox, collapsible, command
 - copy-button, dialog, dropdown-menu, icon-toggle-button, input
-- label, popover, progress-circle, radio-group, scroll-area, select
-- spinner, switch, table, theme-toggle, toc, toc-clerk, toc-thumb, tooltip
+- label, navigation-menu, popover, progress, progress-circle, radio-group
+- scroll-area, select, spinner, switch, table, theme-toggle, theme-provider, tooltip
 - kibo-ui components (announcement, kbd, pill, status)
 
-### In apps (local)
-- All apps have their own `components/ui/` directories
-- Some duplication exists (being migrated)
+### Icons
+- **Lucide React**: Available across all apps via `lucide-react`
+- **Tabler Icons**: Available across all apps via `@tabler/icons-react`
+- Both installed in `packages/ui` and apps as needed
 
 ## Troubleshooting
 
@@ -288,8 +297,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 ## Proposed Changes
 
-- [ ] Complete migration to `@recurse/ui` imports
+- [x] Complete migration to `@recurse/ui` imports
+- [x] Automated export generation on dev/build
+- [x] Centralized CSS in `packages/ui/styles`
+- [x] All apps use same components and configuration
 - [ ] Document all ReUI variants
-- [ ] Create component showcase/migration guide
+- [ ] Create component showcase
 - [ ] Add TypeScript types for all components
 - [ ] Set up automated component testing
