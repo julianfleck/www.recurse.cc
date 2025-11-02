@@ -179,6 +179,17 @@ export function ContentTree({ results, searchTerm, onSelect }: ContentTreeProps)
     }
   };
   
+  const handleItemInteraction = (itemId: string) => {
+    // Expand parent if this is a child item
+    const item = tree.getItemById(itemId);
+    if (item) {
+      const parent = item.getParent();
+      if (parent && parent.getId() !== 'root') {
+        tree.expandItem(parent.getId());
+      }
+    }
+  };
+  
   return (
     <CommandGroup heading="Content">
       <div className="px-2 py-1">
@@ -197,6 +208,8 @@ export function ContentTree({ results, searchTerm, onSelect }: ContentTreeProps)
                     onSelect(data.href);
                   }
                 }}
+                onMouseEnter={() => handleItemInteraction(item.getId())}
+                onFocus={() => handleItemInteraction(item.getId())}
               >
                 <TreeItemLabel>
                   <div className="flex items-center gap-2 flex-1 min-w-0">
