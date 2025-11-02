@@ -5,7 +5,9 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "generate-exports": "node scripts/generate-exports.mjs"
+    "generate-exports": "node scripts/generate-exports.mjs",
+    "predev": "pnpm generate-exports",
+    "prebuild": "pnpm generate-exports"
   },
   "exports": {
     ".": "./src/index.ts",
