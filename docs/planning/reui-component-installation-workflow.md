@@ -10,13 +10,19 @@ cd packages/ui
 
 # 2. Install component from ReUI (preferred) or Shadcn
 pnpm dlx shadcn@latest add @reui/<component-name> --yes
-# OR
-pnpm dlx shadcn@latest add <component-name> --yes
 
-# 3. Auto-generate exports
-pnpm generate-exports
+# 3. Done! Exports auto-generated on next dev/build
+```
 
-# 4. Done! Use in any app
+**That's it!** Exports are automatically generated when you:
+- Start any dev server (`pnpm dev:www`, `pnpm dev:docs`, etc.)
+- Run a build (`pnpm build`)
+
+### Manual Export Generation (Optional)
+
+```bash
+# Only needed if you want to generate immediately
+pnpm --filter @recurse/ui generate-exports
 ```
 
 ### Example: Installing Alert Component
@@ -24,13 +30,25 @@ pnpm generate-exports
 ```bash
 cd packages/ui
 pnpm dlx shadcn@latest add @reui/alert --yes
-pnpm generate-exports
+
+# Exports automatically generated on next:
+# - pnpm dev:www
+# - pnpm dev:docs
+# - pnpm build
 ```
 
 Then in any app:
 ```typescript
 import { Alert, AlertTitle, AlertDescription } from "@recurse/ui/components";
 ```
+
+## Automatic Export Generation
+
+**Exports are automatically generated when you:**
+1. Start a dev server: `pnpm dev:www`, `pnpm dev:docs`, `pnpm dev:dashboard`
+2. Run a build: `pnpm build`
+
+This means you **never need to manually run** `generate-exports` unless you want to see changes immediately.
 
 ## Detailed Workflow
 
@@ -62,9 +80,20 @@ pnpm dlx shadcn@latest add button --yes
 
 ### 3. Auto-Generate Exports
 
-After installing, run the export generator:
+Exports are **automatically generated** when you start a dev server or build:
 
 ```bash
+# These commands auto-generate exports first
+pnpm dev:www
+pnpm dev:docs
+pnpm dev:dashboard
+pnpm build
+```
+
+**Manual generation (optional):**
+```bash
+# Only if you want to see exports immediately
+cd packages/ui
 pnpm generate-exports
 ```
 
@@ -76,8 +105,8 @@ This automatically:
 
 **Output:**
 ```
-✅ Generated exports for 28 components
-   - 28 regular components
+✅ Generated exports for 29 components
+   - 29 regular components
 📝 Updated: /path/to/packages/ui/src/components/index.ts
 ```
 
@@ -343,12 +372,15 @@ cd packages/ui
 # 2. Install component
 pnpm dlx shadcn@latest add @reui/alert --yes
 
-# 3. Auto-generate exports
-pnpm generate-exports
+# 3. Start dev server (exports auto-generated)
+cd ../..
+pnpm dev:www
 
 # 4. Use in any app
 # import { Alert } from "@recurse/ui/components";
 ```
+
+**That's it!** Exports are automatically updated when you start dev servers or build.
 
 ### Key Commands
 
@@ -357,7 +389,9 @@ pnpm generate-exports
 | `cd packages/ui` | Navigate to UI package |
 | `pnpm dlx shadcn@latest add @reui/<name> --yes` | Install ReUI component |
 | `pnpm dlx shadcn@latest add <name> --yes` | Install Shadcn component |
-| `pnpm generate-exports` | Auto-generate exports |
+| `pnpm dev:www` / `pnpm dev:docs` / `pnpm dev:dashboard` | Start dev server (auto-generates exports) |
+| `pnpm build` | Build all apps (auto-generates exports) |
+| `pnpm --filter @recurse/ui generate-exports` | Manually generate exports (optional) |
 
 ### Key Files
 
