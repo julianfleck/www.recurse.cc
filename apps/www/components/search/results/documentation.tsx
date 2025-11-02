@@ -5,9 +5,9 @@ import {
   CommandGroup,
   CommandItem,
   CommandSeparator,
-} from "@recurse/ui/components/command";
+  ContentTree,
+} from "@recurse/ui/components";
 import type { SearchItem } from "../types";
-import { ContentTree } from "./content-tree";
 
 type DocumentationResultsProps = {
   results: SearchItem[];

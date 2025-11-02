@@ -1,12 +1,13 @@
 "use client";
 
-import { File, Hash } from "lucide-react";
+import { File } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   CommandGroup,
   CommandItem,
   CommandSeparator,
-} from "@recurse/ui/components/command";
+  ContentTree,
+} from "@recurse/ui/components";
 import type { SearchItem } from "../types";
 
 type DocumentationResultsProps = {

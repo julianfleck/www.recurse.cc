@@ -1,12 +1,22 @@
 'use client';
 
-import { CommandGroup } from '@recurse/ui/components/command';
-import { Tree, TreeItem, TreeItemLabel } from '@recurse/ui/components/tree';
+import { CommandGroup } from './command';
+import { Tree, TreeItem, TreeItemLabel } from './tree';
 import { hotkeysCoreFeature, syncDataLoaderFeature } from '@headless-tree/core';
 import { useTree } from '@headless-tree/react';
 import { File, Hash } from 'lucide-react';
 import { useMemo } from 'react';
-import type { SearchItem } from '../types';
+
+export type SearchItem = {
+  id: string;
+  type?: 'page' | 'heading' | 'text' | 'content' | 'doc';
+  title?: string;
+  summary?: string;
+  href?: string;
+  breadcrumbs?: string[];
+  metadata?: string[];
+  pageTitle?: string;
+};
 
 type ContentTreeProps = {
   results: SearchItem[];
@@ -19,7 +29,7 @@ interface TreeNode {
   name: string;
   type: 'page' | 'heading' | 'content';
   href?: string;
-  content?: string; // Highlighted content for text matches
+  content?: string;
   children?: string[];
 }
 
@@ -50,20 +60,16 @@ function highlightText(text: string, searchTerm: string) {
 }
 
 export function ContentTree({ results, searchTerm, onSelect }: ContentTreeProps) {
-  // Group results by page, then by heading
   const { treeData, rootIds } = useMemo(() => {
     const items: Record<string, TreeNode> = {};
     const roots: string[] = [];
     
-    // Group by page
     const pageMap = new Map<string, { page: SearchItem; headings: SearchItem[]; content: SearchItem[] }>();
     
     for (const result of results) {
-      // Extract page identifier from href
       const pageId = result.href?.split('#')[0] || result.id;
       
       if (!pageMap.has(pageId)) {
-        // Extract page title
         let pageTitle = 'Untitled';
         if (result.pageTitle) {
           pageTitle = result.pageTitle;
@@ -89,12 +95,10 @@ export function ContentTree({ results, searchTerm, onSelect }: ContentTreeProps)
       }
     }
     
-    // Build tree structure
     for (const [pageId, group] of pageMap) {
       const pageNodeId = `page-${pageId}`;
       const childIds: string[] = [];
       
-      // Add headings as children
       for (let i = 0; i < group.headings.length; i++) {
         const heading = group.headings[i];
         const headingId = `heading-${pageId}-${i}`;
@@ -109,7 +113,6 @@ export function ContentTree({ results, searchTerm, onSelect }: ContentTreeProps)
         };
       }
       
-      // Add content matches as children
       for (let i = 0; i < group.content.length; i++) {
         const content = group.content[i];
         const contentId = `content-${pageId}-${i}`;
@@ -141,7 +144,6 @@ export function ContentTree({ results, searchTerm, onSelect }: ContentTreeProps)
   
   const tree = useTree<TreeNode>({
     initialState: {
-      // Initially expand all pages to show content
       expandedItems: rootIds,
     },
     indent: 20,
@@ -184,7 +186,6 @@ export function ContentTree({ results, searchTerm, onSelect }: ContentTreeProps)
           {tree.getItems().map((item) => {
             const data = item.getItemData();
             
-            // Skip root item
             if (data.id === 'root') return null;
             
             return (
