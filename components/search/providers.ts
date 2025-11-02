@@ -80,8 +80,31 @@ export const documentationProvider: SearchProvider = {
       }, [] as any[]);
 
       const apiResults = uniqueItems.map(
-        (it: any) =>
-          ({
+        (it: any) => {
+          // Fumadocs returns structured_data field with type information
+          // Check tag, section, or use heuristics based on content
+          let itemType: string;
+          
+          // Log to see what fumadocs actually returns
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Fumadocs item:', { tag: it.tag, section: it.section, type: it.type, hasHash: !!it.hash, hasContent: !!it.content, structuredData: it.structured_data });
+          }
+          
+          // Fumadocs uses 'type' field: can be 'page', 'heading', 'text'
+          if (it.type === 'heading' || it.tag === 'heading' || it.section === 'heading' || it.hash) {
+            itemType = 'heading';
+          } else if (it.type === 'text' || it.tag === 'text' || it.section === 'text') {
+            // Explicit text/content match
+            itemType = 'content';
+          } else if (it.type === 'page' || (!it.type && !it.hash && !it.content)) {
+            // Explicit page or looks like a page
+            itemType = 'page';
+          } else {
+            // Has content but not a heading - likely a text match
+            itemType = it.content ? 'content' : 'page';
+          }
+          
+          return {
             id: it.href || crypto.randomUUID(),
             title: it.title || it.content || it.heading || "Untitled",
             summary:
@@ -92,8 +115,7 @@ export const documentationProvider: SearchProvider = {
                 : Array.isArray(it.content)
                   ? it.content.join(" ").slice(0, 200)
                   : ""),
-            type:
-              it.tag || it.section || it.type || (it.hash ? "heading" : "page"),
+            type: itemType,
             metadata: [
               Array.isArray(it.breadcrumbs)
                 ? it.breadcrumbs.join(" › ")
@@ -104,7 +126,8 @@ export const documentationProvider: SearchProvider = {
             highlight: it.highlight || "",
             // Preserve page title from fumadocs for content results
             pageTitle: it.page || (Array.isArray(it.breadcrumbs) && it.breadcrumbs.length > 0 ? it.breadcrumbs[it.breadcrumbs.length - 1] : undefined),
-          }) satisfies SearchItem
+          } satisfies SearchItem;
+        }
       );
 
       // Merge static and API results, removing duplicates by href
