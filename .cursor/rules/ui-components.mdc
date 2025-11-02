@@ -29,23 +29,22 @@ Elegant, production-ready components via the Shadcn registry. **Always check ReU
 
 **Installation:**
 
-**Direct installation to packages/ui (Recommended):**
 ```bash
 cd packages/ui
 pnpm dlx shadcn@latest add @reui/<component-name> --yes
 
-# Example: Add Avatar component
-pnpm dlx shadcn@latest add @reui/avatar --yes
+# Exports auto-generated on next dev/build
+# Or generate manually: pnpm generate-exports
 ```
 
-**⚠️ Important:** Do NOT use `--overwrite` flag unless you intentionally want to replace an existing custom component (like button). The `--overwrite` flag will replace our custom implementations.
-
-**Fallback (if direct installation fails):**
+**Example:**
 ```bash
-# Install to app first, then copy
-cd apps/www
-pnpm dlx shadcn@latest add @reui/<component-name> --yes
-# Then copy to packages/ui and update imports
+cd packages/ui
+pnpm dlx shadcn@latest add @reui/avatar --yes
+
+# Start dev server (exports auto-generated)
+cd ../..
+pnpm dev:www
 ```
 
 **Usage:**
@@ -65,16 +64,13 @@ Standard Shadcn components when ReUI variant doesn't exist.
 
 **Installation:**
 
-**Direct installation to packages/ui (Recommended):**
 ```bash
 cd packages/ui
 pnpm dlx shadcn@latest add <component-name> --yes
 
-# Example: Add Button component (if needed)
-pnpm dlx shadcn@latest add button --yes
+# Exports auto-generated on next dev/build
+# Or generate manually: pnpm generate-exports
 ```
-
-**⚠️ Important:** Do NOT use `--overwrite` flag unless you intentionally want to replace an existing custom component.
 
 **Usage:**
 ```tsx
@@ -185,50 +181,23 @@ packages/ui/src/lib/         # Shared utilities (cn, etc.)
 2. **Shadcn (Fallback)** - Only if ReUI doesn't have it
 3. **Custom** - If neither framework fits needs
 
-### Step 3: Install Using MCP or CLI
+### Step 3: Install Component
 
-**Via MCP (Preferred):**
-- Ask: "Add the avatar component from ReUI to packages/ui"
-- AI will handle installation automatically
-
-**Via CLI:**
 ```bash
-# ReUI (preferred) - Install directly to packages/ui
 cd packages/ui
-pnpm dlx shadcn@latest add @reui/avatar --yes
+pnpm dlx shadcn@latest add @reui/<component> --yes
 
-# Shadcn (fallback) - Install directly to packages/ui
-cd packages/ui
-pnpm dlx shadcn@latest add avatar --yes
-
-# ⚠️ Important: Do NOT use --overwrite unless replacing custom components
+# Exports are auto-generated when you:
+# - Start a dev server (pnpm dev:www, pnpm dev:docs, etc.)
+# - Run a build (pnpm build)
+# - Or manually: pnpm generate-exports
 ```
 
-### Step 4: Fix Import Paths
+### Step 4: Use in Any App
 
-After installation, check and fix import paths in the generated component:
-```typescript
-// shadcn may generate:
-import { cn } from '@recurse/ui/lib/utils';
-
-// Keep if utils.ts exists, or change to:
-import { cn } from '@recurse/ui/lib';
-```
-
-### Step 5: Update Exports
-
-Add to `packages/ui/src/components/index.ts`:
-```typescript
-export * from './<component-name>';
-```
-
-### Step 6: Import Pattern
+Component is automatically available after export generation:
 ```tsx
-// ✅ Use shared package (preferred)
-import { Avatar } from "@recurse/ui/components";
-
-// Or full path
-import { Avatar } from "@recurse/ui/components/avatar";
+import { ComponentName } from "@recurse/ui/components";
 ```
 
 ## Component Guidelines
@@ -275,27 +244,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 ## Best Practices
 
 1. **ReUI is default** - Always check ReUI first before falling back to Shadcn
-2. **Install directly to packages/ui** - Use `cd packages/ui && pnpm dlx shadcn@latest add @reui/<name> --yes`
-3. **Never use --overwrite** - Unless intentionally replacing a custom component
-4. **Use MCP for installation** - Ask AI to install components naturally
-5. **Use Shadcn CLI as fallback** - When MCP isn't available
-6. **Use shared imports** - Import from `@recurse/ui/components` (not app-level)
-7. **Fix import paths** - Check generated imports and update to match our structure
-8. **Update exports** - Always add to `packages/ui/src/components/index.ts`
-9. **Document custom variants** - Add props examples in component files
+2. **Install to packages/ui** - Use `cd packages/ui && pnpm dlx shadcn@latest add @reui/<name> --yes`
+3. **Exports auto-generate** - Run on every dev/build, no manual step needed
+4. **Never use --overwrite** - Unless intentionally replacing a custom component
+5. **Use shared imports** - Import from `@recurse/ui/components`
+6. **Fix import paths if needed** - Check generated imports match our structure
+7. **Icons from @recurse/ui** - Import Lucide from `lucide-react`, Tabler from `@tabler/icons-react`
 
 ## Current Component Inventory
 
 ### In packages/ui
-- avatar, badge, button, calendar, card, checkbox, collapsible, command
+- alert, avatar, badge, button, calendar, card, checkbox, collapsible, command
 - copy-button, dialog, dropdown-menu, icon-toggle-button, input
-- label, popover, progress-circle, radio-group, scroll-area, select
-- spinner, switch, table, theme-toggle, toc, toc-clerk, toc-thumb, tooltip
+- label, navigation-menu, popover, progress, progress-circle, radio-group
+- scroll-area, select, spinner, switch, table, theme-toggle, theme-provider, tooltip
 - kibo-ui components (announcement, kbd, pill, status)
 
-### In apps (local)
-- All apps have their own `components/ui/` directories
-- Some duplication exists (being migrated)
+### Icons
+- **Lucide React**: Available across all apps via `lucide-react`
+- **Tabler Icons**: Available across all apps via `@tabler/icons-react`
+- Both installed in `packages/ui` and apps as needed
 
 ## Troubleshooting
 
@@ -329,8 +297,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 ## Proposed Changes
 
-- [ ] Complete migration to `@recurse/ui` imports
+- [x] Complete migration to `@recurse/ui` imports
+- [x] Automated export generation on dev/build
+- [x] Centralized CSS in `packages/ui/styles`
+- [x] All apps use same components and configuration
 - [ ] Document all ReUI variants
-- [ ] Create component showcase/migration guide
+- [ ] Create component showcase
 - [ ] Add TypeScript types for all components
 - [ ] Set up automated component testing

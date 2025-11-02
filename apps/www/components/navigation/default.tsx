@@ -10,7 +10,7 @@ import {
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
 } from "@recurse/ui/components/navigation-menu";
-import { HelpCircle } from "lucide-react";
+import { IconQuestionMark } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -348,7 +348,7 @@ export function DefaultNavigation({
 							tooltip="Frequently Asked Questions"
 							variant="outline"
 						>
-							<HelpCircle className="h-4 w-4" />
+							<IconQuestionMark className="size-5" strokeWidth={1.5} />
 						</Button>
 					</Link>
 				</div>
