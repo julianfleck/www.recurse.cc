@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { SearchIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
 import {
   CommandDialog,
   CommandEmpty,
   CommandInput,
   CommandList,
-} from "@/components/ui/command";
-import { Spinner } from "@/components/ui/spinner";
-import { isOnAuthPage } from "@/lib/auth-utils";
-import { DocumentationResults } from "./results/documentation";
-import { KnowledgeBaseResults } from "./results/knowledge-base";
-import type { SearchProvider } from "./types";
+} from '@recurse/ui/components/command';
+import { SearchIcon } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Spinner } from '@/components/ui/spinner';
+import { isOnAuthPage } from '@/lib/auth-utils';
+import { DocumentationResults } from './results/documentation';
+import { KnowledgeBaseResults } from './results/knowledge-base';
+import type { SearchProvider } from './types';
 
 type SearchCommandDialogProps = {
   open: boolean;
@@ -20,28 +20,28 @@ type SearchCommandDialogProps = {
   provider: SearchProvider;
   placeholder?: string;
   debounceMs?: number;
-  searchType?: "documentation" | "knowledgeBase";
+  searchType?: 'documentation' | 'knowledgeBase';
 };
 
 export function SearchCommandDialog({
   open,
   onOpenChange,
   provider,
-  placeholder = "Search...",
+  placeholder = 'Search...',
   debounceMs = 300,
-  searchType = "knowledgeBase",
+  searchType = 'knowledgeBase',
 }: SearchCommandDialogProps) {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [results, setResults] = useState<
-    ReturnType<SearchProvider["search"]> extends Promise<infer R> ? R : never
+    ReturnType<SearchProvider['search']> extends Promise<infer R> ? R : never
   >([] as never);
 
   useEffect(() => {
     if (!open) {
-      setSearchTerm("");
+      setSearchTerm('');
       setResults([] as never);
       setError(null);
       setHasSearched(false);
@@ -65,13 +65,13 @@ export function SearchCommandDialog({
         setResults(data as never);
         setHasSearched(true);
       } catch (err) {
-        if (err instanceof Error && err.name === "AuthenticationError") {
+        if (err instanceof Error && err.name === 'AuthenticationError') {
           if (!isOnAuthPage()) {
-            window.location.href = "/login";
+            window.location.href = '/login';
           }
           return;
         }
-        setError(err instanceof Error ? err.message : "Search failed");
+        setError(err instanceof Error ? err.message : 'Search failed');
         setResults([] as never);
         setHasSearched(true);
       } finally {
@@ -87,7 +87,7 @@ export function SearchCommandDialog({
       return error;
     }
     if (searchTerm && !isLoading && hasSearched && results.length === 0) {
-      return "No results found.";
+      return 'No results found.';
     }
     return null; // Don't show anything when not searching, loading, or haven't searched yet
   }, [error, searchTerm, isLoading, hasSearched, results.length]);
@@ -112,8 +112,10 @@ export function SearchCommandDialog({
       </div>
       <CommandList>
         {emptyMessage && <CommandEmpty>{emptyMessage}</CommandEmpty>}
-        {searchTerm && !isLoading && results.length > 0 && (
-          searchType === "documentation" ? (
+        {searchTerm &&
+          !isLoading &&
+          results.length > 0 &&
+          (searchType === 'documentation' ? (
             <DocumentationResults
               onSelect={() => onOpenChange(false)}
               results={results as never}
@@ -121,8 +123,7 @@ export function SearchCommandDialog({
             />
           ) : (
             <KnowledgeBaseResults results={results as never} />
-          )
-        )}
+          ))}
       </CommandList>
     </CommandDialog>
   );

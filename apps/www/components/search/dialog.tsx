@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
 import {
   CommandDialog,
   CommandEmpty,
   CommandInput,
   CommandList,
-} from "@recurse/ui/components/command";
-import { Spinner } from "@recurse/ui/components/spinner";
-import { DocumentationResults } from "./results/documentation";
-import { WebsiteSuggestions } from "./suggestions";
-import type { SearchProvider } from "./types";
+} from '@recurse/ui/components/command';
+import { Spinner } from '@recurse/ui/components/spinner';
+import { useEffect, useMemo, useState } from 'react';
+import { DocumentationResults } from './results/documentation';
+import { WebsiteSuggestions } from './suggestions';
+import type { SearchProvider } from './types';
 
 type SearchCommandDialogProps = {
   open: boolean;
@@ -24,18 +24,20 @@ export function SearchCommandDialog({
   open,
   onOpenChange,
   provider,
-  placeholder = "Search documentation...",
+  placeholder = 'Search documentation...',
   debounceMs = 300,
 }: SearchCommandDialogProps) {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
-  const [results, setResults] = useState<Awaited<ReturnType<SearchProvider["search"]>>>([]);
+  const [results, setResults] = useState<
+    Awaited<ReturnType<SearchProvider['search']>>
+  >([]);
 
   useEffect(() => {
     if (!open) {
-      setSearchTerm("");
+      setSearchTerm('');
       setResults([]);
       setError(null);
       setHasSearched(false);
@@ -60,7 +62,7 @@ export function SearchCommandDialog({
         setResults(searchResults);
         setHasSearched(true);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Search failed");
+        setError(err instanceof Error ? err.message : 'Search failed');
         setResults([]);
       } finally {
         setIsLoading(false);
@@ -75,7 +77,7 @@ export function SearchCommandDialog({
       return error;
     }
     if (searchTerm && !isLoading && hasSearched && results.length === 0) {
-      return "No results found.";
+      return 'No results found.';
     }
     return null;
   }, [error, searchTerm, isLoading, hasSearched, results.length]);
@@ -86,20 +88,20 @@ export function SearchCommandDialog({
       open={open}
       showCloseButton={!isLoading}
     >
-      <div className="relative">
-        <CommandInput
-          onValueChange={setSearchTerm}
-          placeholder={placeholder}
-          value={searchTerm}
-        />
+      <CommandInput
+        onValueChange={setSearchTerm}
+        placeholder={placeholder}
+        value={searchTerm}
+      />
+      <CommandList>
+        {!searchTerm && (
+          <WebsiteSuggestions onSelect={() => onOpenChange(false)} />
+        )}
         {isLoading && (
-          <div className="-translate-y-1/2 absolute top-1/2 right-3">
+          <div className="flex items-center justify-center py-6">
             <Spinner size={16} strokeWidth={2} />
           </div>
         )}
-      </div>
-      <CommandList>
-        {!searchTerm && <WebsiteSuggestions onSelect={() => onOpenChange(false)} />}
         {emptyMessage && <CommandEmpty>{emptyMessage}</CommandEmpty>}
         {searchTerm && !isLoading && results.length > 0 && (
           <DocumentationResults
@@ -112,4 +114,3 @@ export function SearchCommandDialog({
     </CommandDialog>
   );
 }
-

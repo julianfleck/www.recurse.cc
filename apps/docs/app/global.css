@@ -1,4 +1,10 @@
 @import "tailwindcss";
+
+/* Tailwind v4 content sources - must be before other imports */
+@source "../components/**/*.{js,ts,jsx,tsx,mdx}";
+@source "../app/**/*.{js,ts,jsx,tsx,mdx}";
+@source "../../packages/ui/**/*.{js,ts,jsx,tsx,mdx}";
+
 @import "fumadocs-ui/css/shadcn.css";
 @import "fumadocs-ui/css/preset.css";
 @import "fumadocs-openapi/css/preset.css";

@@ -1,0 +1,11 @@
+/* 
+ * @recurse/ui Central Stylesheet
+ * Single source of truth for all styling across apps
+ */
+
+/* 1. Base Tailwind + @source directives + third-party imports */
+@import "./base.css";
+
+/* 2. Global styles, theme variables, typography */
+@import "./global.css";
+

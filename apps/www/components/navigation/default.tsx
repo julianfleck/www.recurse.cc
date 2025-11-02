@@ -20,11 +20,11 @@ import {
 	type MouseEvent,
 } from "react";
 import { SearchToggle } from "@/components/search/toggle";
+import { TestDialogButton } from "@/components/ui/TestDialogButton";
 import { ThemeToggleButton } from "@/components/ui/ThemeToggleButton";
 import { TooltipProvider } from "@/components/ui/tooltip";
 // Import content files
 import navContent from "@/content/en/navigation.json" with { type: "json" };
-import { useDemo } from "@/contexts/DemoContext";
 import { useScroll } from "@/contexts/ScrollContext";
 import { cn } from "@/lib/utils";
 
@@ -89,7 +89,6 @@ export function DefaultNavigation({
 }: DefaultNavigationProps) {
 	const pathname = usePathname();
 	const { scrollToElement } = useScroll();
-	const { openDemo } = useDemo();
 
 	// Base transition classes for menu items
 	const menuItemTransition = "transition-all duration-300 ease-in-out";
@@ -317,17 +316,6 @@ export function DefaultNavigation({
 			{/* Right side items container - Wrapped in TooltipProvider */}
 			<TooltipProvider delayDuration={0}>
 				<div className="flex items-center space-x-2">
-					{/* Demo Button (Only in Development) */}
-					{process.env.NODE_ENV === "development" && (
-						<Button
-							className={menuItemTransition}
-							onClick={openDemo}
-							size={isCompact ? "sm" : "default"}
-							variant="secondary"
-						>
-							{contentNav.demo}
-						</Button>
-					)}
 
 					{/* Join Beta Button (Always Visible) */}
 					<Button
@@ -368,6 +356,14 @@ export function DefaultNavigation({
 
 					{/* Theme Toggle Button (Always Visible) */}
 					<ThemeToggleButton
+						className={cn(
+							menuItemTransition,
+							isCompact ? "h-9 w-9" : "h-10 w-10",
+						)}
+					/>
+
+					{/* Test Dialog Buttons */}
+					<TestDialogButton
 						className={cn(
 							menuItemTransition,
 							isCompact ? "h-9 w-9" : "h-10 w-10",

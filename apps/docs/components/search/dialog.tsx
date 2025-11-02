@@ -104,20 +104,18 @@ export function SearchCommandDialog({
       open={open}
       showCloseButton={!isLoading}
     >
-      <div className="relative">
         <CommandInput
           onValueChange={setSearchTerm}
           placeholder={placeholder}
           value={searchTerm}
         />
+      <CommandList>
+        {!searchTerm && <DocumentationSuggestions onSelect={() => onOpenChange(false)} />}
         {isLoading && (
-          <div className="-translate-y-1/2 absolute top-1/2 right-3">
+          <div className="flex items-center justify-center py-6">
             <Spinner size={16} strokeWidth={2} />
           </div>
         )}
-      </div>
-      <CommandList>
-        {!searchTerm && <DocumentationSuggestions onSelect={() => onOpenChange(false)} />}
         {emptyMessage && <CommandEmpty>{emptyMessage}</CommandEmpty>}
         {searchTerm && !isLoading && results.length > 0 && (
           searchType === "documentation" ? (

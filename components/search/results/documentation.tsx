@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { File, Hash } from "lucide-react";
-import { useRouter } from "next/navigation";
 import {
   CommandGroup,
   CommandItem,
   CommandSeparator,
-} from "@/components/ui/command";
-import type { SearchItem } from "../types";
+} from '@recurse/ui/components/command';
+import { File, Hash } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import type { SearchItem } from '../types';
 
 type DocumentationResultsProps = {
   results: SearchItem[];
@@ -21,8 +21,8 @@ function highlightText(text: string, searchTerm: string) {
   }
 
   const regex = new RegExp(
-    `(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
-    "gi"
+    `(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`,
+    'gi'
   );
   const parts = text.split(regex);
 
@@ -50,15 +50,16 @@ export function DocumentationResults({
 
   // Group results by type - prioritize pages first
   const pages = results.filter(
-    (r) => r.type === "page" || !r.type || r.type === "doc"
+    (r) => r.type === 'page' || !r.type || r.type === 'doc'
   );
-  const headings = results.filter((r) => r.type === "heading");
+  const headings = results.filter((r) => r.type === 'heading');
   const textMatches = results.filter(
-    (r) => r.type === "text" || r.type === "content"
+    (r) => r.type === 'text' || r.type === 'content'
   );
-  
+
   // If no explicit pages found, treat all non-heading results as pages
-  const finalPages = pages.length > 0 ? pages : results.filter((r) => r.type !== "heading");
+  const finalPages =
+    pages.length > 0 ? pages : results.filter((r) => r.type !== 'heading');
   const finalHeadings = pages.length > 0 ? headings : [];
   const finalTextMatches = pages.length > 0 ? textMatches : [];
 
@@ -77,17 +78,17 @@ export function DocumentationResults({
             <CommandItem
               className="flex items-center gap-3 px-4 py-3"
               key={`page-${result.id}-${idx}`}
-              onSelect={() => handleSelect(result.href || "")}
+              onSelect={() => handleSelect(result.href || '')}
               value={`${result.title} ${result.summary}`}
             >
               <File className="h-4 w-4 text-muted-foreground" />
               <div className="min-w-0 flex-1">
                 <div className="font-medium text-sm">
-                  {highlightText(result.title || "Untitled", searchTerm)}
+                  {highlightText(result.title || 'Untitled', searchTerm)}
                 </div>
                 {result.breadcrumbs && result.breadcrumbs.length > 0 && (
                   <div className="mt-0.5 text-muted-foreground text-xs">
-                    {result.breadcrumbs.join(" › ")}
+                    {result.breadcrumbs.join(' › ')}
                   </div>
                 )}
                 {result.summary && (
@@ -109,17 +110,17 @@ export function DocumentationResults({
               <CommandItem
                 className="flex items-center gap-3 px-4 py-3"
                 key={`heading-${result.id}-${idx}`}
-                onSelect={() => handleSelect(result.href || "")}
+                onSelect={() => handleSelect(result.href || '')}
                 value={`${result.title} ${result.summary}`}
               >
                 <Hash className="h-4 w-4 text-muted-foreground" />
                 <div className="min-w-0 flex-1">
                   <div className="font-medium text-sm">
-                    {highlightText(result.title || "Untitled", searchTerm)}
+                    {highlightText(result.title || 'Untitled', searchTerm)}
                   </div>
                   {result.breadcrumbs && result.breadcrumbs.length > 0 && (
                     <div className="mt-0.5 text-muted-foreground text-xs">
-                      {result.breadcrumbs.join(" › ")}
+                      {result.breadcrumbs.join(' › ')}
                     </div>
                   )}
                   {result.summary && (
@@ -136,13 +137,15 @@ export function DocumentationResults({
 
       {finalTextMatches.length > 0 && (
         <>
-          {(finalPages.length > 0 || finalHeadings.length > 0) && <CommandSeparator />}
+          {(finalPages.length > 0 || finalHeadings.length > 0) && (
+            <CommandSeparator />
+          )}
           <CommandGroup heading="Content">
             {finalTextMatches.map((result, idx) => (
               <CommandItem
                 className="flex items-center gap-3 px-4 py-3"
                 key={`text-${result.id}-${idx}`}
-                onSelect={() => handleSelect(result.href || "")}
+                onSelect={() => handleSelect(result.href || '')}
                 value={`${result.title} ${result.summary}`}
               >
                 <div className="flex h-4 w-4 items-center justify-center">
@@ -150,11 +153,11 @@ export function DocumentationResults({
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="font-medium text-sm">
-                    {highlightText(result.title || "Untitled", searchTerm)}
+                    {highlightText(result.title || 'Untitled', searchTerm)}
                   </div>
                   {result.breadcrumbs && result.breadcrumbs.length > 0 && (
                     <div className="mt-0.5 text-muted-foreground text-xs">
-                      {result.breadcrumbs.join(" › ")}
+                      {result.breadcrumbs.join(' › ')}
                     </div>
                   )}
                   {result.summary && (

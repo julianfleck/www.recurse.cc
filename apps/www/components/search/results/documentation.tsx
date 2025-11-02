@@ -77,7 +77,7 @@ export function DocumentationResults({
               onSelect={() => handleSelect(result.href || "")}
               value={`${result.title} ${result.summary}`}
             >
-              <File className="h-4 w-4 text-muted-foreground" />
+              <File />
               <span>{highlightText(result.title || "Untitled", searchTerm)}</span>
             </CommandItem>
           ))}
@@ -94,7 +94,7 @@ export function DocumentationResults({
                 onSelect={() => handleSelect(result.href || "")}
                 value={`${result.title} ${result.summary}`}
               >
-                <Hash className="h-4 w-4 text-muted-foreground" />
+                <Hash />
                 <span>{highlightText(result.title || "Untitled", searchTerm)}</span>
               </CommandItem>
             ))}

@@ -11,7 +11,7 @@ import { zoom } from "d3-zoom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthStore } from "@/components/auth/auth-store";
 import { DefaultSpinner } from "@/components/loaders/default-spinner";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@recurse/ui/components/dialog";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { graphApiClient } from "../api";
 import {
