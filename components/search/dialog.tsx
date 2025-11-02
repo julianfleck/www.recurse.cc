@@ -104,19 +104,14 @@ export function SearchCommandDialog({
           placeholder={placeholder}
           value={searchTerm}
         />
-        {isLoading && (
-          <div className="-translate-y-1/2 absolute top-1/2 right-3">
-            <Spinner size={16} strokeWidth={2} />
-          </div>
-        )}
       </div>
       <CommandList>
         {emptyMessage && <CommandEmpty>{emptyMessage}</CommandEmpty>}
         {searchTerm &&
-          !isLoading &&
           results.length > 0 &&
           (searchType === 'documentation' ? (
             <DocumentationResults
+              isLoading={isLoading}
               onSelect={() => onOpenChange(false)}
               results={results as never}
               searchTerm={searchTerm}
