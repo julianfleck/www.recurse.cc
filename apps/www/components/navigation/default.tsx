@@ -21,6 +21,7 @@ import {
 } from "react";
 import { SearchToggle } from "@/components/search/toggle";
 import { TestDialogButton } from "@/components/ui/TestDialogButton";
+import { TestAlertButton } from "@/components/ui/TestAlertButton";
 import { ThemeToggleButton } from "@/components/ui/ThemeToggleButton";
 import { TooltipProvider } from "@/components/ui/tooltip";
 // Import content files
@@ -364,6 +365,14 @@ export function DefaultNavigation({
 
 					{/* Test Dialog Buttons */}
 					<TestDialogButton
+						className={cn(
+							menuItemTransition,
+							isCompact ? "h-9 w-9" : "h-10 w-10",
+						)}
+					/>
+					
+					{/* Test Alert Button */}
+					<TestAlertButton
 						className={cn(
 							menuItemTransition,
 							isCompact ? "h-9 w-9" : "h-10 w-10",

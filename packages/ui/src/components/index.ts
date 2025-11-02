@@ -1,4 +1,5 @@
 // UI Components - exported from packages/ui
+export * from './alert';
 export * from './avatar';
 export * from './badge';
 export * from './button';
