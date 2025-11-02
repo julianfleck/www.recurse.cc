@@ -20,9 +20,6 @@ import {
 	type MouseEvent,
 } from "react";
 import { SearchToggle } from "@/components/search/toggle";
-import { TestDialogButton } from "@/components/ui/TestDialogButton";
-import { TestAlertButton } from "@/components/ui/TestAlertButton";
-import { ThemeToggleButton } from "@/components/ui/ThemeToggleButton";
 import { TooltipProvider } from "@/components/ui/tooltip";
 // Import content files
 import navContent from "@/content/en/navigation.json" with { type: "json" };
@@ -354,30 +351,6 @@ export function DefaultNavigation({
 							<HelpCircle className="h-4 w-4" />
 						</Button>
 					</Link>
-
-					{/* Theme Toggle Button (Always Visible) */}
-					<ThemeToggleButton
-						className={cn(
-							menuItemTransition,
-							isCompact ? "h-9 w-9" : "h-10 w-10",
-						)}
-					/>
-
-					{/* Test Dialog Buttons */}
-					<TestDialogButton
-						className={cn(
-							menuItemTransition,
-							isCompact ? "h-9 w-9" : "h-10 w-10",
-						)}
-					/>
-					
-					{/* Test Alert Button */}
-					<TestAlertButton
-						className={cn(
-							menuItemTransition,
-							isCompact ? "h-9 w-9" : "h-10 w-10",
-						)}
-					/>
 				</div>
 			</TooltipProvider>
 		</div>
