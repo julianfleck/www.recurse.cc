@@ -30,3 +30,4 @@ export * from './table';
 export * from './theme-provider';
 export * from './theme-toggle';
 export * from './tooltip';
+export * from './tree';
