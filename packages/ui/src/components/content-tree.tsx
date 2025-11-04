@@ -32,21 +32,22 @@ function highlightText(text: string, searchTerm: string) {
   );
   const parts = text.split(regex);
 
-  return parts.map((part) => {
-    const isMatch = regex.test(part);
-    const key = isMatch ? `highlight-${part}` : `text-${part}`;
+  return parts.map((part, index) => {
+    // Check if part matches the search term (case-insensitive)
+    const isMatch = part.toLowerCase() === searchTerm.toLowerCase();
+    const key = `part-${index}-${part.slice(0, 10)}`;
     
     if (isMatch) {
       return (
-        <mark
-          className="rounded bg-yellow-200 px-0.5 dark:bg-yellow-900/50"
+        <span
+          className="text-foreground"
           key={key}
         >
           {part}
-        </mark>
+        </span>
       );
     }
-    return <span key={key}>{part}</span>;
+    return <span key={key} className="text-muted-foreground">{part}</span>;
   });
 }
 
