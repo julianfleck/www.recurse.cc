@@ -7,6 +7,7 @@ type DocumentationResultsProps = {
   results: SearchItem[];
   searchTerm: string;
   onSelect?: () => void;
+  onSelectAll?: () => void;
   isLoading?: boolean;
 };
 
@@ -14,6 +15,7 @@ export function DocumentationResults({
   results,
   searchTerm,
   onSelect,
+  onSelectAll,
   isLoading = false,
 }: DocumentationResultsProps) {
   const handleSelect = (href: string) => {
@@ -28,6 +30,7 @@ export function DocumentationResults({
       results={results}
       searchTerm={searchTerm}
       onSelect={handleSelect}
+      onSelectAll={onSelectAll}
     />
   );
 }

@@ -45,6 +45,7 @@ export function SearchCommandDialog({
     ReturnType<SearchProvider["search"]> extends Promise<infer R> ? R : never
   >([] as never);
   const resultsRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!open) {
@@ -112,6 +113,11 @@ export function SearchCommandDialog({
     }
   };
 
+  const handleSelectAll = () => {
+    inputRef.current?.focus();
+    inputRef.current?.select();
+  };
+
   return (
     <CommandDialog
       onOpenChange={onOpenChange}
@@ -119,6 +125,7 @@ export function SearchCommandDialog({
       showCloseButton={!isLoading}
     >
         <CommandInput
+          ref={inputRef}
           onValueChange={setSearchTerm}
           placeholder={placeholder}
           value={searchTerm}
@@ -136,6 +143,7 @@ export function SearchCommandDialog({
           searchType === "documentation" ? (
             <DocumentationResults
               onSelect={() => onOpenChange(false)}
+              onSelectAll={handleSelectAll}
               results={results as never}
               searchTerm={searchTerm}
             />
