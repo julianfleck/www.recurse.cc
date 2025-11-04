@@ -1,7 +1,7 @@
 'use client';
 
 import { File, FileText, Hash } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AccordionMenu,
   AccordionMenuGroup,
@@ -202,15 +202,55 @@ function HierarchicalContentTree({
                 }
               }
             } else if (itemId.startsWith('content-')) {
-              // Format: "content-{pageUrl}-{contentId}"
-              const parts = itemId.split('-');
-              if (parts.length >= 3) {
-                const pageUrl = parts.slice(1, -1).join('-');
-                const contentId = parts[parts.length - 1];
+              // Format: "content-{pageUrl}-synthetic-{contentId}" or "content-{pageUrl}-{headingId}-{contentId}"
+              // Extract by looking for known patterns
+              const syntheticPattern = '-synthetic-';
+              const syntheticIndex = itemId.indexOf(syntheticPattern);
+              
+              if (syntheticIndex > 0) {
+                // Synthetic content: content-{pageUrl}-synthetic-{contentId}
+                const pageUrl = itemId.slice('content-'.length, syntheticIndex);
+                const contentId = itemId.slice(syntheticIndex + syntheticPattern.length);
                 const page = normalizedResults.find(p => p.url === pageUrl);
-                const content = page?.headings.flatMap(h => h.content).find(c => c.id === contentId);
-                if (content?.url) {
-                  onSelect(content.url);
+                if (page) {
+                  // Find content in headings with same URL as page (synthetic heading)
+                  const syntheticHeading = page.headings.find(h => {
+                    const hUrl = h.url || h.id || '';
+                    const hHref = hUrl.split('#')[0] || hUrl;
+                    return hHref === pageUrl && !hUrl.includes('#');
+                  });
+                  const content = syntheticHeading?.content.find(
+                    (c, idx) => c.id === contentId || String(idx) === contentId
+                  );
+                  if (content?.url) {
+                    onSelect(content.url);
+                  }
+                }
+              } else {
+                // Regular content: content-{pageUrl}-{headingId}-{contentIndex}
+                // Split and work backwards since contentIndex is numeric
+                const parts = itemId.slice('content-'.length).split('-');
+                if (parts.length >= 2) {
+                  // Try to find the page first, then match heading and content by index
+                  for (const page of normalizedResults) {
+                    if (itemId.startsWith(`content-${page.url}-`)) {
+                      const remaining = itemId.slice(`content-${page.url}-`.length);
+                      // Try each heading to find matching pattern
+                      for (const heading of page.headings) {
+                        if (remaining.startsWith(`${heading.id}-`)) {
+                          const contentIndexStr = remaining.slice(`${heading.id}-`.length);
+                          const contentIndex = Number.parseInt(contentIndexStr, 10);
+                          if (!Number.isNaN(contentIndex) && heading.content[contentIndex]) {
+                            const content = heading.content[contentIndex];
+                            if (content?.url) {
+                              onSelect(content.url);
+                              return;
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -314,6 +354,59 @@ function HierarchicalContentTree({
                       >
                         <AccordionMenuGroup>
                           {page.headings.map((heading) => {
+                            const headingUrl = heading.url || heading.id || '';
+                            const headingHref = headingUrl.split('#')[0] || headingUrl;
+                            // Check if this is a synthetic heading (same URL as page, no anchor)
+                            const isSyntheticHeading = headingHref === pageHref && !headingUrl.includes('#');
+                            
+                            // If synthetic heading, render content directly without heading wrapper
+                            if (isSyntheticHeading && heading.content.length > 0) {
+                              return (
+                                <React.Fragment key={`synthetic-${pageHref}-${heading.id}`}>
+                                  {heading.content.map((contentItem, contentIndex) => {
+                                    // Always use index to ensure uniqueness
+                                    const contentItemId = `content-${pageHref}-synthetic-${contentIndex}`;
+                                    
+                                    return (
+                                      <AccordionMenuItem
+                                        key={contentItemId}
+                                        onClick={() => onSelect(contentItem.url)}
+                                        value={`${pageHref}-content-synthetic-${contentIndex}`}
+                                        data-item-id={contentItemId}
+                                        data-selected={selectedId === contentItemId}
+                                      >
+                                        <FileText className="h-4 w-4" />
+                                        <div className='min-w-0 flex-1'>
+                                          <div className='line-clamp-2 text-muted-foreground text-xs'>
+                                            {highlightText(contentItem.title, searchTerm)}
+                                          </div>
+                                        </div>
+                                      </AccordionMenuItem>
+                                    );
+                                  })}
+                                </React.Fragment>
+                              );
+                            }
+                            
+                            // If heading has no content, render as plain item instead of accordion
+                            if (heading.content.length === 0) {
+                              const itemId = `heading-${pageHref}-${heading.id}`;
+                              
+                              return (
+                                <AccordionMenuItem
+                                  key={itemId}
+                                  onClick={() => onSelect(heading.url)}
+                                  value={itemId}
+                                  data-item-id={itemId}
+                                  data-selected={selectedId === itemId}
+                                >
+                                  <Hash className="h-4 w-4" />
+                                  <span className="text-sm">{highlightText(heading.title, searchTerm)}</span>
+                                </AccordionMenuItem>
+                              );
+                            }
+                            
+                            // Real heading with content - render as accordion wrapper
                             const itemId = `heading-${pageHref}-${heading.id}`;
                             const headingSubId = `heading-sub-${pageHref}-${heading.id}`;
                             
@@ -333,14 +426,15 @@ function HierarchicalContentTree({
                                   type="multiple"
                                 >
                                   <AccordionMenuGroup>
-                                    {heading.content.map((contentItem) => {
-                                      const contentItemId = `content-${pageHref}-${contentItem.id}`;
+                                    {heading.content.map((contentItem, contentIndex) => {
+                                      // Always include index in key to ensure uniqueness even if contentItem.id is duplicated
+                                      const contentItemId = `content-${pageHref}-${heading.id}-${contentIndex}`;
                                       
                                       return (
                                         <AccordionMenuItem
                                           key={contentItemId}
                                           onClick={() => onSelect(contentItem.url)}
-                                          value={`${pageHref}-content-${contentItem.id}`}
+                                          value={`${pageHref}-content-${heading.id}-${contentIndex}`}
                                           data-item-id={contentItemId}
                                           data-selected={selectedId === contentItemId}
                                         >
