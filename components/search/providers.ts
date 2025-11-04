@@ -80,18 +80,13 @@ export const documentationProvider: SearchProvider = {
       }, [] as any[]);
 
       const apiResults = uniqueItems.map(
-        (it: any) => {
-          // Fumadocs returns structured_data field with type information
-          // Check tag, section, or use heuristics based on content
-          let itemType: string;
-          
-          // Log to see what fumadocs actually returns
-          if (process.env.NODE_ENV === 'development') {
-            console.log('Fumadocs item:', { tag: it.tag, section: it.section, type: it.type, hasHash: !!it.hash, hasContent: !!it.content, structuredData: it.structured_data });
-          }
-          
-          // Fumadocs uses 'type' field: can be 'page', 'heading', 'text'
-          if (it.type === 'heading' || it.tag === 'heading' || it.section === 'heading' || it.hash) {
+                (it: any) => {
+                  // Fumadocs returns structured_data field with type information
+                  // Check tag, section, or use heuristics based on content
+                  let itemType: string;
+
+                  // Fumadocs uses 'type' field: can be 'page', 'heading', 'text'
+                  if (it.type === 'heading' || it.tag === 'heading' || it.section === 'heading' || it.hash) {
             itemType = 'heading';
           } else if (it.type === 'text' || it.tag === 'text' || it.section === 'text') {
             // Explicit text/content match
@@ -115,7 +110,8 @@ export const documentationProvider: SearchProvider = {
                 : Array.isArray(it.content)
                   ? it.content.join(" ").slice(0, 200)
                   : ""),
-            type: itemType,
+            // Map fumadocs 'text' type to 'content' for our tree view
+            type: it.type === 'text' ? 'content' : (it.type || (it.hash ? 'heading' : 'page')),
             metadata: [
               Array.isArray(it.breadcrumbs)
                 ? it.breadcrumbs.join(" › ")

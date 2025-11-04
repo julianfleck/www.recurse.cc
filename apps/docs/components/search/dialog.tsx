@@ -1,7 +1,7 @@
 "use client";
 
 import { SearchIcon } from "lucide-react";
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -44,6 +44,7 @@ export function SearchCommandDialog({
   const [results, setResults] = useState<
     ReturnType<SearchProvider["search"]> extends Promise<infer R> ? R : never
   >([] as never);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) {
@@ -98,6 +99,19 @@ export function SearchCommandDialog({
     return null; // Don't show anything when not searching, loading, or haven't searched yet
   }, [error, searchTerm, isLoading, hasSearched, results.length]);
 
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown' && results.length > 0) {
+      e.preventDefault();
+      // Focus the first focusable item in the results
+      const firstItem = resultsRef.current?.querySelector<HTMLElement>(
+        '[role="menuitem"], [data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
+      );
+      if (firstItem) {
+        firstItem.focus();
+      }
+    }
+  };
+
   return (
     <CommandDialog
       onOpenChange={onOpenChange}
@@ -108,8 +122,9 @@ export function SearchCommandDialog({
           onValueChange={setSearchTerm}
           placeholder={placeholder}
           value={searchTerm}
+          onKeyDown={handleInputKeyDown}
         />
-      <CommandList>
+      <CommandList ref={resultsRef}>
         {!searchTerm && <DocumentationSuggestions onSelect={() => onOpenChange(false)} />}
         {isLoading && (
           <div className="flex items-center justify-center py-6">

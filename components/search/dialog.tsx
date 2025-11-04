@@ -7,7 +7,7 @@ import {
   CommandList,
 } from '@recurse/ui/components/command';
 import { SearchIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Spinner } from '@/components/ui/spinner';
 import { isOnAuthPage } from '@/lib/auth-utils';
 import { DocumentationResults } from './results/documentation';
@@ -38,6 +38,7 @@ export function SearchCommandDialog({
   const [results, setResults] = useState<
     ReturnType<SearchProvider['search']> extends Promise<infer R> ? R : never
   >([] as never);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) {
@@ -92,6 +93,19 @@ export function SearchCommandDialog({
     return null; // Don't show anything when not searching, loading, or haven't searched yet
   }, [error, searchTerm, isLoading, hasSearched, results.length]);
 
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown' && results.length > 0) {
+      e.preventDefault();
+      // Focus the first focusable item in the results
+      const firstItem = resultsRef.current?.querySelector<HTMLElement>(
+        '[role="menuitem"], [data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
+      );
+      if (firstItem) {
+        firstItem.focus();
+      }
+    }
+  };
+
   return (
     <CommandDialog
       onOpenChange={onOpenChange}
@@ -103,9 +117,10 @@ export function SearchCommandDialog({
           onValueChange={setSearchTerm}
           placeholder={placeholder}
           value={searchTerm}
+          onKeyDown={handleInputKeyDown}
         />
       </div>
-      <CommandList>
+      <CommandList ref={resultsRef}>
         {emptyMessage && <CommandEmpty>{emptyMessage}</CommandEmpty>}
         {searchTerm &&
           results.length > 0 &&

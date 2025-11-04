@@ -1,11 +1,16 @@
 'use client';
 
-import { CommandGroup } from './command';
-import { Tree, TreeItem, TreeItemLabel } from './tree';
-import { hotkeysCoreFeature, syncDataLoaderFeature } from '@headless-tree/core';
-import { useTree } from '@headless-tree/react';
-import { File, Hash } from 'lucide-react';
-import { useMemo } from 'react';
+import {
+  AccordionMenu,
+  AccordionMenuGroup,
+  AccordionMenuIndicator,
+  AccordionMenuItem,
+  AccordionMenuSub,
+  AccordionMenuSubContent,
+  AccordionMenuSubTrigger,
+} from './accordion-menu';
+import { File, FileText, Hash } from 'lucide-react';
+import { useMemo, useEffect, useRef } from 'react';
 
 export type SearchItem = {
   id: string;
@@ -23,15 +28,6 @@ type ContentTreeProps = {
   searchTerm: string;
   onSelect: (href: string) => void;
 };
-
-interface TreeNode {
-  id: string;
-  name: string;
-  type: 'page' | 'heading' | 'content';
-  href?: string;
-  content?: string;
-  children?: string[];
-}
 
 function highlightText(text: string, searchTerm: string) {
   if (!searchTerm.trim()) {
@@ -60,177 +56,280 @@ function highlightText(text: string, searchTerm: string) {
 }
 
 export function ContentTree({ results, searchTerm, onSelect }: ContentTreeProps) {
-  const { treeData, rootIds } = useMemo(() => {
-    const items: Record<string, TreeNode> = {};
-    const roots: string[] = [];
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { pagesOnly, groupedResults } = useMemo(() => {
+    const pages = results.filter(
+      (r) => r.type === 'page' || !r.type || r.type === 'doc'
+    );
+    const headings = results.filter((r) => r.type === 'heading');
+    const content = results.filter(
+      (r) => r.type === 'text' || r.type === 'content'
+    );
+
+    const contentByPage = new Map<string, { headings: SearchItem[]; content: SearchItem[] }>();
     
-    const pageMap = new Map<string, { page: SearchItem; headings: SearchItem[]; content: SearchItem[] }>();
-    
-    for (const result of results) {
-      const pageId = result.href?.split('#')[0] || result.id;
-      
-      if (!pageMap.has(pageId)) {
-        let pageTitle = 'Untitled';
-        if (result.pageTitle) {
-          pageTitle = result.pageTitle;
-        } else if (result.breadcrumbs && result.breadcrumbs.length > 0) {
-          pageTitle = result.breadcrumbs[result.breadcrumbs.length - 1];
-        } else if (result.title && result.type === 'page') {
-          pageTitle = result.title;
-        }
-        
-        pageMap.set(pageId, {
-          page: { ...result, title: pageTitle, href: pageId },
-          headings: [],
-          content: [],
-        });
+    for (const result of [...headings, ...content]) {
+      const pageHref = result.href?.split('#')[0];
+      if (!pageHref) continue;
+
+      if (!contentByPage.has(pageHref)) {
+        contentByPage.set(pageHref, { headings: [], content: [] });
       }
-      
-      const group = pageMap.get(pageId)!;
-      
+
+      const group = contentByPage.get(pageHref)!;
       if (result.type === 'heading') {
         group.headings.push(result);
-      } else if (result.type === 'text' || result.type === 'content') {
+      } else {
         group.content.push(result);
       }
     }
+
+    const grouped: Array<{ page: SearchItem; headings: SearchItem[]; content: SearchItem[] }> = [];
+    const pagesWithoutContent: SearchItem[] = [];
     
-    for (const [pageId, group] of pageMap) {
-      const pageNodeId = `page-${pageId}`;
-      const childIds: string[] = [];
-      
-      for (let i = 0; i < group.headings.length; i++) {
-        const heading = group.headings[i];
-        const headingId = `heading-${pageId}-${i}`;
-        childIds.push(headingId);
-        
-        items[headingId] = {
-          id: headingId,
-          name: heading.title || 'Untitled',
-          type: 'heading',
-          href: heading.href,
-          children: [],
-        };
+    for (const page of pages) {
+      const pageHref = page.href?.split('#')[0];
+      if (!pageHref) continue;
+
+      const group = contentByPage.get(pageHref);
+      if (group && (group.headings.length > 0 || group.content.length > 0)) {
+        grouped.push({ page, headings: group.headings, content: group.content });
+      } else {
+        pagesWithoutContent.push(page);
       }
-      
-      for (let i = 0; i < group.content.length; i++) {
-        const content = group.content[i];
-        const contentId = `content-${pageId}-${i}`;
-        childIds.push(contentId);
-        
-        items[contentId] = {
-          id: contentId,
-          name: content.title || content.summary || '',
-          type: 'content',
-          href: content.href,
-          content: content.title || content.summary || '',
-          children: undefined,
-        };
-      }
-      
-      items[pageNodeId] = {
-        id: pageNodeId,
-        name: group.page.title || 'Untitled',
-        type: 'page',
-        href: group.page.href,
-        children: childIds.length > 0 ? childIds : undefined,
-      };
-      
-      roots.push(pageNodeId);
     }
-    
-    return { treeData: items, rootIds: roots };
+
+    return { 
+      pagesOnly: pagesWithoutContent, 
+      groupedResults: grouped
+    };
   }, [results]);
-  
-  const tree = useTree<TreeNode>({
-    initialState: {
-      expandedItems: rootIds,
-    },
-    indent: 20,
-    rootItemId: 'root',
-    getItemName: (item) => item.getItemData().name,
-    isItemFolder: (item) => {
-      const children = item.getItemData()?.children;
-      return Array.isArray(children) && children.length > 0;
-    },
-    dataLoader: {
-      getItem: (itemId) => {
-        if (itemId === 'root') {
-          return { id: 'root', name: 'Root', type: 'page', children: rootIds } as TreeNode;
+
+  // Simple keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      
+      // Find all focusable items
+      const items = containerRef.current?.querySelectorAll<HTMLElement>(
+        '[role="menuitem"], [data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
+      );
+      
+      if (!items || items.length === 0) return;
+      
+      const itemsArray = Array.from(items);
+      const currentIndex = itemsArray.indexOf(target);
+      
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const nextItem = currentIndex < itemsArray.length - 1 
+          ? itemsArray[currentIndex + 1] 
+          : itemsArray[0];
+        
+        // Remove focus from current item
+        (target as HTMLElement).blur();
+        
+        // Focus next item
+        nextItem?.focus();
+        
+        // Auto-expand if it's a closed parent trigger
+        const trigger = nextItem.closest('[data-slot="accordion-menu-sub-trigger"]');
+        if (trigger) {
+          const item = trigger.closest('[data-state]');
+          if (item?.getAttribute('data-state') === 'closed') {
+            // Close all others first
+            containerRef.current?.querySelectorAll('[data-slot="accordion-menu-sub-trigger"]').forEach((t) => {
+              if (t !== trigger && t.closest('[data-state]')?.getAttribute('data-state') === 'open') {
+                (t as HTMLElement).click();
+              }
+            });
+            // Then open this one
+            setTimeout(() => (trigger as HTMLElement).click(), 10);
+          } else {
+            // Still close others if this one is already open
+            containerRef.current?.querySelectorAll('[data-slot="accordion-menu-sub-trigger"]').forEach((t) => {
+              if (t !== trigger && t.closest('[data-state]')?.getAttribute('data-state') === 'open') {
+                (t as HTMLElement).click();
+              }
+            });
+          }
         }
-        return treeData[itemId];
-      },
-      getChildren: (itemId) => {
-        if (itemId === 'root') return rootIds;
-        return treeData[itemId]?.children ?? [];
-      },
-    },
-    features: [syncDataLoaderFeature, hotkeysCoreFeature],
-  });
-  
-  const renderIcon = (type: string) => {
-    switch (type) {
-      case 'page':
-        return <File className="h-4 w-4" />;
-      case 'heading':
-        return <Hash className="h-4 w-4" />;
-      default:
-        return null;
-    }
-  };
-  
-  const handleItemInteraction = (itemId: string) => {
-    // Expand parent if this is a child item
-    const item = tree.getItemById(itemId);
-    if (item) {
-      const parent = item.getParent();
-      if (parent && parent.getId() !== 'root') {
-        tree.expandItem(parent.getId());
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prevItem = currentIndex > 0 
+          ? itemsArray[currentIndex - 1] 
+          : itemsArray[itemsArray.length - 1];
+        
+        // Check if leaving a parent's children
+        const currentItem = target.closest('[data-slot="accordion-menu-item"]');
+        const currentParent = currentItem?.closest('[data-slot="accordion-menu-sub-content"]');
+        const prevParent = prevItem.closest('[data-slot="accordion-menu-sub-content"]');
+        
+        if (currentParent && currentParent !== prevParent) {
+          const parentTrigger = currentParent.previousElementSibling?.querySelector('[data-slot="accordion-menu-sub-trigger"]') as HTMLElement;
+          if (parentTrigger?.closest('[data-state]')?.getAttribute('data-state') === 'open') {
+            parentTrigger.click();
+          }
+        }
+        
+        // Remove focus from current item
+        (target as HTMLElement).blur();
+        
+        // Focus prev item
+        prevItem?.focus();
+        
+        // Auto-expand if it's a closed parent trigger
+        const trigger = prevItem.closest('[data-slot="accordion-menu-sub-trigger"]');
+        if (trigger) {
+          const item = trigger.closest('[data-state]');
+          if (item?.getAttribute('data-state') === 'closed') {
+            // Close all others first
+            containerRef.current?.querySelectorAll('[data-slot="accordion-menu-sub-trigger"]').forEach((t) => {
+              if (t !== trigger && t.closest('[data-state]')?.getAttribute('data-state') === 'open') {
+                (t as HTMLElement).click();
+              }
+            });
+            // Then open this one
+            setTimeout(() => (trigger as HTMLElement).click(), 10);
+          } else {
+            // Still close others if this one is already open
+            containerRef.current?.querySelectorAll('[data-slot="accordion-menu-sub-trigger"]').forEach((t) => {
+              if (t !== trigger && t.closest('[data-state]')?.getAttribute('data-state') === 'open') {
+                (t as HTMLElement).click();
+              }
+            });
+          }
+        }
+      } else if (e.key === 'Enter') {
+        const trigger = target.closest('[data-slot="accordion-menu-sub-trigger"]');
+        if (!trigger) {
+          e.preventDefault();
+          (target as HTMLElement).click();
+        }
       }
+    };
+
+    const handleMouseEnter = (e: MouseEvent) => {
+      // Focus the hovered element so keyboard nav continues from there
+      const target = e.target as HTMLElement;
+      const focusable = target.closest('[role="menuitem"], [data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]');
+      if (focusable) {
+        (focusable as HTMLElement).focus();
+      }
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('keydown', handleKeyDown);
+      container.addEventListener('mouseenter', handleMouseEnter, true); // Use capture phase
+      return () => {
+        container.removeEventListener('keydown', handleKeyDown);
+        container.removeEventListener('mouseenter', handleMouseEnter, true);
+      };
     }
-  };
-  
+  }, []);
+
   return (
-    <CommandGroup heading="Content">
-      <div className="px-2 py-1">
-        <Tree indent={20} tree={tree} toggleIconType="chevron">
-          {tree.getItems().map((item) => {
-            const data = item.getItemData();
-            
-            if (data.id === 'root') return null;
-            
-            return (
-              <TreeItem
-                key={item.getId()}
-                item={item}
-                onClick={() => {
-                  if (data.href) {
-                    onSelect(data.href);
-                  }
-                }}
-                onMouseEnter={() => handleItemInteraction(item.getId())}
-                onFocus={() => handleItemInteraction(item.getId())}
-              >
-                <TreeItemLabel>
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    {renderIcon(data.type)}
+    <div 
+      ref={containerRef}
+      className="focus-within:[&_*:hover]:!bg-transparent [&_*:focus]:bg-accent [&_*:focus]:text-accent-foreground"
+    >
+      {pagesOnly.length > 0 && (
+        <>
+          <div className="px-3 py-2 text-xs font-medium text-muted-foreground">Pages</div>
+          <div className="px-2 pb-2">
+            <AccordionMenu type="multiple">
+              <AccordionMenuGroup>
+                {pagesOnly.map((page) => (
+                  <AccordionMenuItem
+                    key={`page-${page.id}`}
+                    value={page.href || page.id}
+                    onClick={() => page.href && onSelect(page.href)}
+                  >
+                    <File className="h-4 w-4" />
                     <div className="flex-1 min-w-0">
-                      {data.type === 'content' ? (
-                        <div className="text-xs text-muted-foreground line-clamp-2">
-                          {highlightText(data.content || '', searchTerm)}
+                      <div className="font-medium text-sm">{page.title || 'Untitled'}</div>
+                      {page.breadcrumbs && page.breadcrumbs.length > 0 && (
+                        <div className="mt-0.5 text-muted-foreground text-xs">
+                          {page.breadcrumbs.join(' › ')}
                         </div>
-                      ) : (
-                        <span className="font-medium text-sm">{data.name}</span>
                       )}
                     </div>
-                  </div>
-                </TreeItemLabel>
-              </TreeItem>
-            );
-          })}
-        </Tree>
-      </div>
-    </CommandGroup>
+                  </AccordionMenuItem>
+                ))}
+              </AccordionMenuGroup>
+            </AccordionMenu>
+          </div>
+        </>
+      )}
+
+      {groupedResults.length > 0 && (
+        <>
+          <div className="px-3 py-2 text-xs font-medium text-muted-foreground">Content</div>
+          <div className="px-2">
+            <AccordionMenu type="multiple">
+              <AccordionMenuGroup>
+                {groupedResults.map(({ page, headings, content }) => {
+                  const pageHref = page.href?.split('#')[0] || '';
+
+                  return (
+                    <AccordionMenuSub key={`page-${pageHref}`} value={pageHref}>
+                      <AccordionMenuSubTrigger
+                        onKeyDown={(e) => {
+                          if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                            const trigger = e.currentTarget;
+                            const item = trigger.closest('[data-state]');
+                            const isOpen = item?.getAttribute('data-state') === 'open';
+                            
+                            if (e.key === 'ArrowRight' && !isOpen) {
+                              e.preventDefault();
+                              trigger.click();
+                            } else if (e.key === 'ArrowLeft' && isOpen) {
+                              e.preventDefault();
+                              trigger.click();
+                            }
+                          }
+                        }}
+                      >
+                        <File className="h-4 w-4" />
+                        <span className="font-medium text-sm">{page.title || 'Untitled'}</span>
+                        <AccordionMenuIndicator />
+                      </AccordionMenuSubTrigger>
+                      <AccordionMenuSubContent parentValue={pageHref}>
+                        <AccordionMenuGroup>
+                          {headings.map((heading, idx) => (
+                            <AccordionMenuItem
+                              key={`heading-${pageHref}-${idx}`}
+                              value={`${pageHref}-heading-${idx}`}
+                              onClick={() => heading.href && onSelect(heading.href)}
+                            >
+                              <Hash className="h-4 w-4" />
+                              <span className="text-sm">{heading.title}</span>
+                            </AccordionMenuItem>
+                          ))}
+                          {content.map((item, idx) => (
+                            <AccordionMenuItem
+                              key={`content-${pageHref}-${idx}`}
+                              value={`${pageHref}-content-${idx}`}
+                              onClick={() => item.href && onSelect(item.href)}
+                            >
+                              <FileText className="h-4 w-4" />
+                              <div className="text-xs text-muted-foreground line-clamp-2 flex-1">
+                                {highlightText(item.title || item.summary || '', searchTerm)}
+                              </div>
+                            </AccordionMenuItem>
+                          ))}
+                        </AccordionMenuGroup>
+                      </AccordionMenuSubContent>
+                    </AccordionMenuSub>
+                  );
+                })}
+              </AccordionMenuGroup>
+            </AccordionMenu>
+          </div>
+        </>
+      )}
+    </div>
   );
 }
-

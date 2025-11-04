@@ -52,7 +52,8 @@ export const documentationProvider: SearchProvider = {
           : Array.isArray(it.content)
             ? it.content.join(" ").slice(0, 200)
             : ""),
-      type: it.tag || it.section || it.type || (it.hash ? "heading" : "page"),
+      // Map fumadocs 'text' type to 'content' for our tree view
+      type: it.type === 'text' ? 'content' : (it.type || (it.hash ? "heading" : "page")),
       metadata: [
         Array.isArray(it.breadcrumbs)
           ? it.breadcrumbs.join(" › ")

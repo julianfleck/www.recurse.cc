@@ -7,7 +7,7 @@ import {
   CommandList,
 } from '@recurse/ui/components/command';
 import { Spinner } from '@recurse/ui/components/spinner';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { DocumentationResults } from './results/documentation';
 import { WebsiteSuggestions } from './suggestions';
 import type { SearchProvider } from './types';
@@ -34,6 +34,7 @@ export function SearchCommandDialog({
   const [results, setResults] = useState<
     Awaited<ReturnType<SearchProvider['search']>>
   >([]);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) {
@@ -82,6 +83,19 @@ export function SearchCommandDialog({
     return null;
   }, [error, searchTerm, isLoading, hasSearched, results.length]);
 
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown' && results.length > 0) {
+      e.preventDefault();
+      // Focus the first focusable item in the results
+      const firstItem = resultsRef.current?.querySelector<HTMLElement>(
+        '[role="menuitem"], [data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
+      );
+      if (firstItem) {
+        firstItem.focus();
+      }
+    }
+  };
+
   return (
     <CommandDialog
       onOpenChange={onOpenChange}
@@ -92,8 +106,9 @@ export function SearchCommandDialog({
         onValueChange={setSearchTerm}
         placeholder={placeholder}
         value={searchTerm}
+        onKeyDown={handleInputKeyDown}
       />
-      <CommandList>
+      <CommandList ref={resultsRef}>
         {!searchTerm && (
           <WebsiteSuggestions onSelect={() => onOpenChange(false)} />
         )}
