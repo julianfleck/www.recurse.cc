@@ -28,6 +28,7 @@ type ContentTreeProps = {
   searchTerm: string;
   onSelect: (href: string) => void;
   onSelectAll?: () => void; // Callback to focus input
+  containerRef?: React.RefObject<HTMLDivElement>; // Optional ref from parent
 };
 
 function highlightText(text: string, searchTerm: string) {
@@ -64,8 +65,10 @@ export function ContentTree({
   searchTerm,
   onSelect,
   onSelectAll,
+  containerRef: externalRef,
 }: ContentTreeProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const internalRef = useRef<HTMLDivElement>(null);
+  const containerRef = externalRef || internalRef;
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { pagesOnly, groupedResults } = useMemo(() => {
@@ -137,84 +140,33 @@ export function ContentTree({
     };
   }, [results]);
 
-  // Auto-focus container when results change
+  // Auto-focus container when results change and set initial selection
   useEffect(() => {
     if (results.length > 0 && containerRef.current) {
-      containerRef.current.focus();
+      // Set initial selection to first item
+      const firstItem = containerRef.current.querySelector<HTMLElement>(
+        '[data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
+      );
+      const firstId = firstItem?.getAttribute('data-item-id');
+      if (firstId) {
+        setSelectedId(firstId);
+      }
+    } else {
+      setSelectedId(null);
     }
   }, [results]);
 
-  // CSS-based keyboard navigation (much faster than focus manipulation)
+  // Mouse hover updates selection
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Cmd+A (Mac) or Ctrl+A (Windows/Linux) to focus input
-      if ((e.metaKey || e.ctrlKey) && e.key === 'a') {
-        e.preventDefault();
-        e.stopPropagation();
-        onSelectAll?.();
-        return;
-      }
-
-      // Find all selectable items (only visible ones)
-      const items = containerRef.current?.querySelectorAll<HTMLElement>(
-        '[role="menuitem"], [data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
-      );
-
-      if (!items || items.length === 0) {
-        return;
-      }
-
-      const itemsArray = Array.from(items);
-      
-      // Find current index by matching selectedId with data-item-id
-      let currentIndex = -1;
-      if (selectedId) {
-        currentIndex = itemsArray.findIndex(item => item.getAttribute('data-item-id') === selectedId);
-      }
-
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        e.stopPropagation();
-        const nextIndex = currentIndex < itemsArray.length - 1 ? currentIndex + 1 : 0;
-        const nextItem = itemsArray[nextIndex];
-        if (nextItem) {
-          const nextId = nextItem.getAttribute('data-item-id');
-          if (nextId) {
-            setSelectedId(nextId);
-            nextItem.scrollIntoView({ block: 'nearest' });
-          }
-        }
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        e.stopPropagation();
-        const prevIndex = currentIndex > 0 ? currentIndex - 1 : itemsArray.length - 1;
-        const prevItem = itemsArray[prevIndex];
-        if (prevItem) {
-          const prevId = prevItem.getAttribute('data-item-id');
-          if (prevId) {
-            setSelectedId(prevId);
-            prevItem.scrollIntoView({ block: 'nearest' });
-          }
-        }
-      } else if (e.key === 'Enter') {
-        e.preventDefault();
-        const selectedItem = currentIndex >= 0 ? itemsArray[currentIndex] : null;
-        if (selectedItem) {
-          selectedItem.click();
-        }
-      }
-    };
-
-    const handleMouseEnter = (e: MouseEvent) => {
-      // Update selected ID on hover
+    const handleMouseMove = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const item = target.closest(
-        '[role="menuitem"], [data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
+      const item = target.closest<HTMLElement>(
+        '[data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
       );
       
       if (item) {
         const itemId = item.getAttribute('data-item-id');
-        if (itemId) {
+        if (itemId && itemId !== selectedId) {
           setSelectedId(itemId);
         }
       }
@@ -222,20 +174,105 @@ export function ContentTree({
 
     const container = containerRef.current;
     if (container) {
-      container.addEventListener('keydown', handleKeyDown);
-      container.addEventListener('mouseenter', handleMouseEnter, true); // Use capture phase
+      container.addEventListener('mousemove', handleMouseMove);
       return () => {
-        container.removeEventListener('keydown', handleKeyDown);
-        container.removeEventListener('mouseenter', handleMouseEnter, true);
+        container.removeEventListener('mousemove', handleMouseMove);
       };
     }
-  }, [onSelectAll, selectedId]);
+  }, [selectedId]);
+
+  // Keyboard navigation: map arrow keys to focus navigation (like tab)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle if event is from within our container
+      const target = e.target as HTMLElement;
+      if (!containerRef.current?.contains(target)) {
+        return;
+      }
+
+      // Check if target is one of our accordion items
+      const isAccordionItem = target.getAttribute('data-slot') === 'accordion-menu-item' ||
+                              target.getAttribute('data-slot') === 'accordion-menu-sub-trigger';
+      
+      if (!isAccordionItem && target !== containerRef.current) {
+        return;
+      }
+
+      const isTrigger = target.getAttribute('data-slot') === 'accordion-menu-sub-trigger';
+
+      // Map arrow keys to focus navigation (like tab)
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        e.stopPropagation();
+        const focusableItems = containerRef.current?.querySelectorAll<HTMLElement>(
+          '[data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
+        );
+        if (focusableItems && focusableItems.length > 0) {
+          const itemsArray = Array.from(focusableItems);
+          const currentIndex = itemsArray.indexOf(target);
+          const nextIndex = currentIndex < itemsArray.length - 1 ? currentIndex + 1 : 0;
+          itemsArray[nextIndex]?.focus();
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        e.stopPropagation();
+        const focusableItems = containerRef.current?.querySelectorAll<HTMLElement>(
+          '[data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
+        );
+        if (focusableItems && focusableItems.length > 0) {
+          const itemsArray = Array.from(focusableItems);
+          const currentIndex = itemsArray.indexOf(target);
+          const prevIndex = currentIndex > 0 ? currentIndex - 1 : itemsArray.length - 1;
+          itemsArray[prevIndex]?.focus();
+        }
+      } else if (e.key === 'ArrowRight' && isTrigger) {
+        // Expand accordion if it's closed
+        e.preventDefault();
+        e.stopPropagation();
+        const accordionItem = target.closest('[data-state]');
+        const isOpen = accordionItem?.getAttribute('data-state') === 'open';
+        if (!isOpen) {
+          target.click();
+        }
+      } else if (e.key === 'ArrowLeft' && isTrigger) {
+        // Collapse accordion if it's open
+        e.preventDefault();
+        e.stopPropagation();
+        const accordionItem = target.closest('[data-state]');
+        const isOpen = accordionItem?.getAttribute('data-state') === 'open';
+        if (isOpen) {
+          target.click();
+        }
+      } else if (e.key === ' ' && isTrigger) {
+        // Toggle accordion
+        e.preventDefault();
+        e.stopPropagation();
+        target.click();
+      }
+    };
+
+    // Use capture phase to intercept before Radix handles it
+    document.addEventListener('keydown', handleKeyDown, { capture: true });
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown, { capture: true });
+    };
+  }, []);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    // Cmd+A (Mac) or Ctrl+A (Windows/Linux) to focus input
+    if ((e.metaKey || e.ctrlKey) && e.key === 'a') {
+      e.preventDefault();
+      e.stopPropagation();
+      onSelectAll?.();
+    }
+  };
 
   return (
     <div
       className='[&_*[data-selected=true]]:bg-accent [&_*[data-selected=true]]:text-accent-foreground outline-none'
       ref={containerRef}
-      tabIndex={-1}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
     >
       {pagesOnly.length > 0 && (
         <>
@@ -292,53 +329,6 @@ export function ContentTree({
                       <AccordionMenuSubTrigger
                         data-item-id={triggerId}
                         data-selected={selectedId === triggerId}
-                        onKeyDown={(e) => {
-                          const trigger = e.currentTarget;
-                          const item = trigger.closest('[data-state]');
-                          const isOpen =
-                            item?.getAttribute('data-state') === 'open';
-
-                          // Handle ArrowRight to expand
-                          if (e.key === 'ArrowRight') {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if (!isOpen) {
-                              trigger.click();
-                            }
-                            return;
-                          }
-
-                          // Handle ArrowLeft to collapse
-                          if (e.key === 'ArrowLeft') {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if (isOpen) {
-                              trigger.click();
-                            }
-                            return;
-                          }
-
-                          // Allow Space to toggle (Radix default behavior)
-                          if (e.key === ' ') {
-                            e.stopPropagation(); // Prevent parent handler from interfering
-                            // Let Radix handle toggle
-                            return;
-                          }
-
-                          // Prevent Enter from doing anything on triggers
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            return;
-                          }
-
-                          // For ArrowDown/ArrowUp, prevent default but DON'T stop propagation
-                          // This allows the parent handler to manage navigation
-                          if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-                            e.preventDefault();
-                            // Don't stop propagation - let parent handle navigation
-                          }
-                        }}
                       >
                         <File className="h-4 w-4" />
                         <span className="font-medium text-sm">

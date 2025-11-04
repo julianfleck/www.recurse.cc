@@ -9,6 +9,7 @@ type DocumentationResultsProps = {
   onSelect?: () => void;
   onSelectAll?: () => void;
   isLoading?: boolean;
+  containerRef?: React.RefObject<HTMLDivElement>;
 };
 
 export function DocumentationResults({
@@ -17,6 +18,7 @@ export function DocumentationResults({
   onSelect,
   onSelectAll,
   isLoading = false,
+  containerRef,
 }: DocumentationResultsProps) {
   const handleSelect = (href: string) => {
     if (href) {
@@ -31,6 +33,7 @@ export function DocumentationResults({
       searchTerm={searchTerm}
       onSelect={handleSelect}
       onSelectAll={onSelectAll}
+      containerRef={containerRef}
     />
   );
 }
