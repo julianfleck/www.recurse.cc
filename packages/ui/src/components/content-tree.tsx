@@ -66,7 +66,7 @@ export function ContentTree({
   onSelectAll,
 }: ContentTreeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { pagesOnly, groupedResults } = useMemo(() => {
     const pages = results.filter(
@@ -155,7 +155,7 @@ export function ContentTree({
         return;
       }
 
-      // Find all selectable items
+      // Find all selectable items (only visible ones)
       const items = containerRef.current?.querySelectorAll<HTMLElement>(
         '[role="menuitem"], [data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
       );
@@ -165,28 +165,40 @@ export function ContentTree({
       }
 
       const itemsArray = Array.from(items);
+      
+      // Find current index by matching selectedId with data-item-id
+      let currentIndex = -1;
+      if (selectedId) {
+        currentIndex = itemsArray.findIndex(item => item.getAttribute('data-item-id') === selectedId);
+      }
 
       if (e.key === 'ArrowDown') {
         e.preventDefault();
         e.stopPropagation();
-        setSelectedIndex((prev) => {
-          const nextIndex = prev < itemsArray.length - 1 ? prev + 1 : 0;
-          // Scroll into view
-          itemsArray[nextIndex]?.scrollIntoView({ block: 'nearest' });
-          return nextIndex;
-        });
+        const nextIndex = currentIndex < itemsArray.length - 1 ? currentIndex + 1 : 0;
+        const nextItem = itemsArray[nextIndex];
+        if (nextItem) {
+          const nextId = nextItem.getAttribute('data-item-id');
+          if (nextId) {
+            setSelectedId(nextId);
+            nextItem.scrollIntoView({ block: 'nearest' });
+          }
+        }
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
         e.stopPropagation();
-        setSelectedIndex((prev) => {
-          const nextIndex = prev > 0 ? prev - 1 : itemsArray.length - 1;
-          // Scroll into view
-          itemsArray[nextIndex]?.scrollIntoView({ block: 'nearest' });
-          return nextIndex;
-        });
+        const prevIndex = currentIndex > 0 ? currentIndex - 1 : itemsArray.length - 1;
+        const prevItem = itemsArray[prevIndex];
+        if (prevItem) {
+          const prevId = prevItem.getAttribute('data-item-id');
+          if (prevId) {
+            setSelectedId(prevId);
+            prevItem.scrollIntoView({ block: 'nearest' });
+          }
+        }
       } else if (e.key === 'Enter') {
         e.preventDefault();
-        const selectedItem = selectedIndex >= 0 ? itemsArray[selectedIndex] : null;
+        const selectedItem = currentIndex >= 0 ? itemsArray[currentIndex] : null;
         if (selectedItem) {
           selectedItem.click();
         }
@@ -194,22 +206,16 @@ export function ContentTree({
     };
 
     const handleMouseEnter = (e: MouseEvent) => {
-      // Update selected index on hover
+      // Update selected ID on hover
       const target = e.target as HTMLElement;
       const item = target.closest(
         '[role="menuitem"], [data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
       );
       
       if (item) {
-        const items = containerRef.current?.querySelectorAll<HTMLElement>(
-          '[role="menuitem"], [data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
-        );
-        if (items) {
-          const itemsArray = Array.from(items);
-          const index = itemsArray.indexOf(item as HTMLElement);
-          if (index >= 0) {
-            setSelectedIndex(index);
-          }
+        const itemId = item.getAttribute('data-item-id');
+        if (itemId) {
+          setSelectedId(itemId);
         }
       }
     };
@@ -223,7 +229,7 @@ export function ContentTree({
         container.removeEventListener('mouseenter', handleMouseEnter, true);
       };
     }
-  }, [onSelectAll, selectedIndex]);
+  }, [onSelectAll, selectedId]);
 
   return (
     <div
@@ -239,14 +245,15 @@ export function ContentTree({
           <div className="px-2 pb-2">
             <AccordionMenu type="multiple">
               <AccordionMenuGroup>
-                {pagesOnly.map((page, idx) => {
-                  const itemIndex = idx;
+                {pagesOnly.map((page) => {
+                  const itemId = `page-${page.id}`;
                   return (
                     <AccordionMenuItem
-                      key={`page-${page.id}`}
+                      key={itemId}
                       onClick={() => page.href && onSelect(page.href)}
                       value={page.href || page.id}
-                      data-selected={selectedIndex === itemIndex}
+                      data-item-id={itemId}
+                      data-selected={selectedId === itemId}
                     >
                     <File className="h-4 w-4" />
                     <div className='min-w-0 flex-1'>
@@ -276,21 +283,15 @@ export function ContentTree({
           <div className="px-2">
             <AccordionMenu type="multiple">
               <AccordionMenuGroup>
-                {groupedResults.map(({ page, headings, content }, groupIdx) => {
+                {groupedResults.map(({ page, headings, content }) => {
                   const pageHref = page.href?.split('#')[0] || '';
-                  // Calculate base index for this group (pages + all previous groups)
-                  let baseIndex = pagesOnly.length;
-                  for (let i = 0; i < groupIdx; i++) {
-                    baseIndex += 1; // trigger
-                    baseIndex += groupedResults[i].headings.length;
-                    baseIndex += groupedResults[i].content.length;
-                  }
-                  const triggerIndex = baseIndex;
+                  const triggerId = `trigger-${pageHref}`;
                   
                   return (
                     <AccordionMenuSub key={`page-${pageHref}`} value={pageHref}>
                       <AccordionMenuSubTrigger
-                        data-selected={selectedIndex === triggerIndex}
+                        data-item-id={triggerId}
+                        data-selected={selectedId === triggerId}
                         onKeyDown={(e) => {
                           const trigger = e.currentTarget;
                           const item = trigger.closest('[data-state]');
@@ -350,30 +351,32 @@ export function ContentTree({
                         type="multiple"
                       >
                         <AccordionMenuGroup>
-                          {headings.map((heading, idx) => {
-                            const itemIndex = triggerIndex + 1 + idx;
+                          {headings.map((heading) => {
+                            const itemId = `heading-${pageHref}-${heading.id}`;
                             return (
                               <AccordionMenuItem
-                                key={`heading-${pageHref}-${heading.id}`}
+                                key={itemId}
                                 onClick={() =>
                                   heading.href && onSelect(heading.href)
                                 }
                                 value={`${pageHref}-heading-${heading.id}`}
-                                data-selected={selectedIndex === itemIndex}
+                                data-item-id={itemId}
+                                data-selected={selectedId === itemId}
                               >
                                 <Hash className="h-4 w-4" />
                                 <span className="text-sm">{heading.title}</span>
                               </AccordionMenuItem>
                             );
                           })}
-                          {content.map((item, idx) => {
-                            const itemIndex = triggerIndex + 1 + headings.length + idx;
+                          {content.map((item) => {
+                            const itemId = `content-${pageHref}-${item.id}`;
                             return (
                               <AccordionMenuItem
-                                key={`content-${pageHref}-${item.id}`}
+                                key={itemId}
                                 onClick={() => item.href && onSelect(item.href)}
                                 value={`${pageHref}-content-${item.id}`}
-                                data-selected={selectedIndex === itemIndex}
+                                data-item-id={itemId}
+                                data-selected={selectedId === itemId}
                               >
                                 <FileText className="h-4 w-4" />
                                 <div className='line-clamp-2 flex-1 text-muted-foreground text-xs'>
