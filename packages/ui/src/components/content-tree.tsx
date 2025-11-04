@@ -137,6 +137,13 @@ export function ContentTree({
     };
   }, [results]);
 
+  // Auto-focus container when results change
+  useEffect(() => {
+    if (results.length > 0 && containerRef.current) {
+      containerRef.current.focus();
+    }
+  }, [results]);
+
   // CSS-based keyboard navigation (much faster than focus manipulation)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -220,8 +227,9 @@ export function ContentTree({
 
   return (
     <div
-      className='[&_*[data-selected=true]]:bg-accent [&_*[data-selected=true]]:text-accent-foreground'
+      className='[&_*[data-selected=true]]:bg-accent [&_*[data-selected=true]]:text-accent-foreground outline-none'
       ref={containerRef}
+      tabIndex={-1}
     >
       {pagesOnly.length > 0 && (
         <>
