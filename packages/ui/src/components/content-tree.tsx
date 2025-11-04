@@ -1,7 +1,7 @@
 'use client';
 
 import { File, FileText, Hash } from 'lucide-react';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AccordionMenu,
   AccordionMenuGroup,
