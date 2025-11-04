@@ -1,10 +1,10 @@
 "use client";
 
 import { ContentTree } from "@recurse/ui/components";
-import type { SearchItem } from "../types";
+import type { HierarchicalSearchResult } from "../types";
 
 type DocumentationResultsProps = {
-  results: SearchItem[];
+  results: HierarchicalSearchResult[]; // Always hierarchical format
   searchTerm: string;
   onSelect?: () => void;
   onSelectAll?: () => void;

@@ -12,7 +12,7 @@ import { Spinner } from "@recurse/ui/components/spinner";
 import { isOnAuthPage } from "@/lib/auth-utils";
 import { DocumentationResults } from "./results/documentation";
 import { DocumentationSuggestions } from "./suggestions";
-import type { SearchProvider } from "./types";
+import type { HierarchicalSearchResult, SearchItem, SearchProvider } from "./types";
 
 // Lazy import KnowledgeBaseResults to avoid importing graph-view dependencies when not needed
 // This allows www app to use search without graph-view dependencies
@@ -42,15 +42,16 @@ export function SearchCommandDialog({
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [results, setResults] = useState<
-    ReturnType<SearchProvider["search"]> extends Promise<infer R> ? R : never
-  >([] as never);
+    HierarchicalSearchResult[] | SearchItem[]
+  >([]);
   const resultsRef = useRef<HTMLDivElement>(null);
+  const contentTreeRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!open) {
+      if (!open) {
       setSearchTerm("");
-      setResults([] as never);
+      setResults([]);
       setError(null);
       setHasSearched(false);
     }
@@ -59,7 +60,7 @@ export function SearchCommandDialog({
   useEffect(() => {
     const timeoutId = setTimeout(async () => {
       if (!searchTerm.trim()) {
-        setResults([] as never);
+        setResults([]);
         setError(null);
         setHasSearched(false);
         return;
@@ -67,10 +68,10 @@ export function SearchCommandDialog({
 
       setIsLoading(true);
       setError(null);
-      setResults([] as never); // Clear previous results immediately when starting new search
+      setResults([]); // Clear previous results immediately when starting new search
       try {
         const data = await provider.search(searchTerm);
-        setResults(data as never);
+        setResults(data);
         setHasSearched(true);
       } catch (err) {
         if (err instanceof Error && err.name === "AuthenticationError") {
@@ -80,7 +81,7 @@ export function SearchCommandDialog({
           return;
         }
         setError(err instanceof Error ? err.message : "Search failed");
-        setResults([] as never);
+        setResults([]);
         setHasSearched(true);
       } finally {
         setIsLoading(false);
@@ -103,13 +104,8 @@ export function SearchCommandDialog({
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'ArrowDown' && results.length > 0) {
       e.preventDefault();
-      // Focus the first focusable item in the results
-      const firstItem = resultsRef.current?.querySelector<HTMLElement>(
-        '[role="menuitem"], [data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
-      );
-      if (firstItem) {
-        firstItem.focus();
-      }
+      // Focus the ContentTree container so it can receive keyboard events
+      contentTreeRef.current?.focus();
     }
   };
 
@@ -142,14 +138,15 @@ export function SearchCommandDialog({
         {searchTerm && !isLoading && results.length > 0 && (
           searchType === "documentation" ? (
             <DocumentationResults
+              containerRef={contentTreeRef}
               onSelect={() => onOpenChange(false)}
               onSelectAll={handleSelectAll}
-              results={results as never}
+              results={results as HierarchicalSearchResult[]}
               searchTerm={searchTerm}
             />
           ) : (
             <Suspense fallback={<div>Loading...</div>}>
-              <KnowledgeBaseResults results={results as never} />
+              <KnowledgeBaseResults results={results as SearchItem[]} />
             </Suspense>
           )
         )}

@@ -11,20 +11,10 @@ import {
   AccordionMenuSubContent,
   AccordionMenuSubTrigger,
 } from './accordion-menu';
-
-export type SearchItem = {
-  id: string;
-  type?: 'page' | 'heading' | 'text' | 'content' | 'doc';
-  title?: string;
-  summary?: string;
-  href?: string;
-  breadcrumbs?: string[];
-  metadata?: string[];
-  pageTitle?: string;
-};
+import type { HierarchicalSearchResult } from '../../../../components/search/types';
 
 type ContentTreeProps = {
-  results: SearchItem[];
+  results: HierarchicalSearchResult[]; // Always hierarchical format
   searchTerm: string;
   onSelect: (href: string) => void;
   onSelectAll?: () => void; // Callback to focus input
@@ -60,101 +50,34 @@ function highlightText(text: string, searchTerm: string) {
   });
 }
 
-export function ContentTree({
+// Hierarchical rendering component (new format)
+function HierarchicalContentTree({
   results,
   searchTerm,
   onSelect,
   onSelectAll,
-  containerRef: externalRef,
-}: ContentTreeProps) {
-  const internalRef = useRef<HTMLDivElement>(null);
-  const containerRef = externalRef || internalRef;
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  containerRef,
+  selectedId,
+  setSelectedId,
+}: {
+  results: HierarchicalSearchResult[];
+  searchTerm: string;
+  onSelect: (href: string) => void;
+  onSelectAll?: () => void;
+  containerRef: React.RefObject<HTMLDivElement>;
+  selectedId: string | null;
+  setSelectedId: (id: string | null) => void;
+}) {
+  // Ensure all pages have headings array (data structure contract)
+  const normalizedResults = results.map((page) => ({
+    ...page,
+    headings: page.headings ?? [],
+  }));
 
-  const { pagesOnly, groupedResults } = useMemo(() => {
-    const pages = results.filter(
-      (r) => r.type === 'page' || !r.type || r.type === 'doc'
-    );
-    const headings = results.filter((r) => r.type === 'heading');
-    const content = results.filter(
-      (r) => r.type === 'text' || r.type === 'content'
-    );
-
-    const contentByPage = new Map<
-      string,
-      { headings: SearchItem[]; content: SearchItem[] }
-    >();
-
-    for (const result of [...headings, ...content]) {
-      const pageHref = result.href?.split('#')[0];
-      if (!pageHref) {
-        continue;
-      }
-
-      if (!contentByPage.has(pageHref)) {
-        contentByPage.set(pageHref, { headings: [], content: [] });
-      }
-
-      const group = contentByPage.get(pageHref);
-      if (!group) {
-        continue;
-      }
-      
-      if (result.type === 'heading') {
-        group.headings.push(result);
-      } else {
-        group.content.push(result);
-      }
-    }
-
-    const grouped: Array<{
-      page: SearchItem;
-      headings: SearchItem[];
-      content: SearchItem[];
-    }> = [];
-    const pagesWithoutContent: SearchItem[] = [];
-
-    for (const page of pages) {
-      const pageHref = page.href?.split('#')[0];
-      if (!pageHref) {
-        continue;
-      }
-
-      const group = contentByPage.get(pageHref);
-      const hasContent = group && (group.headings.length > 0 || group.content.length > 0);
-      
-      if (hasContent) {
-        grouped.push({
-          page,
-          headings: group.headings,
-          content: group.content,
-        });
-      } else {
-        pagesWithoutContent.push(page);
-      }
-    }
-
-    return {
-      pagesOnly: pagesWithoutContent,
-      groupedResults: grouped,
-    };
-  }, [results]);
-
-  // Auto-focus container when results change and set initial selection
-  useEffect(() => {
-    if (results.length > 0 && containerRef.current) {
-      // Set initial selection to first item
-      const firstItem = containerRef.current.querySelector<HTMLElement>(
-        '[data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
-      );
-      const firstId = firstItem?.getAttribute('data-item-id');
-      if (firstId) {
-        setSelectedId(firstId);
-      }
-    } else {
-      setSelectedId(null);
-    }
-  }, [results]);
+  // Separate pages with content vs pages without
+  const pagesWithContent = normalizedResults.filter((page) => page.headings.length > 0);
+  const pagesWithoutContent = normalizedResults.filter((page) => page.headings.length === 0);
+  
 
   // Mouse hover updates selection
   useEffect(() => {
@@ -179,18 +102,16 @@ export function ContentTree({
         container.removeEventListener('mousemove', handleMouseMove);
       };
     }
-  }, [selectedId]);
+  }, [selectedId, containerRef]);
 
-  // Keyboard navigation: map arrow keys to focus navigation (like tab)
+  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Only handle if event is from within our container
       const target = e.target as HTMLElement;
       if (!containerRef.current?.contains(target)) {
         return;
       }
 
-      // Check if target is one of our accordion items
       const isAccordionItem = target.getAttribute('data-slot') === 'accordion-menu-item' ||
                               target.getAttribute('data-slot') === 'accordion-menu-sub-trigger';
       
@@ -200,7 +121,6 @@ export function ContentTree({
 
       const isTrigger = target.getAttribute('data-slot') === 'accordion-menu-sub-trigger';
 
-      // Map arrow keys to focus navigation (like tab)
       if (e.key === 'ArrowDown') {
         e.preventDefault();
         e.stopPropagation();
@@ -226,7 +146,6 @@ export function ContentTree({
           itemsArray[prevIndex]?.focus();
         }
       } else if (e.key === 'ArrowRight' && isTrigger) {
-        // Expand accordion if it's closed
         e.preventDefault();
         e.stopPropagation();
         const accordionItem = target.closest('[data-state]');
@@ -235,7 +154,6 @@ export function ContentTree({
           target.click();
         }
       } else if (e.key === 'ArrowLeft' && isTrigger) {
-        // Collapse accordion if it's open
         e.preventDefault();
         e.stopPropagation();
         const accordionItem = target.closest('[data-state]');
@@ -244,22 +162,70 @@ export function ContentTree({
           target.click();
         }
       } else if (e.key === ' ' && isTrigger) {
-        // Toggle accordion
         e.preventDefault();
         e.stopPropagation();
         target.click();
+      } else if (e.key === 'Enter') {
+        if (isTrigger) {
+          e.preventDefault();
+          e.stopPropagation();
+          const triggerId = target.getAttribute('data-item-id');
+          if (triggerId?.startsWith('trigger-')) {
+            const pageUrl = triggerId.replace('trigger-', '');
+            const page = normalizedResults.find(p => p.url === pageUrl);
+            if (page?.url) {
+              onSelect(page.url);
+            }
+          }
+        } else {
+          const itemId = target.getAttribute('data-item-id');
+          if (itemId) {
+            e.preventDefault();
+            e.stopPropagation();
+            // Extract href from item
+            if (itemId.startsWith('page-')) {
+              const pageUrl = itemId.replace('page-', '');
+              const page = normalizedResults.find(p => p.url === pageUrl);
+              if (page?.url) {
+                onSelect(page.url);
+              }
+            } else if (itemId.startsWith('heading-')) {
+              // Format: "heading-{pageUrl}-{headingId}"
+              const parts = itemId.split('-');
+              if (parts.length >= 3) {
+                const pageUrl = parts.slice(1, -1).join('-');
+                const headingId = parts[parts.length - 1];
+                const page = normalizedResults.find(p => p.url === pageUrl);
+                const heading = page?.headings.find(h => h.id === headingId);
+                if (heading?.url) {
+                  onSelect(heading.url);
+                }
+              }
+            } else if (itemId.startsWith('content-')) {
+              // Format: "content-{pageUrl}-{contentId}"
+              const parts = itemId.split('-');
+              if (parts.length >= 3) {
+                const pageUrl = parts.slice(1, -1).join('-');
+                const contentId = parts[parts.length - 1];
+                const page = normalizedResults.find(p => p.url === pageUrl);
+                const content = page?.headings.flatMap(h => h.content).find(c => c.id === contentId);
+                if (content?.url) {
+                  onSelect(content.url);
+                }
+              }
+            }
+          }
+        }
       }
     };
 
-    // Use capture phase to intercept before Radix handles it
     document.addEventListener('keydown', handleKeyDown, { capture: true });
     return () => {
       document.removeEventListener('keydown', handleKeyDown, { capture: true });
     };
-  }, []);
+  }, [normalizedResults, onSelect, containerRef]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    // Cmd+A (Mac) or Ctrl+A (Windows/Linux) to focus input
     if ((e.metaKey || e.ctrlKey) && e.key === 'a') {
       e.preventDefault();
       e.stopPropagation();
@@ -274,7 +240,8 @@ export function ContentTree({
       tabIndex={0}
       onKeyDown={handleKeyDown}
     >
-      {pagesOnly.length > 0 && (
+      {/* Pages without content */}
+      {pagesWithoutContent.length > 0 && (
         <>
           <div className='px-3 py-2 font-medium text-muted-foreground text-xs'>
             Pages
@@ -282,28 +249,24 @@ export function ContentTree({
           <div className="px-2 pb-2">
             <AccordionMenu type="multiple">
               <AccordionMenuGroup>
-                {pagesOnly.map((page) => {
-                  const itemId = `page-${page.id}`;
+                {pagesWithoutContent.map((page) => {
+                  const pageKey = page.url || page.id || `page-${Math.random()}`;
+                  const itemId = `page-${pageKey}`;
                   return (
                     <AccordionMenuItem
                       key={itemId}
-                      onClick={() => page.href && onSelect(page.href)}
-                      value={page.href || page.id}
+                      onClick={() => page.url && onSelect(page.url)}
+                      value={pageKey}
                       data-item-id={itemId}
                       data-selected={selectedId === itemId}
                     >
-                    <File className="h-4 w-4" />
-                    <div className='min-w-0 flex-1'>
-                      <div className="font-medium text-sm">
-                        {page.title || 'Untitled'}
-                      </div>
-                      {page.breadcrumbs && page.breadcrumbs.length > 0 && (
-                        <div className="mt-0.5 text-muted-foreground text-xs">
-                          {page.breadcrumbs.join(' › ')}
+                      <File className="h-4 w-4" />
+                      <div className='min-w-0 flex-1'>
+                        <div className="font-medium text-sm">
+                          {highlightText(page.title, searchTerm)}
                         </div>
-                      )}
-                    </div>
-                  </AccordionMenuItem>
+                      </div>
+                    </AccordionMenuItem>
                   );
                 })}
               </AccordionMenuGroup>
@@ -312,17 +275,26 @@ export function ContentTree({
         </>
       )}
 
-      {groupedResults.length > 0 && (
+      {/* Pages with nested content */}
+      {pagesWithContent.length > 0 && (
         <>
-          <div className='px-3 py-2 font-medium text-muted-foreground text-xs'>
-            Content
-          </div>
+          {pagesWithoutContent.length > 0 && (
+            <div className='px-3 py-2 font-medium text-muted-foreground text-xs'>
+              Content
+            </div>
+          )}
           <div className="px-2">
             <AccordionMenu type="multiple">
               <AccordionMenuGroup>
-                {groupedResults.map(({ page, headings, content }) => {
-                  const pageHref = page.href?.split('#')[0] || '';
+                {pagesWithContent.map((page) => {
+                  const pageUrl = page.url || page.id || '';
+                  const pageHref = pageUrl.split('#')[0] || pageUrl;
                   const triggerId = `trigger-${pageHref}`;
+                  
+                  if (!pageHref) {
+                    console.warn('[ContentTree] Page missing url/id:', page);
+                    return null;
+                  }
                   
                   return (
                     <AccordionMenuSub key={`page-${pageHref}`} value={pageHref}>
@@ -332,7 +304,7 @@ export function ContentTree({
                       >
                         <File className="h-4 w-4" />
                         <span className="font-medium text-sm">
-                          {page.title || 'Untitled'}
+                          {highlightText(page.title, searchTerm)}
                         </span>
                         <AccordionMenuIndicator />
                       </AccordionMenuSubTrigger>
@@ -341,41 +313,49 @@ export function ContentTree({
                         type="multiple"
                       >
                         <AccordionMenuGroup>
-                          {headings.map((heading) => {
+                          {page.headings.map((heading) => {
                             const itemId = `heading-${pageHref}-${heading.id}`;
+                            const headingSubId = `heading-sub-${pageHref}-${heading.id}`;
+                            
                             return (
-                              <AccordionMenuItem
-                                key={itemId}
-                                onClick={() =>
-                                  heading.href && onSelect(heading.href)
-                                }
-                                value={`${pageHref}-heading-${heading.id}`}
-                                data-item-id={itemId}
-                                data-selected={selectedId === itemId}
-                              >
-                                <Hash className="h-4 w-4" />
-                                <span className="text-sm">{heading.title}</span>
-                              </AccordionMenuItem>
-                            );
-                          })}
-                          {content.map((item) => {
-                            const itemId = `content-${pageHref}-${item.id}`;
-                            return (
-                              <AccordionMenuItem
-                                key={itemId}
-                                onClick={() => item.href && onSelect(item.href)}
-                                value={`${pageHref}-content-${item.id}`}
-                                data-item-id={itemId}
-                                data-selected={selectedId === itemId}
-                              >
-                                <FileText className="h-4 w-4" />
-                                <div className='line-clamp-2 flex-1 text-muted-foreground text-xs'>
-                                  {highlightText(
-                                    item.title || item.summary || '',
-                                    searchTerm
-                                  )}
-                                </div>
-                              </AccordionMenuItem>
+                              <AccordionMenuSub key={itemId} value={headingSubId}>
+                                <AccordionMenuSubTrigger
+                                  data-item-id={itemId}
+                                  data-selected={selectedId === itemId}
+                                  onClick={() => onSelect(heading.url)}
+                                >
+                                  <Hash className="h-4 w-4" />
+                                  <span className="text-sm">{highlightText(heading.title, searchTerm)}</span>
+                                  <AccordionMenuIndicator />
+                                </AccordionMenuSubTrigger>
+                                <AccordionMenuSubContent
+                                  parentValue={headingSubId}
+                                  type="multiple"
+                                >
+                                  <AccordionMenuGroup>
+                                    {heading.content.map((contentItem) => {
+                                      const contentItemId = `content-${pageHref}-${contentItem.id}`;
+                                      
+                                      return (
+                                        <AccordionMenuItem
+                                          key={contentItemId}
+                                          onClick={() => onSelect(contentItem.url)}
+                                          value={`${pageHref}-content-${contentItem.id}`}
+                                          data-item-id={contentItemId}
+                                          data-selected={selectedId === contentItemId}
+                                        >
+                                          <FileText className="h-4 w-4" />
+                                          <div className='min-w-0 flex-1'>
+                                            <div className='line-clamp-2 text-muted-foreground text-xs'>
+                                              {highlightText(contentItem.title, searchTerm)}
+                                            </div>
+                                          </div>
+                                        </AccordionMenuItem>
+                                      );
+                                    })}
+                                  </AccordionMenuGroup>
+                                </AccordionMenuSubContent>
+                              </AccordionMenuSub>
                             );
                           })}
                         </AccordionMenuGroup>
@@ -389,5 +369,33 @@ export function ContentTree({
         </>
       )}
     </div>
+  );
+}
+
+export function ContentTree({
+  results,
+  searchTerm,
+  onSelect,
+  onSelectAll,
+  containerRef: externalRef,
+}: ContentTreeProps) {
+  const internalRef = useRef<HTMLDivElement>(null);
+  const containerRef = externalRef || internalRef;
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  if (!results || results.length === 0) {
+    return null;
+  }
+
+  return (
+    <HierarchicalContentTree
+      results={results}
+      searchTerm={searchTerm}
+      onSelect={onSelect}
+      onSelectAll={onSelectAll}
+      containerRef={containerRef}
+      selectedId={selectedId}
+      setSelectedId={setSelectedId}
+    />
   );
 }

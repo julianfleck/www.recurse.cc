@@ -6,13 +6,15 @@ import {
   CommandInput,
   CommandList,
 } from '@recurse/ui/components/command';
-import { SearchIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Spinner } from '@/components/ui/spinner';
 import { isOnAuthPage } from '@/lib/auth-utils';
 import { DocumentationResults } from './results/documentation';
 import { KnowledgeBaseResults } from './results/knowledge-base';
-import type { SearchProvider } from './types';
+import type {
+  HierarchicalSearchResult,
+  SearchItem,
+  SearchProvider,
+} from './types';
 
 type SearchCommandDialogProps = {
   open: boolean;
@@ -36,8 +38,8 @@ export function SearchCommandDialog({
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [results, setResults] = useState<
-    ReturnType<SearchProvider['search']> extends Promise<infer R> ? R : never
-  >([] as never);
+    Awaited<ReturnType<SearchProvider['search']>>
+  >([]);
   const resultsRef = useRef<HTMLDivElement>(null);
   const contentTreeRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -45,7 +47,7 @@ export function SearchCommandDialog({
   useEffect(() => {
     if (!open) {
       setSearchTerm('');
-      setResults([] as never);
+      setResults([]);
       setError(null);
       setHasSearched(false);
     }
@@ -54,7 +56,7 @@ export function SearchCommandDialog({
   useEffect(() => {
     const timeoutId = setTimeout(async () => {
       if (!searchTerm.trim()) {
-        setResults([] as never);
+        setResults([]);
         setError(null);
         setHasSearched(false);
         return;
@@ -62,10 +64,10 @@ export function SearchCommandDialog({
 
       setIsLoading(true);
       setError(null);
-      setResults([] as never); // Clear previous results immediately when starting new search
+      setResults([]); // Clear previous results immediately when starting new search
       try {
         const data = await provider.search(searchTerm);
-        setResults(data as never);
+        setResults(data);
         setHasSearched(true);
       } catch (err) {
         if (err instanceof Error && err.name === 'AuthenticationError') {
@@ -75,7 +77,7 @@ export function SearchCommandDialog({
           return;
         }
         setError(err instanceof Error ? err.message : 'Search failed');
-        setResults([] as never);
+        setResults([]);
         setHasSearched(true);
       } finally {
         setIsLoading(false);
@@ -133,11 +135,11 @@ export function SearchCommandDialog({
               isLoading={isLoading}
               onSelect={() => onOpenChange(false)}
               onSelectAll={handleSelectAll}
-              results={results as never}
+              results={results as HierarchicalSearchResult[]}
               searchTerm={searchTerm}
             />
           ) : (
-            <KnowledgeBaseResults results={results as never} />
+            <KnowledgeBaseResults results={results as SearchItem[]} />
           ))}
       </CommandList>
     </CommandDialog>

@@ -1,14 +1,15 @@
 "use client";
 
 import { ContentTree } from "@recurse/ui/components";
-import type { SearchItem } from "../types";
+import type { HierarchicalSearchResult } from "../types";
 
 type DocumentationResultsProps = {
-  results: SearchItem[];
+  results: HierarchicalSearchResult[];
   searchTerm: string;
   onSelect?: () => void;
   onSelectAll?: () => void;
   isLoading?: boolean;
+  containerRef?: React.RefObject<HTMLDivElement>;
 };
 
 export function DocumentationResults({
@@ -17,6 +18,7 @@ export function DocumentationResults({
   onSelect,
   onSelectAll,
   isLoading = false,
+  containerRef,
 }: DocumentationResultsProps) {
   const handleSelect = (href: string) => {
     if (href) {
@@ -31,6 +33,7 @@ export function DocumentationResults({
       searchTerm={searchTerm}
       onSelect={handleSelect}
       onSelectAll={onSelectAll}
+      containerRef={containerRef}
     />
   );
 }
