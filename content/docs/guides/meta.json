@@ -4,8 +4,8 @@
   "defaultOpen": false,
   "pages": [
     "using-the-ui",
-    "using-the-proxy",
     "using-the-api",
+    "using-the-proxy",
     "api-vs-proxy",
     "source-subscriptions",
     "context-streams"
