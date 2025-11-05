@@ -1,155 +1,33 @@
 ---
 title: API vs Proxy
-description: Understand when to use direct API access versus proxy-based context injection
+description: Quick decision guide—choose the right approach for your use case
 icon: git-compare
 ---
 
-Recurse offers two programmatic approaches: the API for direct control, and the proxy for automatic context injection. This guide helps you choose the right one for your use case.
+Recurse offers two programmatic approaches to integrate with your applications:
+
+| **Proxy** | **API** |
+|-----------|---------|
+| Drop-in replacement for your AI provider—change one line of code to add automatic context injection | Direct programmatic access for custom retrieval logic, graph navigation, and full control |
 
 ---
 
-## Quick Decision
-
-**Use the Proxy if you want to:**
-- Add context injection to existing AI applications with minimal code changes
-- Automatically enrich requests without managing retrieval logic
-- Focus on your application, not knowledge infrastructure
-- Get started quickly (change one line of code)
-
-**Use the API if you need:**
-- Full control over what gets uploaded and retrieved
-- Custom retrieval logic or specialized queries
-- Direct access to frame structures and relationships
-- Graph navigation and structural exploration
-
-**Use both when:**
-- Your application needs some automatic context (proxy) and some custom operations (API)
-- You want the proxy for main flows and API for advanced features
-- Different parts of your system have different requirements
-
----
-
-## The Proxy: Automatic Context Injection
-
-### What It Does
-
-The proxy sits between your application and your AI provider (OpenAI, Anthropic, etc.). When you route requests through it:
-
-1. Your request arrives at the Recurse proxy
-2. Recurse retrieves relevant frames from your knowledge graph based on the query and scope
-3. Context bundles get assembled and injected into your request
-4. The enriched request forwards to your AI provider
-5. You get back a response grounded in your knowledge
-
-From your code's perspective, nothing changed—you still use the standard OpenAI SDK. The context injection happens transparently.
-
-### When to Use
-
-**Existing applications**: If you already have an AI application and want to add knowledge grounding, the proxy requires minimal changes. Change your base URL and you're done.
-
-**Automatic workflows**: When you want context retrieval to happen automatically based on query intent without writing retrieval logic for each use case.
-
-**Quick integration**: When speed matters more than custom control. Get context injection working in minutes, not hours.
-
-**Provider flexibility**: The proxy works with any OpenAI-compatible provider. Switch between OpenAI, Anthropic, DeepSeek without changing your knowledge integration.
-
-### Example Use Cases
-
-- Customer support chatbots that draw from knowledge base + past conversations
-- Writing assistants that access research and reference materials automatically
-- Code assistants that query documentation and past solutions
-- Research tools that ground responses in uploaded papers
-
----
-
-## The API: Direct Control
-
-### What It Does
-
-The API gives you programmatic access to all Recurse operations:
-
-**Upload sources**: POST documents with full control over titles, scopes, and metadata
-
-**Search frames**: Query by semantic similarity, keywords, frame types, scopes
-
-**Retrieve relationships**: Get parent frames, child frames, connected frames
-
-**Navigate graphs**: Explore structural connections between concepts
-
-**Inspect structures**: Access frame details, embeddings, version history
-
-### When to Use
-
-**Custom applications**: When you're building something specialized that needs non-standard retrieval patterns.
-
-**Advanced queries**: When you need to combine multiple search operations, filter by specific criteria, or implement custom ranking.
-
-**Graph exploration**: When your use case involves navigating relationships, not just retrieving similar content.
-
-**Batch operations**: When you need to process many documents or perform bulk retrievals.
-
-**Full control**: When you want to decide exactly what gets uploaded, when, and how retrieval happens.
-
-### Example Use Cases
-
-- Knowledge management dashboards that visualize frame relationships
-- Research tools that trace argument → evidence → method chains
-- Agent systems that navigate graph structures based on reasoning steps
-- Data pipelines that process documents and extract structured knowledge
-- Applications that need frame-level access or custom retrieval logic
-
----
-
-## Combining Both
-
-Many applications use both approaches:
-
-**Proxy for main flows**: Use the proxy for standard user interactions where automatic context injection works well.
-
-**API for special operations**: Use the API for administrative tasks (bulk uploads), advanced features (graph visualization), or custom logic (specialized retrieval).
-
-**Example architecture**:
-```
-User chat interactions → Proxy (automatic context)
-Admin uploads → API (controlled ingestion)
-Dashboard analytics → API (custom queries)
-Agent reasoning → API (graph navigation)
-```
-
-This gives you the convenience of automatic context where it matters and control where you need it.
-
----
-
-## Technical Comparison
-
-| Feature | Proxy | API |
-|---------|-------|-----|
-| **Setup complexity** | One line (change base URL) | Multiple endpoints, custom logic |
-| **Context assembly** | Automatic | Manual |
-| **Code changes** | Minimal | Moderate to extensive |
-| **Retrieval control** | Intent-based, automatic | Full programmatic control |
-| **Graph navigation** | Not available | Full access |
-| **Provider compatibility** | Any OpenAI-compatible | N/A (Recurse only) |
-| **Best for** | Quick integration, auto context | Custom logic, graph operations |
-
----
-
-## Getting Started
+## Choose Your Approach
 
 <Cards>
-  <Card href="/docs/getting-started/using-the-proxy" title="Using the Proxy">
-    Quick setup guide—add automatic context injection in minutes
+  <Card href="/docs/getting-started/using-the-proxy" title="Using the Proxy" icon="git-compare">
+    Add context injection to existing AI applications with minimal code changes. Context bundles matching your query intent get assembled and enriched automatically.
   </Card>
   
-  <Card href="/docs/getting-started/using-the-api" title="Using the API">
-    Direct API access for full programmatic control
-  </Card>
-  
-  <Card href="/docs/guides/using-the-proxy" title="Proxy Guide (In-depth)">
-    Advanced proxy features, scopes, persistence, configuration
-  </Card>
-  
-  <Card href="/docs/guides/using-the-api" title="API Guide (In-depth)">
-    Complete API documentation with examples and patterns
+  <Card href="/docs/getting-started/using-the-api" title="Using the API" icon="code">
+    Full control over uploads, retrieval, and graph navigation. Build custom logic, filter by frame types, explore relationships, and implement specialized queries.
   </Card>
 </Cards>
+
+---
+
+## Detailed Guide
+
+<Card href="/docs/guides/api-vs-proxy" title="API vs Proxy Comparison">
+  In-depth guide covering use cases, architecture patterns, technical tradeoffs, and performance considerations.
+</Card>

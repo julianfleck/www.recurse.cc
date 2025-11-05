@@ -6,19 +6,23 @@ icon: code
 
 For full control over uploads, search, and retrieval, use the API directly. This path gives you programmatic access to frame extraction, relationship navigation, and graph operations.
 
+<Callout type="info">
+**Prerequisites**: Make sure you've completed the [setup steps](/docs/getting-started/quickstart#prerequisites) (AI provider key, account signup, key configuration) before starting.
+</Callout>
+
 ---
 
-## Quick Setup
+## Quick Start
 
-<div className='fd-steps [&_h3]:fd-step'>
+1. **Generate your API key** at [API keys settings](https://dashboard.recurse.cc/settings/api-keys)
+2. **Start uploading content** to build your knowledge graph
+3. **Query your knowledge** with semantic search or navigate relationships
 
-### Generate Your API Key
+---
 
-If you haven't already, generate an API key at your [API keys settings](https://dashboard.recurse.cc/settings/api-keys).
+## Upload Content
 
-### Submit Your First Source
-
-Upload content to your knowledge graph:
+Upload documents to your knowledge graph. Recurse processes them asynchronously—extracting frames, generating embeddings, mapping relationships.
 
 ```bash
 curl -X POST https://api.recurse.cc/documents/upload \
@@ -37,9 +41,30 @@ curl -X POST https://api.recurse.cc/documents/upload \
 }
 ```
 
-Recurse processes the content asynchronously—extracting frames, generating embeddings, mapping relationships. Processing typically takes 10-60 seconds depending on content size.
+Processing typically takes 10-60 seconds depending on content size.
 
-### Search Your Knowledge
+**Upload options**:
+- Text: `-F "text=Your content here"`
+- Files: `-F "file=@document.pdf"`
+- URLs: `-F "url=https://example.com/article"`
+
+---
+
+## Organize with Scopes
+
+Scopes organize your knowledge like folders or tags. Assign scopes when uploading to keep related content together:
+
+```bash
+-F "scope=research-papers"
+-F "scope=team:engineering"
+-F "scope=projects:website-redesign"
+```
+
+Use scopes to filter queries later, making retrieval more focused and relevant.
+
+---
+
+## Search Your Knowledge
 
 Once processing completes, query your knowledge graph:
 
@@ -65,13 +90,7 @@ curl "https://api.recurse.cc/search/?query=semantic:frame semantics&limit=5&scop
 }
 ```
 
-</div>
-
----
-
-## Query Types
-
-Recurse supports multiple search modes:
+**Query modes**:
 - `semantic:your query` – Vector similarity search across frames
 - `text:exact phrase` – Keyword matching
 - Add `&scope=scope_name` to filter by collection

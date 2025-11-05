@@ -6,21 +6,21 @@ icon: arrow-right-left
 
 The proxy is the easiest way to add Recurse to existing applications. Change one line of code—your base URL—and your AI requests automatically get enriched with context from your knowledge graph.
 
+<Callout type="info">
+**Prerequisites**: Make sure you've completed the [setup steps](/docs/getting-started/quickstart#prerequisites) (AI provider key, account signup, key configuration) before starting.
+</Callout>
+
 ---
 
-## Quick Setup
+## Quick Start
 
-<div className='fd-steps [&_h3]:fd-step'>
+1. **Generate your API key** at [API keys settings](https://dashboard.recurse.cc/settings/api-keys)
+2. **Change your base URL** to point to the Recurse proxy
+3. **Start making requests** with automatic context injection
 
-### Generate Your API Key
+---
 
-Navigate to your [API keys settings](https://dashboard.recurse.cc/settings/api-keys) and generate a new API key. This key authenticates your requests to Recurse.
-
-### Copy Your Key
-
-The key starts with `rk_`. Keep it secure—don't commit it to version control or share it publicly.
-
-### Configure Your Client
+## Configure Your Client
 
 Point your OpenAI SDK to the Recurse proxy instead of directly to your AI provider:
 
@@ -89,37 +89,39 @@ curl https://api.recurse.cc/proxy/https://api.openai.com/v1/chat/completions \
   </Tab>
 </Tabs>
 
-</div>
+**What happens**: When you send a request through the proxy, Recurse retrieves relevant frames from your knowledge graph, assembles them into context bundles, enriches your request, forwards everything to your AI provider, and returns the response. Your code sees a standard OpenAI-compatible response—the context injection happens transparently.
 
 ---
 
-## What Happens
+## Organize with Scopes
 
-When you send a request through the proxy, Recurse:
+Scopes organize your knowledge like folders or tags. Set scopes in the request header to focus context retrieval:
 
-1. Retrieves relevant frames from your knowledge graph based on your query and scope
-2. Assembles them into context bundles
-3. Enriches your request with that context
-4. Forwards everything to your AI provider
-5. Returns the response
+```javascript
+defaultHeaders: {
+  'X-Recurse-Scope': 'research-papers'  // Single scope
+}
 
-Your code sees a standard OpenAI-compatible response—the context injection happens transparently.
+// Or multiple scopes (comma-separated)
+defaultHeaders: {
+  'X-Recurse-Scope': 'meeting-notes,team:engineering'
+}
+```
+
+Scopes determine which parts of your knowledge graph get searched for relevant context, making responses more focused and relevant.
 
 ---
 
-## Optional: Enable Persistence
+## Enable Persistence
 
 Add `'X-Recurse-Persist': 'true'` to your headers to automatically save useful outputs back into your knowledge graph. The assistant's responses become queryable content for future requests.
 
 ```javascript
-const client = new OpenAI({
-  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
-  defaultHeaders: {
-    'X-API-Key': process.env.RECURSE_API_KEY,
-    'X-Recurse-Scope': 'my_project',
-    'X-Recurse-Persist': 'true'  // Enable persistence
-  }
-});
+defaultHeaders: {
+  'X-API-Key': process.env.RECURSE_API_KEY,
+  'X-Recurse-Scope': 'my_project',
+  'X-Recurse-Persist': 'true'  // Enable persistence
+}
 ```
 
 **When to use persistence:**
@@ -135,7 +137,7 @@ const client = new OpenAI({
 
 <Cards>
   <Card href="/docs/guides/using-the-proxy" title="Proxy Guide (In-depth)">
-    Scopes, persistence strategies, advanced configuration, error handling
+    Advanced configuration, multiple scopes, error handling, performance tuning
   </Card>
   
   <Card href="/docs/getting-started/api-vs-proxy" title="API vs Proxy">

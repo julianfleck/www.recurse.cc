@@ -1,0 +1,202 @@
+---
+title: API vs Proxy
+description: Detailed comparison of direct API access versus proxy-based context injection
+icon: git-compare
+---
+
+This guide provides an in-depth comparison of Recurse's two programmatic approaches: the API for direct control, and the proxy for automatic context injection.
+
+---
+
+## The Proxy: Automatic Context Injection
+
+### How It Works
+
+The proxy sits between your application and your AI provider (OpenAI, Anthropic, etc.). When you route requests through it:
+
+1. Your request arrives at the Recurse proxy
+2. Recurse retrieves relevant frames from your knowledge graph based on the query and scope
+3. Context bundles get assembled and injected into your request
+4. The enriched request forwards to your AI provider
+5. You get back a response grounded in your knowledge
+
+From your code's perspective, nothing changed—you still use the standard OpenAI SDK. The context injection happens transparently.
+
+### When to Use the Proxy
+
+**Existing applications**: If you already have an AI application and want to add knowledge grounding, the proxy requires minimal changes. Change your base URL and you're done.
+
+**Automatic workflows**: When you want context retrieval to happen automatically based on query intent without writing retrieval logic for each use case.
+
+**Quick integration**: When speed matters more than custom control. Get context injection working in minutes, not hours.
+
+**Provider flexibility**: The proxy works with any OpenAI-compatible provider. Switch between OpenAI, Anthropic, DeepSeek without changing your knowledge integration.
+
+### Proxy Use Cases
+
+- **Customer support chatbots** that draw from knowledge base + past conversations
+- **Writing assistants** that access research and reference materials automatically
+- **Code assistants** that query documentation and past solutions
+- **Research tools** that ground responses in uploaded papers
+- **Internal tools** where users ask questions about company documentation
+
+---
+
+## The API: Direct Control
+
+### How It Works
+
+The API gives you programmatic access to all Recurse operations:
+
+**Upload sources**: POST documents with full control over titles, scopes, and metadata
+
+**Search frames**: Query by semantic similarity, keywords, frame types, scopes
+
+**Retrieve relationships**: Get parent frames, child frames, connected frames
+
+**Navigate graphs**: Explore structural connections between concepts
+
+**Inspect structures**: Access frame details, embeddings, version history
+
+### When to Use the API
+
+**Custom applications**: When you're building something specialized that needs non-standard retrieval patterns.
+
+**Advanced queries**: When you need to combine multiple search operations, filter by specific criteria, or implement custom ranking.
+
+**Graph exploration**: When your use case involves navigating relationships, not just retrieving similar content.
+
+**Batch operations**: When you need to process many documents or perform bulk retrievals.
+
+**Full control**: When you want to decide exactly what gets uploaded, when, and how retrieval happens.
+
+### API Use Cases
+
+- **Knowledge management dashboards** that visualize frame relationships
+- **Research tools** that trace argument → evidence → method chains
+- **Agent systems** that navigate graph structures based on reasoning steps
+- **Data pipelines** that process documents and extract structured knowledge
+- **Applications** that need frame-level access or custom retrieval logic
+- **Analytics tools** that analyze knowledge graph structure
+
+---
+
+## Combining Both Approaches
+
+Many applications use both the proxy and the API:
+
+**Proxy for main flows**: Use the proxy for standard user interactions where automatic context injection works well.
+
+**API for special operations**: Use the API for administrative tasks (bulk uploads), advanced features (graph visualization), or custom logic (specialized retrieval).
+
+### Example Architecture
+
+```
+User chat interactions → Proxy (automatic context)
+Admin uploads → API (controlled ingestion)
+Dashboard analytics → API (custom queries)
+Agent reasoning → API (graph navigation)
+Background processing → API (batch operations)
+```
+
+This gives you the convenience of automatic context where it matters and control where you need it.
+
+### Real-World Example
+
+A knowledge management platform might:
+- Use the **proxy** for end-user chat interactions (automatic context from relevant documents)
+- Use the **API** for admin uploads (controlled ingestion with custom metadata)
+- Use the **API** for the analytics dashboard (custom queries showing usage patterns)
+- Use the **API** for graph visualizations (navigate frame relationships)
+- Use the **proxy** for email summaries (automatic context from related threads)
+
+---
+
+## Technical Comparison
+
+| Feature | Proxy | API |
+|---------|-------|-----|
+| **Setup complexity** | One line (change base URL) | Multiple endpoints, custom logic |
+| **Context assembly** | Automatic | Manual |
+| **Code changes** | Minimal | Moderate to extensive |
+| **Retrieval control** | Intent-based, automatic | Full programmatic control |
+| **Graph navigation** | Not available | Full access |
+| **Provider compatibility** | Any OpenAI-compatible | N/A (Recurse only) |
+| **Upload control** | Via separate API | Full control |
+| **Scope management** | Header-based | Per-request control |
+| **Frame-level access** | Not available | Full access |
+| **Relationship navigation** | Not available | Full access |
+| **Custom ranking** | Not available | Implement your own |
+| **Batch operations** | Not optimized | Fully supported |
+| **Best for** | Quick integration, auto context | Custom logic, graph operations |
+
+---
+
+## Decision Framework
+
+### Choose the Proxy when:
+
+✅ You have an existing AI application  
+✅ You want minimal code changes  
+✅ Automatic context retrieval works for your use case  
+✅ You don't need custom retrieval logic  
+✅ You don't need graph navigation  
+✅ Speed of integration matters
+
+### Choose the API when:
+
+✅ You're building custom retrieval logic  
+✅ You need to navigate graph relationships  
+✅ You need frame-level access  
+✅ You're doing batch operations  
+✅ You need fine-grained control  
+✅ You're building analytical tools
+
+### Choose both when:
+
+✅ Your application has different requirements in different areas  
+✅ You want automatic context for users and control for admins  
+✅ You're building a comprehensive knowledge platform  
+✅ You need both convenience and flexibility
+
+---
+
+## Performance Considerations
+
+### Proxy Performance
+
+The proxy adds ~100-300ms for context retrieval. This is usually negligible compared to model inference time, but consider:
+- Use caching for frequently accessed knowledge
+- Limit context size if latency is critical
+- Use scopes to narrow retrieval
+
+### API Performance
+
+API performance depends on your implementation:
+- Direct frame retrieval is fast (&lt;50ms)
+- Complex graph traversals take longer
+- Batch operations are optimized for throughput
+- Semantic search depends on graph size
+
+---
+
+## Getting Started
+
+<Cards>
+  <Card href="/docs/getting-started/using-the-proxy" title="Using the Proxy">
+    Quick setup guide—add automatic context injection in minutes
+  </Card>
+  
+  <Card href="/docs/getting-started/using-the-api" title="Using the API">
+    Direct API access for full programmatic control
+  </Card>
+  
+  <Card href="/docs/guides/using-the-proxy" title="Proxy Guide">
+    Advanced proxy features, scopes, persistence, configuration
+  </Card>
+  
+  <Card href="/docs/guides/using-the-api" title="API Guide">
+    Complete API documentation with examples and patterns
+  </Card>
+</Cards>
+

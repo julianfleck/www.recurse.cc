@@ -5,9 +5,8 @@
   "pages": [
     "quickstart",
     "user-interface",
-    "api-vs-proxy",
+    "using-the-proxy",
     "using-the-api",
-    "using-the-proxy"
+    "api-vs-proxy"
   ]
 }
-
