@@ -1,0 +1,11 @@
+{
+  "title": "Getting Started",
+  "icon": "rocket",
+  "defaultOpen": false,
+  "pages": [
+    "overview",
+    "quickstart",
+    "api-vs-proxy"
+  ]
+}
+

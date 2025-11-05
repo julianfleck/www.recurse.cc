@@ -1,0 +1,93 @@
+---
+title: Source Subscriptions
+description: Individual feeds that enable continuous knowledge ingestion
+icon: rss
+---
+
+<Callout type="info">
+**Related concept**: Source Subscriptions work alongside **Context Streams** to enable continuous knowledge flow. While Source Subscriptions handle individual feeds, Context Streams provide expert-curated bundles. Learn about both to understand how they complement each other.
+</Callout>
+
+A source subscription flags an individual source—a newsletter, RSS feed, documentation site, or any regularly updated content—for continuous ingestion. When you subscribe to a source, Recurse periodically checks for new content and processes it into your knowledge substrate automatically.
+
+---
+
+## How Source Subscriptions Work
+
+When you subscribe to a source:
+1. Recurse periodically checks the source for new content
+2. New content is automatically ingested and processed
+3. Frames are extracted and added to your knowledge graph
+4. Your knowledge stays current without manual uploads
+
+---
+
+## Examples
+
+- Subscribe to the Latent Space podcast feed → new episodes get transcribed and ingested automatically
+- Subscribe to a specific newsletter → each issue gets processed as it publishes  
+- Subscribe to a documentation site → updates get tracked and ingested
+
+Source subscriptions keep your AI models current with evolving information without manual uploads.
+
+---
+
+## When to Use Source Subscriptions
+
+**Best for:**
+- ✅ Regularly updated content (newsletters, blogs, docs)
+- ✅ Staying current with evolving domains
+- ✅ Automatic ingestion without manual work
+- ✅ Individual feeds you want to track
+
+**Consider Context Streams instead when:**
+- You want curated collections of multiple sources
+- You need expert-selected content bundles
+- You want to share knowledge packages with others
+
+---
+
+## How Subscriptions Work with Streams
+
+**Source Subscriptions** → continuous individual feeds  
+**Context Streams** → curated bundles (can include source subscriptions)
+
+A Context Stream might contain 5 source subscriptions + 10 specific documents + 3 synthesis notes. When you subscribe to the stream, you're getting all of that: the continuously updating feeds plus the curated static content plus the expert's own contributions.
+
+---
+
+## Benefits
+
+Your AI models get access to:
+- Current, continuously updated domain knowledge (via source subscriptions)
+- Expert-curated context bundles (when subscriptions are included in Context Streams)
+- Structural understanding of how concepts relate (via frame extraction across all sources)
+
+You don't learn from these subscriptions in real-time—your models query them. The benefit to you is that your AI interactions draw from curated, up-to-date, structurally understood knowledge rather than static uploads or web searches.
+
+---
+
+## Related Concepts
+
+<Cards>
+  <Card href="/docs/concepts/streams" title="Context Streams">
+    Curated collections that bundle multiple sources
+  </Card>
+  
+  <Card href="/docs/concepts/frames" title="Frames">
+    Semantic units extracted from sources
+  </Card>
+  
+  <Card href="/docs/concepts/self-updating" title="Self-Updating">
+    How subscriptions stay current over time
+  </Card>
+  
+  <Card href="/docs/concepts/rage" title="RAGE">
+    The engine that processes subscription content
+  </Card>
+  
+  <Card href="/docs/guides/subscriptions" title="Subscriptions Guide">
+    How to create and use Source Subscriptions
+  </Card>
+</Cards>
+

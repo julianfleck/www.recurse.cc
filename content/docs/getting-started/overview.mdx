@@ -1,0 +1,122 @@
+---
+title: Overview
+description: How Recurse works and what paths you can take
+icon: compass
+---
+
+Recurse transforms your documents into structured knowledge that makes AI systems smarter. Here's how it works and the different ways you can use it.
+
+## How Recurse Works
+
+Recurse takes unstructured content—documents, articles, notes, code—and extracts structured knowledge using **RAGE** (Recursive, Agentic Graph Embeddings). The system:
+
+1. **Processes** your sources to extract semantic units called **frames**
+2. **Builds** a knowledge graph connecting related concepts
+3. **Enables** your AI applications to query this structured knowledge
+
+Unlike simple vector search, Recurse understands relationships, context, and structure—making your AI interactions more accurate and contextually aware.
+
+---
+
+## Two Main Paths
+
+You can use Recurse in two primary ways, depending on your needs:
+
+### Path 1: API (Manual Control)
+
+Use the REST API to manually upload sources and search your knowledge graph. This gives you full control over what goes in and when.
+
+**Best for:**
+- Custom applications with specific workflows
+- Precise control over content ingestion
+- Building your own interfaces
+- Specific search queries and retrieval
+
+**How it works:**
+- Upload documents via API
+- Search using semantic or keyword queries
+- Retrieve specific frames or nodes
+- Build custom workflows
+
+<Card href="/docs/getting-started/quickstart" title="Quickstart Guide">
+  Get started with the API in under 5 minutes
+</Card>
+
+---
+
+### Path 2: Proxy (Automatic Context)
+
+Route your AI API calls through Recurse's proxy to automatically enrich requests with relevant context from your knowledge graph.
+
+**Best for:**
+- Chat applications
+- AI assistants
+- Automatic context injection
+- Hands-off knowledge integration
+
+**How it works:**
+- Point your OpenAI (or compatible) client to Recurse's proxy
+- Every request automatically includes relevant context
+- Optionally persist useful outputs back to your graph
+- Works with any OpenAI-compatible API
+
+<Card href="/docs/guides/using-the-proxy" title="Using the Proxy">
+  Learn how to route requests through the proxy
+</Card>
+
+---
+
+## Which Path Should You Choose?
+
+Both paths can be used together, but here's when to pick each:
+
+**Choose API if:**
+- You need precise control over searches
+- You're building custom workflows
+- You want to manually manage content
+- You need specific retrieval patterns
+
+**Choose Proxy if:**
+- You want automatic context injection
+- You're building chat interfaces
+- You prefer hands-off operation
+- You want AI responses grounded in your knowledge
+
+**Use both:**
+- Upload content via API
+- Route chat requests through proxy
+- Get the best of both worlds
+
+<Card href="/docs/getting-started/api-vs-proxy" title="API vs Proxy">
+  Detailed comparison and decision guide
+</Card>
+
+---
+
+## Key Concepts
+
+Understanding these concepts will help you make the most of Recurse:
+
+<Cards>
+  <Card href="/docs/concepts/rage" title="RAGE">
+    The processing engine that extracts structured knowledge
+  </Card>
+  
+  <Card href="/docs/concepts/frames" title="Frames">
+    Semantic units that represent structured information
+  </Card>
+  
+  <Card href="/docs/concepts" title="All Concepts">
+    Deep dive into how Recurse works under the hood
+  </Card>
+</Cards>
+
+---
+
+## Next Steps
+
+1. **Quickstart** - Get up and running in 5 minutes
+2. **Choose your path** - API for control, Proxy for automation
+3. **Read the guides** - Learn advanced features
+4. **Explore concepts** - Understand the underlying mechanisms
+

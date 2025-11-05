@@ -1,0 +1,129 @@
+---
+title: Frames
+description: Semantic units with slots—structured patterns that enable navigation by meaning, not just keywords
+icon: package
+---
+
+When you describe troubleshooting a software bug, certain elements always appear: the problem itself, what triggered it, steps taken to diagnose it, the root cause discovered, and the solution applied. These elements relate to each other in predictable ways—the symptoms point toward diagnostic steps, the diagnosis reveals the cause, the cause determines the solution.
+
+This is what we call a frame: a structured pattern where specific roles (problem, trigger, diagnosis, cause, solution) consistently appear together and relate in meaningful ways.
+
+Recurse extracts these patterns automatically. When processing a bug report, it recognizes the troubleshooting frame. When processing meeting notes, it recognizes decision frames. When processing research papers, it recognizes argument frames. The content determines what frames emerge.
+
+---
+
+## Understanding Frames Through Example
+
+Consider troubleshooting documentation:
+
+**Without frames**, you get text chunks:
+- "The application crashed when users clicked submit"
+- "We checked the network logs and found a timeout"
+- "The API server was hitting connection limits"
+- "We increased the connection pool size to 100"
+
+**With frames**, you get structure:
+
+A **Problem frame** with slots:
+- Symptom: "application crashed"
+- Trigger: "users clicked submit"
+- Affected users: "anyone submitting forms"
+
+A **Diagnosis frame** with slots:
+- Investigation steps: "checked network logs"
+- Finding: "timeout errors"
+- Links to: the Problem frame (what prompted this diagnosis)
+
+A **Root Cause frame** with slots:
+- Cause: "API server hitting connection limits"
+- Links to: the Diagnosis frame (what revealed this cause)
+
+A **Solution frame** with slots:
+- Action taken: "increased connection pool to 100"
+- Links to: the Root Cause frame (what this solves)
+
+Now you can navigate: from problem to diagnosis, from diagnosis to root cause, from cause to solution. Or backwards: from a solution to what problem it addressed. The frames create navigable structure.
+
+---
+
+## Frame Types Adapt to Content
+
+The frame types Recurse extracts depend on what you process:
+
+| Content Type | Extracted Frames |
+|--------------|------------------|
+| **Research papers** | Claims, Evidence, Methods, Definitions |
+| **Bug reports** | Problems, Diagnoses, Causes, Solutions |
+| **Meeting notes** | Decisions, Discussions, Action Items, Blockers |
+| **Documentation** | Concepts, Procedures, Parameters, Examples |
+| **Code** | Functions, Parameters, Return Values, Dependencies |
+
+The system discovers these patterns through self-bootstrapping rather than requiring you to define them upfront.
+
+---
+
+## How Frame Structure Works
+
+Each frame type defines **slots**—named places where specific information goes.
+
+A decision frame might have slots for:
+- The decision itself
+- Who made it
+- What options were considered
+- What reasoning was used
+- What it depends on (links to other frames)
+- What it affects (links to other frames)
+
+An argument frame might have slots for:
+- The claim being made
+- Supporting evidence (links to evidence frames)
+- Methodology used (links to method frames)
+- Limitations noted
+- Related arguments (links to other argument frames)
+
+---
+
+## Recursive Composition
+
+What makes frames powerful is that slots can reference other frames, which have their own slots, which might reference additional frames.
+
+A decision might reference:
+```
+→ A discussion (what led to this decision)
+  → Prior decisions (what this discussion referenced)
+    → Technical constraints (why those decisions were made)
+  → Alternative approaches (what was considered)
+```
+
+This creates nested structure that mirrors how concepts actually relate—not just keyword similarity, but typed relationships you can navigate.
+
+---
+
+## Why This Matters
+
+Without frames, you have text chunks and keyword matching. With frames, you have semantic units connected by typed relationships. This is what enables:
+
+- Navigation by structure rather than similarity
+- Multi-hop reasoning across sources
+- Traceability back to specific origins
+- Context assembly based on relationships
+- Understanding how concepts actually connect
+
+---
+
+## Related Concepts
+
+<Cards>
+  <Card href="/docs/concepts/rage" title="RAGE">
+    The engine that extracts frames
+  </Card>
+  
+  <Card href="/docs/concepts/self-bootstrapping" title="Self-Bootstrapping">
+    How frame types adapt to your content
+  </Card>
+  
+  <Card href="/docs/concepts/self-updating" title="Self-Updating">
+    How frames evolve over time
+  </Card>
+</Cards>
+

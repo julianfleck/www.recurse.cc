@@ -1,0 +1,14 @@
+{
+  "title": "Concepts",
+  "icon": "color-filter",
+  "defaultOpen": false,
+  "pages": [
+    "rage",
+    "frames",
+    "self-bootstrapping",
+    "self-updating",
+    "streams",
+    "subscriptions"
+  ]
+}
+

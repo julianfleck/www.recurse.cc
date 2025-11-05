@@ -1,0 +1,10 @@
+{
+  "title": "Guides",
+  "icon": "signpost",
+  "defaultOpen": false,
+  "pages": [
+    "using-the-proxy",
+    "subscriptions"
+  ]
+}
+

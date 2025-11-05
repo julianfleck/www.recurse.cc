@@ -1,0 +1,333 @@
+---
+title: Use Context Streams
+description: Subscribe to expert-curated Context Streams and source feeds—make your AI smarter with one click
+icon: rss
+---
+
+Subscribe to expert-curated knowledge collections and instantly make your AI smarter. One click, automatic updates, expert knowledge—no manual curation required.
+
+## What Are Context Streams?
+
+A Context Stream is a curated collection—a set of sources (articles, papers, documentation, notes) maintained by experts or the community. When you subscribe:
+
+1. **Recurse ingests the collection** into your personal knowledge graph
+2. **Streams stay updated** automatically as curators add new content
+3. **Your AI automatically uses them** when relevant to your queries
+4. **You maintain control**—subscribe, pause, or unsubscribe anytime
+
+**The result**: Your AI automatically knows about expert-curated knowledge on topics you care about, without any manual work.
+
+---
+
+## Why Subscribe?
+
+### Expert-Curated Knowledge
+
+Instead of searching the web and hoping for quality, subscribe to streams curated by domain experts. AI safety research, engineering best practices, legal precedents—all maintained by people who know what matters.
+
+### Automatic Updates
+
+Streams stay current automatically. Curators add new content, remove outdated information, and maintain quality. Your AI always has the latest expert knowledge.
+
+### One-Click Enhancement
+
+Make your AI smarter instantly. No manual searching, no copy-paste, no context management. Just subscribe and your AI automatically uses the knowledge.
+
+### Scoped Queries
+
+Target specific streams in your queries. Use `#stream-slug` to ask questions that draw from specific collections, or let Recurse automatically select the most relevant.
+
+---
+
+## How It Works
+
+<div className='fd-steps [&_h3]:fd-step'>
+
+### Browse Context Streams
+
+Visit the [streams directory](https://dashboard.recurse.cc/streams) to browse available collections. Streams are organized by topic, curated by experts, and show health indicators (last update, subscriber count, quality metrics).
+
+**Example Context Streams**:
+- `#ai-safety-research` - Latest AI safety research papers
+- `#engineering-best-practices` - Software engineering patterns and practices
+- `#legal-precedents` - Important legal cases and analysis
+- `#medical-guidelines` - Clinical practice guidelines
+
+### Subscribe
+
+Click "Subscribe" on any stream. Recurse immediately starts ingesting the collection's sources into your knowledge graph. You'll see progress in your dashboard.
+
+**What Gets Ingested**:
+- All current sources in the stream
+- Future updates as curators add content
+- Structured understanding (frames, relationships) not just raw text
+
+### Use Automatically
+
+Once subscribed, your AI automatically uses stream knowledge when relevant. No special syntax needed—just ask questions normally.
+
+**Example**:
+```
+You: "What are the latest findings on AI alignment?"
+
+Recurse automatically includes relevant information from your subscribed 
+streams (e.g., #ai-safety-research) plus your personal knowledge.
+```
+
+### Scope Queries (Optional)
+
+Target specific streams using `#stream-slug`:
+
+```
+You: "What are best practices for authentication? #engineering-best-practices"
+
+Recurse focuses on the engineering best practices stream, giving you 
+expert-curated knowledge on authentication patterns.
+```
+
+You can also mention curators with `@username` to use their public streams:
+
+```
+You: "Explain RAG improvements @neo4j"
+
+Recurse uses knowledge from streams curated by @neo4j.
+```
+
+</div>
+
+---
+
+## Managing Subscriptions
+
+### View Your Subscriptions
+
+See all your subscriptions in the [dashboard](https://dashboard.recurse.cc/subscriptions):
+
+- Active subscriptions
+- Paused subscriptions
+- Subscription activity (updates, ingestion status)
+
+### Pause a Subscription
+
+Pause a subscription without unsubscribing. Your AI stops using it, but you can resume anytime without re-ingesting.
+
+**Use cases**:
+- Temporarily focusing on specific topics
+- Testing which streams are most useful
+- Reducing context size for specific queries
+
+### Unsubscribe
+
+Unsubscribe removes the stream from your account. Your AI stops using it immediately. You can always resubscribe later.
+
+<Callout type="info">
+  **Note**: Unsubscribing doesn't delete the knowledge already ingested—it just stops using it for future queries. If you want to remove ingested knowledge, use the API to delete specific sources.
+</Callout>
+
+---
+
+## Publishing Context Streams
+
+### Create a Stream
+
+Anyone can create and publish a Context Stream:
+
+<div className='fd-steps [&_h4]:fd-step'>
+
+#### Define Scope
+What topics does this stream cover?
+
+#### Add Sources
+Initial set of quality sources
+
+#### Set Update Cadence
+How often will you update?
+
+#### Publish
+Make it public for others to subscribe
+
+</div>
+
+### Collaborate
+
+Invite co-maintainers to help curate:
+
+- Add new sources
+- Remove outdated content
+- Review suggestions from subscribers
+- Maintain quality standards
+
+### Best Practices
+
+**Focused scope**: Streams work best when they have clear boundaries. "AI Safety Research" is better than "Everything About AI."
+
+**Quality over quantity**: Better to have fewer, high-quality sources than many low-quality ones.
+
+**Regular updates**: Active streams with recent updates are more valuable.
+
+**Clear inclusion criteria**: Help subscribers understand what belongs in the stream.
+
+---
+
+## Privacy and Control
+
+### Your Data, Your Control
+
+**Subscriptions don't share your data**—they point to sources that you ingest into your own knowledge graph. Curators can't see your personal knowledge, and you maintain full control.
+
+**What's private**:
+- Your personal sources
+- Your queries and usage
+- Your subscription list (unless you make it public)
+
+**What's public**:
+- Stream sources (curated by maintainers)
+- Stream metadata (title, description, scope)
+
+### Scoped Usage
+
+You control which conversations use which streams:
+
+- Use streams automatically (default)
+- Scope queries to specific streams (`#stream-slug`)
+- Pause streams for specific conversations
+- Use multiple streams together
+
+---
+
+## API Usage
+
+### Subscribe via API
+
+<Tabs items={['cURL', 'JavaScript', 'Python']}>
+  <Tab value="cURL">
+```bash
+curl -X POST https://api.recurse.cc/v2/subscriptions \
+  -H "X-API-Key: your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "stream_slug": "ai-safety-research"
+  }'
+```
+  </Tab>
+  
+  <Tab value="JavaScript">
+```javascript
+const response = await fetch('https://api.recurse.cc/v2/subscriptions', {
+  method: 'POST',
+  headers: {
+    'X-API-Key': process.env.RECURSE_API_KEY,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    stream_slug: 'ai-safety-research'
+  })
+});
+```
+  </Tab>
+  
+  <Tab value="Python">
+```python
+import requests
+
+response = requests.post(
+    'https://api.recurse.cc/v2/subscriptions',
+    headers={'X-API-Key': os.environ['RECURSE_API_KEY']},
+    json={'stream_slug': 'ai-safety-research'}
+)
+```
+  </Tab>
+</Tabs>
+
+### List Subscriptions
+
+```bash
+curl https://api.recurse.cc/v2/subscriptions \
+  -H "X-API-Key: your_api_key"
+```
+
+### Unsubscribe
+
+```bash
+curl -X DELETE https://api.recurse.cc/v2/subscriptions/{subscription_id} \
+  -H "X-API-Key: your_api_key"
+```
+
+### Query with Stream Scope
+
+When using the proxy or search API, include stream scope:
+
+```javascript
+const client = new OpenAI({
+  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
+  defaultHeaders: {
+    'X-API-Key': process.env.RECURSE_API_KEY,
+    'X-Recurse-Scope': 'my_project',
+    'X-Recurse-Streams': 'ai-safety-research,engineering-best-practices'
+  }
+});
+```
+
+---
+
+## Examples
+
+### Research Workflow
+
+**Scenario**: You're researching AI safety and want to stay current.
+
+1. Subscribe to `#ai-safety-research` stream
+2. Subscribe to `#ai-alignment-papers` stream
+3. Ask questions normally—Recurse automatically includes latest research
+4. Use `#ai-safety-research` to focus queries on safety-specific knowledge
+
+### Team Knowledge Sharing
+
+**Scenario**: Your team maintains internal best practices.
+
+1. Create `#team-engineering-standards` stream
+2. Add team documentation, code reviews, design decisions
+3. Team members subscribe
+4. Everyone's AI automatically knows team standards
+
+### Domain Expertise
+
+**Scenario**: You want expert knowledge on medical guidelines.
+
+1. Subscribe to `#clinical-practice-guidelines` stream
+2. Subscribe to `#medical-research-updates` stream
+3. Ask medical questions—AI automatically uses expert-curated knowledge
+4. Subscribe to additional streams as needed
+
+---
+
+## Best Practices
+
+1. **Start focused**: Subscribe to 2-3 highly relevant streams first
+2. **Test and refine**: See which streams add value, pause or unsubscribe from others
+3. **Use scoped queries**: Target specific streams when you need focused knowledge
+4. **Contribute**: Suggest sources to streams, or create your own
+5. **Monitor activity**: Check dashboard to see which streams are most useful
+
+---
+
+## Next Steps
+
+<Cards>
+  <Card href="https://dashboard.recurse.cc/streams" title="Browse Streams">
+    Find Context Streams in your domain
+  </Card>
+  
+  <Card href="https://dashboard.recurse.cc/streams/create" title="Create a Stream">
+    Share your expertise with others
+  </Card>
+  
+  <Card href="/docs/guides/using-the-proxy" title="Proxy Integration">
+    Combine streams with automatic context injection
+  </Card>
+  
+  <Card href="/docs/concepts/streams" title="Learn More">
+    Understand how streams and source subscriptions work
+  </Card>
+</Cards>
+

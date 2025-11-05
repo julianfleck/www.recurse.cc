@@ -1,13 +1,17 @@
 {
-  "title": "API Documentation",
+  "title": "API Reference",
+  "icon": "code",
+  "defaultOpen": false,
   "pages": [
     "health",
     "documents",
+    "graph",
+    "jobs",
+    "node",
     "search",
-    "writing",
-    "auth",
+    "stats",
+    "tree",
     "users",
-    "api-keys",
-    "extract"
+    "writing"
   ]
 }

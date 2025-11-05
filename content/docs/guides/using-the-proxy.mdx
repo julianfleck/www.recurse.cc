@@ -1,0 +1,432 @@
+---
+title: Using the Proxy
+description: Automatic context injection for AI applications—route requests through Recurse for grounded responses
+icon: shuffle
+---
+
+The proxy is Recurse's most powerful feature. Route any OpenAI-compatible API call through Recurse to automatically enrich it with context from your knowledge graph—and optionally persist useful outputs back into your graph.
+
+## Why Use the Proxy?
+
+### The Problem
+
+When building AI applications, you face a constant challenge: how to provide relevant context to your AI model without manually managing conversation history, knowledge bases, and context windows.
+
+Traditional approaches:
+- **Manual context management**: Copy-paste relevant information into prompts
+- **Provider-specific memory**: Locked into one AI provider's memory system
+- **No accumulation**: Each conversation starts from scratch
+- **Context window limits**: Can't include everything relevant
+
+### The Solution
+
+The Recurse proxy solves this by:
+1. **Automatic context retrieval**: Finds relevant information from your knowledge graph
+2. **Provider-agnostic**: Works with any OpenAI-compatible API
+3. **Persistent memory**: Your knowledge accumulates over time
+4. **Smart filtering**: Only includes relevant context, not everything
+
+---
+
+## How It Works
+
+```
+┌─────────────┐         ┌──────────────┐         ┌─────────────┐
+│   Your App  │────────▶│  Recurse.cc  │────────▶│ AI Provider │
+│             │         │    Proxy     │         │  (OpenAI,   │
+│             │◀────────│              │◀────────│  Anthropic) │
+└─────────────┘         └──────────────┘         └─────────────┘
+                              │
+                              │ Retrieves context
+                              │ from knowledge graph
+                              ▼
+                        ┌──────────────┐
+                        │ Knowledge    │
+                        │ Graph        │
+                        └──────────────┘
+```
+
+### Step-by-Step Flow
+
+1. **Your application** sends a Chat Completions request to the Recurse proxy
+2. **Recurse retrieves** relevant context from your knowledge graph based on:
+   - Your query/messages
+   - The scope you specify
+   - Semantic similarity to your existing knowledge
+3. **Recurse enriches** the request with retrieved context
+4. **AI provider** processes the enriched request and returns a response
+5. **If persistence enabled**: Recurse saves the assistant's final message into your graph
+
+---
+
+## Basic Usage
+
+### Setup
+
+Point your OpenAI SDK (or compatible client) to the Recurse proxy:
+
+<Tabs items={['JavaScript', 'Python', 'cURL']}>
+  <Tab value="JavaScript">
+```javascript
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,  // Your OpenAI key
+  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
+  defaultHeaders: {
+    'X-API-Key': process.env.RECURSE_API_KEY,  // Your Recurse key
+    'X-Recurse-Scope': 'my_project'  // Your scope
+  }
+});
+```
+  </Tab>
+  
+  <Tab value="Python">
+```python
+from openai import OpenAI
+import os
+
+client = OpenAI(
+    api_key=os.environ["OPENAI_API_KEY"],
+    base_url="https://api.recurse.cc/proxy/https://api.openai.com/v1/",
+    default_headers={
+        "X-API-Key": os.environ["RECURSE_API_KEY"],
+        "X-Recurse-Scope": "my_project"
+    }
+)
+```
+  </Tab>
+  
+  <Tab value="cURL">
+```bash
+curl https://api.recurse.cc/proxy/https://api.openai.com/v1/chat/completions \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "X-API-Key: $RECURSE_API_KEY" \
+  -H "X-Recurse-Scope: my_project" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4o-mini",
+    "messages": [{"role": "user", "content": "What did we decide in last week'\''s meeting?"}]
+  }'
+```
+  </Tab>
+</Tabs>
+
+### Make a Request
+
+Once configured, use the client normally:
+
+```javascript
+const completion = await client.chat.completions.create({
+  model: 'gpt-4o-mini',
+  messages: [
+    { role: 'user', content: 'What are the main approaches to handling imbalanced datasets?' }
+  ]
+});
+
+console.log(completion.choices[0].message.content);
+```
+
+Recurse automatically:
+- Finds relevant sources, frames, and context from your knowledge graph
+- Adds it to the request (you don't see this)
+- Returns the enriched response
+
+---
+
+## Enabling Persistence
+
+Persistence allows Recurse to automatically save useful outputs back into your knowledge graph. When enabled, the assistant's final message is stored under the same scope used for retrieval.
+
+### When to Use Persistence
+
+**Good use cases**:
+- Summarizing meetings or documents
+- Answering questions that create useful reference material
+- Generating documentation or notes
+- Creating knowledge base entries
+
+<Callout type="warn">
+  **Be thoughtful**:
+  - Don't persist every response (consumes storage)
+  - Don't persist temporary/session-specific content
+  - Do persist content that will be useful later
+</Callout>
+
+### Enable Persistence
+
+**Via Header** (recommended):
+```javascript
+const client = new OpenAI({
+  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
+  defaultHeaders: {
+    'X-API-Key': process.env.RECURSE_API_KEY,
+    'X-Recurse-Scope': 'meeting_notes',
+    'X-Recurse-Persist': 'true'  // Enable persistence
+  }
+});
+```
+
+**Via Request Body**:
+```javascript
+const completion = await client.chat.completions.create({
+  model: 'gpt-4o-mini',
+  messages: [{ role: 'user', content: 'Summarize our weekly meeting decisions.' }],
+  persist: true  // Enable persistence for this request
+});
+```
+
+<Callout type="info">
+  **Note**: Header takes precedence if both are present.
+</Callout>
+
+### What Gets Persisted
+
+When persistence is enabled, Recurse:
+1. Extracts the assistant's final message
+2. Processes it as a source (frame extraction, embedding)
+3. Stores it in your knowledge graph under the specified scope
+4. Makes it available for future retrieval
+
+**Example**:
+```javascript
+// Enable persistence
+const client = new OpenAI({
+  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
+  defaultHeaders: {
+    'X-API-Key': process.env.RECURSE_API_KEY,
+    'X-Recurse-Scope': 'support_responses',
+    'X-Recurse-Persist': 'true'
+  }
+});
+
+// Ask a question
+const completion = await client.chat.completions.create({
+  model: 'gpt-4o-mini',
+  messages: [{
+    role: 'user',
+    content: 'How do I reset my password?'
+  }]
+});
+
+// The assistant's response is automatically saved to your knowledge graph
+// Future queries about password resets will include this response
+```
+
+---
+
+## Scopes
+
+Scopes organize your knowledge. They control both retrieval (what context to include) and storage (where to save new content).
+
+### Choosing a Scope
+
+Think of scopes like folders or tags:
+- **Per user**: `user:alice`, `user:bob`
+- **Per project**: `project:website-redesign`, `project:mobile-app`
+- **Per collection**: `meeting_notes`, `support_faqs`, `research_papers`
+- **Per team**: `team:engineering`, `team:design`
+
+### Scope Best Practices
+
+1. **Be specific**: `meeting_notes` is better than `notes`
+2. **Be consistent**: Use the same scope for related content
+3. **Match your workflow**: If you organize by project, use project scopes
+4. **Don't over-segment**: Too many scopes fragment your knowledge
+
+### Examples
+
+<Tabs items={['Support Bot', 'Research Assistant', 'Team Knowledge']}>
+  <Tab value="Support Bot">
+```javascript
+// Scope by customer type
+const client = new OpenAI({
+  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
+  defaultHeaders: {
+    'X-API-Key': process.env.RECURSE_API_KEY,
+    'X-Recurse-Scope': 'support:enterprise'  // or 'support:consumer'
+  }
+});
+```
+  </Tab>
+  
+  <Tab value="Research Assistant">
+```javascript
+// Scope by research domain
+const client = new OpenAI({
+  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
+  defaultHeaders: {
+    'X-API-Key': process.env.RECURSE_API_KEY,
+    'X-Recurse-Scope': 'research:ai-memory-systems'
+  }
+});
+```
+  </Tab>
+  
+  <Tab value="Team Knowledge">
+```javascript
+// Scope by team
+const client = new OpenAI({
+  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
+  defaultHeaders: {
+    'X-API-Key': process.env.RECURSE_API_KEY,
+    'X-Recurse-Scope': 'team:engineering'
+  }
+});
+```
+  </Tab>
+</Tabs>
+
+---
+
+## Advanced Configuration
+
+### Custom Context Window
+
+Control how much context to include:
+
+```javascript
+const client = new OpenAI({
+  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
+  defaultHeaders: {
+    'X-API-Key': process.env.RECURSE_API_KEY,
+    'X-Recurse-Scope': 'my_project',
+    'X-Recurse-Max-Context': '5000'  // Max tokens of context to include
+  }
+});
+```
+
+### Multiple Scopes
+
+Search across multiple scopes:
+
+```javascript
+const client = new OpenAI({
+  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
+  defaultHeaders: {
+    'X-API-Key': process.env.RECURSE_API_KEY,
+    'X-Recurse-Scope': 'meeting_notes,support_faqs'  // Comma-separated
+  }
+});
+```
+
+### Filter by Frame Type
+
+Only include specific types of knowledge:
+
+```javascript
+const client = new OpenAI({
+  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
+  defaultHeaders: {
+    'X-API-Key': process.env.RECURSE_API_KEY,
+    'X-Recurse-Scope': 'research_papers',
+    'X-Recurse-Frame-Types': 'Claim,Evidence'  // Only include claims and evidence
+  }
+});
+```
+
+---
+
+## Error Handling
+
+The proxy returns standard HTTP status codes:
+
+- **200**: Success
+- **400**: Bad request (invalid parameters)
+- **401**: Unauthorized (missing/invalid API key)
+- **429**: Rate limit exceeded
+- **500**: Server error
+
+**Example error handling**:
+```javascript
+try {
+  const completion = await client.chat.completions.create({
+    model: 'gpt-4o-mini',
+    messages: [{ role: 'user', content: 'Hello' }]
+  });
+} catch (error) {
+  if (error.status === 401) {
+    console.error('Invalid API key');
+  } else if (error.status === 429) {
+    console.error('Rate limit exceeded');
+  } else {
+    console.error('Error:', error.message);
+  }
+}
+```
+
+---
+
+## Performance Considerations
+
+### Context Retrieval Time
+
+Recurse adds ~100-300ms for context retrieval. This is usually negligible compared to model inference time, but consider:
+- Use caching for frequently accessed knowledge
+- Limit context size if latency is critical
+- Use scopes to narrow retrieval
+
+### Storage Costs
+
+Persistence consumes storage:
+- Free tier: 100MB
+- Pro tier: 10GB
+- Enterprise: Custom
+
+Monitor usage in your dashboard.
+
+---
+
+## Troubleshooting
+
+<Accordions>
+  <Accordion title="No Context Retrieved">
+    **Possible causes**:
+    - Scope has no content (upload sources first)
+    - Query doesn't match existing knowledge
+    - Scope name mismatch
+
+**Solutions**:
+    - Check scope content: `GET /search/?scope=your_scope`
+    - Try broader scopes
+    - Verify scope name spelling
+  </Accordion>
+  
+  <Accordion title="Persistence Not Working">
+    **Possible causes**:
+    - Header not set correctly
+    - Scope doesn't exist
+    - Storage limit reached
+
+**Solutions**:
+    - Verify header: `X-Recurse-Persist: true`
+    - Check storage usage in dashboard
+    - Verify scope name
+  </Accordion>
+  
+  <Accordion title="Provider Errors">
+    If the underlying AI provider returns an error, Recurse passes it through. Check:
+    - Provider API key validity
+    - Provider rate limits
+    - Request format compatibility
+  </Accordion>
+</Accordions>
+
+---
+
+## Next Steps
+
+<Cards>
+  <Card href="/docs/getting-started/overview" title="Getting Started">
+    Your first 5 minutes with Recurse
+  </Card>
+  
+  <Card href="/docs/guides/subscriptions" title="Context Streams">
+    Subscribe to expert-curated knowledge
+  </Card>
+  
+  <Card href="/docs/concepts" title="Core Concepts">
+    Understand frames, RAGE, and structural extraction
+  </Card>
+</Cards>
+

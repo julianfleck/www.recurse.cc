@@ -1,0 +1,142 @@
+---
+title: Introduction
+description: Turn your documents into living context for AI systems. Keep your knowledge portable across any AI tool.
+icon: hand-metal
+---
+
+## Your AI’s Missing Memory
+
+Imagine this: You spend hours researching a complex topic with Claude, building up a rich understanding through conversation. Then you switch to ChatGPT for writing, and suddenly your AI has amnesia—all that accumulated knowledge? Gone.
+
+**Recurse solves this problem.** It creates a personal knowledge layer that follows you across any AI system. Your documents become smarter over time, and your AI assistants remember everything.
+
+---
+
+## A New Approach to Knowledge
+
+Recurse responds to queries not with flat chunks of text, but with nested trees and subgraphs that preserve the rich relationships between concepts. This means when you ask about a research topic, you don't get isolated facts—you get a structured understanding that shows how ideas connect and build upon each other.
+
+The system maintains complete traceability from any piece of information back to its original source, enabling accurate citation. Your knowledge grows organically as you use it, with each new document automatically connecting to relevant existing concepts.
+
+<AnimatedGraphExample />
+
+---
+
+## How It Works (The Simple Version)
+
+Upload your content—documents, notes, articles, whatever you want your AI to remember—and Recurse transforms it into a living knowledge substrate. Ask questions naturally, and the system finds relevant information while preserving the rich context and relationships between ideas. The more you use it, the smarter it gets at connecting concepts across all your content.
+
+This creates a foundation where knowledge sharing becomes fundamentally easier. In the future, you'll be able to subscribe to other knowledge streams, combining insights from trusted sources with your own understanding while maintaining complete control over what you share.
+
+---
+
+## What Makes Recurse Different
+
+Most AI tools treat each conversation as a blank slate. Recurse changes that by creating a living knowledge substrate that interconnects every new piece of information with all your existing knowledge.
+
+| Technology | Approach | What You Get |
+|------------|----------|--------------|
+| **RAG** | Flat text chunks | Basic retrieval, loses context |
+| **GraphRAG** | Predefined relationships | Structured but rigid connections |
+| **RAGE** | Living knowledge substrate | Automatic semantic extraction, nested relationships |
+
+Unlike traditional systems that need manual graph maintenance or predefined ontologies, Recurse automatically detects and extracts structural units alongside their semantic meaning and purpose. When you upload a document, it doesn't just store text—it understands the relationships between ideas and connects them to everything you've already learned.
+
+---
+
+## Real Examples of What You Can Do
+
+<Cards>
+  <Card title="Research Projects">
+    "What were the main findings from my climate change papers, and how do they connect to my current hypothesis?"
+  </Card>
+  <Card title="Writing Tasks">
+    "Help me write a blog post about AI ethics, drawing from the articles I've saved over the past year."
+  </Card>
+  <Card title="Learning & Study">
+    "Explain quantum computing using the analogies and examples from my physics notes."
+  </Card>
+  <Card title="Work Projects">
+    "What did we decide about the user authentication flow in our last team meeting?"
+  </Card>
+</Cards>
+
+---
+
+## Built for Everyone
+
+Whether you're an individual researcher, part of a team, or building AI applications, Recurse provides the interfaces and integrations you need.
+
+| Interface | Best For | Key Features |
+|-----------|----------|--------------|
+| **Web Interface** | Individual users | Upload documents, chat naturally, explore knowledge graphs |
+| **API Integration** | Developers & teams | Connect to existing applications, custom workflows |
+| **Browser Extensions** | Content collectors | Save web content automatically, capture insights on the fly |
+| **MCP Server** | AI agent builders | Works with AI agents that support Model Context Protocol |
+
+### Developer Integration
+
+```bash
+# Add a document to your knowledge base
+curl -X POST "https://api.recurse.cc/documents" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{"content": "Your document content here"}'
+
+# Search across your entire knowledge substrate
+curl "https://api.recurse.cc/search/?query=quantum computing&limit=5"
+```
+
+---
+
+## Why People Choose Recurse
+
+Individual users love Recurse because it eliminates the frustration of losing context when switching between AI systems. Researchers maintain their intellectual momentum across different tools, writers build on previous insights without starting over, and learners create personal knowledge bases that grow smarter over time.
+
+Teams benefit from shared knowledge that maintains individual ownership and control. Each team member can contribute to collective understanding while keeping their own knowledge streams private and portable.
+
+Developers appreciate the clean API design that integrates seamlessly with existing systems. The privacy-first approach ensures user data ownership, while the flexible architecture supports everything from simple chatbots to sophisticated AI agent networks.
+
+---
+
+## Getting Started
+
+Ready to give your AI a memory? Getting started with Recurse is straightforward and takes just a few minutes.
+
+<div className='fd-steps [&_h4]:fd-step'>
+#### Create Your Account
+Sign up at [dashboard.recurse.cc](https://dashboard.recurse.cc) and get your API key
+
+#### Upload Your First Document
+Open the [upload section](https://dashboard.recurse.cc/upload). Start with something meaningful – a research paper, meeting notes, or project documentation
+
+#### Ask Your First Question
+Use the [chat interface](https://dashboard.recurse.cc/upload) or [API](/docs/api-documentation/documents/upload-post) to query your knowledge
+
+#### Connect Your Tools
+Integrate with your favorite AI systems using our API or MCP
+</div>
+
+---
+
+## Ready to Transform Your Knowledge Work?
+
+Your AI's memory problems are about to be solved. Recurse creates a living knowledge substrate that grows smarter with every document and question you add.
+
+<Cards>
+  <Card href="/docs/quickstart/ui" title="Quickstart Guide">
+    Get up and running in 5 minutes with step-by-step instructions to upload your first documents and ask your first questions.
+  </Card>
+  <Card href="/" title="Adding Content">
+    Learn different ways to add your knowledge—from manual uploads to automatic ingestion and browser extensions.
+  </Card>
+  <Card href="/docs/api-documentation/documents/upload-post" title="API Reference">
+    Complete technical documentation for integrating Recurse into your applications and workflows.
+  </Card>
+  <Card href="./guide/Applications/use-cases.mdx" title="Use Cases">
+    Discover how researchers, writers, and teams are using Recurse to transform their knowledge work.
+  </Card>
+</Cards>
+
+Ready to never lose your AI's memory again? Let's get started.
+
+

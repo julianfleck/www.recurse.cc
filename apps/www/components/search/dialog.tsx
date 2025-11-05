@@ -35,6 +35,7 @@ export function SearchCommandDialog({
     Awaited<ReturnType<SearchProvider['search']>>
   >([]);
   const resultsRef = useRef<HTMLDivElement>(null);
+  const contentTreeRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -87,13 +88,8 @@ export function SearchCommandDialog({
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'ArrowDown' && results.length > 0) {
       e.preventDefault();
-      // Focus the first focusable item in the results
-      const firstItem = resultsRef.current?.querySelector<HTMLElement>(
-        '[role="menuitem"], [data-slot="accordion-menu-item"], [data-slot="accordion-menu-sub-trigger"]'
-      );
-      if (firstItem) {
-        firstItem.focus();
-      }
+      // Focus the ContentTree container so it can receive keyboard events
+      contentTreeRef.current?.focus();
     }
   };
 
@@ -127,6 +123,8 @@ export function SearchCommandDialog({
         {emptyMessage && <CommandEmpty>{emptyMessage}</CommandEmpty>}
         {searchTerm && !isLoading && results.length > 0 && (
           <DocumentationResults
+            containerRef={contentTreeRef}
+            isLoading={isLoading}
             onSelect={() => onOpenChange(false)}
             onSelectAll={handleSelectAll}
             results={results}

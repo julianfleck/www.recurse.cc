@@ -1,0 +1,13 @@
+{
+  "title": "Search",
+  "pages": [
+    "get",
+    "text-get",
+    "semantic-get",
+    "document-get",
+    "frames-get",
+    "tags-get",
+    "candidates-post"
+  ]
+}
+

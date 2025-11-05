@@ -1,0 +1,64 @@
+---
+title: RAGE
+description: The processing engine that transforms unstructured sources into structured knowledge graphs
+icon: cpu
+---
+
+RAGE (Recursive, Agentic Graph Embeddings) provides the technical foundation for everything Recurse does. It's what transforms unstructured sources into structured knowledge graphs, extracts semantic meaning through frame semantics, and enables recursive navigation through typed relationships.
+
+You don't interact with RAGE directly as a user. It operates as the processing engine—the invisible infrastructure that handles source ingestion, frame extraction, relationship mapping, and query resolution in the background.
+
+The key architectural choice here is treating knowledge as evolving structures rather than static text. This is what enables Recurse to navigate concepts via their relationships rather than similarity matching alone, and to maintain structural coherence as more knowledge accumulates over time.
+
+---
+
+## What RAGE Provides
+
+**Structural extraction**: Transforms raw text into typed semantic frames with relationships
+
+**Recursive navigation**: Follow structural connections across multiple levels and documents
+
+**Multi-scale embeddings**: Maintains representations at different levels of abstraction
+
+**Temporal versioning**: Tracks how knowledge evolves while preserving history
+
+**Intent-aware retrieval**: Understands query intent, not just keyword similarity
+
+---
+
+## Why This Architecture Matters
+
+Traditional systems store text and match keywords. RAGE builds structures and navigates relationships. This architectural difference enables fundamentally different operations:
+
+- Navigate from arguments to their supporting data across documents
+- Trace how understanding of a concept evolved over time
+- Discover connections that weren't explicitly stated in sources
+- Query at different levels of detail (summaries to specifics)
+- Assemble context bundles based on structural relationships
+
+---
+
+## For Most Users
+
+You don't need to understand RAGE to use Recurse. Upload sources, route requests through the proxy, subscribe to Context Streams—frame extraction and structure maintenance happen automatically.
+
+RAGE is the engine. You interact with the features it enables.
+
+---
+
+## Related Concepts
+
+<Cards>
+  <Card href="/docs/concepts/frames" title="Frames">
+    Semantic units that RAGE extracts
+  </Card>
+  
+  <Card href="/docs/concepts/self-bootstrapping" title="Self-Bootstrapping">
+    How RAGE adapts to any content type
+  </Card>
+  
+  <Card href="/docs/concepts/self-updating" title="Self-Updating">
+    How RAGE maintains knowledge currency
+  </Card>
+</Cards>
+

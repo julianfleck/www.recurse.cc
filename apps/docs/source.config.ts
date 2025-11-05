@@ -18,8 +18,9 @@ const extendedFrontmatterSchema = frontmatterSchema.extend({
 });
 
 // Only documentation collection - dashboard moved to apps/dashboard
+// Reading from root-level content directory for consistency
 export const docs = defineDocs({
-  dir: "content/docs",
+  dir: "../../content/docs",
   docs: {
     schema: extendedFrontmatterSchema,
   },

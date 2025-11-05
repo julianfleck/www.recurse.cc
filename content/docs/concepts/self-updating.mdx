@@ -1,0 +1,80 @@
+---
+title: Self-Updating
+description: Knowledge evolution with complete history—temporal versioning instead of invalidation
+icon: git-branch
+---
+
+Standard approaches to outdated knowledge present you with an unfortunate dilemma: either you keep the incorrect information (and risk propagating errors), or you delete the outdated content (and lose all historical context).
+
+Recurse implements a third approach: it evolves knowledge while preserving the evolution history.
+
+---
+
+## How The Mechanism Works
+
+When new content arrives, Recurse periodically reviews frames that get accessed frequently. If the new information updates previous understanding, the system rewrites the frame with current knowledge while maintaining links to previous versions—complete with timestamps, diffs showing exactly what changed, and explanations of why the update happened.
+
+---
+
+## Concrete Example
+
+You process a 2020 paper that claimed "state-of-the-art performance" for a particular method. Then in 2024, you process newer papers demonstrating superior approaches.
+
+Rather than deleting the 2020 claim or just keeping it unchanged, Recurse updates it to something like:
+
+> "This method achieved state-of-the-art performance in 2020 (based on results from [Paper A]), but has since been superseded by [these newer approaches, 2024] which show [these specific improvements]."
+
+**The system preserves**:
+- The previous version with its original timestamp
+- A diff showing the specific changes made
+- Links connecting the old and new versions
+- Context explaining what evidence prompted the revision
+
+When you query that claim now, you get access to both the current understanding and its complete evolution history. You can track how knowledge of a particular topic changed over time, what evidence prompted each revision, and when the understanding actually shifted.
+
+---
+
+## Evolution vs. Invalidation
+
+| Characteristic | Systems That Invalidate | What Recurse Does |
+|----------------|------------------------|-------------------|
+| **Outdated content** | Mark it invalid and remove it | Evolve it with version links preserved |
+| **Historical access** | Lost after invalidation happens | Maintained through timestamped versions |
+| **Change tracking** | Binary state change (valid/invalid) | Continuous diffs between versions |
+| **Revision context** | Not preserved at all | Linked with full explanations |
+| **Timeline views** | Not supported | Full evolution history accessible |
+
+Knowledge accumulation without temporal context inevitably leads to either error propagation (when you keep outdated claims) or complete history loss (when you delete them). What temporal versioning gives you is a way to maintain both currency and historical context simultaneously.
+
+---
+
+## What This Enables
+
+**Current understanding**: Your queries get the most up-to-date knowledge
+
+**Historical tracking**: Trace how understanding evolved over months or years
+
+**Evidence trails**: See what new information prompted each update
+
+**Temporal queries**: Ask "how did understanding of X change between 2020 and 2024?"
+
+**Error correction with context**: Mistakes get fixed while preserving the record
+
+---
+
+## Related Concepts
+
+<Cards>
+  <Card href="/docs/concepts/frames" title="Frames">
+    The semantic units that evolve over time
+  </Card>
+  
+  <Card href="/docs/concepts/rage" title="RAGE">
+    The engine that manages temporal versioning
+  </Card>
+  
+  <Card href="/docs/concepts/self-bootstrapping" title="Self-Bootstrapping">
+    How frame types adapt as knowledge evolves
+  </Card>
+</Cards>
+

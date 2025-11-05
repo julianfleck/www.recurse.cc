@@ -1,0 +1,97 @@
+---
+title: Context Streams
+description: Curated collections that bundle multiple sources into coherent knowledge packages
+icon: rss
+---
+
+<Callout type="info">
+**Related concept**: Context Streams work alongside **Source Subscriptions** to enable continuous knowledge flow. While Source Subscriptions handle individual feeds, Context Streams provide expert-curated bundles. Learn about both to understand how they complement each other.
+</Callout>
+
+A Context Stream is a curated collection that bundles multiple sources, individual pieces of content, or even other source subscriptions into a coherent knowledge package. Think of it as a playlist for knowledge: someone (maybe you, maybe an expert) has assembled sources that work together to cover a domain.
+
+---
+
+## What Makes Context Streams Powerful
+
+**Expert curation**: Domain experts can package their knowledge infrastructure—the sources they trust, the frameworks they use, the context that matters
+
+**Dynamic loading**: Tag a stream in conversation (`#rag-best-practices`) to pull in its context for that specific exchange
+
+**Subscribe or load**: Either subscribe to keep a stream permanently available to your models, or load it on-demand via tags
+
+**Composable**: A stream can contain individual documents, source subscriptions, or references to other resources
+
+---
+
+## Example
+
+An AI researcher creates a Context Stream called `#modern-rag-techniques` containing:
+- Source subscriptions to key RAG research newsletters
+- Foundational papers (specific documents they uploaded)
+- Their own notes and synthesis documents
+- Links to continuously-updated documentation
+
+You subscribe to this stream or tag it in conversation. Your AI models now benefit from that expert's curation—staying current with the field through their maintained source subscriptions, accessing their selected foundational papers, and drawing on their synthesis work.
+
+---
+
+## How Streams Work with Subscriptions
+
+**Source Subscriptions** → continuous individual feeds  
+**Context Streams** → curated bundles (can include source subscriptions)
+
+A Context Stream might contain 5 source subscriptions + 10 specific documents + 3 synthesis notes. When you subscribe to the stream, you're getting all of that: the continuously updating feeds plus the curated static content plus the expert's own contributions.
+
+Tag streams dynamically: `#latent-space-context` pulls in just that stream's context for one conversation without permanently subscribing.
+
+---
+
+## Who Benefits
+
+Your AI models get access to:
+- Expert-curated context bundles (via Context Streams)
+- Current, continuously updated domain knowledge (when streams include source subscriptions)
+- Structural understanding of how concepts relate (via frame extraction across all sources)
+
+You don't learn from these streams in real-time—your models query them. The benefit to you is that your AI interactions draw from curated, up-to-date, structurally understood knowledge rather than static uploads or web searches.
+
+---
+
+## Creating and Sharing
+
+Anyone can create Context Streams. You might:
+- Package your research methodology + key sources for your team
+- Curate domain-specific knowledge for a community
+- Maintain a personal stream of sources you trust
+
+Make streams private, share with specific teams, or publish publicly. Public streams become discoverable—others can subscribe and benefit from your curation.
+
+> **Coming: creator rewards**. Maintainers of popular public streams will be able to opt into receiving value from their curation work.
+
+---
+
+## Related Concepts
+
+<Cards>
+  <Card href="/docs/concepts/subscriptions" title="Source Subscriptions">
+    Individual feeds that keep your knowledge current
+  </Card>
+  
+  <Card href="/docs/concepts/frames" title="Frames">
+    Semantic units extracted from sources
+  </Card>
+  
+  <Card href="/docs/concepts/self-updating" title="Self-Updating">
+    How streams stay current over time
+  </Card>
+  
+  <Card href="/docs/concepts/rage" title="RAGE">
+    The engine that processes stream content
+  </Card>
+  
+  <Card href="/docs/guides/subscriptions" title="Subscriptions Guide">
+    How to create and use Context Streams
+  </Card>
+</Cards>
+

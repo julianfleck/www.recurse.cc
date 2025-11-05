@@ -1,4 +1,4 @@
-import { IconApi, IconRun, IconUserScreen } from '@tabler/icons-react';
+import { IconApi, IconColorFilter, IconRun, IconUserScreen } from '@tabler/icons-react';
 import {
   Book,
   Bot,
@@ -16,6 +16,7 @@ import {
   Rocket,
   Rss,
   Share2,
+  Signpost,
   UserPlus,
 } from 'lucide-react';
 import { createElement } from 'react';
@@ -64,10 +65,14 @@ export function resolveIcon(icon?: string) {
       return createElement(Lightbulb, { className: 'size-4' });
     case 'help-circle':
       return createElement(HelpCircle, { className: 'size-4' });
+    case 'signpost':
+      return createElement(Signpost, { className: 'size-4' });
 
     // Tabler icons
     case 'api':
       return createElement(IconApi, { className: 'size-4' });
+    case 'color-filter':
+      return createElement(IconColorFilter, { className: 'size-4' });
     case 'user-screen':
       return createElement(IconUserScreen, { className: 'size-4' });
     case 'run':
