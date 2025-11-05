@@ -1,57 +1,67 @@
 ---
-title: Recurse — Infrastructure for sense-making, not just retrieval
+title: Introduction to Recurse
 sidebar_label: Introduction
-description: Recurse structures memory for AI applications to enable exploration, not just retrieval
+description: Infrastructure for sense-making, not just retrieval. Recurse structures memory for AI applications to enable exploration and deep understanding.
 icon: home
 ---
 
-Most AI memory systems optimize for one thing: similarity. You ask a question, get back the most similar chunks, and that's it. This works fine if you already know what you're looking for. But it systematically prevents discovery—you can't find connections you didn't know existed, can't stumble onto context from unexpected places, can't explore ideas that branch away from your original query.
+Most AI memory systems work by looking at query similarity – you ask a question, get back stuff that looks similar to your question, and that's it. This works if you already know what you're looking for. But it systematically prevents discovery. You can't find connections you didn't know existed, can't stumble onto context from unexpected places, can't explore ideas that branch away from your original query.
 
-Recurse doesn't treat memory as a similarity search problem. It treats it as a living structure—one you can navigate yourself and share with others. The question isn't "what's most similar?" but "what connects?", "what supports this?", "how did understanding evolve?" Those are fundamentally different questions, and they require fundamentally different infrastructure.
+Recurse is built on different principles: **structure over similarity**, **relationships over rankings**, **evolution over static storage**. We are building infrastructure for sense-making, not just retrieval. For exploration, not just question-answering. For building understanding, not just finding facts.
+
+We treat memory as a living structure – one you can navigate yourself and share with others. So that instead of asking "what's most similar?" you can ask "what connects?", "what supports this?", "how did my understanding evolve?" Those are fundamentally different questions that require fundamentally different infrastructure.
 
 <AnimatedGraphExample />
 
----
-
-## Why Similarity Isn't Enough
-
-Static similarity metrics treat memory as an optimization problem: minimize distance in embedding space, maximize relevance scores, return top-k results. But understanding doesn't work that way. Ideas connect across conceptual distances. Evidence comes from unexpected domains. Insights emerge from juxtapositions that wouldn't score highly on similarity.
-
-Recurse is built on different principles: **structure over similarity**, **relationships over rankings**, **evolution over static storage**. The system doesn't just ask "what's most similar?"—it asks "what connects?", "what supports this?", "how did this evolve?", "what contradicts this?"
-
-This is infrastructure for sense-making, not just retrieval. For exploration, not just question-answering. For building understanding, not just finding facts.
-
----
-
 ## How Recurse Works
 
-### Structured Understanding
+Instead of similar chunks (RAG) or entities (GraphRAG), Recurse extracts *semantic structure* – understanding what sources argue, what supports those arguments, how different pieces relate – and maps out how these elements connect.
 
-Traditional retrieval systems store your text and search for similar chunks when you query them. Recurse extracts semantic structure instead—understanding what sources argue, what supports those arguments, how different pieces relate—and maps out how these elements actually connect.
+This structure lets information reference other information across your entire knowledge base. An argument in one paper connects to supporting data from three others. A technique described in one source links to examples of its use elsewhere. Your knowledge becomes a web of relationships, not a collection of isolated text chunks.
 
-This structure lets information reference other information across your entire knowledge base. An argument in one paper can connect to supporting data from three others. A technique described in one source links to examples of its use elsewhere. Your knowledge becomes a web of relationships, not a collection of isolated text chunks.
-
-When you (or your AI agent) query, you don't just get similar text—you can trace connections, follow supporting evidence, explore how ideas relate. You can discover connections that weren't even explicit in the original sources.
-
-### Context Injection
-
-Route your AI requests through our proxy. Context bundles matching your query intent get automatically injected. Your research accumulates across sessions. Writing draws from previous research. Each interaction builds on accumulated understanding without manual context management.
-
-### Living Knowledge
-
-Knowledge evolves over time. When new information updates previous understanding, Recurse doesn't delete the old—it preserves the evolution with timestamps and diffs showing what changed and why. Track how understanding of a topic evolved over months or years.
-
-### Context Streams
-
-Subscribe to expert-curated collections. One click gives your AI access to domain-specific knowledge maintained by experts. AI safety research, engineering best practices, legal precedents—all continuously updated, automatically available when relevant.
+When you (or your AI agent) query Recurse, you don't just get back similar text – you can trace connections, follow supporting evidence, explore how ideas relate. Discover connections that weren't even explicit in the original sources.
 
 ---
 
-## Two Ways to Use Recurse
+### Core Features
 
-**For Non-Technical Users**: [chat.recurse.cc](https://chat.recurse.cc) provides a familiar chat interface where you can interact with your knowledge base, tag collections, explore connections, and ask "how does X relate to Y?"
+<Cards>
+  <Card href="/docs/concepts/frames" title="Semantic Frames" icon="cube">
+    Recurse extracts semantic units with typed relationships – not just text chunks or entities. Arguments link to evidence, decisions connect to discussions, concepts nest within hierarchies. Frame types adapt to your content.
+  </Card>
 
-**For Builders**: The API lets you integrate Recurse into your applications—automatic context injection via proxy, programmatic uploads, search, and more. Build AI applications with structured memory, not just similarity search.
+  <Card href="/docs/guides/using-the-proxy" title="Context Injection" icon="arrow-right-left">
+    Route AI requests through our proxy. Context bundles matching your query get assembled and enriched before forwarding to OpenAI, Anthropic, or any provider. One line change in your code.
+  </Card>
+
+  <Card href="/docs/concepts/self-learning" title="Self-Evolution" icon="sparkles">
+    No predefined schemas required. Recurse discovers frame patterns in your content automatically – research papers, code docs, meeting notes – and adapts to your domain as you upload more.
+  </Card>
+
+  <Card href="/docs/concepts/self-updating" title="Living Knowledge Substrate" icon="git-branch">
+    Knowledge evolves without losing history. New information updates previous understanding with timestamps and diffs. Track how understanding changed over months or years.
+  </Card>
+
+  <Card href="/docs/concepts/subscriptions" title="Source Subscriptions" icon="rss">
+    Subscribe to newsletters, RSS feeds, or docs for continuous ingestion. New content gets processed automatically. Your knowledge stays current without manual uploads.
+  </Card>
+
+  <Card href="/docs/concepts/streams" title="Context Streams" icon="broadcast">
+    Subscribe to expert-curated collections. One click gives you domain-specific knowledge – AI safety research, engineering best practices, legal precedents – maintained by experts.
+  </Card>
+</Cards>
+
+---
+
+## Ways to Use Recurse
+
+**Chat interface**: [chat.recurse.cc](https://chat.recurse.cc) provides a familiar interface connected to your knowledge graph. Ask "how does X relate to Y?" and navigate your structured knowledge conversationally. Tag collections, explore relationships, query across everything you've accumulated. No code required.
+
+**Proxy**: Route requests from any AI provider through our proxy for automatic context injection. Change one line in your existing code – context bundles matching your query intent get assembled and enriched before forwarding to OpenAI, Anthropic, or any other provider.
+
+**API integration**: Build custom experiences on top of the knowledge substrate. Your AI agents get full programmatic access to frame extraction, relationship navigation, and graph operations. Direct control over uploads, search, and retrieval.
+
+Use whichever fits your workflow – or combine them.
 
 ---
 
@@ -59,14 +69,14 @@ Subscribe to expert-curated collections. One click gives your AI access to domai
 
 <Cards>
   <Card href="/docs/getting-started/quickstart" title="Quickstart">
-    Get running in 5 minutes—upload sources and start querying
+    Get running in 5 minutes – upload sources and start querying
   </Card>
   
-  <Card href="/docs/guides/using-the-proxy" title="Using the Proxy">
+  <Card href="/docs/guides/using-the-proxy" title="Proxy Guide">
     Automatic context injection for AI applications
   </Card>
   
-  <Card href="/docs/guides/subscriptions" title="Context Streams">
+  <Card href="/docs/guides/context-streams" title="Context Streams">
     Subscribe to expert-curated knowledge
   </Card>
   
@@ -79,28 +89,20 @@ Subscribe to expert-curated collections. One click gives your AI access to domai
 
 ## What Makes Recurse Different
 
-Most AI memory systems optimize for similarity—you ask a question, get back similar chunks. Recurse extracts structure instead: what documents argue, what supports those arguments, how ideas connect.
+If you've worked with RAG systems or knowledge graphs, you might wonder what makes Recurse different. Here's how our approach compares:
 
-| Approach | Understanding | Navigation | Evolution |
-|----------|---------------|------------|-----------|
-| **Traditional RAG** | Keyword matching | Linear search | Static |
-| **GraphRAG** | Predefined relationships | Fixed traversal | Manual updates |
-| **Recurse** | **Structural extraction** | **Intent-aware** | **Temporal versioning** |
 
-This transforms retrieval from similarity matching into structural navigation through your knowledge.
+| Feature | RAG (Traditional) | GraphRAG | Recurse (RAGE) |
+|:--------|:------------------|:---------|:-----|
+| **Basic Functionality** | Retrieves documents based on keyword matches and vector embeddings. | Extracts entities, connects them with relationships, and performs basic entity-based retrieval. | Retrieves and navigates knowledge hierarchies, based on dynamic, context-sensitive, recursive traversal. |
+| **Conceptual Understanding** | Shallow, flat retrieval of documents or chunks of text. | Entity-based relationships; basic conceptual connections. | Deep, multi-layered understanding with **semantic zooming** and **multi-resolution analysis**. |
+| **Recursion and Depth** | Single-pass retrieval; no recursive exploration. | Entity-based, but lacks deeper recursion or layers of abstraction. | **Recursive exploration** across levels of abstraction, adapting to user needs and triggered associations. |
+| **Graph Structure** | Flat, independent documents or chunks with basic metadata. | Simple graph of entities; basic connection of entities with little hierarchical or lateral relationships. | **Recursive, evolving knowledge graph** that adjusts dynamically with new information and continuously prunes irrelevant connections. |
+| **Contextual Adaptation** | Static; doesn't adapt to user context or evolving needs. | Limited adaptability; can link entities but lacks deep contextual awareness. | **Context-sensitive traversal** that adapts based on user intent, cognitive mode, and evolving query. |
+| **Memory and Continuity** | No persistent memory; context is lost after each session. | No persistent context or memory; each query is treated as independent. | **Persistent, evolving memory** that adapts across sessions, recognizing and remembering user context. |
+| **Agentic Behavior** | One-shot, static retrieval based on initial query. | Simple entity retrieval without adaptive exploration. | **Agent-like behavior**: continuous re-evaluation of results, multi-step exploration, and intent-driven actions. |
+| **Source Subscriptions** | Not available. | Not available. | **Automatic continuous ingestion** from RSS feeds, newsletters, documentation – stays current without manual uploads. |
+| **Context Streams** | Not available. | Not available. | **Expert-curated knowledge bundles** – subscribe to domain-specific collections maintained by specialists. |
 
----
 
-## Ready to Build?
-
-Whether you're building research tools, knowledge management systems, or AI applications that need memory, Recurse provides the infrastructure for structured understanding.
-
-<Cards>
-  <Card href="/docs/getting-started/quickstart" title="Start Building">
-    5-minute quickstart guide
-  </Card>
-  
-  <Card href="https://dashboard.recurse.cc" title="Get API Key">
-    Sign up and get your API key
-  </Card>
-</Cards>
+Recurse transforms retrieval from similarity matching into structural navigation through your knowledge.

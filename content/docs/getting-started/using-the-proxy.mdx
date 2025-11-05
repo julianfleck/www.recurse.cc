@@ -1,0 +1,145 @@
+---
+title: Using the Proxy
+description: Get started with automatic context injection in under 2 minutes
+icon: arrow-right-left
+---
+
+The proxy is the easiest way to add Recurse to existing applications. Change one line of code—your base URL—and your AI requests automatically get enriched with context from your knowledge graph.
+
+---
+
+## Quick Setup
+
+<div className='fd-steps [&_h3]:fd-step'>
+
+### Generate Your API Key
+
+Navigate to your [API keys settings](https://dashboard.recurse.cc/settings/api-keys) and generate a new API key. This key authenticates your requests to Recurse.
+
+### Copy Your Key
+
+The key starts with `rk_`. Keep it secure—don't commit it to version control or share it publicly.
+
+### Configure Your Client
+
+Point your OpenAI SDK to the Recurse proxy instead of directly to your AI provider:
+
+<Tabs items={['JavaScript', 'Python', 'cURL']}>
+  <Tab value="JavaScript">
+```javascript
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,  // Your OpenAI/Anthropic/etc key
+  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
+  defaultHeaders: {
+    'X-API-Key': process.env.RECURSE_API_KEY,  // Your Recurse key
+    'X-Recurse-Scope': 'my_project'
+  }
+});
+
+// Use the client normally—context gets injected automatically
+const completion = await client.chat.completions.create({
+  model: 'gpt-4o-mini',
+  messages: [
+    { role: 'user', content: 'What did we decide about the API design?' }
+  ]
+});
+```
+  </Tab>
+  
+  <Tab value="Python">
+```python
+from openai import OpenAI
+import os
+
+client = OpenAI(
+    api_key=os.environ["OPENAI_API_KEY"],
+    base_url="https://api.recurse.cc/proxy/https://api.openai.com/v1/",
+    default_headers={
+        "X-API-Key": os.environ["RECURSE_API_KEY"],
+        "X-Recurse-Scope": "my_project"
+    }
+)
+
+# Use the client normally—context gets injected automatically
+completion = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": "What did we decide about the API design?"}
+    ]
+)
+```
+  </Tab>
+  
+  <Tab value="cURL">
+```bash
+curl https://api.recurse.cc/proxy/https://api.openai.com/v1/chat/completions \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "X-API-Key: $RECURSE_API_KEY" \
+  -H "X-Recurse-Scope: my_project" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4o-mini",
+    "messages": [
+      {"role": "user", "content": "What did we decide about the API design?"}
+    ]
+  }'
+```
+  </Tab>
+</Tabs>
+
+</div>
+
+---
+
+## What Happens
+
+When you send a request through the proxy, Recurse:
+
+1. Retrieves relevant frames from your knowledge graph based on your query and scope
+2. Assembles them into context bundles
+3. Enriches your request with that context
+4. Forwards everything to your AI provider
+5. Returns the response
+
+Your code sees a standard OpenAI-compatible response—the context injection happens transparently.
+
+---
+
+## Optional: Enable Persistence
+
+Add `'X-Recurse-Persist': 'true'` to your headers to automatically save useful outputs back into your knowledge graph. The assistant's responses become queryable content for future requests.
+
+```javascript
+const client = new OpenAI({
+  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
+  defaultHeaders: {
+    'X-API-Key': process.env.RECURSE_API_KEY,
+    'X-Recurse-Scope': 'my_project',
+    'X-Recurse-Persist': 'true'  // Enable persistence
+  }
+});
+```
+
+**When to use persistence:**
+- ✅ Summarizing meetings or documents
+- ✅ Creating knowledge base entries
+- ✅ Generating reference material
+- ❌ Temporary/session-specific content
+- ❌ Every single response (consumes storage)
+
+---
+
+## Learn More
+
+<Cards>
+  <Card href="/docs/guides/using-the-proxy" title="Proxy Guide (In-depth)">
+    Scopes, persistence strategies, advanced configuration, error handling
+  </Card>
+  
+  <Card href="/docs/getting-started/api-vs-proxy" title="API vs Proxy">
+    Understand when to use the Proxy vs direct API access
+  </Card>
+</Cards>
+

@@ -1,0 +1,101 @@
+---
+title: Using the API
+description: Direct API access for full control over content ingestion, retrieval, and graph navigation
+icon: code
+---
+
+For full control over uploads, search, and retrieval, use the API directly. This path gives you programmatic access to frame extraction, relationship navigation, and graph operations.
+
+---
+
+## Quick Setup
+
+<div className='fd-steps [&_h3]:fd-step'>
+
+### Generate Your API Key
+
+If you haven't already, generate an API key at your [API keys settings](https://dashboard.recurse.cc/settings/api-keys).
+
+### Submit Your First Source
+
+Upload content to your knowledge graph:
+
+```bash
+curl -X POST https://api.recurse.cc/documents/upload \
+  -H "X-API-Key: your_api_key_here" \
+  -F "text=Frame semantics enable deep understanding by representing concepts as structured units with typed relationships." \
+  -F "title=Frame Semantics Introduction" \
+  -F "scope=getting_started"
+```
+
+**Response**:
+```json
+{
+  "job_id": "job_abc123",
+  "status": "processing",
+  "document_id": "doc_xyz789"
+}
+```
+
+Recurse processes the content asynchronously—extracting frames, generating embeddings, mapping relationships. Processing typically takes 10-60 seconds depending on content size.
+
+### Search Your Knowledge
+
+Once processing completes, query your knowledge graph:
+
+```bash
+curl "https://api.recurse.cc/search/?query=semantic:frame semantics&limit=5&scope=getting_started" \
+  -H "X-API-Key: your_api_key_here"
+```
+
+**Response**:
+```json
+{
+  "query": "frame semantics",
+  "nodes": [
+    {
+      "id": "frame_abc123",
+      "title": "Frame Semantics Introduction",
+      "type": "Frame:Concept",
+      "similarity_score": 0.94,
+      "content": "Frame semantics enable deep understanding..."
+    }
+  ],
+  "total_found": 1
+}
+```
+
+</div>
+
+---
+
+## Query Types
+
+Recurse supports multiple search modes:
+- `semantic:your query` – Vector similarity search across frames
+- `text:exact phrase` – Keyword matching
+- Add `&scope=scope_name` to filter by collection
+- Add `&frame_types=Claim,Evidence` to filter by frame type
+
+---
+
+## Learn More
+
+<Cards>
+  <Card href="/docs/guides/using-the-api/saving-content" title="Saving Content">
+    Best practices for uploading and organizing sources
+  </Card>
+  
+  <Card href="/docs/guides/using-the-api/retrieving-context" title="Retrieving Context">
+    Advanced search patterns and query strategies
+  </Card>
+  
+  <Card href="/docs/guides/using-the-api/retrieving-graphs" title="Retrieving Graphs">
+    Navigate relationships and explore graph structures
+  </Card>
+  
+  <Card href="/docs/getting-started/api-vs-proxy" title="API vs Proxy">
+    Understand when to use the API vs the Proxy
+  </Card>
+</Cards>
+

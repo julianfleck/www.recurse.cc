@@ -1,0 +1,109 @@
+---
+title: User Interface
+description: Use Recurse through the chat and graph interfaces—no code required
+icon: device-imac
+---
+
+The fastest way to start using Recurse is through the web interface. Upload files, query your knowledge conversationally, and explore relationships visually. Perfect for researchers, writers, and anyone who wants to experience structured knowledge without writing code.
+
+---
+
+## Getting Started
+
+Log in at [chat.recurse.cc](https://chat.recurse.cc) with the credentials you created during signup. Since you've already configured your AI provider key in settings, you're ready to start immediately.
+
+---
+
+## Uploading Content
+
+There are several ways to add content to your knowledge base:
+
+### Via Chat Interface
+
+Drop files directly into the chat interface—PDFs, text files, markdown documents, Word docs. Recurse processes them, extracts semantic frames, and makes them queryable within 10-60 seconds depending on file size.
+
+You can also paste text or URLs directly into the chat. The system recognizes URLs and fetches the content automatically.
+
+### Via Dashboard
+
+Navigate to the [dashboard](https://dashboard.recurse.cc) and use the upload section for batch uploads. This is useful when you have multiple documents to process at once. You can:
+- Upload multiple files simultaneously
+- Set scopes for organization
+- Monitor processing status for all uploads
+
+---
+
+## Querying Your Knowledge
+
+Once you've uploaded content, ask questions naturally in the chat interface. Recurse retrieves relevant frames and assembles them into context for your query.
+
+### Using Collection Tags
+
+Focus queries on specific collections by tagging them with `#collection-name`. For example:
+- `#research-papers What are the main approaches to frame semantics?`
+- `#meeting-notes What did we decide about the API design?`
+- `#team-docs What's our deployment process?`
+
+This scopes the retrieval to only those collections, making responses more relevant.
+
+### Natural Language Queries
+
+Ask questions as you would to a colleague:
+- "What's the relationship between X and Y?"
+- "How does this concept connect to that paper?"
+- "What evidence supports this claim?"
+- "When did our understanding of this change?"
+
+The system navigates frame relationships to answer structural questions, not just similarity matches.
+
+---
+
+## Exploring the Graph
+
+The [graph interface](https://dashboard.recurse.cc/graph) visualizes the relationships between concepts in your knowledge base. Here you can:
+
+**Navigate visually**: Click on nodes to see their connections. Arguments link to evidence, decisions connect to discussions, concepts nest within hierarchies.
+
+**Discover relationships**: The graph shows connections that weren't even explicit in your original documents—relationships Recurse discovered by analyzing structure across everything you've uploaded.
+
+**Filter by type**: Show only certain frame types (Claims, Evidence, Decisions) to focus on specific aspects of your knowledge.
+
+**Explore temporally**: See how frames evolved over time when new information updated previous understanding.
+
+This visual interface complements the conversational chat—use both to explore your knowledge from different angles.
+
+---
+
+## Tips for Best Results
+
+**Organize with scopes**: Create scopes for different projects or content types. This keeps related content together and makes queries more focused:
+- `project:website-redesign`
+- `team:engineering`
+- `meeting-notes`
+- `research-papers`
+
+**Upload related content together**: When you upload related documents in the same session, Recurse can identify connections between them more easily.
+
+**Use descriptive titles**: Give your uploads meaningful titles. These help you navigate and filter content later.
+
+**Tag collections in queries**: Use `#collection-name` to scope queries when you know which collection contains the relevant information.
+
+---
+
+## Learn More
+
+The chat and graph interfaces provide immediate access to your knowledge without coding. When you're ready for programmatic access, explore the API and proxy options:
+
+<Cards>
+  <Card href="/docs/getting-started/using-the-proxy" title="Using the Proxy">
+    Add automatic context injection to your applications with one line of code
+  </Card>
+  
+  <Card href="/docs/getting-started/using-the-api" title="Using the API">
+    Full programmatic control over uploads, search, and graph navigation
+  </Card>
+  
+  <Card href="/docs/guides/using-the-ui" title="UI Guide (In-depth)">
+    Advanced features, keyboard shortcuts, and power user tips
+  </Card>
+</Cards>

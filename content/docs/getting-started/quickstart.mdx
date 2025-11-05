@@ -4,233 +4,59 @@ description: Get up and running with Recurse in under 5 minutes
 icon: zap
 ---
 
-Get up and running with Recurse in under 5 minutes.
-
-## Prerequisites
-
-- An OpenAI API key (or compatible provider)
-- A Recurse account ([sign up free](https://recurse.cc/signup))
-- Basic familiarity with REST APIs
+This guide walks you through the prerequisites and helps you choose the right path to get started with Recurse. Whether you want a no-code interface, programmatic API access, or automatic context injection, we've got you covered.
 
 ---
 
-<div className='fd-steps [&_h3]:fd-step'>
+## Prerequisites
 
-### Get Your API Key
+Before you begin, you'll need these three things:
 
-1. Sign up at [recurse.cc](https://recurse.cc/signup)
-2. Navigate to your [dashboard](https://recurse.cc/dashboard)
-3. Copy your API key (starts with `rk_`)
+<div className='fd-steps [&_h4]:fd-step'>
 
-<Callout type="warn">
-  **Keep this key secure**—don't commit it to version control.
+#### Get an AI Provider Key
+
+Recurse works with any OpenAI-compatible provider. Get a key from:
+- [OpenAI](https://platform.openai.com/api-keys) for GPT models
+- [Anthropic](https://console.anthropic.com/) for Claude
+- [DeepSeek](https://platform.deepseek.com/) for DeepSeek models
+- [OpenRouter](https://openrouter.ai/) for access to multiple models
+
+<Callout type="info">
+**Bring Your Own Key**: While in beta, Recurse operates on a bring-your-own-key basis. You use your own AI provider keys, and we handle the context injection and knowledge management. Not sure which provider or model to choose? Check our [model comparison guide](/docs/guides/model-comparison) to understand the tradeoffs.
 </Callout>
 
-### Upload Your First Source
+#### Sign Up for Recurse
 
-Let's add some knowledge to your graph:
+Create your account at [dashboard.recurse.cc/register](https://dashboard.recurse.cc/register). This gives you access to the chat interface, API, and proxy.
 
-```bash
-curl -X POST https://api.recurse.cc/documents/upload \
-  -H "X-API-Key: your_api_key_here" \
-  -F "text=Graph embeddings enable semantic understanding by representing entities and relationships as vectors in a continuous space." \
-  -F "title=Graph Embeddings Introduction" \
-  -F "scope=getting_started"
-```
+#### Configure Your AI Provider Key
 
-**Response**:
-```json
-{
-  "job_id": "job_abc123",
-  "status": "processing",
-  "document_id": "doc_xyz789"
-}
-```
-
-**What happened?**
-- Source uploaded
-- Processing started (extracting frames, generating embeddings)
-- Returns a job ID to track progress
-
-Processing typically takes 10-60 seconds.
-
-### Search Your Knowledge
-
-Once processing completes, search your knowledge:
-
-```bash
-curl "https://api.recurse.cc/search/?query=semantic:graph embeddings&limit=5" \
-  -H "X-API-Key: your_api_key_here"
-```
-
-**Response**:
-```json
-{
-  "query": "semantic:graph embeddings",
-  "nodes": [
-    {
-      "id": "frame_abc123",
-      "title": "Graph Embeddings Introduction",
-      "type": "Frame:Claim",
-      "similarity_score": 0.92,
-      "content": "Graph embeddings enable semantic understanding..."
-    }
-  ],
-  "total_found": 1
-}
-```
-
-**Try different queries**:
-- `semantic:machine learning` - Semantic search
-- `text:embeddings` - Keyword search
-- `semantic:neural networks&scope=getting_started` - Filter by scope
-
-### Use the Proxy (The Killer Feature)
-
-Now let's route requests through Recurse to automatically enrich them with context:
-
-<Tabs items={['JavaScript', 'Python', 'cURL']}>
-  <Tab value="JavaScript">
-```javascript
-import OpenAI from 'openai';
-
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,  // Your OpenAI key
-  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
-  defaultHeaders: {
-    'X-API-Key': process.env.RECURSE_API_KEY,  // Your Recurse key
-    'X-Recurse-Scope': 'getting_started'
-  }
-});
-
-// Use normally—context added automatically!
-const completion = await client.chat.completions.create({
-  model: 'gpt-4o-mini',
-  messages: [
-    { role: 'user', content: 'What are graph embeddings?' }
-  ]
-});
-
-console.log(completion.choices[0].message.content);
-```
-  </Tab>
-  
-  <Tab value="Python">
-```python
-from openai import OpenAI
-import os
-
-client = OpenAI(
-    api_key=os.environ["OPENAI_API_KEY"],
-    base_url="https://api.recurse.cc/proxy/https://api.openai.com/v1/",
-    default_headers={
-        "X-API-Key": os.environ["RECURSE_API_KEY"],
-        "X-Recurse-Scope": "getting_started"
-    }
-)
-
-# Use normally—context added automatically!
-completion = client.chat.completions.create(
-    model="gpt-4o-mini",
-    messages=[
-        {"role": "user", "content": "What are graph embeddings?"}
-    ]
-)
-
-print(completion.choices[0].message.content)
-```
-  </Tab>
-  
-  <Tab value="cURL">
-```bash
-curl https://api.recurse.cc/proxy/https://api.openai.com/v1/chat/completions \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "X-API-Key: $RECURSE_API_KEY" \
-  -H "X-Recurse-Scope: getting_started" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "gpt-4o-mini",
-    "messages": [
-      {"role": "user", "content": "What are graph embeddings?"}
-    ]
-  }'
-```
-  </Tab>
-</Tabs>
-
-**What's happening?**
-1. Your request goes to Recurse proxy
-2. Recurse searches your knowledge graph for relevant context
-3. Recurse enriches the request with that context
-4. OpenAI processes the enriched request
-5. You get a response grounded in your knowledge
-
-### Enable Persistence (Optional)
-
-Save useful outputs back into your knowledge graph:
-
-```javascript
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
-  defaultHeaders: {
-    'X-API-Key': process.env.RECURSE_API_KEY,
-    'X-Recurse-Scope': 'getting_started',
-    'X-Recurse-Persist': 'true'  // Enable persistence
-  }
-});
-
-const completion = await client.chat.completions.create({
-  model: 'gpt-4o-mini',
-  messages: [
-    { role: 'user', content: 'Summarize how graph embeddings work.' }
-  ]
-});
-
-// The assistant's response is automatically saved to your knowledge graph!
-```
-
-**When to use persistence**:
-- ✅ Summarizing meetings or documents
-- ✅ Creating knowledge base entries
-- ✅ Generating reference material
-- ❌ Temporary/session-specific content
-- ❌ Every single response (consumes storage)
+Once signed up, navigate to your [settings](https://dashboard.recurse.cc/settings) and add your AI provider key. This enables the chat interface and proxy to make requests on your behalf.
 
 </div>
 
 ---
 
-## Next Steps
+## Choose Your Path
 
-### Upload More Sources
-
-Add to your knowledge base:
-- PDF files: `-F "file=@document.pdf"`
-- URLs: `-F "url=https://example.com/article"`
-- Text: `-F "text=Your content here"`
-
-### Organize with Scopes
-
-Create scopes for different projects/contexts:
-- `project:website-redesign`
-- `team:engineering`
-- `meeting_notes`
-- `research_papers`
-
-### Read More
+Now that you're set up, choose how you want to use Recurse:
 
 <Cards>
-  <Card href="/docs/guides/using-the-proxy" title="Using the Proxy">
-    Complete proxy documentation with advanced features
+  <Card href="/docs/getting-started/user-interface" title="User Interface" icon="device-imac">
+    **No code required**. Upload files via chat or dashboard, query your knowledge conversationally, explore the graph interface. Best for: researchers, writers, anyone exploring without coding.
   </Card>
   
-  <Card href="/docs/guides/subscriptions" title="Subscriptions Guide">
-    Subscribe to expert-curated knowledge
+  <Card href="/docs/getting-started/api-vs-proxy" title="API vs Proxy" icon="git-compare">
+    **Not sure which to use?** Understand the difference between direct API access and proxy-based context injection. This guide helps you choose the right approach for your use case.
   </Card>
   
-  <Card href="/docs/concepts" title="Core Concepts">
-    Understand how RAGE and frames work
+  <Card href="/docs/getting-started/using-the-api" title="Using the API" icon="code">
+    **Full programmatic control**. Upload sources, search your knowledge graph, navigate relationships, retrieve frames. Best for: custom applications, advanced integrations, agent builders.
+  </Card>
+  
+  <Card href="/docs/getting-started/using-the-proxy" title="Using the Proxy" icon="arrow-right-left">
+    **Easiest integration**. Change one line of code to add automatic context injection to existing applications. Best for: quick integration, existing AI apps, minimal code changes.
   </Card>
 </Cards>
 
@@ -239,20 +65,24 @@ Create scopes for different projects/contexts:
 ## Common Questions
 
 <Accordions>
+  <Accordion title="What's the difference between the API and Proxy?">
+    The **API** gives you direct control over uploads, search, and retrieval. The **Proxy** automatically injects context into your AI requests with minimal code changes. Read [API vs Proxy](/docs/getting-started/api-vs-proxy) to understand when to use each.
+  </Accordion>
+  
+  <Accordion title="Can I use multiple approaches?">
+    Absolutely. Many users combine the chat interface for exploration, the proxy for their main application, and direct API calls for specific operations. Your knowledge graph is accessible through all methods.
+  </Accordion>
+  
   <Accordion title="How long does source processing take?">
-    Typically 10-60 seconds depending on source size.
+    Typically 10-60 seconds depending on source size and complexity. You can check processing status via the job ID returned on upload or through the dashboard.
   </Accordion>
   
-  <Accordion title="Can I use this with Claude/Gemini?">
-    Yes, if they support OpenAI-compatible API. Just change the provider URL in the proxy base URL.
+  <Accordion title="Can I use this with Claude, Gemini, or other providers?">
+    Yes. Any OpenAI-compatible API works with the proxy. For Anthropic's Claude, use the Anthropic base URL. For other providers, adjust the base URL accordingly. See our [model comparison guide](/docs/guides/model-comparison).
   </Accordion>
   
-  <Accordion title="What happens to my data?">
-    Your data lives in your account. You control access, export, and deletion.
-  </Accordion>
-  
-  <Accordion title="How much does it cost?">
-    Free tier includes 100 requests/hour and 100MB storage. See [pricing](https://recurse.cc/pricing).
+  <Accordion title="What are scopes and how should I use them?">
+    Scopes organize your knowledge like folders or tags. Use them to separate projects, teams, or content types: `project:website-redesign`, `team:engineering`, `meeting_notes`. Queries and uploads both use scopes to keep related content together.
   </Accordion>
 </Accordions>
 

@@ -3,8 +3,10 @@
   "icon": "signpost",
   "defaultOpen": false,
   "pages": [
+    "using-the-ui",
     "using-the-proxy",
-    "subscriptions"
+    "using-the-api",
+    "source-subscriptions",
+    "context-streams"
   ]
 }
-

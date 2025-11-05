@@ -1,0 +1,13 @@
+{
+  "title": "UI Guide",
+  "icon": "device-imac",
+  "defaultOpen": false,
+  "pages": [
+    "chat",
+    "graph-view",
+    "context-bundler",
+    "usage-analytics",
+    "settings"
+  ]
+}
+

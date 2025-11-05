@@ -3,12 +3,13 @@
   "icon": "color-filter",
   "defaultOpen": false,
   "pages": [
-    "rage",
     "frames",
-    "self-bootstrapping",
+    "self-learning",
     "self-updating",
     "streams",
-    "subscriptions"
+    "subscriptions",
+    "recursivity",
+    "rage"
   ]
 }
 

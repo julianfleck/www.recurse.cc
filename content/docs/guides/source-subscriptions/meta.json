@@ -1,0 +1,10 @@
+{
+  "title": "Source Subscriptions",
+  "icon": "rss",
+  "defaultOpen": false,
+  "pages": [
+    "managing-sources",
+    "using-sources"
+  ]
+}
+
