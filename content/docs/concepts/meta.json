@@ -4,8 +4,8 @@
   "defaultOpen": false,
   "pages": [
     "frames",
-    "self-learning",
-    "self-updating",
+    "adaptive-schemas",
+    "temporal-versioning",
     "streams",
     "subscriptions",
     "recursivity",
