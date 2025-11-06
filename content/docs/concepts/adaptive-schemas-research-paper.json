@@ -1,0 +1,226 @@
+{
+  "baseData": {
+    "nodes": [
+      {
+        "id": "research-paper",
+        "type": "article",
+        "title": "Neural Networks in Medical Diagnosis",
+        "summary": "Research paper evaluating CNNs vs traditional ML for medical imaging",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "abstract",
+        "type": "Abstract",
+        "title": "Paper abstract",
+        "summary": "Overview of CNN applications in medical diagnosis",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "hypothesis-frame",
+        "type": "Hypothesis",
+        "title": "CNNs outperform traditional ML",
+        "summary": "Convolutional neural networks achieve superior diagnostic accuracy",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "background-frame",
+        "type": "Background",
+        "title": "Related work in medical imaging",
+        "summary": "Overview of prior approaches to automated diagnosis",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "method-frame",
+        "type": "Method",
+        "title": "CNN architecture",
+        "summary": "Deep learning model with convolutional layers",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "dataset-frame",
+        "type": "Dataset",
+        "title": "Medical imaging dataset",
+        "summary": "10,000 CT scans from 3 hospitals",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "training-procedure",
+        "type": "Procedure",
+        "title": "Model training procedure",
+        "summary": "Training protocol with cross-validation",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "evidence-frame",
+        "type": "Evidence",
+        "title": "92% accuracy achieved",
+        "summary": "CNN model achieved 92% diagnostic accuracy on test data",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "statistical-analysis",
+        "type": "Analysis",
+        "title": "Statistical significance",
+        "summary": "P-value < 0.001, demonstrating significant improvement",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "conclusion-frame",
+        "type": "Claim",
+        "title": "CNNs show promise",
+        "summary": "Deep learning approaches demonstrate potential for medical imaging",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "future-work",
+        "type": "FutureWork",
+        "title": "Research directions",
+        "summary": "Proposed extensions for multi-modal imaging",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "argument-structure",
+        "type": "Argument",
+        "title": "Performance superiority argument",
+        "summary": "Structured argument supporting CNN superiority through multiple channels",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "claim-1",
+        "type": "SubClaim",
+        "title": "Superior feature extraction",
+        "summary": "CNNs automatically learn relevant features",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "claim-2",
+        "type": "SubClaim",
+        "title": "Generalization capability",
+        "summary": "Model generalizes well across different imaging conditions",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "example-frame",
+        "type": "Example",
+        "title": "CT scan classification case",
+        "summary": "Example demonstrating 15% improvement over baseline on lung nodule detection",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "example-detail",
+        "type": "ExampleDetail",
+        "title": "Case study: Patient 4371",
+        "summary": "Specific case where CNN correctly identified malignant nodule missed by baseline",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "comparison-baseline",
+        "type": "Comparison",
+        "title": "Baseline performance",
+        "summary": "Traditional ML achieved only 77% accuracy",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "citation-frame-1",
+        "type": "Citation",
+        "title": "LeCun et al. 2015",
+        "summary": "Foundational paper on CNN architectures",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "citation-frame-2",
+        "type": "Citation",
+        "title": "Rajpurkar et al. 2017",
+        "summary": "Prior work on medical imaging with deep learning",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "citation-frame-3",
+        "type": "Citation",
+        "title": "Krizhevsky et al. 2012",
+        "summary": "AlexNet architecture reference",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "limitation-frame",
+        "type": "Limitation",
+        "title": "Dataset size constraints",
+        "summary": "Model performance may vary with smaller datasets",
+        "children": [],
+        "metadata": {}
+      },
+      {
+        "id": "acknowledgments",
+        "type": "Acknowledgment",
+        "title": "Funding and contributions",
+        "summary": "NIH grant support and hospital collaboration",
+        "children": [],
+        "metadata": {}
+      }
+    ],
+    "links": [
+      { "source": "research-paper", "target": "abstract" },
+      { "source": "research-paper", "target": "hypothesis-frame" },
+      { "source": "research-paper", "target": "background-frame" },
+      { "source": "research-paper", "target": "method-frame" },
+      { "source": "research-paper", "target": "evidence-frame" },
+      { "source": "research-paper", "target": "conclusion-frame" },
+      { "source": "research-paper", "target": "acknowledgments" },
+      { "source": "abstract", "target": "hypothesis-frame" },
+      { "source": "background-frame", "target": "citation-frame-2" },
+      { "source": "background-frame", "target": "citation-frame-3" },
+      { "source": "hypothesis-frame", "target": "argument-structure" },
+      { "source": "argument-structure", "target": "claim-1" },
+      { "source": "argument-structure", "target": "claim-2" },
+      { "source": "claim-1", "target": "evidence-frame" },
+      { "source": "claim-2", "target": "evidence-frame" },
+      { "source": "argument-structure", "target": "example-frame" },
+      { "source": "example-frame", "target": "example-detail" },
+      { "source": "example-frame", "target": "comparison-baseline" },
+      { "source": "example-detail", "target": "evidence-frame" },
+      { "source": "example-frame", "target": "citation-frame-1" },
+      { "source": "method-frame", "target": "dataset-frame" },
+      { "source": "method-frame", "target": "training-procedure" },
+      { "source": "training-procedure", "target": "evidence-frame" },
+      { "source": "dataset-frame", "target": "evidence-frame" },
+      { "source": "evidence-frame", "target": "statistical-analysis" },
+      { "source": "statistical-analysis", "target": "conclusion-frame" },
+      { "source": "evidence-frame", "target": "citation-frame-2" },
+      { "source": "evidence-frame", "target": "conclusion-frame" },
+      { "source": "conclusion-frame", "target": "future-work" },
+      { "source": "conclusion-frame", "target": "limitation-frame" }
+    ]
+  },
+  "stepAdditions": {
+    "1": {
+      "nodes": [],
+      "links": []
+    }
+  },
+  "animationSteps": [
+    {
+      "stepNumber": 1,
+      "description": "Academic frames emerge with deep nesting: abstract, hypothesis, methods, evidence, arguments, claims, examples, citations"
+    }
+  ]
+}

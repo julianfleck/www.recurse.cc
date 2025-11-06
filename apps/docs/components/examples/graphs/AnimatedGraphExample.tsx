@@ -86,6 +86,39 @@ export function AnimatedGraphExample({
   const [graphData, setGraphData] = useState(() =>
     buildDataUpToStep(1, baseData, stepAdditions)
   ); // Graph data state
+  const [graphDataHash, setGraphDataHash] = useState(() => {
+    // Create a hash of the graph data structure to detect actual changes
+    const initialData = buildDataUpToStep(1, baseData, stepAdditions);
+    return JSON.stringify({
+      nodes: initialData.nodes.map(n => n.id),
+      links: initialData.links
+    });
+  });
+
+  // Reset state when data prop changes (e.g., tab switch)
+  useEffect(() => {
+    // Reset to initial state with new data
+    setCurrentStep(0);
+    setIsAutoPlaying(true);
+    setIsComplete(false);
+    
+    const initialData = buildDataUpToStep(1, baseData, stepAdditions);
+    setGraphData(initialData);
+    
+    const initialHash = JSON.stringify({
+      nodes: initialData.nodes.map(n => n.id),
+      links: initialData.links
+    });
+    setGraphDataHash(initialHash);
+    
+    // Trigger fit to view after a brief delay to ensure GraphView has mounted/updated
+    const timer = setTimeout(() => {
+      const fitEvent = new KeyboardEvent('keydown', { key: '0' });
+      document.dispatchEvent(fitEvent);
+    }, INITIAL_FIT_DELAY_MS);
+
+    return () => clearTimeout(timer);
+  }, [baseData, stepAdditions, animationSteps]);
 
   // Initial fit to view when component mounts
   useEffect(() => {
@@ -119,9 +152,23 @@ export function AnimatedGraphExample({
   useEffect(() => {
     const stepData = animationSteps[currentStep];
     if (stepData) {
-      setGraphData(
-        buildDataUpToStep(stepData.stepNumber, baseData, stepAdditions)
+      const newGraphData = buildDataUpToStep(
+        stepData.stepNumber,
+        baseData,
+        stepAdditions
       );
+      
+      // Create hash to detect if data actually changed
+      const newHash = JSON.stringify({
+        nodes: newGraphData.nodes.map(n => n.id),
+        links: newGraphData.links
+      });
+      
+      // Only update if data actually changed
+      if (newHash !== graphDataHash) {
+        setGraphData(newGraphData);
+        setGraphDataHash(newHash);
+      }
 
       // Fit to view after a brief delay to let the graph render
       setTimeout(() => {
@@ -129,7 +176,7 @@ export function AnimatedGraphExample({
         document.dispatchEvent(fitEvent);
       }, STEP_CHANGE_FIT_DELAY_MS);
     }
-  }, [currentStep, baseData, stepAdditions, animationSteps]);
+  }, [currentStep, baseData, stepAdditions, animationSteps, graphDataHash]);
 
   const handleStepBack = () => {
     if (currentStep > 0) {
@@ -154,7 +201,13 @@ export function AnimatedGraphExample({
     setIsComplete(false);
 
     // Reset to step 1 data
-    setGraphData(buildDataUpToStep(1, baseData, stepAdditions));
+    const initialData = buildDataUpToStep(1, baseData, stepAdditions);
+    setGraphData(initialData);
+    const initialHash = JSON.stringify({
+      nodes: initialData.nodes.map(n => n.id),
+      links: initialData.links
+    });
+    setGraphDataHash(initialHash);
 
     // Fit to view after reset
     setTimeout(() => {
@@ -190,15 +243,17 @@ export function AnimatedGraphExample({
         {/* Graph Visualization */}
         <div className="h-[500px] w-full overflow-hidden rounded-lg border bg-card">
           <GraphView
+            key={`graph-${graphDataHash.slice(0, 16)}`}
             className="h-full w-full"
             data={graphData}
-            depth={4}
+            depth={1000}
             withSidebar={false}
             zoomModifier="cmd"
           />
         </div>
 
-        {/* Progress indicator with description */}
+        {/* Progress indicator with description - only show if more than one step */}
+        {animationSteps.length > 1 && (
         <div className="mt-2 mb-4 flex items-center gap-3 rounded-md border border-border p-2">
           <button
             className="flex-shrink-0 rounded p-1 hover:bg-secondary"
@@ -249,6 +304,7 @@ export function AnimatedGraphExample({
             </div>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

@@ -2,10 +2,10 @@
   "baseData": {
     "nodes": [
       {
-        "id": "doc-1",
-        "type": "Document:bug_report",
-        "title": "Application crash on submit",
-        "summary": "Bug report describing application crashes when users click submit",
+        "id": "bug-report",
+        "type": "article",
+        "title": "Application timeout error",
+        "summary": "Bug report about timeout errors during form submission",
         "children": [],
         "metadata": {}
       }
@@ -22,20 +22,14 @@
         {
           "id": "problem-frame",
           "type": "Problem",
-          "title": "Application crashed",
-          "summary": "Application crashes when users clicked submit button",
+          "title": "Timeout errors",
+          "summary": "Application times out when users submit forms",
           "children": [],
-          "metadata": {
-            "slots": {
-              "symptom": "Application crashed",
-              "trigger": "Users clicked submit",
-              "affected": "All users attempting form submission"
-            }
-          }
+          "metadata": {}
         }
       ],
       "links": [
-        { "source": "doc-1", "target": "problem-frame" }
+        { "source": "bug-report", "target": "problem-frame" }
       ]
     },
     "3": {
@@ -43,53 +37,44 @@
         {
           "id": "diagnosis-frame",
           "type": "Diagnosis",
-          "title": "Network timeout investigation",
-          "summary": "Checked network logs and found timeout errors",
+          "title": "API connection issue",
+          "summary": "Investigation revealed API server connection limits",
           "children": [],
-          "metadata": {
-            "slots": {
-              "investigation_steps": ["Checked network logs", "Analyzed error patterns"],
-              "findings": "Timeout errors occurring during API calls"
-            }
-          }
+          "metadata": {}
         },
         {
           "id": "root-cause-frame",
           "type": "RootCause",
-          "title": "API connection limit exceeded",
-          "summary": "API server was hitting connection limits",
+          "title": "Connection pool exhausted",
+          "summary": "API connection pool size was too small for concurrent load",
           "children": [],
-          "metadata": {
-            "slots": {
-              "underlying_issue": "Connection pool size too small",
-              "detected_by": "Diagnosis frame findings"
-            }
-          }
+          "metadata": {}
         },
         {
           "id": "solution-frame",
           "type": "Solution",
           "title": "Increased connection pool",
-          "summary": "Increased connection pool size to 100 to resolve the issue",
+          "summary": "Fixed by increasing API connection pool size from 10 to 100",
           "children": [],
-          "metadata": {
-            "slots": {
-              "fix": "Increased connection pool size to 100",
-              "solves": "Addresses root cause of connection limits"
-            }
-          }
+          "metadata": {}
+        },
+        {
+          "id": "impact-frame",
+          "type": "Impact",
+          "title": "Affected user sessions",
+          "summary": "Approximately 30% of form submissions experienced timeouts",
+          "children": [],
+          "metadata": {}
         }
       ],
       "links": [
+        { "source": "bug-report", "target": "diagnosis-frame" },
+        { "source": "problem-frame", "target": "impact-frame" },
         { "source": "problem-frame", "target": "diagnosis-frame" },
         { "source": "diagnosis-frame", "target": "root-cause-frame" },
         { "source": "root-cause-frame", "target": "solution-frame" },
         { "source": "solution-frame", "target": "problem-frame" }
       ]
-    },
-    "4": {
-      "nodes": [],
-      "links": []
     }
   },
   "animationSteps": [
@@ -99,16 +84,11 @@
     },
     {
       "stepNumber": 2,
-      "description": "Problem frame extracted with symptom, trigger, and affected users"
+      "description": "Problem frame extracted from text"
     },
     {
       "stepNumber": 3,
-      "description": "Diagnosis, root cause, and solution frames connected via typed relationships"
-    },
-    {
-      "stepNumber": 4,
-      "description": "Navigation paths established: problem → diagnosis → cause → solution"
+      "description": "Diagnosis, root cause, solution, and impact frames emerge and connect"
     }
   ]
 }
-

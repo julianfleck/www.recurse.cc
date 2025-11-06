@@ -6,6 +6,7 @@ import {
 } from "fumadocs-ui/components/card";
 import { ImageZoom } from "fumadocs-ui/components/image-zoom";
 import * as TabsComponents from "fumadocs-ui/components/tabs";
+import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import { TypeTable } from "fumadocs-ui/components/type-table";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import type { MDXComponents } from "mdx/types";
@@ -16,6 +17,7 @@ import { FAQ } from "@/components/faq";
 import { GraphView } from "@/components/graph-view";
 import { AdaptiveSchemasExample } from "@/components/examples/graphs/AdaptiveSchemasExample";
 import { FramesExample } from "@/components/examples/graphs/FramesExample";
+import { TemporalVersioningExample } from "@/components/examples/graphs/TemporalVersioningExample";
 import { openapi } from "@/lib/openapi";
 
 // Custom Card component that resolves icon strings
@@ -45,6 +47,9 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     AnimatedGraphExample,
     FramesExample,
     AdaptiveSchemasExample,
+    TemporalVersioningExample,
+    Tab,
+    Tabs,
     APIPage: (props) => {
       try {
         const apiProps = openapi.getAPIPageProps(props);

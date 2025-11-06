@@ -32,7 +32,10 @@ type AnimationStep = {
 
 export type AnimationData = {
   baseData: { nodes: GraphNode[]; links: GraphLink[] };
-  stepAdditions: Record<number | string, { nodes: GraphNode[]; links: GraphLink[] }>;
+  stepAdditions: Record<
+    number | string,
+    { nodes: GraphNode[]; links: GraphLink[] }
+  >;
   animationSteps: AnimationStep[];
 };
 
@@ -40,7 +43,10 @@ export type AnimationData = {
 function buildDataUpToStep(
   stepNumber: number,
   baseData: { nodes: GraphNode[]; links: GraphLink[] },
-  stepAdditions: Record<number | string, { nodes: GraphNode[]; links: GraphLink[] }>
+  stepAdditions: Record<
+    number | string,
+    { nodes: GraphNode[]; links: GraphLink[] }
+  >
 ) {
   const result = {
     nodes: [...baseData.nodes],
@@ -73,9 +79,7 @@ type AnimatedGraphExampleProps = {
   data?: AnimationData;
 };
 
-export function AnimatedGraphExample({
-  data,
-}: AnimatedGraphExampleProps = {}) {
+export function AnimatedGraphExample({ data }: AnimatedGraphExampleProps = {}) {
   const animationData = data ?? (defaultData as AnimationData);
 
   const { baseData, stepAdditions, animationSteps } = animationData;
@@ -86,6 +90,39 @@ export function AnimatedGraphExample({
   const [graphData, setGraphData] = useState(() =>
     buildDataUpToStep(1, baseData, stepAdditions)
   ); // Graph data state
+  const [graphDataHash, setGraphDataHash] = useState(() => {
+    // Create a hash of the graph data structure to detect actual changes
+    const initialData = buildDataUpToStep(1, baseData, stepAdditions);
+    return JSON.stringify({
+      nodes: initialData.nodes.map((n) => n.id),
+      links: initialData.links,
+    });
+  });
+
+  // Reset state when data prop changes (e.g., tab switch)
+  useEffect(() => {
+    // Reset to initial state with new data
+    setCurrentStep(0);
+    setIsAutoPlaying(true);
+    setIsComplete(false);
+    
+    const initialData = buildDataUpToStep(1, baseData, stepAdditions);
+    setGraphData(initialData);
+    
+    const initialHash = JSON.stringify({
+      nodes: initialData.nodes.map((n) => n.id),
+      links: initialData.links,
+    });
+    setGraphDataHash(initialHash);
+    
+    // Trigger fit to view after a brief delay to ensure GraphView has mounted/updated
+    const timer = setTimeout(() => {
+      const fitEvent = new KeyboardEvent('keydown', { key: '0' });
+      document.dispatchEvent(fitEvent);
+    }, INITIAL_FIT_DELAY_MS);
+
+    return () => clearTimeout(timer);
+  }, [baseData, stepAdditions, animationSteps]);
 
   // Initial fit to view when component mounts
   useEffect(() => {
@@ -119,17 +156,33 @@ export function AnimatedGraphExample({
   useEffect(() => {
     const stepData = animationSteps[currentStep];
     if (stepData) {
-      setGraphData(
-        buildDataUpToStep(stepData.stepNumber, baseData, stepAdditions)
+      const newGraphData = buildDataUpToStep(
+        stepData.stepNumber,
+        baseData,
+        stepAdditions
       );
 
-      // Fit to view after a brief delay to let the graph render
+      // Create hash to detect if data actually changed
+      const newHash = JSON.stringify({
+        nodes: newGraphData.nodes.map((n) => n.id),
+        links: newGraphData.links,
+      });
+
+      // Only update if data actually changed
+      if (newHash !== graphDataHash) {
+        setGraphData(newGraphData);
+        setGraphDataHash(newHash);
+      }
+
+      // Trigger expansion for new nodes after a delay to ensure GraphView has processed the data
       setTimeout(() => {
+        // Force expansion by triggering multiple expand level events
+        // The GraphView will re-check expansion depth when allNodes/allLinks change
         const fitEvent = new KeyboardEvent('keydown', { key: '0' });
         document.dispatchEvent(fitEvent);
       }, STEP_CHANGE_FIT_DELAY_MS);
     }
-  }, [currentStep, baseData, stepAdditions, animationSteps]);
+  }, [currentStep, baseData, stepAdditions, animationSteps, graphDataHash]);
 
   const handleStepBack = () => {
     if (currentStep > 0) {
@@ -154,7 +207,13 @@ export function AnimatedGraphExample({
     setIsComplete(false);
 
     // Reset to step 1 data
-    setGraphData(buildDataUpToStep(1, baseData, stepAdditions));
+    const initialData = buildDataUpToStep(1, baseData, stepAdditions);
+    setGraphData(initialData);
+    const initialHash = JSON.stringify({
+      nodes: initialData.nodes.map((n) => n.id),
+      links: initialData.links,
+    });
+    setGraphDataHash(initialHash);
 
     // Fit to view after reset
     setTimeout(() => {
@@ -192,63 +251,66 @@ export function AnimatedGraphExample({
           <GraphView
             className="h-full w-full"
             data={graphData}
-            depth={4}
+            depth={1000}
+            key={`graph-${graphDataHash.slice(0, 16)}`}
             withSidebar={false}
             zoomModifier="cmd"
           />
         </div>
 
-        {/* Progress indicator with description */}
-        <div className="mt-2 mb-4 flex items-center gap-3 rounded-md border border-border p-2">
-          <button
-            className="flex-shrink-0 rounded p-1 hover:bg-secondary"
-            onClick={buttonHandler}
-            title={buttonTitle}
-            type="button"
-          >
-            {buttonIcon}
-          </button>
+        {/* Progress indicator with description - only show if more than one step */}
+        {animationSteps.length > 1 && (
+          <div className="mt-2 mb-4 flex items-center gap-3 rounded-md border border-border p-2">
+            <button
+              className="flex-shrink-0 rounded p-1 hover:bg-secondary"
+              onClick={buttonHandler}
+              title={buttonTitle}
+              type="button"
+            >
+              {buttonIcon}
+            </button>
 
-          <span className="flex-shrink-0 whitespace-nowrap font-medium text-sm">
-            Step {currentStep + 1} of {animationSteps.length}
-          </span>
-
-          <div className="h-2 w-24 flex-shrink-0 overflow-hidden rounded-full bg-secondary">
-            <div
-              className="h-full bg-primary transition-all duration-500"
-              style={{
-                width: `${((currentStep + 1) / animationSteps.length) * PROGRESS_BAR_WIDTH_PERCENT}%`,
-              }}
-            />
-          </div>
-
-          <div className="flex min-w-0 grow items-center justify-between gap-1">
-            <span className="line-clamp-1 min-w-0 font-mono text-muted-foreground text-xs">
-              {currentStepData.description}
+            <span className="flex-shrink-0 whitespace-nowrap font-medium text-sm">
+              Step {currentStep + 1} of {animationSteps.length}
             </span>
 
-            <div className="flex flex-shrink-0 items-center gap-1">
-              <button
-                className="rounded p-1 hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
-                disabled={currentStep <= 0}
-                onClick={handleStepBack}
-                title="Previous step"
-                type="button"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                className="rounded p-1 hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
-                disabled={currentStep >= animationSteps.length - 1}
-                onClick={handleStepForward}
-                title="Next step"
-                type="button"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
+            <div className="h-2 w-24 flex-shrink-0 overflow-hidden rounded-full bg-secondary">
+              <div
+                className="h-full bg-primary transition-all duration-500"
+                style={{
+                  width: `${((currentStep + 1) / animationSteps.length) * PROGRESS_BAR_WIDTH_PERCENT}%`,
+                }}
+              />
+            </div>
+
+            <div className="flex min-w-0 grow items-center justify-between gap-1">
+              <span className="line-clamp-1 min-w-0 font-mono text-muted-foreground text-xs">
+                {currentStepData.description}
+              </span>
+
+              <div className="flex flex-shrink-0 items-center gap-1">
+                <button
+                  className="rounded p-1 hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={currentStep <= 0}
+                  onClick={handleStepBack}
+                  title="Previous step"
+                  type="button"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  className="rounded p-1 hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={currentStep >= animationSteps.length - 1}
+                  onClick={handleStepForward}
+                  title="Next step"
+                  type="button"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
