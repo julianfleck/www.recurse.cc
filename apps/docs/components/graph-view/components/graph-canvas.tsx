@@ -129,11 +129,13 @@ export interface GraphViewProps {
   className?: string;
   withSidebar?: boolean; // Whether to show the sidebar
   // Initial expansion depth: expand all non-metadata nodes up to this level (roots are level 0)
-  depth?: number | string;
+  depth?: number;
   // When true, hides the fullscreen button/control (used for nested fullscreen view)
   disableFullscreenControl?: boolean;
   // Optional modifier required for wheel zoom (trackpad). When 'cmd', only meta/ctrl + wheel zooms
   zoomModifier?: '' | 'cmd';
+  // External trigger to re-run fit to view when value changes
+  fitSignal?: number;
 }
 
 export function GraphView({
@@ -144,6 +146,7 @@ export function GraphView({
   depth,
   disableFullscreenControl = false,
   zoomModifier = '',
+  fitSignal,
 }: GraphViewProps) {
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [hasLoadCompleted, setHasLoadCompleted] = useState(false);

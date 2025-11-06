@@ -92,6 +92,20 @@ export function Tabs({
   const [value, setValue] = useState(defaultValue);
   const collection = useMemo<CollectionKey[]>(() => [], []);
 
+  // Trigger a fit event when active tab value changes so graph views can recenter
+  useEffect(() => {
+    if (!value) return;
+    const t = window.setTimeout(() => {
+      try {
+        const fitEvent = new KeyboardEvent('keydown', { key: '0' });
+        document.dispatchEvent(fitEvent);
+      } catch {
+        // Handle potential errors
+      }
+    }, 300); // Reduced delay
+    return () => window.clearTimeout(t);
+  }, [value]);
+
   return (
     <Unstyled.Tabs
       className={cn(
@@ -165,7 +179,6 @@ export function TabsContent({
         'prose-no-margin [&>figure:only-child]:-m-4 rounded-xl bg-fd-background p-4 text-[15px] outline-none data-[state=inactive]:hidden [&>figure:only-child]:border-none',
         className,
       )}
-      forceMount
       value={value}
       {...props}
     >

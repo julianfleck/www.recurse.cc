@@ -134,6 +134,8 @@ export interface GraphViewProps {
   disableFullscreenControl?: boolean;
   // Optional modifier required for wheel zoom (trackpad). When 'cmd', only meta/ctrl + wheel zooms
   zoomModifier?: "" | "cmd";
+  // External trigger to re-run fit to view when value changes
+  fitSignal?: number;
 }
 
 export function GraphView({
@@ -144,6 +146,7 @@ export function GraphView({
   depth,
   disableFullscreenControl = false,
   zoomModifier = "",
+  fitSignal,
 }: GraphViewProps) {
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [hasLoadCompleted, setHasLoadCompleted] = useState(false);
@@ -1130,6 +1133,15 @@ export function GraphView({
       160
     );
   }, [resetZoomToFit]);
+
+  // Run fit when fitSignal changes
+  useEffect(() => {
+    if (fitSignal === undefined) { return; }
+    const t = window.setTimeout(() => {
+      try { fitAll(); } catch {}
+    }, 50);
+    return () => window.clearTimeout(t);
+  }, [fitSignal, fitAll]);
 
   // Coalesce multiple fit requests within a short window
   // Guard to avoid competing fits during layout transitions

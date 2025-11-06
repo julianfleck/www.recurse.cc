@@ -7,8 +7,10 @@ import {
   Play,
   RotateCcw,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GraphView } from '@/components/graph-view';
+import { cn } from '@/lib/cn';
 import defaultData from './default-example.json' with { type: 'json' };
 
 type GraphNode = {
@@ -37,6 +39,7 @@ export type AnimationData = {
     { nodes: GraphNode[]; links: GraphLink[] }
   >;
   animationSteps: AnimationStep[];
+  initialDepth?: number;
 };
 
 // Function to build data structure up to a given step
@@ -71,18 +74,22 @@ function buildDataUpToStep(
 
 const STEP_DELAY_MS = 2500; // 2.5 second delay between steps
 const PROGRESS_BAR_WIDTH_PERCENT = 100; // 100% for full width
-const INITIAL_FIT_DELAY_MS = 500; // Delay before initial fit to view
 const STEP_CHANGE_FIT_DELAY_MS = 300; // Delay before fit to view after step change
 const RELOAD_FIT_DELAY_MS = 300; // Delay before fit to view after reload
 
 type AnimatedGraphExampleProps = {
   data?: AnimationData;
+  className?: string;
 };
 
-export function AnimatedGraphExample({ data }: AnimatedGraphExampleProps = {}) {
+export function AnimatedGraphExample({
+  data,
+  className,
+}: AnimatedGraphExampleProps = {}) {
   const animationData = data ?? (defaultData as AnimationData);
 
-  const { baseData, stepAdditions, animationSteps } = animationData;
+  const { baseData, stepAdditions, animationSteps, initialDepth } =
+    animationData;
 
   const [currentStep, setCurrentStep] = useState(0); // Start with step 0 (first step)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true); // Auto-play by default
@@ -98,6 +105,33 @@ export function AnimatedGraphExample({ data }: AnimatedGraphExampleProps = {}) {
       links: initialData.links,
     });
   });
+  const [fitTick, setFitTick] = useState(0);
+
+  const containerRef = useRef(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const fitEvent = new KeyboardEvent('keydown', { key: '0' });
+            document.dispatchEvent(fitEvent);
+          }
+        }
+      },
+      { threshold: 0.1 } // Trigger when 10% is visible
+    );
+
+    const currentRef = containerRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, []);
 
   // Reset state when data prop changes (e.g., tab switch)
   useEffect(() => {
@@ -105,34 +139,37 @@ export function AnimatedGraphExample({ data }: AnimatedGraphExampleProps = {}) {
     setCurrentStep(0);
     setIsAutoPlaying(true);
     setIsComplete(false);
-    
+
     const initialData = buildDataUpToStep(1, baseData, stepAdditions);
     setGraphData(initialData);
-    
+
     const initialHash = JSON.stringify({
       nodes: initialData.nodes.map((n) => n.id),
       links: initialData.links,
     });
     setGraphDataHash(initialHash);
-    
-    // Trigger fit to view after a brief delay to ensure GraphView has mounted/updated
+
+    // The IntersectionObserver will handle fitting when the component becomes visible.
+    // Kept for cases where the component is already visible but data changes.
     const timer = setTimeout(() => {
-      const fitEvent = new KeyboardEvent('keydown', { key: '0' });
-      document.dispatchEvent(fitEvent);
-    }, INITIAL_FIT_DELAY_MS);
+      setFitTick((t: number) => t + 1);
+    }, RELOAD_FIT_DELAY_MS);
 
     return () => clearTimeout(timer);
-  }, [baseData, stepAdditions, animationSteps]);
+  }, [baseData, stepAdditions]);
 
-  // Initial fit to view when component mounts
+  // Initial fit to view is now handled by IntersectionObserver
+  /*
   useEffect(() => {
     const timer = setTimeout(() => {
       const fitEvent = new KeyboardEvent('keydown', { key: '0' });
       document.dispatchEvent(fitEvent);
+      setFitTick((t: number) => t + 1);
     }, INITIAL_FIT_DELAY_MS);
 
     return () => clearTimeout(timer);
   }, []);
+  */
 
   // Auto-play through steps (only when not manually controlled)
   useEffect(() => {
@@ -174,12 +211,11 @@ export function AnimatedGraphExample({ data }: AnimatedGraphExampleProps = {}) {
         setGraphDataHash(newHash);
       }
 
-      // Trigger expansion for new nodes after a delay to ensure GraphView has processed the data
+      // Trigger fit after data change to ensure centering
       setTimeout(() => {
-        // Force expansion by triggering multiple expand level events
-        // The GraphView will re-check expansion depth when allNodes/allLinks change
         const fitEvent = new KeyboardEvent('keydown', { key: '0' });
         document.dispatchEvent(fitEvent);
+        setFitTick((t: number) => t + 1);
       }, STEP_CHANGE_FIT_DELAY_MS);
     }
   }, [currentStep, baseData, stepAdditions, animationSteps, graphDataHash]);
@@ -244,23 +280,27 @@ export function AnimatedGraphExample({ data }: AnimatedGraphExampleProps = {}) {
   }
 
   return (
-    <div>
-      <div className="mt-8 mb-4">
-        {/* Graph Visualization */}
-        <div className="h-[500px] w-full overflow-hidden rounded-lg border bg-card">
-          <GraphView
-            className="h-full w-full"
-            data={graphData}
-            depth={1000}
-            key={`graph-${graphDataHash.slice(0, 16)}`}
-            withSidebar={false}
-            zoomModifier="cmd"
-          />
-        </div>
-
-        {/* Progress indicator with description - only show if more than one step */}
-        {animationSteps.length > 1 && (
-          <div className="mt-2 mb-4 flex items-center gap-3 rounded-md border border-border p-2">
+    <div
+      className={cn(
+        'relative h-[500px] w-full overflow-hidden rounded-lg border bg-card',
+        'mt-8 mb-4',
+        className
+      )}
+      key={`graph-${graphDataHash.slice(0, 16)}`}
+      ref={containerRef}
+    >
+      <GraphView
+        className="h-full w-full"
+        data={graphData}
+        depth={initialDepth ?? 1000}
+        fitSignal={fitTick}
+        withSidebar={false}
+        zoomModifier="cmd"
+      />
+      {/* Progress indicator with description - only show if more than one step */}
+      {animationSteps.length > 1 && (
+        <div className='absolute right-0 bottom-0 left-0 z-10'>
+          <div className="m-2 flex items-center gap-3 rounded-md border border-border bg-background/80 p-2 shadow backdrop-blur">
             <button
               className="flex-shrink-0 rounded p-1 hover:bg-secondary"
               onClick={buttonHandler}
@@ -310,8 +350,8 @@ export function AnimatedGraphExample({ data }: AnimatedGraphExampleProps = {}) {
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
