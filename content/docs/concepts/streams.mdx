@@ -1,73 +1,52 @@
 ---
 title: Context Streams
-description: Curated collections that bundle multiple sources into coherent knowledge packages
+description: Share subgraphs of your knowledge base—subscribe to domain expertise you trust
 icon: broadcast
 ---
 
-<Callout type="info">
-**Related concept**: Context Streams work alongside **Source Subscriptions** to enable continuous knowledge flow. While Source Subscriptions handle individual feeds, Context Streams provide expert-curated bundles. Learn about both to understand how they complement each other.
-</Callout>
+As you use Recurse, you're already building something valuable: a structured knowledge base. You subscribe to sources, upload documents, make connections. Recurse extracts frames and builds relationships.
 
-A Context Stream is a curated collection that bundles multiple sources, individual pieces of content, or even other source subscriptions into a coherent knowledge package. Think of it as a playlist for knowledge: someone (maybe you, maybe an expert) has assembled sources that work together to cover a domain.
+**Context Streams let you share parts of it.** Select a subgraph—specific sources, documents, the connections between them—and package it for others. Your team subscribes to your research methodology. Your community accesses your domain expertise. They're not just reading your writing—they're accessing how you organize and connect information.
 
----
+This works both ways. You subscribe to fifteen newsletters from thoughtful people in your field, but they pile up. Ninety-three unread issues. **Context Streams solve this: subscribe to someone else's knowledge base directly** (like Neal Stephenson's information editors in "Fall; or, Dodge in Hell"). Their newsletters, their synthesis, their connections—your queries draw from their curation. As they learn, your knowledge updates.
 
-## What Makes Context Streams Powerful
-
-**Expert curation**: Domain experts can package their knowledge infrastructure—the sources they trust, the frameworks they use, the context that matters
-
-**Dynamic loading**: Tag a stream in conversation (`#rag-best-practices`) to pull in its context for that specific exchange
-
-**Subscribe or load**: Either subscribe to keep a stream permanently available to your models, or load it on-demand via tags
-
-**Composable**: A stream can contain individual documents, source subscriptions, or references to other resources
+The key is **domain authority—who you trust.** An AI researcher maintains their understanding of RAG patterns. You recognize their expertise, subscribe to their stream. Your queries now draw from years of their curation. You're not evaluating sources yourself—you're trusting their evaluation.
 
 ---
 
-## Example
+## How It Works
 
-An AI researcher creates a Context Stream called `#modern-rag-techniques` containing:
-- Source subscriptions to key RAG research newsletters
-- Foundational papers (specific documents they uploaded)
-- Their own notes and synthesis documents
-- Links to continuously-updated documentation
+Create a stream using the context assembler. Select which parts of your knowledge base to include: source subscriptions, documents, synthesis notes, frame relationships. Choose visibility: private, team, or public.
 
-You subscribe to this stream or tag it in conversation. Your AI models now benefit from that expert's curation—staying current with the field through their maintained source subscriptions, accessing their selected foundational papers, and drawing on their synthesis work.
+When someone subscribes, that subgraph integrates with their knowledge base. When you add sources or make connections, their streams update automatically.
 
----
+**Example:** Without streams, asking about RAG best practices means Googling blog posts, reading GPT's outdated advice, spending days building understanding. With a stream like `#rag-patterns`, the system retrieves from the curator's subgraph—their synthesis, papers, blogs, connections. 30 seconds.
 
-## How Streams Work with Subscriptions
+**Query syntax:**
 
-**Source Subscriptions** → continuous individual feeds  
-**Context Streams** → curated bundles (can include source subscriptions)
+```
+#rag-patterns What are the tradeoffs between dense and sparse retrieval?
+```
 
-A Context Stream might contain 5 source subscriptions + 10 specific documents + 3 synthesis notes. When you subscribe to the stream, you're getting all of that: the continuously updating feeds plus the curated static content plus the expert's own contributions.
+```
+@researcher What's new in retrieval augmented generation?
+```
 
-Tag streams dynamically: `#latent-space-context` pulls in just that stream's context for one conversation without permanently subscribing.
-
----
-
-## Who Benefits
-
-Your AI models get access to:
-- Expert-curated context bundles (via Context Streams)
-- Current, continuously updated domain knowledge (when streams include source subscriptions)
-- Structural understanding of how concepts relate (via frame extraction across all sources)
-
-You don't learn from these streams in real-time—your models query them. The benefit to you is that your AI interactions draw from curated, up-to-date, structurally understood knowledge rather than static uploads or web searches.
+Use `#collection-slug` to target specific streams you're subscribed to, or `@username` to query a curator's public streams.
 
 ---
 
 ## Creating and Sharing
 
-Anyone can create Context Streams. You might:
-- Package your research methodology + key sources for your team
-- Curate domain-specific knowledge for a community
-- Maintain a personal stream of sources you trust
+You're already building your knowledge base through normal use—uploading docs, subscribing to sources, querying your knowledge. **You're not creating content to share. You're just making what you already built accessible.** Creating a stream means exposing a subgraph of it. Share your research with your team. Make a subgraph public for your domain. Provide subscription access to clients. Control which subgraph gets exposed—share your research publicly while keeping client work private.
 
-Make streams private, share with specific teams, or publish publicly. Public streams become discoverable—others can subscribe and benefit from your curation.
+**Privacy and ownership:** Subscriptions don't copy raw documents—they point to sources that subscribers ingest into their own graphs, with clear attribution and audit trails. You control which subgraph gets exposed. Subscribers can scope which conversations use which streams.
 
-> **Coming: creator rewards**. Maintainers of popular public streams will be able to opt into receiving value from their curation work.
+This creates natural knowledge exchange: you build expertise, others build expertise. Share subgraphs, subscribe to trusted experts in domains you touch occasionally. You're doing what you're doing anyway—now others can benefit from it.
+
+<Callout type="info">
+We're currently tracking stream usage statistics and reserving a pool of our earnings for creator redistribution. If you maintain a popular public stream, you'll be able to opt into compensation for your curation.
+</Callout>
 
 ---
 
@@ -75,11 +54,11 @@ Make streams private, share with specific teams, or publish publicly. Public str
 
 <Cards>
   <Card href="/docs/concepts/subscriptions" title="Source Subscriptions">
-    Individual feeds that keep your knowledge current
+    Monitor individual feeds continuously
   </Card>
   
   <Card href="/docs/concepts/frames" title="Frames">
-    Semantic units extracted from sources
+    Semantic units that build structure
   </Card>
   
   <Card href="/docs/concepts/temporal-versioning" title="Living Memory">
@@ -87,11 +66,6 @@ Make streams private, share with specific teams, or publish publicly. Public str
   </Card>
   
   <Card href="/docs/concepts/rage" title="RAGE">
-    The engine that processes stream content
-  </Card>
-  
-  <Card href="/docs/guides/context-streams" title="Context Streams Guide">
-    How to create and use Context Streams
+    The processing engine
   </Card>
 </Cards>
-

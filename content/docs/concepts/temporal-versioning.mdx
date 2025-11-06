@@ -6,13 +6,13 @@ icon: git-branch
 
 Standard approaches to outdated knowledge present you with an unfortunate dilemma: either you keep the incorrect information (and risk propagating errors), or you delete the outdated content (and lose all historical context).
 
-Recurse implements a third approach: knowledge becomes **living memory** (that's what we call **temporal versioning**). The system evolves understanding while preserving the complete evolution history.
+Recurse implements a third approach: with what we call **temporal versioning**, your knowledge graph becomes a **living memory substrate**. The system updated previously ingested content while preserving a complete history of how it's understanding evolved, quite similar to how humans learn, meta reflections included.
 
 ---
 
 ## How The Mechanism Works
 
-When new content arrives, Recurse periodically reviews frames that get accessed frequently. If the new information updates previous understanding, the system rewrites the frame with current knowledge while maintaining links to previous versions—complete with timestamps, diffs showing exactly what changed, and explanations of why the update happened.
+When new content arrives, Recurse identifies related frames during ingestion—both those accessed frequently and those semantically connected to the new information. If the new content updates previous understanding, the system rewrites the frame with current knowledge while maintaining links to previous versions—complete with timestamps, diffs showing exactly what changed, and explanations of why the update happened.
 
 ---
 
@@ -22,7 +22,12 @@ You process a 2020 paper that claimed "state-of-the-art performance" for a parti
 
 Rather than deleting the 2020 claim or just keeping it unchanged, Recurse updates it to something like:
 
-> "This method achieved state-of-the-art performance in 2020 (based on results from [Paper A]), but has since been superseded by [these newer approaches, 2024] which show [these specific improvements]."
+```
+This method achieved state-of-the-art performance in 2020 
+(based on results from [Paper A]), but has since been 
+superseded by [these newer approaches, 2024] which show 
+[these specific improvements].
+```
 
 **The system preserves**:
 - The previous version with its original timestamp
@@ -34,33 +39,49 @@ When you query that claim now, you get access to both the current understanding 
 
 ---
 
-## Evolution vs. Invalidation
+## Evolution vs. Deletion
 
-| Characteristic | Systems That Invalidate | What Recurse Does |
-|----------------|------------------------|-------------------|
-| **Outdated content** | Mark it invalid and remove it | Evolve it with version links preserved |
-| **Historical access** | Lost after invalidation happens | Maintained through timestamped versions |
-| **Change tracking** | Binary state change (valid/invalid) | Continuous diffs between versions |
-| **Revision context** | Not preserved at all | Linked with full explanations |
-| **Timeline views** | Not supported | Full evolution history accessible |
+| Characteristic | Systems That Delete | Systems That Update | What Recurse Does |
+|----------------|---------------------|---------------------|-------------------|
+| **Outdated content** | Removed entirely | Overwritten with new version | Evolved with version links preserved |
+| **Historical access** | Lost permanently | Lost after overwrite | Maintained through timestamped versions |
+| **Change tracking** | No record of change | No tracking of what changed | Complete diffs between versions |
+| **Revision context** | Not preserved | Not preserved | Linked with full explanations |
+| **Timeline views** | Not supported | Not supported | Full evolution history accessible |
 
-Knowledge accumulation without temporal context inevitably leads to either error propagation (when you keep outdated claims) or complete history loss (when you delete them). What temporal versioning gives you is a way to maintain both currency and historical context simultaneously.
+While other memory systems "update" information, they don't maintain version history—the old content is simply overwritten. Knowledge accumulation without temporal context inevitably leads to either error propagation (when you keep outdated claims) or complete history loss (when you delete or overwrite them). What temporal versioning gives you is a way to maintain both currency and historical context simultaneously.
 
-This is what makes it a **living substrate**—it maintains itself over time.
+Together with the [self-evolving schema registry](/docs/concepts/adaptive-schemas), this is another mechanism that turns Recurse into a living knowledge substrate.
 
 ---
 
 ## What This Enables
 
-**Current understanding**: Your queries get the most up-to-date knowledge
+<Cards>
+  <Card title="Current Understanding">
+    Your queries get the most up-to-date knowledge automatically, without manual curation or stale information.
+  </Card>
+  
+  <Card title="Revisiting Past Explorations">
+    Remember that rabbit hole you fell into a year ago? Ask Recurse to summarize that tangent you explored, complete with what you learned and how your thinking evolved since.
+  </Card>
 
-**Historical tracking**: Trace how understanding evolved over months or years
-
-**Evidence trails**: See what new information prompted each update
-
-**Temporal queries**: Ask "how did understanding of X change between 2020 and 2024?"
-
-**Error correction with context**: Mistakes get fixed while preserving the record
+  <Card title="Historical Tracking">
+    Trace how understanding evolved over months or years with complete version history and timestamps.
+  </Card>
+  
+  <Card title="Evidence Trails">
+    See what new information prompted each update, preserving the reasoning chain from old knowledge to new.
+  </Card>
+  
+  <Card title="Temporal Queries">
+    Ask "how did understanding of X change between 2020 and 2024?" and get the complete evolution.
+  </Card>
+  
+  <Card title="Error Correction with Context">
+    Mistakes get fixed while preserving the record of what was believed and why it changed.
+  </Card>
+</Cards>
 
 ---
 

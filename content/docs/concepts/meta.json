@@ -6,8 +6,8 @@
     "frames",
     "adaptive-schemas",
     "temporal-versioning",
-    "streams",
     "subscriptions",
+    "streams",
     "recursivity",
     "rage"
   ]

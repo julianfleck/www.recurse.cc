@@ -4,25 +4,30 @@ description: Structure emerges from your content—no predefined schemas require
 icon: sparkles
 ---
 
-Most knowledge systems require you to define schemas before you can ingest anything. You sit down, design your ontology, map out your relationships, and then you can only process content that fits those predetermined structures.
+Most knowledge systems take one of two approaches:
 
-Recurse works quite differently. Structure emerges from your content automatically (we call this **adaptive schemas**). The system discovers frame patterns in whatever you give it, and proposes new frame types when it encounters structures that don't match existing categories.
+- Either they require you to define schemas before you can ingest anything—sit down, design your ontology, map out your relationships, then process only content that fits those predetermined structures.
+- Or they use simple, predefined schemas that extract basic triplets: subject-predicate-object relationships (think RDF conventions). The latter works well enough for identifying actors and entities, but falls short when you need to understand meaning, capture nuanced arguments, or track how discourse develops over time.
+
+Recurse works quite differently. Structure emerges from your content automatically (we call this **adaptive schemas**). The system discovers [frame patterns](/docs/concepts/frames) in whatever you give it—not just "Person X mentioned Topic Y" but the full semantic structure of how concepts relate, how arguments develop, and how decisions connect.
 
 ---
 
 ## How It Works
 
-When you process research papers, Recurse develops frames for claims, evidence, and methods. Process software documentation, and it discovers patterns for function signatures, parameter specifications, and return types. Process meeting transcripts, and it identifies decision frames, discussion points, and action items.
+The frames that emerge depend entirely on your content. 
 
-The schema adapts to the patterns in your content rather than forcing your content into predetermined structures.
+Research papers develop frames for `Claim`, `Evidence`, and `Methodology`—slots that capture what's being argued, what supports it, and how it was tested. Bug reports develop frames for `Problem`, `Diagnosis`, and `Solution`. Meeting notes develop frames for `Decision`, `Discussion`, and `ActionItem`. Documentation develops frames for `Concept`, `Procedure`, and `Parameter`.
 
-This is what makes it a **living structure**—it bootstraps itself by learning from what you upload.
+The system discovers these patterns rather than requiring you to define anything upfront or forcing you into narrow classifications. As you process more content, [RAGE](/docs/concepts/rage) evolves the schema registry—recognizing patterns, proposing new frame types, refining existing ones. Process a hundred research papers and the system becomes more accurate at extracting academic argument structures. Process a hundred bug reports and diagnostic patterns become more precisely captured. The schema registry self-governs, bootstrapping itself around whatever content types you provide.
+
+This is what makes Recurse a **living substrate**—it bootstraps itself by learning from what you add to it.
 
 ---
 
-## Why This Matters
+## No more predefined ontologies
 
-This is what lets you process heterogeneous sources—research papers alongside meeting notes alongside code documentation—without having to manually design ontologies for each type.
+Recurse lets you process heterogeneous sources—research papers alongside meeting notes alongside code documentation—without having to manually design ontologies for each type. The schema adapts to whatever patterns exist in your content, creating [frames](/docs/concepts/frames) that capture the semantic structure specific to your domain.
 
 | Approach | Schema Definition | Content Handling | Adaptation |
 |----------|-------------------|------------------|------------|
@@ -33,13 +38,25 @@ This is what lets you process heterogeneous sources—research papers alongside 
 
 ## What This Enables
 
-**Flexible ingestion**: Upload any type of content—Recurse figures out the structure
+As your knowledge base evolves through [temporal versioning](/docs/concepts/temporal-versioning), the adaptive schemas preserve the reasoning behind frame type decisions, making the evolution of your knowledge structure itself traceable:
 
-**Domain adaptation**: The system learns patterns specific to your field
-
-**Progressive refinement**: Schema improves as you process more content
-
-**No upfront taxonomy**: Start uploading immediately, structure emerges
+<Cards>
+  <Card title="Flexible Ingestion">
+    Upload any type of content—Recurse figures out the structure automatically without requiring type definitions or schema mappings.
+  </Card>
+  
+  <Card title="Domain Adaptation">
+    The system learns patterns specific to your field through continuous exposure, becoming more accurate over time.
+  </Card>
+  
+  <Card title="Progressive Refinement">
+    Schema accuracy improves as you process more content in the same domain, refining frame extraction and relationships.
+  </Card>
+  
+  <Card title="Zero Setup">
+    Start uploading immediately—no taxonomy design, no ontology workshops. Structure emerges from day one.
+  </Card>
+</Cards>
 
 ---
 
@@ -54,7 +71,7 @@ This is what lets you process heterogeneous sources—research papers alongside 
     The engine that enables schema adaptation
   </Card>
   
-  <Card href="/docs/concepts/temporal-versioning" title="Living Memory">
+  <Card href="/docs/concepts/temporal-versioning" title="Temporal versioning">
     How discovered frames evolve over time
   </Card>
 </Cards>

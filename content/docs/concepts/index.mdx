@@ -4,37 +4,35 @@ description: Understanding how Recurse works under the hood—RAGE, frames, and 
 icon: lightbulb
 ---
 
-Most people don't need to read these pages. Recurse works automatically—you upload sources, route requests through the proxy, subscribe to Context Streams, and the structure extraction and context assembly all happen in the background.
-
-But if you're curious about the mechanisms, or you're planning to build something on top of the infrastructure, these concept pages explain how the system actually works under the hood.
+Recurse works automatically—you upload sources, route requests through the proxy, subscribe to Context Streams, and structure extraction happens in the background. These concept pages explain the mechanisms underneath, for those curious about how the system works or planning to build on top of the infrastructure.
 
 ---
 
 ## Core Mechanisms
 
 <Cards>
-  <Card href="/docs/concepts/rage" title="RAGE: The Processing Engine">
-    The invisible infrastructure that transforms unstructured sources into structured knowledge graphs. RAGE handles source ingestion, frame extraction, relationship mapping, and query resolution in the background.
+  <Card href="/docs/concepts/rage" title="RAGE" icon="cpu">
+    **The processing engine that transforms unstructured sources into structured knowledge graphs.** 
     
-    **Key capability**: Treats knowledge as evolving structures rather than static text.
+    Handles source ingestion, frame extraction, and relationship mapping. Creates evolving structures that navigate meaning rather than just matching keywords.
   </Card>
 
-  <Card href="/docs/concepts/frames" title="Frames: Semantic Units">
-    Typed semantic units with named slots that hold specific information. When Recurse processes content, it extracts structured patterns—troubleshooting frames from bug reports, decision frames from meeting notes, argument frames from research—structural units that can reference each other and nest recursively.
+  <Card href="/docs/concepts/frames" title="Frames" icon="box">
+    **Typed semantic units with named slots that capture meaning and relationships.** 
     
-    **Key capability**: Navigate by structure rather than just keyword similarity.
+    The fundamental building blocks that enable navigation by structure. Frames reference each other and nest recursively to form knowledge graphs.
   </Card>
 
-            <Card href="/docs/concepts/adaptive-schemas" title="Emergent Structure">
-    The schema adapts to patterns in your content rather than forcing content into predetermined structures. Process research papers, and Recurse develops frames for claims and evidence. Process meeting transcripts, and it discovers frames for decisions and action items.
+  <Card href="/docs/concepts/adaptive-schemas" title="Adaptive Schemas" icon="sparkles">
+    **Schema discovery without predefined ontologies.** 
     
-    **Technical mechanism**: Adaptive Schemas — Works with heterogeneous sources without manual ontology design.
+    The system learns frame patterns from your content automatically. Creates emergent structure that adapts as you add sources across different domains.
   </Card>
 
-  <Card href="/docs/concepts/temporal-versioning" title="Living Memory">
-    When new information updates previous understanding, Recurse rewrites frames while preserving the complete evolution history—timestamps, diffs, explanations. Track how understanding of a topic changed over months or years.
+  <Card href="/docs/concepts/temporal-versioning" title="Temporal Versioning" icon="git-branch">
+    **Evolution tracking with complete history preservation.** 
     
-    **Technical mechanism**: Temporal Versioning — Maintains both currency and historical context simultaneously.
+    New information updates previous understanding while maintaining timestamps, diffs, and explanations. Creates living memory that stays current without losing context.
   </Card>
 </Cards>
 
@@ -43,16 +41,16 @@ But if you're curious about the mechanisms, or you're planning to build somethin
 ## Continuous Knowledge
 
 <Cards>
-  <Card href="/docs/concepts/subscriptions" title="Source Subscriptions">
-    Individual feeds that flag sources for automatic ingestion. Subscribe to newsletters, RSS feeds, or documentation sites to keep your knowledge current without manual uploads.
+  <Card href="/docs/concepts/subscriptions" title="Source Subscriptions" icon="rss">
+    **Continuous, automatic ingestion from individual feeds.** 
     
-    **Key capability**: Continuous, automatic ingestion of evolving content.
+    Monitor URLs and RSS for ongoing updates. Temporal versioning maintains both current understanding and complete evolution history as sources change.
   </Card>
   
-  <Card href="/docs/concepts/streams" title="Context Streams">
-    Curated collections that bundle sources, subscriptions, and documents into coherent knowledge packages. Experts can share their knowledge infrastructure, and you can subscribe or load streams dynamically.
+  <Card href="/docs/concepts/streams" title="Context Streams" icon="broadcast">
+    **Domain expertise sharing based on trust and authority.** 
     
-    **Key capability**: Expert-curated, continuously updated knowledge bundles.
+    Experts share subgraphs of their knowledge bases—sources, documents, and semantic connections. Subscribe to streams from people you trust for queryable expertise.
   </Card>
 </Cards>
 
@@ -63,16 +61,6 @@ But if you're curious about the mechanisms, or you're planning to build somethin
 **Frame extraction** provides structured semantic units. **Adaptive schemas** enable the structure to emerge from your content. **Temporal versioning** maintains knowledge currency while preserving evolution history. **Source subscriptions** keep information flowing automatically. **Context Streams** package expertise for sharing. **Recursivity** enables iterative refinement. **RAGE** integrates all these mechanisms into a coherent system.
 
 The architectural consequence: Recurse treats knowledge as living structures rather than static text. This enables retrieval systems that navigate relationships rather than just matching keywords, accumulate genuine understanding rather than aggregating text, and support actual inquiry rather than just answering questions.
-
----
-
-## When You Need to Understand This
-
-**Most users**: You really don't need to understand these mechanisms to use Recurse effectively. You upload sources, use the proxy, subscribe to collections. Frame extraction and structure maintenance happen automatically.
-
-**Advanced users**: Understanding frame types, schema adaptation, and temporal versioning helps you optimize ingestion strategies and formulate better queries.
-
-**Developers**: If you're building on top of Recurse, you need to understand frame semantics, slot structures, schema flexibility, and version management thoroughly. These form the architectural foundation of what the substrate can do.
 
 ---
 
