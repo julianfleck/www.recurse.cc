@@ -89,20 +89,15 @@ Use whichever fits your workflow – or combine them.
 
 ## What Makes Recurse Different
 
-If you've worked with RAG systems or knowledge graphs, you might wonder what makes Recurse different. Here's how our approach compares:
+If you've worked with RAG systems or knowledge graphs, you might wonder what makes Recurse different. Here's a quick comparison:
 
+| Feature | Traditional RAG | GraphRAG | Recurse |
+|:--------|:----------------|:---------|:--------|
+| **Understanding** | Similarity matching | Entity extraction | Semantic structure |
+| **Navigation** | Flat chunk retrieval | Entity relationships | Recursive traversal |
+| **Adaptation** | Static | Fixed ontology | Emergent schemas |
+| **Memory** | Session-based | Static graph | Living substrate |
 
-| Feature | RAG (Traditional) | GraphRAG | Recurse (RAGE) |
-|:--------|:------------------|:---------|:-----|
-| **Basic Functionality** | Retrieves documents based on keyword matches and vector embeddings. | Extracts entities, connects them with relationships, and performs basic entity-based retrieval. | Retrieves and navigates knowledge hierarchies, based on dynamic, context-sensitive, recursive traversal. |
-| **Conceptual Understanding** | Shallow, flat retrieval of documents or chunks of text. | Entity-based relationships; basic conceptual connections. | Deep, multi-layered understanding with **semantic zooming** and **multi-resolution analysis**. |
-| **Recursion and Depth** | Single-pass retrieval; no recursive exploration. | Entity-based, but lacks deeper recursion or layers of abstraction. | **Recursive exploration** across levels of abstraction, adapting to user needs and triggered associations. |
-| **Graph Structure** | Flat, independent documents or chunks with basic metadata. | Simple graph of entities; basic connection of entities with little hierarchical or lateral relationships. | **Recursive, evolving knowledge graph** that adjusts dynamically with new information and continuously prunes irrelevant connections. |
-| **Contextual Adaptation** | Static; doesn't adapt to user context or evolving needs. | Limited adaptability; can link entities but lacks deep contextual awareness. | **Context-sensitive traversal** that adapts based on user intent, cognitive mode, and evolving query. |
-| **Memory and Continuity** | No persistent memory; context is lost after each session. | No persistent context or memory; each query is treated as independent. | **Persistent, evolving memory** that adapts across sessions, recognizing and remembering user context. |
-| **Agentic Behavior** | One-shot, static retrieval based on initial query. | Simple entity retrieval without adaptive exploration. | **Agent-like behavior**: continuous re-evaluation of results, multi-step exploration, and intent-driven actions. |
-| **Source Subscriptions** | Not available. | Not available. | **Automatic continuous ingestion** from RSS feeds, newsletters, documentation – stays current without manual uploads. |
-| **Context Streams** | Not available. | Not available. | **Expert-curated knowledge bundles** – subscribe to domain-specific collections maintained by specialists. |
-
-
-Recurse transforms retrieval from similarity matching into structural navigation through your knowledge.
+<Card href="/docs/concepts/rage" title="Learn more about RAGE">
+  Learn about the technology behind Recurse and how it differs from traditional retrieval systems
+</Card>

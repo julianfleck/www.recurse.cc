@@ -1,5 +1,5 @@
 {
-  "title": "Core Concepts",
+  "title": "Concepts",
   "icon": "color-filter",
   "defaultOpen": false,
   "pages": [
@@ -8,7 +8,6 @@
     "temporal-versioning",
     "subscriptions",
     "streams",
-    "recursivity",
     "rage"
   ]
 }

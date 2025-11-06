@@ -1,48 +1,50 @@
 ---
 title: RAGE
-description: The processing engine that transforms unstructured sources into structured knowledge graphs
+description: Recursive, Agentic Graph Embeddings – the processing engine that transforms unstructured sources into a navigable knowledge substrate
 icon: cpu
 ---
 
-RAGE (Recursive, Agentic Graph Embeddings) is the engine underneath everything Recurse does. It's what turns unstructured sources into structured knowledge graphs.
+RAGE is the technology we developed to power Recurse. We've been working on retrieval mechanisms and developing systems for natural language understanding in complex information landscapes for years – RAGE is our current take at pulling together what we've learned and building a system that allows for exploration and novelty while keeping retrieval grounded and transparently traceable.
 
-You don't interact with RAGE directly—it operates in the background, handling source ingestion, frame extraction, relationship mapping, and query resolution. But understanding why it works the way it does helps explain what makes Recurse different from other retrieval systems.
+You don't interact with RAGE directly – it operates in the background, handling source ingestion, frame extraction, relationship mapping, and query resolution. But understanding why it works the way it does helps explain what makes Recurse different from other retrieval systems.
 
 ---
 
-## Why Recursive?
+## Recursive
 
 Knowledge doesn't exist in flat layers. An argument references evidence, that evidence was gathered using specific methods, those methods depend on theoretical assumptions, those assumptions connect back to other arguments. Ideas nest inside ideas.
 
 RAGE treats this nesting explicitly. [Frames](/docs/concepts/frames) can contain other frames, which can contain other frames, creating structures of arbitrary depth. When you query about a decision, you can traverse down to the discussions that led there, the constraints that shaped those discussions, the prior decisions that established those constraints. Or move back up from a technical detail to the broader context that makes it meaningful.
 
-This recursive structure mirrors how concepts actually relate—not just "these documents are similar" but "this argument depends on this evidence, which was gathered using this method, which addresses this criticism."
+This recursive structure mirrors how concepts actually relate – not just "these documents are similar" but "this argument depends on this evidence, which was gathered using this method, which addresses this criticism."
 
 ---
 
-## Why Agentic?
+## Agentic
 
-Most retrieval systems are passive. They store what you give them and retrieve based on keyword matching or embedding similarity. RAGE actively interprets structure.
+Most knowledge graphs store static information – nodes and edges that represent facts but don't do anything. RAGE frames carry executable instructions.
 
-It doesn't just store your research paper—it extracts what claims are being made, what supports those claims, how the methodology works, what limitations exist, and how all these pieces connect. It recognizes when new information contradicts previous understanding and updates frames accordingly. It discovers patterns across your content and adapts its schema to match.
+This turns each frame into a junction that can inform further actions. When an agent encounters a `Problem` frame, that frame carries instructions for how to search for related `Diagnosis` frames. A `Claim` frame knows how to validate itself by checking its `Evidence` slots and following connections to supporting `Method` frames. A `Decision` frame can trace back through the `Discussion` and `Constraint` frames that led to it.
 
-The system acts on your knowledge base: extracting structure, making connections, proposing updates, evolving its understanding as you add more content. It builds a representation that can be navigated, not just searched.
+This transforms the knowledge graph from passive storage into an executable substrate. Agents don't just retrieve information – they navigate frames that guide how to interpret context, what relationships to follow next, and how to validate what they find. The graph becomes a substrate for reasoning, not just retrieval.
+
+Think Minsky's frames-with-slots, but each frame is executable – carrying both semantic structure and behavioral instructions for agents that traverse it.
 
 ---
 
-## Why Graph?
+## Graph
 
-Structure without relationships is just organized text. RAGE treats knowledge as a web of typed connections. A `Claim` frame doesn't just link to related claims—it points to specific `Evidence` frames that support it, `Method` frames that describe how that evidence was gathered, and `Critique` frames that challenge its validity.
+Structure without relationships is just organized text. RAGE treats knowledge as a web of typed connections. A `Claim` frame doesn't just link to related claims – it points to specific `Evidence` frames that support it, `Method` frames that describe how that evidence was gathered, and `Critique` frames that challenge its validity.
 
-These aren't loose associations or similarity scores. They're explicit, typed relationships that preserve meaning: "supports," "contradicts," "depends on," "refines." You can follow these connections across your entire knowledge base—from a solution back to the problem it addresses, from a concept to all the examples that illustrate it, from a decision to every constraint that shaped it.
+The connections are explicit, typed relationships that preserve meaning: "supports," "contradicts," "depends on," "refines." You can follow these across your entire knowledge base – from a solution back to the problem it addresses, from a concept to all the examples that illustrate it, from a decision to every constraint that shaped it.
 
 The graph structure enables traversal based on semantic relationships rather than text similarity.
 
 ---
 
-## Why Embeddings?
+## Embeddings
 
-Even with structure and relationships, you still need semantic understanding. RAGE maintains embeddings at multiple scales—from individual frame slots up through complete frame hierarchies—so it can match query intent to relevant structure even when the exact terminology differs.
+Even with structure and relationships, you still need semantic understanding. RAGE maintains embeddings at multiple scales – from individual frame slots up through complete frame hierarchies – so it can match query intent to relevant structure even when the exact terminology differs.
 
 When you ask about "performance bottlenecks," the system recognizes frames about "latency issues" and "throughput constraints" not because the words match, but because the semantic meaning aligns. The embeddings provide the fuzzy matching that makes natural language queries work, while the frame structure ensures that what gets retrieved actually answers what you meant to ask.
 
@@ -52,7 +54,27 @@ When you ask about "performance bottlenecks," the system recognizes frames about
 
 Bringing these together: frames provide structure, recursion captures nesting, the graph preserves relationships, embeddings enable semantic matching, and the agentic behavior keeps it all current. [Adaptive schemas](/docs/concepts/adaptive-schemas) discover patterns in your content. [Temporal versioning](/docs/concepts/temporal-versioning) maintains history as understanding evolves.
 
-RAGE isn't just an engine—it's the infrastructure that makes knowledge navigable rather than merely searchable.
+RAGE isn't just an engine – it's the infrastructure that makes knowledge navigable rather than merely searchable.
+
+---
+
+## How RAGE Compares
+
+Here's a detailed breakdown of how RAGE differs from traditional RAG and GraphRAG approaches:
+
+| Feature | Traditional RAG | GraphRAG | RAGE |
+|:--------|:----------------|:---------|:-----|
+| **Basic Functionality** | Retrieves documents based on embedding similarity. | Extracts entities, connects them with relationships, and performs basic entity-based retrieval. | Retrieves and navigates knowledge hierarchies based on dynamic, context-sensitive, recursive traversal. |
+| **Conceptual Understanding** | Shallow, flat retrieval of documents or chunks of text. | Entity-based relationships; basic conceptual connections. | Deep, multi-layered understanding with semantic zooming and multi-resolution analysis. |
+| **Recursion and Depth** | Single-pass retrieval; no recursive exploration. | Entity-based, but lacks deeper recursion or layers of abstraction. | Recursive exploration across levels of abstraction, adapting to user needs and triggered associations. |
+| **Graph Structure** | Flat, independent documents or chunks with basic metadata. | Simple graph of entities; basic connection of entities with little hierarchical or lateral relationships. | Recursive, evolving knowledge graph that adjusts dynamically with new information. |
+| **Contextual Adaptation** | Static; doesn't adapt to user context or evolving needs. | Limited adaptability; can link entities but lacks deep contextual awareness. | Context-sensitive traversal that adapts based on user intent, cognitive mode, and evolving query. |
+| **Memory and Continuity** | No persistent memory; context is lost after each session. | No persistent context or memory; each query is treated as independent. | Persistent, evolving memory that adapts across sessions, recognizing and remembering user context. |
+| **Agentic Behavior** | One-shot, static retrieval based on initial query. | Simple entity retrieval without adaptive exploration. | Agent-like behavior: continuous re-evaluation of results, multi-step exploration, and intent-driven actions. |
+| **Schema Evolution** | Fixed schemas or no schemas. | Predefined ontologies. | Adaptive schemas that discover patterns in your content automatically. |
+| **Temporal Versioning** | Updates overwrite previous content. | Updates overwrite previous content. | Complete evolution history with timestamps, diffs, and explanations. |
+| **Source Subscriptions** | Manual uploads only. | Manual uploads only. | Automatic continuous ingestion from RSS feeds, newsletters, documentation. |
+| **Context Streams** | Not available. | Not available. | Expert-curated knowledge bundles – subscribe to domain-specific collections maintained by specialists. |
 
 ---
 
