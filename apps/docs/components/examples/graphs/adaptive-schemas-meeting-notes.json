@@ -236,5 +236,6 @@
       "stepNumber": 1,
       "description": "Meeting frames emerge with structure: agenda, decisions, discussions, viewpoints, risks, actions, subtasks"
     }
-  ]
+  ],
+  "initialDepth": 4
 }

@@ -1,3 +1,5 @@
+import * as React from "react";
+
 interface ProgressCircleProps
   extends Omit<React.ComponentProps<"svg">, "strokeWidth"> {
   value: number;

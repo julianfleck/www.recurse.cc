@@ -1,2 +1,6 @@
 /* Import centralized base styles */
 @import "@recurse/ui/styles";
+
+/* App-specific third-party imports */
+@import "fumadocs-ui/css/shadcn.css";
+@import "fumadocs-ui/css/preset.css";

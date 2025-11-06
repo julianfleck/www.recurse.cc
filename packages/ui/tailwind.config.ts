@@ -66,7 +66,7 @@ const config: Config = {
   plugins: [
     typography,
     // Custom tracking utilities for Switzer font
-    ({ addUtilities }) => {
+    ({ addUtilities }: { addUtilities: (utilities: Record<string, Record<string, string>>) => void }) => {
       const newUtilities = {
         '.tracking-switzer-tight': {
           letterSpacing: '0.01em',

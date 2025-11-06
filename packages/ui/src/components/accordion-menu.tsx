@@ -248,7 +248,12 @@ function AccordionMenuItem({
               }
             }
           }}
-          data-selected={props['data-selected'] ?? (matchPath(props.value as string) || selectedValue === props.value ? 'true' : undefined)}
+          aria-selected={
+            props['aria-selected'] ??
+            (matchPath(props.value as string) || selectedValue === props.value
+              ? 'true'
+              : undefined)
+          }
         >
           {children}
         </AccordionPrimitive.Trigger>

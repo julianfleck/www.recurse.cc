@@ -222,5 +222,6 @@
       "stepNumber": 1,
       "description": "Academic frames emerge with deep nesting: abstract, hypothesis, methods, evidence, arguments, claims, examples, citations"
     }
-  ]
+  ],
+  "initialDepth": 4
 }

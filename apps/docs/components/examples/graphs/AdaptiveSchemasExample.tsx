@@ -5,16 +5,8 @@ import {
   type AnimationData,
 } from '@/components/examples/graphs/AnimatedGraphExample';
 import { Tab, Tabs } from '@/components/tabs';
-import meetingNotesDataImport from './adaptive-schemas-meeting-notes.json' with {
-  type: 'json',
-  type: 'json',
-  type: 'json',
-};
-import researchPaperDataImport from './adaptive-schemas-research-paper.json' with {
-  type: 'json',
-  type: 'json',
-  type: 'json',
-};
+import meetingNotesDataImport from './adaptive-schemas-meeting-notes.json' with { type: 'json' };
+import researchPaperDataImport from './adaptive-schemas-research-paper.json' with { type: 'json' };
 
 // Ensure we have all required fields and handle string keys from JSON
 const researchPaperData: AnimationData = {

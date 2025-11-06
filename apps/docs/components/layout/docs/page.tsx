@@ -6,7 +6,7 @@ import { I18nLabel } from "fumadocs-ui/contexts/i18n";
 import type { ComponentProps } from "react";
 import { useMemo } from "react";
 import { cn } from "../../../lib/cn";
-import { ProgressCircle } from "../../ui/progress-circle";
+import { ProgressCircle } from "@recurse/ui/components/progress-circle";
 import {
   TOCItems,
   TOCProvider,

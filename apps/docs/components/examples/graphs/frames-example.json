@@ -90,5 +90,6 @@
       "stepNumber": 3,
       "description": "Diagnosis, root cause, solution, and impact frames emerge and connect"
     }
-  ]
+  ],
+  "initialDepth": 2
 }

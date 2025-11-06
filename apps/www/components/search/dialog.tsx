@@ -11,6 +11,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { DocumentationResults } from './results/documentation';
 import { WebsiteSuggestions } from './suggestions';
 import type { SearchProvider } from './types';
+import { HierarchicalSearchResult } from './types';
 
 type SearchCommandDialogProps = {
   open: boolean;
@@ -127,7 +128,7 @@ export function SearchCommandDialog({
             isLoading={isLoading}
             onSelect={() => onOpenChange(false)}
             onSelectAll={handleSelectAll}
-            results={results}
+            results={results as HierarchicalSearchResult[]}
             searchTerm={searchTerm}
           />
         )}

@@ -18,7 +18,7 @@ type ContentTreeProps = {
   searchTerm: string;
   onSelect: (href: string) => void;
   onSelectAll?: () => void; // Callback to focus input
-  containerRef?: React.RefObject<HTMLDivElement>; // Optional ref from parent
+  containerRef?: React.RefObject<HTMLDivElement | null>; // Optional ref from parent
 };
 
 function highlightText(text: string, searchTerm: string) {
@@ -66,7 +66,7 @@ function HierarchicalContentTree({
   searchTerm: string;
   onSelect: (href: string) => void;
   onSelectAll?: () => void;
-  containerRef: React.RefObject<HTMLDivElement>;
+  containerRef: React.RefObject<HTMLDivElement | null>;
   selectedId: string | null;
   setSelectedId: (id: string | null) => void;
 }) {

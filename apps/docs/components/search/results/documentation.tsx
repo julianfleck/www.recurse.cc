@@ -9,7 +9,7 @@ type DocumentationResultsProps = {
   onSelect?: () => void;
   onSelectAll?: () => void;
   isLoading?: boolean;
-  containerRef?: React.RefObject<HTMLDivElement>;
+  containerRef?: React.RefObject<HTMLDivElement | null>;
 };
 
 export function DocumentationResults({

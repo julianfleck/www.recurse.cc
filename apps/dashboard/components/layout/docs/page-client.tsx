@@ -31,7 +31,7 @@ import {
   CollapsibleTrigger,
 } from "../../ui/collapsible";
 import { Pill, PillStatus } from "../../ui/kibo-ui/pill";
-import { ProgressCircle } from "../../ui/progress-circle";
+import { ProgressCircle } from "@recurse/ui/components/progress-circle";
 import { useTOCItems } from "../../ui/toc";
 
 const TocPopoverContext = createContext<{

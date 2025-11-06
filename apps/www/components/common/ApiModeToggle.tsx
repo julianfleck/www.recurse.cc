@@ -68,7 +68,7 @@ export function ApiModeToggle() {
 
       <Badge
         className="ml-2"
-        variant={mode === 'real' ? 'default' : 'secondary'}
+        variant={mode === 'real' ? 'primary' : 'secondary'}
       >
         {mode === 'real' ? 'Live' : 'Demo'}
       </Badge>

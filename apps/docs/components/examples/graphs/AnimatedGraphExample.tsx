@@ -254,75 +254,76 @@ export function AnimatedGraphExample({
 
   return (
     <div
-      className={cn(
-        'relative h-[500px] w-full overflow-hidden rounded-lg border bg-card',
-        'mt-8 mb-4',
-        className
-      )}
+      className={cn('mt-8 mb-4', className)}
       key={`graph-${graphDataHash.slice(0, 16)}`}
       ref={containerRef}
     >
-      <GraphView
-        data={graphData}
-        depth={1000}
-        fitSignal={fitTick}
-        withSidebar={false}
-        zoomModifier="cmd"
-      />
+      <div
+        className={cn(
+          'h-[500px] w-full overflow-hidden rounded-lg border bg-card',
+          className
+        )}
+      >
+        <GraphView
+          data={graphData}
+          depth={1000}
+          fitSignal={fitTick}
+          withSidebar={false}
+          zoomModifier="cmd"
+        />
+      </div>
       {/* Progress indicator with description - only show if more than one step */}
       {animationSteps.length > 1 && (
-        <div className='absolute right-0 bottom-0 left-0 z-10'>
-          <div className="m-2 flex items-center gap-3 rounded-md border border-border bg-background/80 p-2 shadow backdrop-blur">
-            <button
-              className="shrink-0 rounded p-1 hover:bg-secondary"
-              onClick={buttonHandler}
-              title={buttonTitle}
-              type="button"
-            >
-              {buttonIcon}
-            </button>
+        <div className="mt-2 mb-4 flex items-center gap-3 rounded-md border border-border p-2">
+          <button
+            className="shrink-0 rounded p-1 hover:bg-secondary"
+            onClick={buttonHandler}
+            title={buttonTitle}
+            type="button"
+          >
+            {buttonIcon}
+          </button>
 
-            <span className='shrink-0 whitespace-nowrap font-medium text-sm'>
-              Step {currentStep + 1} of {animationSteps.length}
+          <span className='shrink-0 whitespace-nowrap font-medium text-sm'>
+            Step {currentStep + 1} of {animationSteps.length}
+          </span>
+
+          <div className="h-2 w-24 shrink-0 overflow-hidden rounded-full bg-secondary">
+            <div
+              className="h-full bg-primary transition-all duration-500"
+              style={{
+                width: `${
+                  ((currentStep + 1) / animationSteps.length) *
+                  PROGRESS_BAR_WIDTH_PERCENT
+                }%`,
+              }}
+            />
+          </div>
+
+          <div className="flex min-w-0 grow items-center justify-between gap-1">
+            <span className='line-clamp-1 min-w-0 font-mono text-muted-foreground text-xs'>
+              {currentStepData.description}
             </span>
 
-            <div className="h-2 w-24 shrink-0 overflow-hidden rounded-full bg-secondary">
-              <div
-                className="h-full bg-primary transition-all duration-500"
-                style={{
-                  width: `${
-                    ((currentStep + 1) / animationSteps.length) *
-                    PROGRESS_BAR_WIDTH_PERCENT
-                  }%`,
-                }}
-              />
-            </div>
-
-            <div className="flex min-w-0 grow items-center justify-between gap-1">
-              <span className="line-clamp-1 min-w-0 font-mono text-muted-foreground text-xs">
-                {currentStepData.description}
-              </span>
-
-              <div className="flex shrink-0 items-center gap-1">
-                <button
-                  className="rounded p-1 hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
-                  disabled={currentStep <= 0}
-                  onClick={handleStepBack}
-                  title="Previous step"
-                  type="button"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <button
-                  className="rounded p-1 hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
-                  disabled={currentStep >= animationSteps.length - 1}
-                  onClick={handleStepForward}
-                  title="Next step"
-                  type="button"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-              </div>
+            <div className="flex shrink-0 items-center gap-1">
+              <button
+                className="rounded p-1 hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={currentStep <= 0}
+                onClick={handleStepBack}
+                title="Previous step"
+                type="button"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button
+                className="rounded p-1 hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={currentStep >= animationSteps.length - 1}
+                onClick={handleStepForward}
+                title="Next step"
+                type="button"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
             </div>
           </div>
         </div>

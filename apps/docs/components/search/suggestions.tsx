@@ -16,8 +16,13 @@ function getRootPages(root: PageTree.Root) {
   if (root.children) {
     root.children.forEach((child) => {
       if (child.type === "page" && child.url) {
+        // Convert ReactNode name to string - use string if available, otherwise derive from URL
+        const nameString = typeof child.name === "string" 
+          ? child.name 
+          : child.url.split("/").filter(Boolean).pop()?.replace(/-/g, " ") || "Untitled";
+        
         suggestions.push({
-          title: child.name,
+          title: nameString,
           href: child.url,
         });
       }
