@@ -14,6 +14,8 @@ import { AnimatedGraphExample } from "@/components/examples/graphs/AnimatedGraph
 import { ExampleGraphs } from "@/components/examples/graphs/ExampleGraphs";
 import { FAQ } from "@/components/faq";
 import { GraphView } from "@/components/graph-view";
+import { AdaptiveSchemasExample } from "@/components/examples/graphs/AdaptiveSchemasExample";
+import { FramesExample } from "@/components/examples/graphs/FramesExample";
 import { openapi } from "@/lib/openapi";
 
 // Custom Card component that resolves icon strings
@@ -41,6 +43,8 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     GraphView,
     ExampleGraphs,
     AnimatedGraphExample,
+    FramesExample,
+    AdaptiveSchemasExample,
     APIPage: (props) => {
       try {
         const apiProps = openapi.getAPIPageProps(props);

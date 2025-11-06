@@ -14,6 +14,8 @@ import { AnimatedGraphExample } from '@/components/examples/graphs/AnimatedGraph
 import { ExampleGraphs } from '@/components/examples/graphs/ExampleGraphs';
 import { FAQ } from '@/components/faq';
 import { GraphView } from '@/components/graph-view';
+import { AdaptiveSchemasExample } from '@/content/docs/concepts/AdaptiveSchemasExample';
+import { FramesExample } from '@/content/docs/concepts/FramesExample';
 import { openapi } from '@/lib/openapi';
 
 // Custom Card component that resolves icon strings
@@ -24,7 +26,7 @@ function Card({ icon, ...props }: any) {
 
 // Custom Cards component
 function Cards(props: any) {
-  return <FumadocsCards {...props} className='hover:bg-red-200' />;
+  return <FumadocsCards {...props} className="hover:bg-red-200" />;
 }
 
 // use this function to get MDX components, you will need it for rendering MDX
@@ -41,6 +43,8 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     GraphView,
     ExampleGraphs,
     AnimatedGraphExample,
+    FramesExample,
+    AdaptiveSchemasExample,
     APIPage: (props) => {
       try {
         const apiProps = openapi.getAPIPageProps(props);

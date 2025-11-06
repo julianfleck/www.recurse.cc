@@ -1,0 +1,223 @@
+{
+  "baseData": {
+    "nodes": [
+      {
+        "id": "doc-1",
+        "type": "Document:newsletter",
+        "title": "Tech Policy Newsletter #47",
+        "summary": "Weekly roundup of regulatory developments in technology, AI, and data privacy",
+        "children": [],
+        "metadata": {}
+      }
+    ],
+    "links": []
+  },
+  "stepAdditions": {
+    "1": {
+      "nodes": [],
+      "links": []
+    },
+    "2": {
+      "nodes": [
+        {
+          "id": "sec-1",
+          "type": "heading_section",
+          "title": "AI Regulation Updates",
+          "summary": "Latest developments in artificial intelligence governance and policy",
+          "children": [],
+          "metadata": {
+            "tags": ["AI", "Regulation", "Europe"],
+            "hypernyms": ["Technology Policy", "Governance"]
+          }
+        },
+        {
+          "id": "sec-2",
+          "type": "heading_section",
+          "title": "Data Privacy Developments",
+          "summary": "Recent changes and proposed updates to data protection laws",
+          "children": [],
+          "metadata": {
+            "tags": ["Privacy", "Data Protection", "US Policy"],
+            "hypernyms": ["Consumer Rights", "Digital Regulation"]
+          }
+        },
+        {
+          "id": "sec-3",
+          "type": "heading_section",
+          "title": "Emerging Technologies",
+          "summary": "Latest developments in AI, quantum computing, and next-generation technologies",
+          "children": [],
+          "metadata": {
+            "tags": ["AI", "Quantum Computing", "Innovation"],
+            "hypernyms": ["Technology Advancement", "Research"]
+          }
+        }
+      ],
+      "links": [
+        { "source": "doc-1", "target": "sec-1" },
+        { "source": "doc-1", "target": "sec-2" },
+        { "source": "doc-1", "target": "sec-3" }
+      ]
+    },
+    "3": {
+      "nodes": [
+        {
+          "id": "claim-1",
+          "type": "claim",
+          "title": "New EU AI Act requires transparency",
+          "summary": "The European Union's comprehensive AI legislation mandates clear documentation and accountability for AI systems",
+          "children": [],
+          "metadata": {
+            "tags": ["EU AI Act", "Regulation", "Transparency"],
+            "hypernyms": ["AI Governance", "European Policy"]
+          }
+        },
+        {
+          "id": "evidence-1",
+          "type": "evidence",
+          "title": "European Parliament vote results",
+          "summary": "Parliament approved the AI Act with amendments strengthening risk assessment requirements",
+          "children": [],
+          "metadata": {
+            "tags": ["European Parliament", "Legislation", "Voting"],
+            "hypernyms": ["Policy Making", "Democratic Process"]
+          }
+        },
+        {
+          "id": "claim-2",
+          "type": "claim",
+          "title": "US considers federal privacy law",
+          "summary": "Congress is advancing bipartisan legislation to establish comprehensive data privacy standards",
+          "children": [],
+          "metadata": {
+            "tags": ["Privacy Law", "Federal Legislation", "Data Protection"],
+            "hypernyms": ["US Policy", "Consumer Protection"]
+          }
+        },
+        {
+          "id": "evidence-2",
+          "type": "evidence",
+          "title": "Congress committee hearings",
+          "summary": "Multiple committees held hearings on data privacy frameworks and industry accountability",
+          "children": [],
+          "metadata": {
+            "tags": ["Congress", "Hearings", "Oversight"],
+            "hypernyms": ["Government Process", "Policy Development"]
+          }
+        },
+        {
+          "id": "claim-3",
+          "type": "claim",
+          "title": "Quantum computing achieves major milestone",
+          "summary": "Recent breakthroughs in quantum error correction bring scalable quantum computing closer to reality",
+          "children": [],
+          "metadata": {
+            "tags": ["Quantum Computing", "Breakthrough", "Scalability"],
+            "hypernyms": ["Technology Advancement", "Computing Innovation"]
+          }
+        },
+        {
+          "id": "evidence-3",
+          "type": "evidence",
+          "title": "IBM quantum roadmap update",
+          "summary": "IBM announced significant progress in quantum error correction and plans for 1000+ qubit systems by 2025",
+          "children": [],
+          "metadata": {
+            "tags": ["IBM", "Quantum Roadmap", "Error Correction"],
+            "hypernyms": ["Technology Development", "Corporate Strategy"]
+          }
+        }
+      ],
+      "links": [
+        { "source": "sec-1", "target": "claim-1" },
+        { "source": "sec-1", "target": "evidence-1" },
+        { "source": "claim-1", "target": "evidence-1" },
+        { "source": "sec-2", "target": "claim-2" },
+        { "source": "sec-2", "target": "evidence-2" },
+        { "source": "claim-2", "target": "evidence-2" },
+        { "source": "sec-3", "target": "claim-3" },
+        { "source": "sec-3", "target": "evidence-3" },
+        { "source": "claim-3", "target": "evidence-3" }
+      ]
+    },
+    "4": {
+      "nodes": [
+        {
+          "id": "doc-related-1",
+          "type": "Document:article",
+          "title": "AI Ethics Framework v2.1",
+          "summary": "Comprehensive ethical guidelines for AI development and deployment",
+          "children": [],
+          "metadata": {
+            "tags": ["AI Ethics", "Guidelines", "Development"],
+            "hypernyms": ["AI Governance", "Technology Standards"]
+          }
+        },
+        {
+          "id": "doc-related-2",
+          "type": "Document:policy",
+          "title": "Data Protection Regulation 2024",
+          "summary": "Updated privacy regulations for the digital age",
+          "children": [],
+          "metadata": {
+            "tags": ["Privacy", "Regulation", "Data Protection"],
+            "hypernyms": ["Consumer Rights", "Digital Law"]
+          }
+        },
+        {
+          "id": "tag-ai-governance",
+          "type": "concept",
+          "title": "AI Governance",
+          "summary": "Framework for regulating artificial intelligence systems and applications",
+          "children": [],
+          "metadata": {
+            "tags": ["AI", "Governance", "Regulation"],
+            "hypernyms": ["Technology Policy", "Public Policy"]
+          }
+        },
+        {
+          "id": "tag-privacy-rights",
+          "type": "concept",
+          "title": "Privacy Rights",
+          "summary": "Legal and ethical rights concerning personal data protection",
+          "children": [],
+          "metadata": {
+            "tags": ["Privacy", "Rights", "Data Protection"],
+            "hypernyms": ["Consumer Protection", "Digital Rights"]
+          }
+        }
+      ],
+      "links": [
+        { "source": "doc-1", "target": "doc-related-1" },
+        { "source": "doc-1", "target": "doc-related-2" },
+        { "source": "sec-1", "target": "tag-ai-governance" },
+        { "source": "claim-1", "target": "tag-ai-governance" },
+        { "source": "evidence-1", "target": "tag-ai-governance" },
+        { "source": "sec-2", "target": "tag-privacy-rights" },
+        { "source": "claim-2", "target": "tag-privacy-rights" },
+        { "source": "evidence-2", "target": "tag-privacy-rights" },
+        { "source": "doc-related-1", "target": "tag-ai-governance" },
+        { "source": "doc-related-2", "target": "tag-privacy-rights" }
+      ]
+    }
+  },
+  "animationSteps": [
+    {
+      "stepNumber": 1,
+      "description": "Document ingested and basic metadata extracted"
+    },
+    {
+      "stepNumber": 2,
+      "description": "Identified semantic structure and section hierarchy"
+    },
+    {
+      "stepNumber": 3,
+      "description": "Extracted semantic frames"
+    },
+    {
+      "stepNumber": 4,
+      "description": "Establishing connections to existing knowledge base"
+    }
+  ]
+}
+

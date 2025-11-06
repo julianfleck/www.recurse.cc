@@ -1,0 +1,114 @@
+{
+  "baseData": {
+    "nodes": [
+      {
+        "id": "doc-1",
+        "type": "Document:bug_report",
+        "title": "Application crash on submit",
+        "summary": "Bug report describing application crashes when users click submit",
+        "children": [],
+        "metadata": {}
+      }
+    ],
+    "links": []
+  },
+  "stepAdditions": {
+    "1": {
+      "nodes": [],
+      "links": []
+    },
+    "2": {
+      "nodes": [
+        {
+          "id": "problem-frame",
+          "type": "Problem",
+          "title": "Application crashed",
+          "summary": "Application crashes when users clicked submit button",
+          "children": [],
+          "metadata": {
+            "slots": {
+              "symptom": "Application crashed",
+              "trigger": "Users clicked submit",
+              "affected": "All users attempting form submission"
+            }
+          }
+        }
+      ],
+      "links": [
+        { "source": "doc-1", "target": "problem-frame" }
+      ]
+    },
+    "3": {
+      "nodes": [
+        {
+          "id": "diagnosis-frame",
+          "type": "Diagnosis",
+          "title": "Network timeout investigation",
+          "summary": "Checked network logs and found timeout errors",
+          "children": [],
+          "metadata": {
+            "slots": {
+              "investigation_steps": ["Checked network logs", "Analyzed error patterns"],
+              "findings": "Timeout errors occurring during API calls"
+            }
+          }
+        },
+        {
+          "id": "root-cause-frame",
+          "type": "RootCause",
+          "title": "API connection limit exceeded",
+          "summary": "API server was hitting connection limits",
+          "children": [],
+          "metadata": {
+            "slots": {
+              "underlying_issue": "Connection pool size too small",
+              "detected_by": "Diagnosis frame findings"
+            }
+          }
+        },
+        {
+          "id": "solution-frame",
+          "type": "Solution",
+          "title": "Increased connection pool",
+          "summary": "Increased connection pool size to 100 to resolve the issue",
+          "children": [],
+          "metadata": {
+            "slots": {
+              "fix": "Increased connection pool size to 100",
+              "solves": "Addresses root cause of connection limits"
+            }
+          }
+        }
+      ],
+      "links": [
+        { "source": "problem-frame", "target": "diagnosis-frame" },
+        { "source": "diagnosis-frame", "target": "root-cause-frame" },
+        { "source": "root-cause-frame", "target": "solution-frame" },
+        { "source": "solution-frame", "target": "problem-frame" }
+      ]
+    },
+    "4": {
+      "nodes": [],
+      "links": []
+    }
+  },
+  "animationSteps": [
+    {
+      "stepNumber": 1,
+      "description": "Bug report ingested as unstructured text"
+    },
+    {
+      "stepNumber": 2,
+      "description": "Problem frame extracted with symptom, trigger, and affected users"
+    },
+    {
+      "stepNumber": 3,
+      "description": "Diagnosis, root cause, and solution frames connected via typed relationships"
+    },
+    {
+      "stepNumber": 4,
+      "description": "Navigation paths established: problem → diagnosis → cause → solution"
+    }
+  ]
+}
+
