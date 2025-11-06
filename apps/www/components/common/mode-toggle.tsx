@@ -1,8 +1,8 @@
 'use client';
 
+import { Button } from '@recurse/ui/components';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { Button } from '@recurse/ui/components';
 import {
   DropdownMenu,
   DropdownMenuContent,

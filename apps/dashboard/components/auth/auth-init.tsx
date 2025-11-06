@@ -27,11 +27,16 @@ export function AuthInit() {
     console.error = (...args) => {
       // Suppress Auth0 "Missing Refresh Token" errors - these are expected when requesting tokens
       // with an audience/scope that wasn't included in the initial login
-      const errorMessage = args.find(arg => typeof arg === 'string') as string | undefined;
-      if (errorMessage && (
-        errorMessage.includes('Missing Refresh Token') ||
-        (errorMessage.includes('refresh') && errorMessage.includes('token') && errorMessage.includes('audience'))
-      )) {
+      const errorMessage = args.find((arg) => typeof arg === "string") as
+        | string
+        | undefined;
+      if (
+        errorMessage &&
+        (errorMessage.includes("Missing Refresh Token") ||
+          (errorMessage.includes("refresh") &&
+            errorMessage.includes("token") &&
+            errorMessage.includes("audience")))
+      ) {
         return; // Suppress this error silently
       }
       originalConsoleError.apply(console, args);
@@ -46,12 +51,10 @@ export function AuthInit() {
   useEffect(() => {
     if (accessTokenFromStore) {
       if (process.env.NODE_ENV === "development") {
-        console.log("[AuthInit] Setting up API auth getter with existing store token");
       }
       setApiAuthGetter(() => useAuthStore.getState().accessToken);
     } else {
       if (process.env.NODE_ENV === "development") {
-        console.log("[AuthInit] No store token, clearing API auth getter");
       }
       setApiAuthGetter(emptyTokenGetter);
     }
@@ -60,22 +63,13 @@ export function AuthInit() {
   useEffect(() => {
     // Prefer SDK-based login when available; otherwise respect a client-side token set via email/password flow
     const isReady = !isLoading;
-    
+
     // Debug logging for auth state
     if (process.env.NODE_ENV === "development") {
-      console.log("[AuthInit] Auth state:", {
-        isLoading,
-        isAuthenticated,
-        isReady,
-        hasAccessTokenFromStore: !!accessTokenFromStore,
-        user: user?.email || user?.name || "no user",
-        error: error?.message,
-      });
     }
-    
+
     if (isReady && isAuthenticated && !error) {
       if (process.env.NODE_ENV === "development") {
-        console.log("[AuthInit] Auth0 authenticated, getting token silently...");
       }
       const options = audience
         ? { authorizationParams: { audience, scope: scopes } }
@@ -83,9 +77,12 @@ export function AuthInit() {
       getAccessTokenSilently(options as never)
         .then((token) => {
           if (process.env.NODE_ENV === "development") {
-            console.log("[AuthInit] Got token from Auth0, setting in store");
           }
-          const accessToken = typeof token === "string" ? token : (token as unknown as { access_token?: string })?.access_token ?? "";
+          const accessToken =
+            typeof token === "string"
+              ? token
+              : ((token as unknown as { access_token?: string })
+                  ?.access_token ?? "");
           const normalizedUser = user
             ? ({
                 sub: user.sub || "",
@@ -99,27 +96,31 @@ export function AuthInit() {
         })
         .catch((tokenError) => {
           // Check if this is a "Missing Refresh Token" error - these are expected and should be handled gracefully
-          const errorMessage = tokenError instanceof Error ? tokenError.message : String(tokenError);
-          const isMissingRefreshToken = errorMessage.includes('Missing Refresh Token') || 
-            (errorMessage.includes('refresh') && errorMessage.includes('token') && errorMessage.includes('audience'));
-          
+          const errorMessage =
+            tokenError instanceof Error
+              ? tokenError.message
+              : String(tokenError);
+          const isMissingRefreshToken =
+            errorMessage.includes("Missing Refresh Token") ||
+            (errorMessage.includes("refresh") &&
+              errorMessage.includes("token") &&
+              errorMessage.includes("audience"));
+
           if (isMissingRefreshToken) {
             // Missing refresh token is expected when requesting tokens with audience/scope not in initial login
             // Auth0 will handle this by triggering a new login flow if needed
             // Don't clear auth or redirect - let Auth0 handle it or use existing token if available
             if (process.env.NODE_ENV === "development") {
-              console.log("[AuthInit] Missing refresh token (expected), will attempt to use existing token or Auth0 will handle login");
             }
             // If we have a token in store, keep using it - don't clear auth
-            if (!accessTokenFromStore && !onAuthPage) {
+            if (!(accessTokenFromStore || onAuthPage)) {
               // Only redirect if we truly have no token at all
               window.location.href = "/login";
             }
             return;
           }
-          
+
           if (process.env.NODE_ENV === "development") {
-            console.error("[AuthInit] Failed to get token from Auth0:", tokenError);
           }
           // Clear auth state and redirect to login on other token refresh failures
           clear();
@@ -131,7 +132,6 @@ export function AuthInit() {
         });
     } else if (isReady && (!accessTokenFromStore || error)) {
       if (process.env.NODE_ENV === "development") {
-        console.log("[AuthInit] Not authenticated, has Auth0 error, or no store token, clearing auth");
       }
       clear();
       // API auth getter will be cleared by the separate effect above

@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import { JetBrains_Mono } from 'next/font/google';
-import "./globals.css";
+import './globals.css';
+import { ThemeProvider } from '@recurse/ui/components';
 import { Analytics } from '@vercel/analytics/next';
 import Aurora from '@/components/backgrounds/Aurora/Aurora';
 import Particles from '@/components/backgrounds/Particles/Particles';
 import { Footer } from '@/components/common/Footer';
 import { Header } from '@/components/common/header';
-import { ThemeProvider } from '@recurse/ui/components';
 import { ScrollProvider } from '@/contexts/ScrollContext';
 import { Providers } from './providers';
 

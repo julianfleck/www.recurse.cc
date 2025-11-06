@@ -1,7 +1,5 @@
 "use client";
 
-import { SearchIcon } from "lucide-react";
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -9,15 +7,22 @@ import {
   CommandList,
 } from "@recurse/ui/components/command";
 import { Spinner } from "@recurse/ui/components/spinner";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { isOnAuthPage } from "@/lib/auth-utils";
 import { DocumentationResults } from "./results/documentation";
 import { DocumentationSuggestions } from "./suggestions";
-import type { HierarchicalSearchResult, SearchItem, SearchProvider } from "./types";
+import type {
+  HierarchicalSearchResult,
+  SearchItem,
+  SearchProvider,
+} from "./types";
 
 // Lazy import KnowledgeBaseResults to avoid importing graph-view dependencies when not needed
 // This allows www app to use search without graph-view dependencies
-const KnowledgeBaseResults = lazy(() => 
-  import("./results/knowledge-base").then(m => ({ default: m.KnowledgeBaseResults }))
+const KnowledgeBaseResults = lazy(() =>
+  import("./results/knowledge-base").then((m) => ({
+    default: m.KnowledgeBaseResults,
+  }))
 );
 
 type SearchCommandDialogProps = {
@@ -49,7 +54,7 @@ export function SearchCommandDialog({
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-      if (!open) {
+    if (!open) {
       setSearchTerm("");
       setResults([]);
       setError(null);
@@ -102,7 +107,7 @@ export function SearchCommandDialog({
   }, [error, searchTerm, isLoading, hasSearched, results.length]);
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'ArrowDown' && results.length > 0) {
+    if (e.key === "ArrowDown" && results.length > 0) {
       e.preventDefault();
       // Focus the ContentTree container so it can receive keyboard events
       contentTreeRef.current?.focus();
@@ -120,23 +125,27 @@ export function SearchCommandDialog({
       open={open}
       showCloseButton={!isLoading}
     >
-        <CommandInput
-          ref={inputRef}
-          onValueChange={setSearchTerm}
-          placeholder={placeholder}
-          value={searchTerm}
-          onKeyDown={handleInputKeyDown}
-        />
+      <CommandInput
+        onKeyDown={handleInputKeyDown}
+        onValueChange={setSearchTerm}
+        placeholder={placeholder}
+        ref={inputRef}
+        value={searchTerm}
+      />
       <CommandList ref={resultsRef}>
-        {!searchTerm && <DocumentationSuggestions onSelect={() => onOpenChange(false)} />}
+        {!searchTerm && (
+          <DocumentationSuggestions onSelect={() => onOpenChange(false)} />
+        )}
         {isLoading && (
           <div className="flex items-center justify-center py-6">
             <Spinner size={16} strokeWidth={2} />
           </div>
         )}
         {emptyMessage && <CommandEmpty>{emptyMessage}</CommandEmpty>}
-        {searchTerm && !isLoading && results.length > 0 && (
-          searchType === "documentation" ? (
+        {searchTerm &&
+          !isLoading &&
+          results.length > 0 &&
+          (searchType === "documentation" ? (
             <DocumentationResults
               containerRef={contentTreeRef}
               onSelect={() => onOpenChange(false)}
@@ -148,8 +157,7 @@ export function SearchCommandDialog({
             <Suspense fallback={<div>Loading...</div>}>
               <KnowledgeBaseResults results={results as SearchItem[]} />
             </Suspense>
-          )
-        )}
+          ))}
       </CommandList>
     </CommandDialog>
   );

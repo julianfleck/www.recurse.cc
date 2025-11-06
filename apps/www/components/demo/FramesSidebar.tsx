@@ -1,7 +1,7 @@
 'use client';
 
-import { Brain, Lightbulb, Link, User } from 'lucide-react';
 import { Badge } from '@recurse/ui/components/badge';
+import { Brain, Lightbulb, Link, User } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useDemoApp } from '@/contexts/DemoAppContext';
 

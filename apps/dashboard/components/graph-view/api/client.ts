@@ -16,31 +16,16 @@ export class GraphApiClient {
     endpoint: string,
     params?: Record<string, string | number | boolean>
   ): Promise<ApiResponse<unknown>> {
-    console.log(
-      `[GraphApiClient] Starting GET ${endpoint} with params:`,
-      params
-    );
     let lastError: Error | null = null;
 
     for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
       try {
-        console.log(
-          `[GraphApiClient] Attempt ${attempt + 1}/${MAX_RETRIES} - calling apiService.get`
-        );
         const response = await this.apiService.get(endpoint, params);
-        console.log(
-          `[GraphApiClient] GET successful on attempt ${attempt + 1}:`,
-          {
-            status: response.status,
-            hasData: !!response.data,
-          }
-        );
         return {
           data: response.data,
           success: true,
         };
       } catch (error) {
-        console.error(`[GraphApiClient] Attempt ${attempt + 1} failed:`, error);
         lastError = error instanceof Error ? error : new Error("Unknown error");
 
         // If it's an auth error (401/403), don't retry
@@ -63,11 +48,6 @@ export class GraphApiClient {
         }
       }
     }
-
-    console.error(
-      `[GraphApiClient] All ${MAX_RETRIES} attempts failed. Last error:`,
-      lastError
-    );
     return {
       data: null,
       success: false,
@@ -84,28 +64,16 @@ export class GraphApiClient {
     id?: string;
     direction?: string;
   }): Promise<ApiResponse<unknown>> {
-    console.log("[GraphApiClient] Starting search with params:", params);
     let lastError: Error | null = null;
 
     for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
       try {
-        console.log(
-          `[GraphApiClient] Attempt ${attempt + 1}/${MAX_RETRIES} - calling apiService.get`
-        );
         const response = await this.apiService.get("/search", params);
-        console.log(
-          `[GraphApiClient] Search successful on attempt ${attempt + 1}:`,
-          {
-            status: response.status,
-            hasData: !!response.data,
-          }
-        );
         return {
           data: response.data,
           success: true,
         };
       } catch (error) {
-        console.error(`[GraphApiClient] Attempt ${attempt + 1} failed:`, error);
         lastError = error instanceof Error ? error : new Error("Unknown error");
 
         // If it's an auth error (401/403), don't retry
@@ -128,11 +96,6 @@ export class GraphApiClient {
         }
       }
     }
-
-    console.error(
-      `[GraphApiClient] All ${MAX_RETRIES} attempts failed. Last error:`,
-      lastError
-    );
     return {
       data: null,
       success: false,

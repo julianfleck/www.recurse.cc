@@ -1,5 +1,5 @@
-import type { LucideIcon } from 'lucide-react';
 import { Button } from '@recurse/ui/components';
+import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface IconToggleButtonProps {
@@ -9,7 +9,7 @@ interface IconToggleButtonProps {
   onClick?: () => void;
   className?: string;
   tooltip?: React.ReactNode;
-  tooltipSide?: "top" | "right" | "bottom" | "left";
+  tooltipSide?: 'top' | 'right' | 'bottom' | 'left';
   buttonProps?: React.ComponentProps<typeof Button>;
 }
 
@@ -20,7 +20,7 @@ export function IconToggleButton({
   onClick,
   className,
   tooltip,
-  tooltipSide = "bottom",
+  tooltipSide = 'bottom',
   buttonProps,
 }: IconToggleButtonProps) {
   return (

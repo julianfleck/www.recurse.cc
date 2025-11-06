@@ -8,14 +8,21 @@ export function useSocialLogin() {
 
   const go = (connection: string) => {
     // Check for returnTo query param (from external apps like docs/www)
-    const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+    const urlParams =
+      typeof window !== "undefined"
+        ? new URLSearchParams(window.location.search)
+        : null;
     const returnToParam = urlParams?.get("returnTo");
-    
+
     // Capture where to return after auth
     // Default to current location within dashboard
-    let returnToOrigin = typeof window !== "undefined" ? window.location.origin : "";
-    let returnToPath = typeof window !== "undefined" ? window.location.pathname + window.location.search : "/";
-    
+    let returnToOrigin =
+      typeof window !== "undefined" ? window.location.origin : "";
+    let returnToPath =
+      typeof window !== "undefined"
+        ? window.location.pathname + window.location.search
+        : "/";
+
     // If returnTo param is provided, it means user came from another app
     if (returnToParam) {
       try {
@@ -33,7 +40,7 @@ export function useSocialLogin() {
         // Invalid returnTo, use current location
       }
     }
-    
+
     // Each app uses its own origin for redirect_uri (must be registered in Auth0)
     // Dashboard callback URL: dashboard.recurse.cc/ (or localhost:3001/ in dev)
     loginWithRedirect({
@@ -43,11 +50,11 @@ export function useSocialLogin() {
           typeof window !== "undefined"
             ? `${window.location.origin}/`
             : undefined,
-        scope: 'openid profile email offline_access',
+        scope: "openid profile email offline_access",
       },
-      appState: { 
+      appState: {
         returnTo: returnToPath,
-        returnToOrigin: returnToOrigin,
+        returnToOrigin,
       },
     });
   };

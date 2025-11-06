@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   ChevronLeft,
@@ -6,12 +6,12 @@ import {
   Pause,
   Play,
   RotateCcw,
-} from 'lucide-react';
-import type React from 'react';
-import { useEffect, useRef, useState } from 'react';
-import { GraphView } from '@/components/graph-view/components/graph-canvas';
-import { cn } from '@/lib/cn';
-import defaultData from './default-example.json' with { type: 'json' };
+} from "lucide-react";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
+import { GraphView } from "@/components/graph-view/components/graph-canvas";
+import { cn } from "@/lib/cn";
+import defaultData from "./default-example.json" with { type: "json" };
 
 type GraphNode = {
   id: string;
@@ -126,17 +126,17 @@ export function AnimatedGraphExample({
 
     // Trigger fit to view after a brief delay to ensure GraphView has mounted/updated
     const timer = setTimeout(() => {
-      const fitEvent = new KeyboardEvent('keydown', { key: '0' });
+      const fitEvent = new KeyboardEvent("keydown", { key: "0" });
       document.dispatchEvent(fitEvent);
     }, INITIAL_FIT_DELAY_MS);
 
     return () => clearTimeout(timer);
-  }, [baseData, stepAdditions, animationSteps]);
+  }, [baseData, stepAdditions]);
 
   // Initial fit to view when component mounts
   useEffect(() => {
     const timer = setTimeout(() => {
-      const fitEvent = new KeyboardEvent('keydown', { key: '0' });
+      const fitEvent = new KeyboardEvent("keydown", { key: "0" });
       document.dispatchEvent(fitEvent);
       setFitTick((t) => t + 1);
     }, INITIAL_FIT_DELAY_MS);
@@ -186,7 +186,7 @@ export function AnimatedGraphExample({
 
       // Fit to view after a brief delay to let the graph render
       setTimeout(() => {
-        const fitEvent = new KeyboardEvent('keydown', { key: '0' });
+        const fitEvent = new KeyboardEvent("keydown", { key: "0" });
         document.dispatchEvent(fitEvent);
         setFitTick((t) => t + 1);
       }, STEP_CHANGE_FIT_DELAY_MS);
@@ -226,7 +226,7 @@ export function AnimatedGraphExample({
 
     // Fit to view after reset
     setTimeout(() => {
-      const fitEvent = new KeyboardEvent('keydown', { key: '0' });
+      const fitEvent = new KeyboardEvent("keydown", { key: "0" });
       document.dispatchEvent(fitEvent);
     }, RELOAD_FIT_DELAY_MS);
   };
@@ -240,27 +240,27 @@ export function AnimatedGraphExample({
 
   if (isComplete) {
     buttonIcon = <RotateCcw className="h-4 w-4" />;
-    buttonTitle = 'Restart animation';
+    buttonTitle = "Restart animation";
     buttonHandler = handleReload;
   } else if (isAutoPlaying) {
     buttonIcon = <Pause className="h-4 w-4" />;
-    buttonTitle = 'Pause auto-play';
+    buttonTitle = "Pause auto-play";
     buttonHandler = () => setIsAutoPlaying(!isAutoPlaying);
   } else {
     buttonIcon = <Play className="h-4 w-4" />;
-    buttonTitle = 'Resume auto-play';
+    buttonTitle = "Resume auto-play";
     buttonHandler = () => setIsAutoPlaying(!isAutoPlaying);
   }
 
   return (
     <div
-      className={cn('mt-8 mb-4', className)}
+      className={cn("mt-8 mb-4", className)}
       key={`graph-${graphDataHash.slice(0, 16)}`}
       ref={containerRef}
     >
       <div
         className={cn(
-          'h-[500px] w-full overflow-hidden rounded-lg border bg-card',
+          "h-[500px] w-full overflow-hidden rounded-lg border bg-card",
           className
         )}
       >
@@ -284,7 +284,7 @@ export function AnimatedGraphExample({
             {buttonIcon}
           </button>
 
-          <span className='shrink-0 whitespace-nowrap font-medium text-sm'>
+          <span className="shrink-0 whitespace-nowrap font-medium text-sm">
             Step {currentStep + 1} of {animationSteps.length}
           </span>
 
@@ -301,7 +301,7 @@ export function AnimatedGraphExample({
           </div>
 
           <div className="flex min-w-0 grow items-center justify-between gap-1">
-            <span className='line-clamp-1 min-w-0 font-mono text-muted-foreground text-xs'>
+            <span className="line-clamp-1 min-w-0 font-mono text-muted-foreground text-xs">
               {currentStepData.description}
             </span>
 

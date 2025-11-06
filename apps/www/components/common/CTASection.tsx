@@ -1,6 +1,6 @@
+import { Button } from '@recurse/ui/components';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@recurse/ui/components';
 
 export function CTASection() {
   return (

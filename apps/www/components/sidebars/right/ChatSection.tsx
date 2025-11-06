@@ -1,8 +1,8 @@
 'use client';
 
+import { Button } from '@recurse/ui/components';
 import { Loader2, Send } from 'lucide-react';
 import * as React from 'react';
-import { Button } from '@recurse/ui/components';
 import { useDemoApp } from '@/contexts/DemoAppContext';
 import { useSession } from '@/contexts/SessionContext';
 import { cn } from '@/lib/utils';

@@ -1,4 +1,5 @@
 "use client";
+import { buttonVariants } from "@recurse/ui/components/button";
 import { usePathname } from "fumadocs-core/framework";
 import Link from "fumadocs-core/link";
 import { useNav } from "fumadocs-ui/contexts/layout";
@@ -8,7 +9,6 @@ import { type ComponentProps, useMemo } from "react";
 import { cn } from "../../../lib/cn";
 import { isTabActive } from "../../../lib/is-active";
 import type { Option } from "../../root-toggle";
-import { buttonVariants } from "@recurse/ui/components/button";
 
 export function Navbar({
   mode,

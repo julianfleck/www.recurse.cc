@@ -5,7 +5,7 @@ import type {
 } from "d3-force";
 import type { Selection } from "d3-selection";
 import type { ZoomBehavior } from "d3-zoom";
-import { useRef, useState, type Dispatch, type SetStateAction } from "react";
+import { type Dispatch, type SetStateAction, useRef, useState } from "react";
 import type {
   GraphLink as DataLink,
   GraphNode as DataNode,
@@ -33,7 +33,9 @@ export type GraphState = {
   transformRef: React.MutableRefObject<{ x: number; y: number; k: number }>;
   simulationRef: React.MutableRefObject<Simulation<
     SimulationNodeDatum & { x?: number; y?: number; fx?: number; fy?: number },
-    SimulationLinkDatum<SimulationNodeDatum & { x?: number; y?: number; fx?: number; fy?: number }> & { source: string; target: string }
+    SimulationLinkDatum<
+      SimulationNodeDatum & { x?: number; y?: number; fx?: number; fy?: number }
+    > & { source: string; target: string }
   > | null>;
   positionsRef: React.MutableRefObject<Map<string, Point>>;
   rafRef: React.MutableRefObject<number | null>;
@@ -71,7 +73,9 @@ export type GraphState = {
   isCollapsing: boolean;
   setIsCollapsing: Dispatch<SetStateAction<boolean>>;
   expansionProgress: { current: number; total: number } | null;
-  setExpansionProgress: Dispatch<SetStateAction<{ current: number; total: number } | null>>;
+  setExpansionProgress: Dispatch<
+    SetStateAction<{ current: number; total: number } | null>
+  >;
   isBatchOperation: boolean;
   setIsBatchOperation: Dispatch<SetStateAction<boolean>>;
   simulationPaused: boolean;
@@ -114,7 +118,9 @@ export function useGraphState(): GraphState {
   });
   const simulationRef = useRef<Simulation<
     SimulationNodeDatum & { x?: number; y?: number; fx?: number; fy?: number },
-    SimulationLinkDatum<SimulationNodeDatum & { x?: number; y?: number; fx?: number; fy?: number }> & { source: string; target: string }
+    SimulationLinkDatum<
+      SimulationNodeDatum & { x?: number; y?: number; fx?: number; fy?: number }
+    > & { source: string; target: string }
   > | null>(null);
   const positionsRef = useRef<Map<string, Point>>(new Map());
   const rafRef = useRef<number | null>(null);

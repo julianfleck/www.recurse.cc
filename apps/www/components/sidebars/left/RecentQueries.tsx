@@ -1,3 +1,4 @@
+import { useUIStore } from '@recurse/ui/lib';
 import { MoreVertical, Plus, Trash2 } from 'lucide-react';
 import * as React from 'react';
 import {
@@ -8,7 +9,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useViewer } from '@/contexts/ViewerContext';
 import { cn } from '@/lib/utils';
-import { useUIStore } from '@recurse/ui/lib';
 
 export interface QuerySession {
   id: string;

@@ -28,9 +28,7 @@
           "metadata": {}
         }
       ],
-      "links": [
-        { "source": "bug-report", "target": "problem-frame" }
-      ]
+      "links": [{ "source": "bug-report", "target": "problem-frame" }]
     },
     "3": {
       "nodes": [

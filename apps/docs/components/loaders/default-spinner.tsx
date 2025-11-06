@@ -7,10 +7,10 @@ type DefaultSpinnerProps = {
   size?: number;
 };
 
-export function DefaultSpinner({ 
-  text, 
+export function DefaultSpinner({
+  text,
   className,
-  size = 32 
+  size = 32,
 }: DefaultSpinnerProps) {
   return (
     <div className={cn("flex flex-col items-center justify-center", className)}>

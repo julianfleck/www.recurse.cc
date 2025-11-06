@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import {
   DocsBody,
   DocsDescription,
@@ -6,7 +7,6 @@ import {
 } from "@/components/layout/page";
 import { dashboardSource } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
-import { notFound } from "next/navigation";
 
 export default async function HomePage() {
   const page = dashboardSource.getPage([]);
@@ -30,5 +30,3 @@ export default async function HomePage() {
     </DocsPage>
   );
 }
-
-

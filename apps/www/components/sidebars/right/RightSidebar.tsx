@@ -1,5 +1,6 @@
 'use client';
 
+import { useUIStore } from '@recurse/ui/lib';
 import { ChevronRight, HelpCircle } from 'lucide-react';
 import type * as React from 'react';
 import {
@@ -15,7 +16,6 @@ import {
 } from '@/components/ui/tooltip';
 import { useDemoApp } from '@/contexts/DemoAppContext';
 import { useSession } from '@/contexts/SessionContext';
-import { useUIStore } from '@recurse/ui/lib';
 import { ChatSection } from './ChatSection';
 import { ReferencesSection } from './ReferencesSection';
 

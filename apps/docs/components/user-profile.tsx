@@ -1,9 +1,12 @@
 "use client";
 
 import { useAuth0 } from "@auth0/auth0-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@recurse/ui/components/avatar";
+import { useAuthStore } from "@recurse/auth";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@recurse/ui/components/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +16,8 @@ import {
   DropdownMenuTrigger,
 } from "@recurse/ui/components/dropdown-menu";
 import { LogIn, LogOut, UserPlus } from "lucide-react";
-import { useAuthStore } from "@recurse/auth";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { getDashboardUrl } from "@/lib/utils";
 
 function initialsFromName(name?: string, email?: string) {
@@ -30,7 +34,7 @@ export function UserProfile() {
   const storeToken = useAuthStore((s) => s.accessToken);
   const pathname = usePathname();
   const dashboardUrl = getDashboardUrl();
-  
+
   // Use SDK user if authenticated, otherwise fall back to store user
   const displayUser = (isAuthenticated ? sdkUser : storeUser) as
     | { name?: string; email?: string; picture?: string }
@@ -38,17 +42,21 @@ export function UserProfile() {
   const isClientAuthenticated = Boolean(
     isAuthenticated || storeToken || storeUser
   );
-  
-  const avatarFallback = initialsFromName(displayUser?.name, displayUser?.email);
+
+  const avatarFallback = initialsFromName(
+    displayUser?.name,
+    displayUser?.email
+  );
   const showImage = Boolean(displayUser?.picture);
-  
+
   // Include current location as returnTo so user comes back here after login
-  const returnTo = typeof window !== "undefined" 
-    ? encodeURIComponent(`${window.location.origin}${pathname}`)
-    : "";
+  const returnTo =
+    typeof window !== "undefined"
+      ? encodeURIComponent(`${window.location.origin}${pathname}`)
+      : "";
   const loginUrl = `${dashboardUrl}/login${returnTo ? `?returnTo=${returnTo}` : ""}`;
   const signupUrl = `${dashboardUrl}/signup${returnTo ? `?returnTo=${returnTo}` : ""}`;
-  
+
   // Show loading state
   if (isLoading) {
     return (
@@ -57,7 +65,7 @@ export function UserProfile() {
       </Avatar>
     );
   }
-  
+
   // If authenticated, show user info with logout option
   if (isClientAuthenticated && displayUser) {
     return (
@@ -66,7 +74,10 @@ export function UserProfile() {
           <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
             <Avatar className="size-8">
               {showImage && displayUser.picture ? (
-                <AvatarImage src={displayUser.picture} alt={displayUser.name || displayUser.email || "User"} />
+                <AvatarImage
+                  alt={displayUser.name || displayUser.email || "User"}
+                  src={displayUser.picture}
+                />
               ) : null}
               <AvatarFallback>{avatarFallback}</AvatarFallback>
             </Avatar>
@@ -76,18 +87,22 @@ export function UserProfile() {
           <DropdownMenuLabel>
             <div className="flex flex-col space-y-1">
               {displayUser.name && (
-                <p className="text-sm font-medium leading-none">{displayUser.name}</p>
+                <p className="font-medium text-sm leading-none">
+                  {displayUser.name}
+                </p>
               )}
               {displayUser.email && (
-                <p className="text-xs leading-none text-muted-foreground">{displayUser.email}</p>
+                <p className="text-muted-foreground text-xs leading-none">
+                  {displayUser.email}
+                </p>
               )}
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link 
-              href={`${dashboardUrl}/logout${returnTo ? `?returnTo=${returnTo}` : ""}`} 
+            <Link
               className="flex items-center gap-2"
+              href={`${dashboardUrl}/logout${returnTo ? `?returnTo=${returnTo}` : ""}`}
             >
               <LogOut className="size-4" />
               Log Out
@@ -97,7 +112,7 @@ export function UserProfile() {
       </DropdownMenu>
     );
   }
-  
+
   // Not authenticated: show placeholder with login/signup options
   return (
     <DropdownMenu>
@@ -112,13 +127,13 @@ export function UserProfile() {
         <DropdownMenuLabel>Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href={loginUrl} className="flex items-center gap-2">
+          <Link className="flex items-center gap-2" href={loginUrl}>
             <LogIn className="size-4" />
             Log In
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href={signupUrl} className="flex items-center gap-2">
+          <Link className="flex items-center gap-2" href={signupUrl}>
             <UserPlus className="size-4" />
             Sign Up
           </Link>

@@ -1,5 +1,7 @@
 'use client';
 
+import { Badge } from '@recurse/ui/components/badge';
+import { Progress } from '@recurse/ui/components/progress';
 import {
   AlertCircle,
   Brain,
@@ -13,13 +15,11 @@ import {
 } from 'lucide-react';
 import * as React from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Badge } from '@recurse/ui/components/badge';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { Progress } from '@recurse/ui/components/progress';
 import {
   Sidebar,
   SidebarContent,

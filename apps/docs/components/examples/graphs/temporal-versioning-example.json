@@ -24,9 +24,7 @@
           "metadata": {}
         }
       ],
-      "links": [
-        { "source": "paper-2020", "target": "claim-v1" }
-      ]
+      "links": [{ "source": "paper-2020", "target": "claim-v1" }]
     },
     "2": {
       "nodes": [
@@ -92,4 +90,3 @@
     }
   ]
 }
-

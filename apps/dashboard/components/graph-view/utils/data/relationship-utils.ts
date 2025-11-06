@@ -247,7 +247,7 @@ export const buildTreeFromNodes = (
 
     // Check if this node has a parent
     const hasParent = links.some((link) => {
-      if (!(link && link.target)) {
+      if (!link?.target) {
         return false;
       }
       const target = link.target as unknown;
@@ -264,7 +264,7 @@ export const buildTreeFromNodes = (
     if (hasParent) {
       // Find parent and add as child
       const parentLink = links.find((link) => {
-        if (!(link && link.target)) {
+        if (!link?.target) {
           return false;
         }
         const target = link.target as unknown;
@@ -289,7 +289,9 @@ export const buildTreeFromNodes = (
           typeof source === "string"
             ? (source as string)
             : (source as { id?: string }).id;
-        if (!parentId) continue;
+        if (!parentId) {
+          continue;
+        }
         const parentNode = nodeMap.get(parentId);
         if (parentNode?.children) {
           parentNode.children.push(nodeWithChildren);

@@ -1,12 +1,12 @@
 "use client";
 
-import type { ComponentProps, HTMLAttributes } from "react";
 import { Badge } from "@recurse/ui/components/badge";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@recurse/ui/components/tooltip";
+import type { ComponentProps, HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 // Use theme colors for status indicators

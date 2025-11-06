@@ -1,7 +1,11 @@
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@recurse/ui/components/avatar";
+import { Badge } from "@recurse/ui/components/badge";
 import { ChevronDownIcon, ChevronUpIcon, MinusIcon } from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@recurse/ui/components/avatar";
-import { Badge } from "@recurse/ui/components/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 

@@ -1,5 +1,6 @@
 // BlurText removed - no longer used
 
+import { Button } from '@recurse/ui/components';
 import {
   ArrowRight,
   Brain,
@@ -23,7 +24,6 @@ import {
   SingleColumnSection,
   ThreeColumnSection,
 } from '@/components/layout/GridLayout';
-import { Button } from '@recurse/ui/components';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 
 export default function HomePage() {

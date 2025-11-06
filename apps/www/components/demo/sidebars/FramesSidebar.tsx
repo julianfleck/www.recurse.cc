@@ -1,8 +1,8 @@
 'use client';
 
+import { Badge } from '@recurse/ui/components/badge';
 import { Brain, Database, FileText, Lightbulb } from 'lucide-react';
 import type * as React from 'react';
-import { Badge } from '@recurse/ui/components/badge';
 import {
   Sidebar,
   SidebarContent,

@@ -1,7 +1,7 @@
 import { Slot } from '@radix-ui/react-slot';
+import { buttonVariants } from '@recurse/ui/components';
 import type { VariantProps } from 'class-variance-authority';
 import * as React from 'react';
-import { buttonVariants } from '@recurse/ui/components';
 import { cn } from '@/lib/utils';
 
 export interface ShinyButtonProps

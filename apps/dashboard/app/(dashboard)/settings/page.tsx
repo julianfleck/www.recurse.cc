@@ -1,14 +1,10 @@
-'use client';
+"use client";
 
 import {
   EMBEDDING_MODEL,
   type ModelOption,
   PARSING_MODELS,
-} from '@recurse/config/models';
-import { CheckIcon, ChevronsUpDownIcon, HelpCircle } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
-import { useAuthStore } from '@/components/auth/auth-store';
-import { Button } from '@/components/ui/button';
+} from "@recurse/config/models";
 import {
   Command,
   CommandEmpty,
@@ -16,20 +12,24 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@recurse/ui/components/command';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from "@recurse/ui/components/command";
+import { CheckIcon, ChevronsUpDownIcon, HelpCircle } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useAuthStore } from "@/components/auth/auth-store";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from "@/components/ui/popover";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 export default function SettingsPage() {
   // Seed defaults (could be loaded from API/local storage later)
@@ -38,17 +38,17 @@ export default function SettingsPage() {
   const initialState = useMemo(
     () => ({
       defaultParsingModel:
-        PARSING_MODELS.find((m) => m.value === 'gpt-4o')?.value ||
+        PARSING_MODELS.find((m) => m.value === "gpt-4o")?.value ||
         PARSING_MODELS[0]?.value ||
-        '',
-      parsingModelApiKey: '',
-      contextModel: PARSING_MODELS[0]?.value ?? '',
-      contextModelApiKey: '',
-      contextProvider: 'openai',
+        "",
+      parsingModelApiKey: "",
+      contextModel: PARSING_MODELS[0]?.value ?? "",
+      contextModelApiKey: "",
+      contextProvider: "openai",
       embeddingModel: EMBEDDING_MODEL.value,
-      email: authUser?.email ?? '',
-      password: '',
-      provider: 'openai',
+      email: authUser?.email ?? "",
+      password: "",
+      provider: "openai",
     }),
     [authUser?.email]
   );
@@ -59,38 +59,40 @@ export default function SettingsPage() {
   const [openContextModel, setOpenContextModel] = useState(false);
 
   const providers = [
-    { value: 'openai', label: 'OpenAI' },
-    { value: 'openrouter', label: 'OpenRouter' },
+    { value: "openai", label: "OpenAI" },
+    { value: "openrouter", label: "OpenRouter" },
   ];
 
   const [openProvider, setOpenProvider] = useState(false);
   const [loadingModels, setLoadingModels] = useState(false);
-  const [modelsError, setModelsError] = useState('');
+  const [modelsError, setModelsError] = useState("");
   const [fetchedModels, setFetchedModels] = useState<ModelOption[]>([]);
 
   const [openContextProvider, setOpenContextProvider] = useState(false);
   const [loadingContextModels, setLoadingContextModels] = useState(false);
-  const [contextModelsError, setContextModelsError] = useState('');
-  const [fetchedContextModels, setFetchedContextModels] = useState<ModelOption[]>([]);
+  const [contextModelsError, setContextModelsError] = useState("");
+  const [fetchedContextModels, setFetchedContextModels] = useState<
+    ModelOption[]
+  >([]);
 
   useEffect(() => {
     // If auth user changes (e.g. after login), re-seed email baseline/state
-    setState((prev) => ({ ...prev, email: authUser?.email ?? '' }));
-    setBaseline((prev) => ({ ...prev, email: authUser?.email ?? '' }));
+    setState((prev) => ({ ...prev, email: authUser?.email ?? "" }));
+    setBaseline((prev) => ({ ...prev, email: authUser?.email ?? "" }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authUser?.email]);
 
   useEffect(() => {
-    if (state.provider !== 'openrouter' || !state.parsingModelApiKey) {
+    if (state.provider !== "openrouter" || !state.parsingModelApiKey) {
       setFetchedModels([]);
-      setModelsError('');
+      setModelsError("");
       return;
     }
 
     setLoadingModels(true);
-    setModelsError('');
+    setModelsError("");
 
-    fetch('https://openrouter.ai/api/v1/models', {
+    fetch("https://openrouter.ai/api/v1/models", {
       headers: {
         Authorization: `Bearer ${state.parsingModelApiKey}`,
       },
@@ -117,16 +119,16 @@ export default function SettingsPage() {
   }, [state.provider, state.parsingModelApiKey]);
 
   useEffect(() => {
-    if (state.contextProvider !== 'openrouter' || !state.contextModelApiKey) {
+    if (state.contextProvider !== "openrouter" || !state.contextModelApiKey) {
       setFetchedContextModels([]);
-      setContextModelsError('');
+      setContextModelsError("");
       return;
     }
 
     setLoadingContextModels(true);
-    setContextModelsError('');
+    setContextModelsError("");
 
-    fetch('https://openrouter.ai/api/v1/models', {
+    fetch("https://openrouter.ai/api/v1/models", {
       headers: {
         Authorization: `Bearer ${state.contextModelApiKey}`,
       },
@@ -152,8 +154,10 @@ export default function SettingsPage() {
       });
   }, [state.contextProvider, state.contextModelApiKey]);
 
-  const currentModels = state.provider === 'openai' ? PARSING_MODELS : fetchedModels;
-  const currentContextModels = state.contextProvider === 'openai' ? PARSING_MODELS : fetchedContextModels;
+  const currentModels =
+    state.provider === "openai" ? PARSING_MODELS : fetchedModels;
+  const currentContextModels =
+    state.contextProvider === "openai" ? PARSING_MODELS : fetchedContextModels;
 
   const isDirty = useMemo(
     () => JSON.stringify(state) !== JSON.stringify(baseline),
@@ -161,37 +165,54 @@ export default function SettingsPage() {
   );
 
   const parsingModelLabel = useMemo(() => {
-    if (state.provider === 'openrouter') {
+    if (state.provider === "openrouter") {
       if (!state.parsingModelApiKey) {
-        return 'Enter API key to load models';
+        return "Enter API key to load models";
       }
       if (loadingModels) {
-        return 'Loading models...';
+        return "Loading models...";
       }
       if (modelsError) {
-        return 'Error loading models';
+        return "Error loading models";
       }
     }
-    return currentModels.find((m) => m.value === state.defaultParsingModel)?.label || 'Select model...';
-  }, [state.provider, state.defaultParsingModel, state.parsingModelApiKey, loadingModels, modelsError, currentModels]);
+    return (
+      currentModels.find((m) => m.value === state.defaultParsingModel)?.label ||
+      "Select model..."
+    );
+  }, [
+    state.provider,
+    state.defaultParsingModel,
+    state.parsingModelApiKey,
+    loadingModels,
+    modelsError,
+    currentModels,
+  ]);
 
   const contextModelLabel = useMemo(() => {
-    if (state.contextProvider === 'openrouter') {
+    if (state.contextProvider === "openrouter") {
       if (!state.contextModelApiKey) {
-        return 'Enter API key to load models';
+        return "Enter API key to load models";
       }
       if (loadingContextModels) {
-        return 'Loading models...';
+        return "Loading models...";
       }
       if (contextModelsError) {
-        return 'Error loading models';
+        return "Error loading models";
       }
     }
     return (
       currentContextModels.find((m) => m.value === state.contextModel)?.label ||
-      'Select model...'
+      "Select model..."
     );
-  }, [state.contextProvider, state.contextModel, state.contextModelApiKey, loadingContextModels, contextModelsError, currentContextModels]);
+  }, [
+    state.contextProvider,
+    state.contextModel,
+    state.contextModelApiKey,
+    loadingContextModels,
+    contextModelsError,
+    currentContextModels,
+  ]);
 
   const handleSelectParsingModel = (value: string) => {
     setState((s) => ({ ...s, defaultParsingModel: value }));
@@ -211,7 +232,7 @@ export default function SettingsPage() {
   return (
     <div
       className="flex flex-col"
-      style={{ minHeight: 'calc(100vh - var(--fd-nav-height))' }}
+      style={{ minHeight: "calc(100vh - var(--fd-nav-height))" }}
     >
       <div className="container mx-auto flex flex-1 flex-col p-8">
         <div className="mb-8">
@@ -261,15 +282,19 @@ export default function SettingsPage() {
                 <div className="sm:col-span-2">
                   <div className="flex flex-col items-stretch gap-2 sm:flex-row">
                     <div className="flex items-center gap-2 sm:flex-1">
-                      <Popover open={openProvider} onOpenChange={setOpenProvider}>
+                      <Popover
+                        onOpenChange={setOpenProvider}
+                        open={openProvider}
+                      >
                         <PopoverTrigger asChild>
                           <Button
-                            variant="outline"
-                            role="combobox"
                             aria-expanded={openProvider}
-                            className="justify-between flex-1"
+                            className="flex-1 justify-between"
+                            role="combobox"
+                            variant="outline"
                           >
-                            {providers.find(p => p.value === state.provider)?.label || 'Select provider...'}
+                            {providers.find((p) => p.value === state.provider)
+                              ?.label || "Select provider..."}
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
@@ -282,16 +307,22 @@ export default function SettingsPage() {
                                 {providers.map((p) => (
                                   <CommandItem
                                     key={p.value}
-                                    value={p.value}
                                     onSelect={(currentValue) => {
-                                      setState(s => ({ ...s, provider: currentValue, defaultParsingModel: '' }));
+                                      setState((s) => ({
+                                        ...s,
+                                        provider: currentValue,
+                                        defaultParsingModel: "",
+                                      }));
                                       setOpenProvider(false);
                                     }}
+                                    value={p.value}
                                   >
                                     <CheckIcon
                                       className={cn(
-                                        'mr-2 h-4 w-4',
-                                        state.provider === p.value ? 'opacity-100' : 'opacity-0'
+                                        "mr-2 h-4 w-4",
+                                        state.provider === p.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
                                       )}
                                     />
                                     {p.label}
@@ -304,14 +335,22 @@ export default function SettingsPage() {
                       </Popover>
                     </div>
                     <div className="flex items-center gap-2 sm:flex-1">
-                      <Popover open={openParsingModel} onOpenChange={setOpenParsingModel}>
+                      <Popover
+                        onOpenChange={setOpenParsingModel}
+                        open={openParsingModel}
+                      >
                         <PopoverTrigger asChild>
                           <Button
-                            variant="outline"
-                            role="combobox"
                             aria-expanded={openParsingModel}
-                            className="justify-between flex-1"
-                            disabled={Boolean(state.provider === 'openrouter' && (!state.parsingModelApiKey || loadingModels || modelsError))}
+                            className="flex-1 justify-between"
+                            disabled={Boolean(
+                              state.provider === "openrouter" &&
+                                (!state.parsingModelApiKey ||
+                                  loadingModels ||
+                                  modelsError)
+                            )}
+                            role="combobox"
+                            variant="outline"
                           >
                             {parsingModelLabel}
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -326,13 +365,18 @@ export default function SettingsPage() {
                                 {currentModels.map((model: ModelOption) => (
                                   <CommandItem
                                     key={model.value}
-                                    onSelect={(currentValue) => handleSelectParsingModel(currentValue)}
+                                    onSelect={(currentValue) =>
+                                      handleSelectParsingModel(currentValue)
+                                    }
                                     value={model.value}
                                   >
                                     <CheckIcon
                                       className={cn(
-                                        'mr-2 h-4 w-4',
-                                        state.defaultParsingModel === model.value ? 'opacity-100' : 'opacity-0'
+                                        "mr-2 h-4 w-4",
+                                        state.defaultParsingModel ===
+                                          model.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
                                       )}
                                     />
                                     {model.label}
@@ -394,15 +438,20 @@ export default function SettingsPage() {
                 <div className="sm:col-span-2">
                   <div className="flex flex-col items-stretch gap-2 sm:flex-row">
                     <div className="flex items-center gap-2 sm:flex-1">
-                      <Popover open={openContextProvider} onOpenChange={setOpenContextProvider}>
+                      <Popover
+                        onOpenChange={setOpenContextProvider}
+                        open={openContextProvider}
+                      >
                         <PopoverTrigger asChild>
                           <Button
-                            variant="outline"
-                            role="combobox"
                             aria-expanded={openContextProvider}
-                            className="justify-between flex-1"
+                            className="flex-1 justify-between"
+                            role="combobox"
+                            variant="outline"
                           >
-                            {providers.find(p => p.value === state.contextProvider)?.label || 'Select provider...'}
+                            {providers.find(
+                              (p) => p.value === state.contextProvider
+                            )?.label || "Select provider..."}
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
@@ -415,16 +464,22 @@ export default function SettingsPage() {
                                 {providers.map((p) => (
                                   <CommandItem
                                     key={p.value}
-                                    value={p.value}
                                     onSelect={(currentValue) => {
-                                      setState(s => ({ ...s, contextProvider: currentValue, contextModel: '' }));
+                                      setState((s) => ({
+                                        ...s,
+                                        contextProvider: currentValue,
+                                        contextModel: "",
+                                      }));
                                       setOpenContextProvider(false);
                                     }}
+                                    value={p.value}
                                   >
                                     <CheckIcon
                                       className={cn(
-                                        'mr-2 h-4 w-4',
-                                        state.contextProvider === p.value ? 'opacity-100' : 'opacity-0'
+                                        "mr-2 h-4 w-4",
+                                        state.contextProvider === p.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
                                       )}
                                     />
                                     {p.label}
@@ -437,14 +492,22 @@ export default function SettingsPage() {
                       </Popover>
                     </div>
                     <div className="flex items-center gap-2 sm:flex-1">
-                      <Popover open={openContextModel} onOpenChange={setOpenContextModel}>
+                      <Popover
+                        onOpenChange={setOpenContextModel}
+                        open={openContextModel}
+                      >
                         <PopoverTrigger asChild>
                           <Button
-                            variant="outline"
-                            role="combobox"
                             aria-expanded={openContextModel}
-                            className="justify-between flex-1"
-                            disabled={Boolean(state.contextProvider === 'openrouter' && (!state.contextModelApiKey || loadingContextModels || contextModelsError))}
+                            className="flex-1 justify-between"
+                            disabled={Boolean(
+                              state.contextProvider === "openrouter" &&
+                                (!state.contextModelApiKey ||
+                                  loadingContextModels ||
+                                  contextModelsError)
+                            )}
+                            role="combobox"
+                            variant="outline"
                           >
                             {contextModelLabel}
                             <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -456,21 +519,27 @@ export default function SettingsPage() {
                             <CommandList>
                               <CommandEmpty>No models found.</CommandEmpty>
                               <CommandGroup>
-                                {currentContextModels.map((model: ModelOption) => (
-                                  <CommandItem
-                                    key={model.value}
-                                    onSelect={(currentValue) => handleSelectContextModel(currentValue)}
-                                    value={model.value}
-                                  >
-                                    <CheckIcon
-                                      className={cn(
-                                        'mr-2 h-4 w-4',
-                                        state.contextModel === model.value ? 'opacity-100' : 'opacity-0'
-                                      )}
-                                    />
-                                    {model.label}
-                                  </CommandItem>
-                                ))}
+                                {currentContextModels.map(
+                                  (model: ModelOption) => (
+                                    <CommandItem
+                                      key={model.value}
+                                      onSelect={(currentValue) =>
+                                        handleSelectContextModel(currentValue)
+                                      }
+                                      value={model.value}
+                                    >
+                                      <CheckIcon
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          state.contextModel === model.value
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      {model.label}
+                                    </CommandItem>
+                                  )
+                                )}
                               </CommandGroup>
                             </CommandList>
                           </Command>
@@ -525,7 +594,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex items-center gap-2 sm:col-span-2">
                   <Button
-                    className={cn('justify-between', 'flex-1')}
+                    className={cn("justify-between", "flex-1")}
                     disabled
                     id="embedding-model"
                     role="combobox"

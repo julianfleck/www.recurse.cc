@@ -132,7 +132,7 @@ export function deriveConnectedMetadataTitles(
   const result = new Set<string>();
 
   for (const e of edges) {
-    if (!(e && e.source && e.target)) {
+    if (!(e?.source && e.target)) {
       continue;
     }
     const sId =

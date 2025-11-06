@@ -1,15 +1,14 @@
 "use client";
 
-import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
-import { CopyButton } from "@/components/ui/copy-button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@recurse/ui/components/dialog";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { CopyButton } from "@/components/ui/copy-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {

@@ -1,10 +1,15 @@
 "use client";
 
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@recurse/ui/components/avatar";
+import { Badge } from "@recurse/ui/components/badge";
 import type {
   Column,
   ColumnDef,
   ColumnFiltersState,
-  RowData,
   SortingState,
 } from "@tanstack/react-table";
 import {
@@ -19,9 +24,6 @@ import {
 } from "@tanstack/react-table";
 import { SearchIcon } from "lucide-react";
 import { useId, useMemo, useState } from "react";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@recurse/ui/components/avatar";
-import { Badge } from "@recurse/ui/components/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

@@ -1,8 +1,8 @@
 'use client';
 
+import { Badge } from '@recurse/ui/components/badge';
 import { Box, FileText, Hash, Loader2 } from 'lucide-react';
 import * as React from 'react';
-import { Badge } from '@recurse/ui/components/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { api } from '@/services/apiConfig';
 
@@ -235,7 +235,7 @@ No content available for this item.
   React.useEffect(() => {
     if (item) {
       setIsLoading(true);
-      
+
       // Extract the raw ID from the prefixed ID
       // KnowledgeBase sends IDs like "document-doc-1", "section-sec-1-1", "frame-frame-1-1-1"
       // We need to extract the actual ID part for the API call
@@ -247,7 +247,7 @@ No content available for this item.
       } else if (item.id.startsWith('frame-')) {
         apiId = item.id.replace('frame-', '');
       }
-      
+
       api
         .getMarkdownContent(apiId)
         .then((fetchedContent) => {

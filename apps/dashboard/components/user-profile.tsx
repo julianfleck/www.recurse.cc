@@ -1,10 +1,14 @@
 "use client";
 
 import { useAuth0 } from "@auth0/auth0-react";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@recurse/ui/components/avatar";
+import { Badge } from "@recurse/ui/components/badge";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@recurse/ui/components/avatar";
-import { Badge } from "@recurse/ui/components/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

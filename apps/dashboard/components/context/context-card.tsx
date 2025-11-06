@@ -1,8 +1,8 @@
 "use client";
 
+import { Badge } from "@recurse/ui/components/badge";
 import { motion } from "framer-motion";
 import { GenericTooltipLayout } from "@/components/graph-view/components/node-tooltip";
-import { Badge } from "@recurse/ui/components/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
 type ContextCardProps = {

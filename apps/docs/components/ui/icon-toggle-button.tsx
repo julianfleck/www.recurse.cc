@@ -42,10 +42,12 @@ export function IconToggleButton({
       variant="outline"
       {...buttonProps}
     >
-      <div className={cn(
-        "relative flex items-center justify-center transition-all duration-600 ease-out",
-        size === "icon-sm" ? "h-5 w-5" : "h-6 w-6"
-      )}>
+      <div
+        className={cn(
+          "relative flex items-center justify-center transition-all duration-600 ease-out",
+          size === "icon-sm" ? "h-5 w-5" : "h-6 w-6"
+        )}
+      >
         <Icon1
           className={cn(
             "absolute transition-all delay-50 duration-200 ease-out",

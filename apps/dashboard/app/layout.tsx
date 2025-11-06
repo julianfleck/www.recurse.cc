@@ -9,17 +9,10 @@ const jetbrainsMono = JetBrains_Mono({
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      className={jetbrainsMono.variable}
-      lang="en"
-      suppressHydrationWarning
-    >
+    <html className={jetbrainsMono.variable} lang="en" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col font-sans">
         <Providers>{children}</Providers>
       </body>
     </html>
   );
 }
-
-
-

@@ -50,9 +50,7 @@ export function applyFocusChange(deps: FocusDeps): void {
   lastFocusedAppliedRef.current = focusedNodeId;
   const isExpanded = expandedNodes.has(focusedNodeId);
   scheduleFitToView(
-    isExpanded
-      ? computeSubgraphIds(focusedNodeId)
-      : [focusedNodeId],
+    isExpanded ? computeSubgraphIds(focusedNodeId) : [focusedNodeId],
     isExpanded ? 140 : 80,
     "focus-change"
   );

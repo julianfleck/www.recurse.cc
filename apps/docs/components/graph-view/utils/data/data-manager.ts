@@ -213,7 +213,9 @@ export class GraphDataManager {
       ): string[] => {
         const collected: unknown[] = [];
         const add = (val: unknown) => {
-          if (Array.isArray(val)) collected.push(...val);
+          if (Array.isArray(val)) {
+            collected.push(...val);
+          }
         };
 
         if (obj && typeof obj === "object") {
@@ -222,7 +224,9 @@ export class GraphDataManager {
           add(root[key]);
           // object.metadata.*
           const meta = root.metadata as Record<string, unknown> | undefined;
-          if (meta && typeof meta === "object") add(meta[key]);
+          if (meta && typeof meta === "object") {
+            add(meta[key]);
+          }
           // object.data.* and object.data.metadata.*
           const data = root.data as Record<string, unknown> | undefined;
           if (data && typeof data === "object") {
@@ -230,18 +234,26 @@ export class GraphDataManager {
             const dataMeta = data.metadata as
               | Record<string, unknown>
               | undefined;
-            if (dataMeta && typeof dataMeta === "object") add(dataMeta[key]);
+            if (dataMeta && typeof dataMeta === "object") {
+              add(dataMeta[key]);
+            }
           }
         }
 
         // Filter to strings, trim, and dedupe case-insensitively while preserving display case
         const normalized = new Map<string, string>();
         for (const v of collected) {
-          if (typeof v !== "string") continue;
+          if (typeof v !== "string") {
+            continue;
+          }
           const s = v.trim();
-          if (!s) continue;
+          if (!s) {
+            continue;
+          }
           const lower = s.toLowerCase();
-          if (!normalized.has(lower)) normalized.set(lower, s);
+          if (!normalized.has(lower)) {
+            normalized.set(lower, s);
+          }
         }
         return Array.from(normalized.values());
       };
@@ -295,24 +307,6 @@ export class GraphDataManager {
           links.push({ source: parentId, target: nodeIdToUse });
         }
 
-        // eslint-disable-next-line no-console
-        console.log("[DataManager] Extracted metadata", {
-          id: nodeIdToUse,
-          title: sn.title,
-          tags,
-          hypernyms,
-          hyponyms,
-        });
-        // Debug: final extracted metadata for this node
-        // eslint-disable-next-line no-console
-        console.log("[DataManager] Extracted metadata", {
-          id: sn.id,
-          title: sn.title,
-          tags,
-          hypernyms,
-          hyponyms,
-        });
-
         // No debug logging here
 
         upsertMetadata(nodeIdToUse, "tag", tags);
@@ -331,14 +325,24 @@ export class GraphDataManager {
       };
 
       // Process the provided JSON data
-      if (jsonData && typeof jsonData === "object" && "nodes" in jsonData && Array.isArray((jsonData as any).nodes)) {
+      if (
+        jsonData &&
+        typeof jsonData === "object" &&
+        "nodes" in jsonData &&
+        Array.isArray((jsonData as any).nodes)
+      ) {
         for (const root of (jsonData as any).nodes) {
           walk(root, undefined);
         }
       }
 
       // Process external links if provided (for graph format data)
-      if (jsonData && typeof jsonData === "object" && "links" in jsonData && Array.isArray((jsonData as any).links)) {
+      if (
+        jsonData &&
+        typeof jsonData === "object" &&
+        "links" in jsonData &&
+        Array.isArray((jsonData as any).links)
+      ) {
         for (const link of (jsonData as any).links) {
           if (link.source && link.target) {
             const sourceId =
@@ -390,7 +394,12 @@ export class GraphDataManager {
           }
         }
       };
-      if (jsonData && typeof jsonData === "object" && "nodes" in jsonData && Array.isArray((jsonData as any).nodes)) {
+      if (
+        jsonData &&
+        typeof jsonData === "object" &&
+        "nodes" in jsonData &&
+        Array.isArray((jsonData as any).nodes)
+      ) {
         collectNodeIds((jsonData as any).nodes);
       }
       for (const nodeId of allNodeIds) {
@@ -559,11 +568,11 @@ export class GraphDataManager {
         }
 
         // Create/ensure owner node with canonical id
-        ensureNode({ 
-          ...sn, 
+        ensureNode({
+          ...sn,
           id: nodeIdToUse,
           title: sn.title ?? null,
-          type: sn.type ?? ""
+          type: sn.type ?? "",
         });
         if (parentId) {
           links.push({ source: parentId, target: nodeIdToUse });
@@ -573,14 +582,6 @@ export class GraphDataManager {
         const tags = getMetaList(sn, "tags");
         const hypernyms = getMetaList(sn, "hypernyms");
         const hyponyms = getMetaList(sn, "hyponyms");
-        // eslint-disable-next-line no-console
-        console.log("[DataManager] Extracted metadata (API)", {
-          id: sn.id,
-          title: sn.title,
-          tags,
-          hypernyms,
-          hyponyms,
-        });
 
         upsertMetadata(nodeIdToUse, "tag", tags);
         upsertMetadata(nodeIdToUse, "hypernym", hypernyms);
@@ -596,11 +597,6 @@ export class GraphDataManager {
       // Access nodes from the API response data
       const responseData = res.data as { nodes?: unknown[] };
       const nodes_from_api = responseData?.nodes || [];
-      // eslint-disable-next-line no-console
-      console.log(
-        "[DataManager] loadInitialDocuments nodes:",
-        Array.isArray(nodes_from_api) ? nodes_from_api.length : 0
-      );
 
       for (const root of nodes_from_api) {
         walk(root as any, undefined);
@@ -808,11 +804,11 @@ export class GraphDataManager {
           }
         }
 
-        ensureNode({ 
-          ...sn, 
+        ensureNode({
+          ...sn,
           id: nodeIdToUse,
           title: sn.title ?? null,
-          type: sn.type ?? ""
+          type: sn.type ?? "",
         });
         if (parentId) {
           // Only treat direct children of the requested node as children

@@ -1,13 +1,12 @@
 "use client";
 
-import { SearchIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
 import {
   CommandDialog,
   CommandEmpty,
   CommandInput,
   CommandList,
 } from "@recurse/ui/components/command";
+import { useEffect, useMemo, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { isOnAuthPage } from "@/lib/auth-utils";
 import { DocumentationResults } from "./results/documentation";
@@ -112,8 +111,10 @@ export function SearchCommandDialog({
       </div>
       <CommandList>
         {emptyMessage && <CommandEmpty>{emptyMessage}</CommandEmpty>}
-        {searchTerm && !isLoading && results.length > 0 && (
-          searchType === "documentation" ? (
+        {searchTerm &&
+          !isLoading &&
+          results.length > 0 &&
+          (searchType === "documentation" ? (
             <DocumentationResults
               onSelect={() => onOpenChange(false)}
               results={results as never}
@@ -121,8 +122,7 @@ export function SearchCommandDialog({
             />
           ) : (
             <KnowledgeBaseResults results={results as never} />
-          )
-        )}
+          ))}
       </CommandList>
     </CommandDialog>
   );

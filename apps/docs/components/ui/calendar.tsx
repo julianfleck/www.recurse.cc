@@ -1,5 +1,6 @@
 "use client";
 
+import { Button, buttonVariants } from "@recurse/ui/components/button";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -11,7 +12,6 @@ import {
   DayPicker,
   getDefaultClassNames,
 } from "react-day-picker";
-import { Button, buttonVariants } from "@recurse/ui/components/button";
 import { cn } from "@/lib/utils";
 
 function Calendar({

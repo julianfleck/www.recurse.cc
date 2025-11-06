@@ -117,4 +117,3 @@ export function filterStaticPages(
 
   return scored.map(({ page }) => page);
 }
-

@@ -1,5 +1,6 @@
 "use client";
 
+import { ProgressCircle } from "@recurse/ui/components/progress-circle";
 import { IconCalendarWeek } from "@tabler/icons-react";
 import {
   type BreadcrumbOptions,
@@ -31,7 +32,6 @@ import {
   CollapsibleTrigger,
 } from "../../ui/collapsible";
 import { Pill, PillStatus } from "../../ui/kibo-ui/pill";
-import { ProgressCircle } from "@recurse/ui/components/progress-circle";
 import { useTOCItems } from "../../ui/toc";
 
 const TocPopoverContext = createContext<{

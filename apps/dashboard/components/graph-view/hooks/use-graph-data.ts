@@ -1,5 +1,8 @@
 import { useMemo } from "react";
-import type { GraphLink as DataLink, GraphNode as DataNode } from "../utils/data/data-manager";
+import type {
+  GraphLink as DataLink,
+  GraphNode as DataNode,
+} from "../utils/data/data-manager";
 import { buildTreeFromNodes } from "../utils/data/relationship-utils";
 import { calculateVisibleNodeIds } from "../utils/visible-nodes-utils";
 import { useGraphDataProcessing } from "./use-data-processing";
@@ -96,7 +99,7 @@ export function useGraphData({
   const visibleLinks = useMemo(() => {
     const finalIds = new Set<string>(visibleNodes.map((n) => n.id));
     const filtered = finalAllLinks.filter((l) => {
-      if (!(l && l.source && l.target)) {
+      if (!(l?.source && l.target)) {
         return false;
       }
       const sourceId = typeof l.source === "string" ? l.source : l.source.id;

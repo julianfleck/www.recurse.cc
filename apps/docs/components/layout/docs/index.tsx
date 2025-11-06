@@ -1,3 +1,10 @@
+import { buttonVariants } from "@recurse/ui/components/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@recurse/ui/components/popover";
+import { ThemeToggle } from "@recurse/ui/components/theme-toggle";
 import { HideIfEmpty } from "fumadocs-core/hide-if-empty";
 import Link from "fumadocs-core/link";
 import type { PageTree } from "fumadocs-core/server";
@@ -47,9 +54,6 @@ import {
   SidebarTrigger,
   SidebarViewport,
 } from "../../sidebar";
-import { buttonVariants } from "@recurse/ui/components/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@recurse/ui/components/popover";
-import { ThemeToggle } from "@recurse/ui/components/theme-toggle";
 import {
   type BaseLayoutProps,
   BaseLinkItem,

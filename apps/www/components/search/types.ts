@@ -38,4 +38,3 @@ export type SearchProvider = {
   // For knowledge base: returns SearchItem[] (flat list)
   search: (query: string) => Promise<SearchItem[] | HierarchicalSearchResult[]>;
 };
-

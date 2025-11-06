@@ -43,11 +43,11 @@ export function LoginForm({
       setAuth(accessToken, "auth0", typedUser);
       setEmail("");
       setPassword("");
-      
+
       // Check for returnTo query param (from external apps like docs/www)
       const returnTo = searchParams.get("returnTo");
       let redirectTarget = "/";
-      
+
       if (returnTo) {
         try {
           const decoded = decodeURIComponent(returnTo);
@@ -62,11 +62,14 @@ export function LoginForm({
           // Invalid returnTo, fall back to default
         }
       }
-      
+
       // Allow store propagation before navigating
       const STORE_PROPAGATION_DELAY_MS = 50;
       setTimeout(() => {
-        if (returnTo && (returnTo.startsWith("http://") || returnTo.startsWith("https://"))) {
+        if (
+          returnTo &&
+          (returnTo.startsWith("http://") || returnTo.startsWith("https://"))
+        ) {
           // Already handled above
           return;
         }

@@ -1,7 +1,7 @@
 "use client";
 
-import type { ComponentProps, HTMLAttributes } from "react";
 import { Badge } from "@recurse/ui/components/badge";
+import type { ComponentProps, HTMLAttributes } from "react";
 import {
   Tooltip,
   TooltipContent,

@@ -1,7 +1,7 @@
-import { createFromSource } from 'fumadocs-core/search/server';
-import type { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
-import { source } from '@/lib/source';
+import { createFromSource } from "fumadocs-core/search/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import { source } from "@/lib/source";
 
 // Regex for removing /docs prefix (defined at top level for performance)
 const DOCS_PREFIX_REGEX = /^\/docs\//;
@@ -10,20 +10,20 @@ const QUERY_SPLIT_REGEX = /\s+/;
 
 export async function GET(request: NextRequest) {
   const { GET: fumadocsGet } = createFromSource(source, {
-    language: 'english',
+    language: "english",
   });
 
   // Get the origin from the request
-  const origin = request.headers.get('origin');
+  const origin = request.headers.get("origin");
 
   // Determine allowed origins
   const allowedOrigins = [
     // Production www origin
-    'https://www.recurse.cc',
+    "https://www.recurse.cc",
     // Dev www origin
-    'http://localhost:3002',
+    "http://localhost:3002",
     // Dev dashboard origin (in case they want to search from dashboard too)
-    'http://localhost:3001',
+    "http://localhost:3001",
   ];
 
   // Check if origin is allowed
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
 
   // Get search query
   const searchParams = request.nextUrl.searchParams;
-  const query = searchParams.get('query') || '';
+  const query = searchParams.get("query") || "";
   const queryLower = query.toLowerCase();
   const queryWords = queryLower
     .split(QUERY_SPLIT_REGEX)
@@ -61,42 +61,42 @@ export async function GET(request: NextRequest) {
 
   // Extract text from React element children
   const extractTextFromChildren = (children: unknown): string => {
-    if (typeof children === 'string') {
+    if (typeof children === "string") {
       return children;
     }
     if (Array.isArray(children)) {
       return children
         .map((child) => {
-          if (typeof child === 'string') {
+          if (typeof child === "string") {
             return child;
           }
-          if (child && typeof child === 'object' && 'props' in child) {
+          if (child && typeof child === "object" && "props" in child) {
             return extractTextFromChildren(
               (child as { props?: { children?: unknown } }).props?.children
             );
           }
-          return '';
+          return "";
         })
-        .join('');
+        .join("");
     }
-    if (children && typeof children === 'object' && 'props' in children) {
+    if (children && typeof children === "object" && "props" in children) {
       return extractTextFromChildren(
         (children as { props?: { children?: unknown } }).props?.children
       );
     }
-    return '';
+    return "";
   };
 
   // Extract text from React element or string
   const extractTextFromTitle = (title: unknown): string => {
-    if (typeof title === 'string') {
+    if (typeof title === "string") {
       return title;
     }
-    if (title && typeof title === 'object' && 'props' in title) {
+    if (title && typeof title === "object" && "props" in title) {
       const reactElement = title as { props?: { children?: unknown } };
       return extractTextFromChildren(reactElement.props?.children);
     }
-    return '';
+    return "";
   };
 
   // Extract headings from TOC array
@@ -108,9 +108,9 @@ export async function GET(request: NextRequest) {
     for (const item of toc) {
       if (
         item &&
-        typeof item === 'object' &&
-        'title' in item &&
-        'url' in item
+        typeof item === "object" &&
+        "title" in item &&
+        "url" in item
       ) {
         const tocItem = item as {
           title: unknown;
@@ -121,7 +121,7 @@ export async function GET(request: NextRequest) {
         if (!titleText) {
           continue;
         }
-        const headingUrl = tocItem.url.startsWith('/')
+        const headingUrl = tocItem.url.startsWith("/")
           ? tocItem.url
           : `${pagePath}${tocItem.url}`;
         headings.push({
@@ -138,11 +138,11 @@ export async function GET(request: NextRequest) {
   const getPageHeadings = (pageUrl: string) => {
     try {
       // Remove hash from URL to get page path
-      const pagePath = pageUrl.split('#')[0];
+      const pagePath = pageUrl.split("#")[0];
       // Remove leading /docs if present
-      const relativePath = pagePath.replace(DOCS_PREFIX_REGEX, '');
+      const relativePath = pagePath.replace(DOCS_PREFIX_REGEX, "");
 
-      const page = source.getPage(relativePath.split('/'));
+      const page = source.getPage(relativePath.split("/"));
       if (!page) {
         return [];
       }
@@ -177,10 +177,10 @@ export async function GET(request: NextRequest) {
 
     // Also check headings from search results (they might match the query)
     const searchResultHeadings = allItems.filter((h) => {
-      const headingPageUrl = (h.url || h.path || '').toString();
-      const headingPagePath = headingPageUrl.split('#')[0];
+      const headingPageUrl = (h.url || h.path || "").toString();
+      const headingPagePath = headingPageUrl.split("#")[0];
       return (
-        (h.type === 'heading' || h.hash) &&
+        (h.type === "heading" || h.hash) &&
         headingPagePath === itemPagePath &&
         h.hash
       );
@@ -189,19 +189,19 @@ export async function GET(request: NextRequest) {
     // Combine and deduplicate headings (prefer source headings over search results)
     const sourceHeadingsMap = new Map(
       pageHeadings.map((h) => {
-        const anchor = h.url.split('#')[1] || '';
+        const anchor = h.url.split("#")[1] || "";
         return [anchor || h.url, { title: h.title, url: h.url, anchor }];
       })
     );
 
     // Add search result headings if not already present
     for (const h of searchResultHeadings) {
-      const headingUrl = (h.url || h.path || '').toString();
-      const anchor = h.hash || headingUrl.split('#')[1] || '';
+      const headingUrl = (h.url || h.path || "").toString();
+      const anchor = h.hash || headingUrl.split("#")[1] || "";
       const key = anchor || headingUrl;
       if (!sourceHeadingsMap.has(key)) {
         sourceHeadingsMap.set(key, {
-          title: (h.content || h.title || h.heading || '') as string,
+          title: (h.content || h.title || h.heading || "") as string,
           url: headingUrl,
           anchor,
         });
@@ -211,7 +211,7 @@ export async function GET(request: NextRequest) {
     return {
       allHeadings: Array.from(sourceHeadingsMap.values()),
       tocHeadings: pageHeadings.map((h) => {
-        const anchor = h.url.split('#')[1] || '';
+        const anchor = h.url.split("#")[1] || "";
         return { title: h.title, url: h.url, anchor, level: h.level };
       }),
     };
@@ -281,9 +281,9 @@ export async function GET(request: NextRequest) {
       Array<{ title: string; url: string; level?: number }>
     >
   ) => {
-    const itemPageUrl = (item.url || item.path || '').toString();
-    const itemPagePath = itemPageUrl.split('#')[0];
-    const itemAnchor = itemPageUrl.split('#')[1];
+    const itemPageUrl = (item.url || item.path || "").toString();
+    const itemPagePath = itemPageUrl.split("#")[0];
+    const itemAnchor = itemPageUrl.split("#")[1];
 
     const { allHeadings, tocHeadings } = getAllHeadingsForPage(
       itemPagePath,
@@ -356,7 +356,7 @@ export async function GET(request: NextRequest) {
     let score = 0;
     for (const word of queryWords) {
       // Count occurrences of word in text
-      const matches = textLower.match(new RegExp(word, 'g'));
+      const matches = textLower.match(new RegExp(word, "g"));
       if (matches) {
         score += matches.length;
       }
@@ -373,16 +373,15 @@ export async function GET(request: NextRequest) {
   // Debug: log item types we receive
   const itemTypeCounts = new Map<string, number>();
   for (const item of itemsArray as FumadocsItem[]) {
-    const itemType = item.type || 'no-type';
+    const itemType = item.type || "no-type";
     itemTypeCounts.set(itemType, (itemTypeCounts.get(itemType) || 0) + 1);
   }
-  console.log('[API] Item types received:', Object.fromEntries(itemTypeCounts));
 
   // Process items and group by page → heading
   for (const item of itemsArray as FumadocsItem[]) {
-    const itemUrl = (item.url || item.path || '').toString();
-    const pageUrl = itemUrl.split('#')[0];
-    const itemAnchor = itemUrl.split('#')[1];
+    const itemUrl = (item.url || item.path || "").toString();
+    const pageUrl = itemUrl.split("#")[0];
+    const itemAnchor = itemUrl.split("#")[1];
 
     if (!pageUrl) {
       continue;
@@ -393,8 +392,8 @@ export async function GET(request: NextRequest) {
     if (!pageScore) {
       // Find page title
       const pageItem = (itemsArray as FumadocsItem[]).find((i) => {
-        const itemPageUrl = (i.url || i.path || '').toString().split('#')[0];
-        const isPageType = i.type === 'page';
+        const itemPageUrl = (i.url || i.path || "").toString().split("#")[0];
+        const isPageType = i.type === "page";
         const hasNoType = !i.type;
         const hasNoHash = !i.hash;
         const isPageItem = isPageType || (hasNoType && hasNoHash);
@@ -402,7 +401,7 @@ export async function GET(request: NextRequest) {
       });
       const pageTitle = (pageItem?.title ||
         pageItem?.content ||
-        'Untitled') as string;
+        "Untitled") as string;
 
       pageScore = {
         pageUrl,
@@ -417,9 +416,9 @@ export async function GET(request: NextRequest) {
     const hasNoType = !item.type;
     const hasNoHash = !item.hash;
     const hasNoContent = !item.content;
-    const isPageType = item.type === 'page';
-    const isHeadingType = item.type === 'heading';
-    const isTextType = item.type === 'text';
+    const isPageType = item.type === "page";
+    const isHeadingType = item.type === "heading";
+    const isTextType = item.type === "text";
 
     const isPage = isPageType || (hasNoType && hasNoHash && hasNoContent);
     const hasHash = Boolean(item.hash);
@@ -430,31 +429,24 @@ export async function GET(request: NextRequest) {
 
     // Debug: log first few items to understand classification
     if (itemsArray.indexOf(item) < 5) {
-      let classifiedAs = 'unknown';
+      let _classifiedAs = "unknown";
       if (isPage) {
-        classifiedAs = 'page';
+        _classifiedAs = "page";
       } else if (isHeading) {
-        classifiedAs = 'heading';
+        _classifiedAs = "heading";
       } else if (isContent) {
-        classifiedAs = 'content';
+        _classifiedAs = "content";
       }
-      console.log('[API] Item classification:', {
-        url: itemUrl,
-        type: item.type,
-        hasHash,
-        hasContent: hasContentValue,
-        classifiedAs,
-      });
     }
 
     if (isPage) {
       // Page match - boost score
-      const pageText = (item.title || item.content || '') as string;
+      const pageText = (item.title || item.content || "") as string;
       pageScore.score += calculateScore(pageText) * 2; // Pages get higher weight
     } else if (isHeading) {
       // Heading match - create heading entry
       const headingTitle = extractTextFromTitle(
-        (item.title || item.content || item.heading || '') as string
+        (item.title || item.content || item.heading || "") as string
       );
       if (!pageScore.headings.has(itemAnchor || itemUrl)) {
         pageScore.headings.set(itemAnchor || itemUrl, {
@@ -476,9 +468,9 @@ export async function GET(request: NextRequest) {
       const headingTitle = closestHeading
         ? extractTextFromTitle(closestHeading.title)
         : null;
-      const headingUrl = closestHeading?.url || '';
-      const headingAnchor = headingUrl.split('#')[1] || '';
-      const headingKey = headingAnchor || headingUrl || 'unassigned';
+      const headingUrl = closestHeading?.url || "";
+      const headingAnchor = headingUrl.split("#")[1] || "";
+      const headingKey = headingAnchor || headingUrl || "unassigned";
 
       // Get or create heading
       let heading = pageScore.headings.get(headingKey);
@@ -492,15 +484,15 @@ export async function GET(request: NextRequest) {
       } else if (!heading) {
         // No heading found - create unassigned group
         heading = {
-          title: 'Content',
+          title: "Content",
           url: pageUrl,
           content: [],
         };
-        pageScore.headings.set('unassigned', heading);
+        pageScore.headings.set("unassigned", heading);
       }
 
       // Add content item
-      const contentText = (item.title || item.content || '') as string;
+      const contentText = (item.title || item.content || "") as string;
       const contentTitle = extractTextFromTitle(contentText);
       heading.content.push({
         title: contentTitle,
@@ -522,26 +514,6 @@ export async function GET(request: NextRequest) {
 
   // Debug: log page structure before converting
   if (rankedPages.length > 0) {
-    console.log('[API] Ranked pages structure:', {
-      totalPages: rankedPages.length,
-      firstPage: rankedPages[0]
-        ? {
-            title: rankedPages[0].pageTitle,
-            score: rankedPages[0].score,
-            headingsCount: rankedPages[0].headings.size,
-            headingsWithContent: Array.from(
-              rankedPages[0].headings.values()
-            ).filter((h) => h.content.length > 0).length,
-            firstHeading: Array.from(rankedPages[0].headings.values())[0]
-              ? {
-                  title: Array.from(rankedPages[0].headings.values())[0].title,
-                  contentCount: Array.from(rankedPages[0].headings.values())[0]
-                    .content.length,
-                }
-              : null,
-          }
-        : null,
-    });
   }
 
   // Convert to response format: pages with headings and content nested
@@ -551,18 +523,18 @@ export async function GET(request: NextRequest) {
     const headingsArray = Array.from(page.headings.values());
 
     return {
-      type: 'page',
+      type: "page",
       id: page.pageUrl,
       title: page.pageTitle,
       url: page.pageUrl,
       score: page.score,
       headings: headingsArray.map((heading) => ({
-        type: 'heading',
+        type: "heading",
         id: heading.url,
         title: heading.title,
         url: heading.url,
         content: heading.content.map((item) => ({
-          type: 'text',
+          type: "text",
           id: item.id,
           title: item.title,
           content: item.content,
@@ -576,12 +548,6 @@ export async function GET(request: NextRequest) {
     };
   });
 
-  // Debug: log the final API response structure
-  console.error(
-    '[API] Final response data:',
-    JSON.stringify(responseData.slice(0, 2), null, 2)
-  );
-
   const responseBody = JSON.stringify(responseData);
 
   // Create NextResponse with the processed body
@@ -589,23 +555,23 @@ export async function GET(request: NextRequest) {
     status: fumadocsResponse.status,
     statusText: fumadocsResponse.statusText,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
 
   // Copy existing headers from fumadocs response (except Content-Type which we set)
   fumadocsResponse.headers.forEach((value, key) => {
-    if (key.toLowerCase() !== 'content-type') {
+    if (key.toLowerCase() !== "content-type") {
       response.headers.set(key, value);
     }
   });
 
   // Add CORS headers
   if (isAllowedOrigin) {
-    response.headers.set('Access-Control-Allow-Origin', origin);
-    response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
-    response.headers.set('Access-Control-Max-Age', '86400');
+    response.headers.set("Access-Control-Allow-Origin", origin);
+    response.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+    response.headers.set("Access-Control-Allow-Headers", "Content-Type");
+    response.headers.set("Access-Control-Max-Age", "86400");
   }
 
   return response;
@@ -613,12 +579,12 @@ export async function GET(request: NextRequest) {
 
 // Handle OPTIONS preflight requests
 export function OPTIONS(request: NextRequest) {
-  const origin = request.headers.get('origin');
+  const origin = request.headers.get("origin");
 
   const allowedOrigins = [
-    'https://www.recurse.cc',
-    'http://localhost:3002',
-    'http://localhost:3001',
+    "https://www.recurse.cc",
+    "http://localhost:3002",
+    "http://localhost:3001",
   ];
 
   const isAllowedOrigin = origin && allowedOrigins.includes(origin);
@@ -628,10 +594,10 @@ export function OPTIONS(request: NextRequest) {
   });
 
   if (isAllowedOrigin) {
-    response.headers.set('Access-Control-Allow-Origin', origin);
-    response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
-    response.headers.set('Access-Control-Max-Age', '86400');
+    response.headers.set("Access-Control-Allow-Origin", origin);
+    response.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+    response.headers.set("Access-Control-Allow-Headers", "Content-Type");
+    response.headers.set("Access-Control-Max-Age", "86400");
   }
 
   return response;

@@ -1,5 +1,5 @@
-import type { ComponentProps, HTMLAttributes } from "react";
 import { Badge } from "@recurse/ui/components/badge";
+import type { ComponentProps, HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 export type AnnouncementProps = ComponentProps<typeof Badge> & {

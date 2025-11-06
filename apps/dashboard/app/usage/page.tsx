@@ -11,10 +11,10 @@ export default function Page() {
       <DocsTitle>Usage</DocsTitle>
       <DocsDescription>Monitor your API usage and limits.</DocsDescription>
       <DocsBody>
-        <p>This is a shell page. Replace with the actual Usage UI when ready.</p>
+        <p>
+          This is a shell page. Replace with the actual Usage UI when ready.
+        </p>
       </DocsBody>
     </DocsPage>
   );
 }
-
-

@@ -9,7 +9,13 @@ interface SearchToggleProps
   extends Omit<React.ComponentProps<"button">, "color"> {
   hideIfDisabled?: boolean;
   size?: "icon-sm" | "sm" | "default" | "lg";
-  variant?: "ghost" | "default" | "secondary" | "destructive" | "outline" | "link";
+  variant?:
+    | "ghost"
+    | "default"
+    | "secondary"
+    | "destructive"
+    | "outline"
+    | "link";
 }
 
 export function SearchToggle({
@@ -18,7 +24,7 @@ export function SearchToggle({
   variant = "ghost",
   ...props
 }: SearchToggleProps) {
-  const [open, setOpen] = useState(false);
+  const [_open, setOpen] = useState(false);
 
   return (
     <>
@@ -52,14 +58,15 @@ export function LargeSearchToggle({
   hideIfDisabled?: boolean;
   customText?: string;
 }) {
-  const [open, setOpen] = useState(false);
+  const [_open, setOpen] = useState(false);
 
   // Global keyboard shortcut for search
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Only trigger if "/" is pressed and not typing in an input/textarea
       const target = event.target as HTMLElement;
-      const isInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA";
+      const isInput =
+        target.tagName === "INPUT" || target.tagName === "TEXTAREA";
       if (event.key === "/" && !isInput && !target.isContentEditable) {
         event.preventDefault();
         setOpen(true);

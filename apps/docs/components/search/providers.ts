@@ -1,5 +1,9 @@
 import { apiService } from "@/lib/api";
-import type { HierarchicalSearchResult, SearchItem, SearchProvider } from "./types";
+import type {
+  HierarchicalSearchResult,
+  SearchItem,
+  SearchProvider,
+} from "./types";
 
 // Knowledge base provider: use API service
 export const knowledgeBaseProvider: SearchProvider = {
@@ -49,24 +53,24 @@ export const documentationProvider: SearchProvider = {
   async search(query: string): Promise<HierarchicalSearchResult[]> {
     // Proxy through our app route to leverage existing config
     const url = `/api/docs-search?query=${encodeURIComponent(query)}`;
-    
+
     try {
       const res = await fetch(url, { method: "GET" });
-      
+
       if (!res.ok) {
         // Return empty array if API fails
         return [];
       }
-      
+
       const data = await res.json();
-      
+
       if (!Array.isArray(data)) {
         return [];
       }
-      
+
       // Return API response AS-IS - no transformations whatsoever
       return data as HierarchicalSearchResult[];
-    } catch (error) {
+    } catch (_error) {
       // If fetch fails, return empty
       return [];
     }

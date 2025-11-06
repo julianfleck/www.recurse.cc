@@ -1,6 +1,4 @@
-import { Book } from "lucide-react";
 import { DocsLayout } from "@/components/layout/docs";
-import { documentationProvider } from "@/components/search/providers";
 import { LargeSearchToggle } from "@/components/search/toggle";
 import { docsOptions } from "@/lib/layout.shared";
 import { docsSource } from "@/lib/source";

@@ -1,6 +1,11 @@
 'use client';
 
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@recurse/ui/components/avatar';
+import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
@@ -8,8 +13,6 @@ import {
   LogOut,
   Sparkles,
 } from 'lucide-react';
-
-import { Avatar, AvatarFallback, AvatarImage } from '@recurse/ui/components/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,

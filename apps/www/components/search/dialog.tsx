@@ -10,8 +10,7 @@ import { Spinner } from '@recurse/ui/components/spinner';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { DocumentationResults } from './results/documentation';
 import { WebsiteSuggestions } from './suggestions';
-import type { SearchProvider } from './types';
-import { HierarchicalSearchResult } from './types';
+import type { HierarchicalSearchResult, SearchProvider } from './types';
 
 type SearchCommandDialogProps = {
   open: boolean;
@@ -106,11 +105,11 @@ export function SearchCommandDialog({
       showCloseButton={!isLoading}
     >
       <CommandInput
-        ref={inputRef}
+        onKeyDown={handleInputKeyDown}
         onValueChange={setSearchTerm}
         placeholder={placeholder}
+        ref={inputRef}
         value={searchTerm}
-        onKeyDown={handleInputKeyDown}
       />
       <CommandList ref={resultsRef}>
         {!searchTerm && (

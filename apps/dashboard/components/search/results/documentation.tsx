@@ -1,12 +1,12 @@
 "use client";
 
-import { File, Hash } from "lucide-react";
-import { useRouter } from "next/navigation";
 import {
   CommandGroup,
   CommandItem,
   CommandSeparator,
 } from "@recurse/ui/components/command";
+import { File, Hash } from "lucide-react";
+import { useRouter } from "next/navigation";
 import type { SearchItem } from "../types";
 
 type DocumentationResultsProps = {
@@ -56,9 +56,10 @@ export function DocumentationResults({
   const textMatches = results.filter(
     (r) => r.type === "text" || r.type === "content"
   );
-  
+
   // If no explicit pages found, treat all non-heading results as pages
-  const finalPages = pages.length > 0 ? pages : results.filter((r) => r.type !== "heading");
+  const finalPages =
+    pages.length > 0 ? pages : results.filter((r) => r.type !== "heading");
   const finalHeadings = pages.length > 0 ? headings : [];
   const finalTextMatches = pages.length > 0 ? textMatches : [];
 
@@ -136,7 +137,9 @@ export function DocumentationResults({
 
       {finalTextMatches.length > 0 && (
         <>
-          {(finalPages.length > 0 || finalHeadings.length > 0) && <CommandSeparator />}
+          {(finalPages.length > 0 || finalHeadings.length > 0) && (
+            <CommandSeparator />
+          )}
           <CommandGroup heading="Content">
             {finalTextMatches.map((result, idx) => (
               <CommandItem

@@ -29,11 +29,11 @@ export function DocumentationResults({
 
   return (
     <ContentTree
-      results={results}
-      searchTerm={searchTerm}
+      containerRef={containerRef}
       onSelect={handleSelect}
       onSelectAll={onSelectAll}
-      containerRef={containerRef}
+      results={results}
+      searchTerm={searchTerm}
     />
   );
 }

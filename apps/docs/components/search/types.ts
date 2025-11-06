@@ -12,18 +12,18 @@ export type SearchItem = {
 
 // Hierarchical structure for documentation search results
 export type HierarchicalSearchResult = {
-  type: 'page';
+  type: "page";
   id: string;
   title: string;
   url: string;
   score?: number;
   headings: Array<{
-    type: 'heading';
+    type: "heading";
     id: string;
     title: string;
     url: string;
     content: Array<{
-      type: 'text';
+      type: "text";
       id: string;
       title: string;
       url: string;

@@ -1,8 +1,8 @@
 'use client';
 
+import { Badge } from '@recurse/ui/components/badge';
 import { Loader2 } from 'lucide-react';
 import * as React from 'react';
-import { Badge } from '@recurse/ui/components/badge';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -88,7 +88,9 @@ export function ReferencesSection() {
         // Add leaving items
         for (const prevId of prevIds) {
           if (!currentIds.includes(prevId)) {
-            const prevItem = relatedItemsRef.current.find((item) => item.id === prevId);
+            const prevItem = relatedItemsRef.current.find(
+              (item) => item.id === prevId
+            );
             if (prevItem) {
               animatedItems.push({
                 ...prevItem,
@@ -123,12 +125,7 @@ export function ReferencesSection() {
     };
 
     fetchRelatedItems();
-  }, [
-    viewMode,
-    selectedItem,
-    currentSession,
-    groupByDocument,
-  ]);
+  }, [viewMode, selectedItem, currentSession, groupByDocument]);
 
   const renderContent = () => {
     if (isLoading) {

@@ -45,11 +45,14 @@ export function SearchToggle({
   }, [provider, providerKey]);
 
   useEffect(() => {
-    if (!enableHotkey) return;
+    if (!enableHotkey) {
+      return;
+    }
     const onKey = (event: KeyboardEvent) => {
       // Only trigger if "/" is pressed and not typing in an input/textarea
       const target = event.target as HTMLElement;
-      const isInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA";
+      const isInput =
+        target.tagName === "INPUT" || target.tagName === "TEXTAREA";
       if (event.key === "/" && !isInput && !target.isContentEditable) {
         event.preventDefault();
         setOpen(true);
@@ -75,7 +78,9 @@ export function SearchToggle({
         open={open}
         placeholder={placeholder}
         provider={resolvedProvider}
-        searchType={providerKey === "documentation" ? "documentation" : "knowledgeBase"}
+        searchType={
+          providerKey === "documentation" ? "documentation" : "knowledgeBase"
+        }
       />
     </>
   );
@@ -106,11 +111,14 @@ export function LargeSearchToggle({
   }, [provider, providerKey]);
 
   useEffect(() => {
-    if (!enableHotkey) return;
+    if (!enableHotkey) {
+      return;
+    }
     const onKey = (event: KeyboardEvent) => {
       // Only trigger if "/" is pressed and not typing in an input/textarea
       const target = event.target as HTMLElement;
-      const isInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA";
+      const isInput =
+        target.tagName === "INPUT" || target.tagName === "TEXTAREA";
       if (event.key === "/" && !isInput && !target.isContentEditable) {
         event.preventDefault();
         setOpen(true);
@@ -145,7 +153,9 @@ export function LargeSearchToggle({
         open={open}
         placeholder={placeholder}
         provider={resolvedProvider}
-        searchType={providerKey === "documentation" ? "documentation" : "knowledgeBase"}
+        searchType={
+          providerKey === "documentation" ? "documentation" : "knowledgeBase"
+        }
       />
     </>
   );

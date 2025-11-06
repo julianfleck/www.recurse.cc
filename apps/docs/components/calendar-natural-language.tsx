@@ -1,11 +1,6 @@
 "use client";
 
-import { parseDate } from "chrono-node";
-import { CalendarIcon } from "lucide-react";
-import { useState } from "react";
-
 import { Button } from "@recurse/ui/components/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@recurse/ui/components/input";
 import { Label } from "@recurse/ui/components/label";
 import {
@@ -13,6 +8,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@recurse/ui/components/popover";
+import { parseDate } from "chrono-node";
+import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
+import { Calendar } from "@/components/ui/calendar";
 
 type CalendarNaturalLanguageProps = {
   value?: { from?: Date; to?: Date };

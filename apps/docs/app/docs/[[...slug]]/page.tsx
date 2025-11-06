@@ -53,9 +53,9 @@ export const dynamicParams = true; // Allow dynamic params for pages not in gene
 export async function generateStaticParams() {
   // Only generate non-API documentation pages statically
   const allParams = source.generateParams();
-  return allParams.filter(param => {
+  return allParams.filter((param) => {
     const slug = param.slug;
-    return !slug || !slug[0]?.startsWith('api-documentation');
+    return !slug?.[0]?.startsWith("api-documentation");
   });
 }
 

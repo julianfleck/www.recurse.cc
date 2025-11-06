@@ -1,3 +1,4 @@
+import { resolveIcon } from "@recurse/fumadocs/icons";
 import { APIPage } from "fumadocs-openapi/ui";
 import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
 import {
@@ -10,14 +11,13 @@ import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import { TypeTable } from "fumadocs-ui/components/type-table";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import type { MDXComponents } from "mdx/types";
-import { resolveIcon } from "@recurse/fumadocs/icons";
+import { AdaptiveSchemasExample } from "@/components/examples/graphs/AdaptiveSchemasExample";
 import { AnimatedGraphExample } from "@/components/examples/graphs/AnimatedGraphExample";
 import { ExampleGraphs } from "@/components/examples/graphs/ExampleGraphs";
-import { FAQ } from "@/components/faq";
-import { GraphView } from "@/components/graph-view";
-import { AdaptiveSchemasExample } from "@/components/examples/graphs/AdaptiveSchemasExample";
 import { FramesExample } from "@/components/examples/graphs/FramesExample";
 import { TemporalVersioningExample } from "@/components/examples/graphs/TemporalVersioningExample";
+import { FAQ } from "@/components/faq";
+import { GraphView } from "@/components/graph-view";
 import { openapi } from "@/lib/openapi";
 
 // Custom Card component that resolves icon strings
@@ -58,12 +58,12 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
             <APIPage {...apiProps} />
           </div>
         );
-      } catch (error) {
-        // Skip API page rendering during build if OpenAPI doc is not available
-        console.warn("Skipping APIPage rendering:", error);
+      } catch (_error) {
         return (
           <div className="fd-openapi">
-            <p className="text-muted-foreground">API documentation unavailable during build</p>
+            <p className="text-muted-foreground">
+              API documentation unavailable during build
+            </p>
           </div>
         );
       }

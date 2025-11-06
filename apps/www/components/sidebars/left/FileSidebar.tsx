@@ -1,6 +1,7 @@
+import { Badge } from '@recurse/ui/components/badge';
+import { useUIStore } from '@recurse/ui/lib';
 import { ChevronRight, FileUp, HelpCircle, Plus } from 'lucide-react';
 import * as React from 'react';
-import { Badge } from '@recurse/ui/components/badge';
 import {
   Collapsible,
   CollapsibleContent,
@@ -16,7 +17,6 @@ import { useDemoApp } from '@/contexts/DemoAppContext';
 import { useSession } from '@/contexts/SessionContext';
 import { useViewer } from '@/contexts/ViewerContext';
 import { api } from '@/services/apiConfig';
-import { useUIStore } from '@recurse/ui/lib';
 import { ActiveContext } from './ActiveContext';
 import { KnowledgeBase, type TreeItem } from './KnowledgeBase';
 import { RecentQueries } from './RecentQueries';

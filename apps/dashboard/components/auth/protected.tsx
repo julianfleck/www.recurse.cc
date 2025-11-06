@@ -8,10 +8,10 @@ import { useAuthStore } from "./auth-store";
 
 export function ProtectedContent({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth0();
-  const router = useRouter();
+  const _router = useRouter();
   const storeToken = useAuthStore((s) => s.accessToken);
   const [isClient, setIsClient] = useState(false);
-  
+
   const isClientAuthenticated = Boolean(storeToken);
 
   // Ensure we only check auth on the client to avoid hydration mismatches
@@ -22,12 +22,6 @@ export function ProtectedContent({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Only redirect if we're on client and have no token AND Auth0 has finished loading AND Auth0 says not authenticated
     if (isClient && !(isClientAuthenticated || isLoading || isAuthenticated)) {
-      console.log("[ProtectedContent] Redirecting to login...", {
-        isClient,
-        isClientAuthenticated,
-        isLoading,
-        isAuthenticated
-      });
       // Use window.location for immediate redirect to avoid router issues
       window.location.href = "/login";
     }
@@ -65,4 +59,3 @@ export function ProtectedContent({ children }: { children: ReactNode }) {
   // Return null to prevent flashing
   return null;
 }
-

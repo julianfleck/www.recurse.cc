@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { ContentTree } from "@recurse/ui/components";
-import type { HierarchicalSearchResult } from "../types";
+import { ContentTree } from '@recurse/ui/components';
+import type { HierarchicalSearchResult } from '../types';
 
 type DocumentationResultsProps = {
   results: HierarchicalSearchResult[];
@@ -29,12 +29,11 @@ export function DocumentationResults({
 
   return (
     <ContentTree
-      results={results}
-      searchTerm={searchTerm}
+      containerRef={containerRef}
       onSelect={handleSelect}
       onSelectAll={onSelectAll}
-      containerRef={containerRef}
+      results={results}
+      searchTerm={searchTerm}
     />
   );
 }
-

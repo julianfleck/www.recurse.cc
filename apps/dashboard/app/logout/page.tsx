@@ -1,9 +1,8 @@
 "use client";
 
-import { Suspense } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useAuthStore } from "@/components/auth/auth-store";
 
 function LogoutPageClient() {
@@ -15,7 +14,7 @@ function LogoutPageClient() {
   useEffect(() => {
     // Check for returnTo query param (from external apps like docs/www)
     const returnTo = searchParams.get("returnTo");
-    
+
     // Determine where to redirect after logout
     let logoutReturnTo: string;
     if (returnTo) {
@@ -26,34 +25,40 @@ function LogoutPageClient() {
           logoutReturnTo = decoded;
         } else {
           // Relative path, use current origin
-          logoutReturnTo = typeof window !== "undefined" 
-            ? `${window.location.origin}${decoded}`
-            : decoded;
+          logoutReturnTo =
+            typeof window !== "undefined"
+              ? `${window.location.origin}${decoded}`
+              : decoded;
         }
       } catch {
         // Invalid returnTo, fall back to dashboard root
-        logoutReturnTo = typeof window !== "undefined" ? window.location.origin : "/";
+        logoutReturnTo =
+          typeof window !== "undefined" ? window.location.origin : "/";
       }
     } else {
       // No returnTo: redirect to dashboard root
-      logoutReturnTo = typeof window !== "undefined" ? window.location.origin : "/";
+      logoutReturnTo =
+        typeof window !== "undefined" ? window.location.origin : "/";
     }
-    
+
     // Clear client store first
     clear();
-    
+
     // Then call Auth0 logout with returnTo
     logout({
       logoutParams: {
         returnTo: logoutReturnTo,
       },
     });
-    
+
     // Fallback navigate in case SDK doesn't redirect
     // This handles cases where Auth0 logout doesn't redirect
     const LOGOUT_REDIRECT_DELAY_MS = 150;
     const t = setTimeout(() => {
-      if (returnTo && (returnTo.startsWith("http://") || returnTo.startsWith("https://"))) {
+      if (
+        returnTo &&
+        (returnTo.startsWith("http://") || returnTo.startsWith("https://"))
+      ) {
         // Cross-origin redirect: use window.location
         try {
           window.location.href = decodeURIComponent(returnTo);
@@ -65,7 +70,7 @@ function LogoutPageClient() {
         router.replace("/login");
       }
     }, LOGOUT_REDIRECT_DELAY_MS);
-    
+
     return () => clearTimeout(t);
   }, [logout, clear, router, searchParams]);
 

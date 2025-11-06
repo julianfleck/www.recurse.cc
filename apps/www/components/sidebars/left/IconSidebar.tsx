@@ -1,3 +1,4 @@
+import { useUIStore } from '@recurse/ui/lib';
 import {
   Command,
   GitPullRequest,
@@ -13,7 +14,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { useUIStore } from '@recurse/ui/lib';
 
 export function IconSidebar({ ...props }: React.ComponentProps<'div'>) {
   const {

@@ -1,3 +1,4 @@
+import { useUIStore } from '@recurse/ui/lib';
 import * as React from 'react';
 import { ApiModeToggle } from '@/components/common/ApiModeToggle';
 import { IconSidebar } from '@/components/sidebars/left/IconSidebar';
@@ -7,7 +8,6 @@ import { useDemoApp } from '@/contexts/DemoAppContext';
 import { useSession } from '@/contexts/SessionContext';
 import { useViewer } from '@/contexts/ViewerContext';
 import { cn } from '@/lib/utils';
-import { useUIStore } from '@recurse/ui/lib';
 
 interface DemoLayoutProps {
   children: React.ReactNode;

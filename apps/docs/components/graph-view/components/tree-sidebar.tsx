@@ -65,9 +65,7 @@ const TreeNodeComponent = ({
           iconOpen={iconOpen}
         />
         <TreeLabel className="truncate">
-          {String(
-            node.title || spec?.uiLabel || node.id
-          )}
+          {String(node.title || spec?.uiLabel || node.id)}
         </TreeLabel>
         {/* <Badge
           className="ml-2 border border-border font-medium text-[8px] uppercase tracking-wider"

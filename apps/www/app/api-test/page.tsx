@@ -1,9 +1,9 @@
 'use client';
 
+import { Button } from '@recurse/ui/components';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Button } from '@recurse/ui/components';
 import {
   Card,
   CardContent,

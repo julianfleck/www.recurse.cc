@@ -1,3 +1,4 @@
+import { resolveIcon } from "@recurse/fumadocs/icons";
 import { APIPage } from "fumadocs-openapi/ui";
 import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
 import {
@@ -9,7 +10,6 @@ import * as TabsComponents from "fumadocs-ui/components/tabs";
 import { TypeTable } from "fumadocs-ui/components/type-table";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import type { MDXComponents } from "mdx/types";
-import { resolveIcon } from "@recurse/fumadocs/icons";
 import { AnimatedGraphExample } from "@/components/examples/graphs/AnimatedGraphExample";
 import { ExampleGraphs } from "@/components/examples/graphs/ExampleGraphs";
 import { FAQ } from "@/components/faq";
@@ -49,12 +49,12 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
             <APIPage {...apiProps} />
           </div>
         );
-      } catch (error) {
-        // Skip API page rendering during build if OpenAPI doc is not available
-        console.warn("Skipping APIPage rendering:", error);
+      } catch (_error) {
         return (
           <div className="fd-openapi">
-            <p className="text-muted-foreground">API documentation unavailable during build</p>
+            <p className="text-muted-foreground">
+              API documentation unavailable during build
+            </p>
           </div>
         );
       }

@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import * as React from 'react';
+import * as React from "react";
 import {
   type ComponentProps,
   createContext,
@@ -10,16 +10,16 @@ import {
   useId,
   useMemo,
   useState,
-} from 'react';
-import { cn } from '../lib/cn';
-import * as Unstyled from './tabs.unstyled';
+} from "react";
+import { cn } from "../lib/cn";
+import * as Unstyled from "./tabs.unstyled";
 
 type CollectionKey = string | symbol;
 
 export interface TabsProps
   extends Omit<
     ComponentProps<typeof Unstyled.Tabs>,
-    'value' | 'onValueChange'
+    "value" | "onValueChange"
   > {
   /**
    * Use simple mode instead of advanced usage as documented in https://radix-ui.com/primitives/docs/components/tabs.
@@ -46,7 +46,9 @@ const TabsContext = createContext<{
 
 function useTabContext() {
   const ctx = useContext(TabsContext);
-  if (!ctx) { throw new Error('You must wrap your component in <Tabs>'); }
+  if (!ctx) {
+    throw new Error("You must wrap your component in <Tabs>");
+  }
   return ctx;
 }
 
@@ -58,12 +60,12 @@ export const TabsList = React.forwardRef<
     ref={ref}
     {...props}
     className={cn(
-      'not-prose flex gap-3.5 overflow-x-auto px-4 text-fd-secondary-foreground',
-      props.className,
+      "not-prose flex gap-3.5 overflow-x-auto px-4 text-fd-secondary-foreground",
+      props.className
     )}
   />
 ));
-TabsList.displayName = 'TabsList';
+TabsList.displayName = "TabsList";
 
 export const TabsTrigger = React.forwardRef<
   React.ComponentRef<typeof Unstyled.TabsTrigger>,
@@ -73,12 +75,12 @@ export const TabsTrigger = React.forwardRef<
     ref={ref}
     {...props}
     className={cn(
-      'inline-flex items-center gap-2 whitespace-nowrap border-transparent border-b py-2 font-medium text-fd-muted-foreground text-sm transition-colors hover:text-fd-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-fd-primary data-[state=active]:text-fd-primary [&_svg]:size-4',
-      props.className,
+      "inline-flex items-center gap-2 whitespace-nowrap border-transparent border-b py-2 font-medium text-fd-muted-foreground text-sm transition-colors hover:text-fd-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[state=active]:border-fd-primary data-[state=active]:text-fd-primary [&_svg]:size-4",
+      props.className
     )}
   />
 ));
-TabsTrigger.displayName = 'TabsTrigger';
+TabsTrigger.displayName = "TabsTrigger";
 
 export function Tabs({
   ref,
@@ -95,11 +97,13 @@ export function Tabs({
   return (
     <Unstyled.Tabs
       className={cn(
-        'my-4 flex flex-col overflow-hidden rounded-xl border bg-fd-secondary',
-        className,
+        "my-4 flex flex-col overflow-hidden rounded-xl border bg-fd-secondary",
+        className
       )}
       onValueChange={(v: string) => {
-        if (items && !items.some((item) => escapeValue(item) === v)) { return; }
+        if (items && !items.some((item) => escapeValue(item) === v)) {
+          return;
+        }
         setValue(v);
       }}
       ref={ref}
@@ -128,7 +132,7 @@ export function Tabs({
 }
 
 export interface TabProps
-  extends Omit<ComponentProps<typeof Unstyled.TabsContent>, 'value'> {
+  extends Omit<ComponentProps<typeof Unstyled.TabsContent>, "value"> {
   /**
    * Value of tab, detect from index if unspecified.
    */
@@ -143,7 +147,7 @@ export function Tab({ value, ...props }: TabProps) {
     items?.at(useCollectionIndex());
   if (!resolved) {
     throw new Error(
-      'Failed to resolve tab `value`, please pass a `value` prop to the Tab component.',
+      "Failed to resolve tab `value`, please pass a `value` prop to the Tab component."
     );
   }
 
@@ -162,8 +166,8 @@ export function TabsContent({
   return (
     <Unstyled.TabsContent
       className={cn(
-        'prose-no-margin [&>figure:only-child]:-m-4 rounded-xl bg-fd-background p-4 text-[15px] outline-none data-[state=inactive]:hidden [&>figure:only-child]:border-none',
-        className,
+        "prose-no-margin [&>figure:only-child]:-m-4 rounded-xl bg-fd-background p-4 text-[15px] outline-none data-[state=inactive]:hidden [&>figure:only-child]:border-none",
+        className
       )}
       forceMount
       value={value}
@@ -187,11 +191,15 @@ function useCollectionIndex() {
   useEffect(() => {
     return () => {
       const idx = collection.indexOf(key);
-      if (idx !== -1) { collection.splice(idx, 1); }
+      if (idx !== -1) {
+        collection.splice(idx, 1);
+      }
     };
   }, [key, collection]);
 
-  if (!collection.includes(key)) { collection.push(key); }
+  if (!collection.includes(key)) {
+    collection.push(key);
+  }
   return collection.indexOf(key);
 }
 
@@ -199,5 +207,5 @@ function useCollectionIndex() {
  * only escape whitespaces in values in simple mode
  */
 function escapeValue(v: string): string {
-  return v.toLowerCase().replace(/\s/, '-');
+  return v.toLowerCase().replace(/\s/, "-");
 }

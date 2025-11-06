@@ -1,9 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { CommandItem } from "@recurse/ui/components/command";
+import { useRouter } from "next/navigation";
 
-export interface SearchResult {
+export type SearchResult = {
   id: string;
   title?: string;
   summary?: string;
@@ -12,13 +12,13 @@ export interface SearchResult {
   similarity_score?: number;
   reranked_score?: number;
   index?: number;
-}
+};
 
-interface SearchResultsListProps {
+type SearchResultsListProps = {
   results: SearchResult[];
   searchTerm: string;
   isLoading?: boolean;
-}
+};
 
 export function SearchResultsList({
   results,

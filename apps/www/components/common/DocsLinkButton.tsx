@@ -1,8 +1,8 @@
 'use client';
 
+import { Button } from '@recurse/ui/components';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@recurse/ui/components';
 
 interface DocsLinkButtonProps {
   variant?: 'default' | 'subtle' | 'outline' | 'ghost';
@@ -32,10 +32,7 @@ export function DocsLinkButton({
       size="default"
       variant={variant}
     >
-      <Link href="/docs/introduction">
-        {content}
-      </Link>
+      <Link href="/docs/introduction">{content}</Link>
     </Button>
   );
 }
-

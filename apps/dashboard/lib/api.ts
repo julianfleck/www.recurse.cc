@@ -64,8 +64,6 @@ export class ApiService {
 
       const url = `${this.baseUrl}${endpoint}${queryString}`;
 
-      console.log(`[API] GET ${url}`, { params, endpoint });
-
       const authToken = getAccessToken?.();
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
@@ -102,8 +100,6 @@ export class ApiService {
         throw authError;
       }
 
-      console.log(`[API] GET ${url} - Headers:`, headers);
-
       const response = await fetch(url, {
         method: "GET",
         headers,
@@ -113,21 +109,9 @@ export class ApiService {
         mode: "cors",
       });
 
-      console.log(`[API] GET ${url} - Response:`, {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok,
-        headers: Object.fromEntries(response.headers.entries()),
-      });
-
       const data = await response.json();
 
       if (!response.ok) {
-        console.error(`[API] GET ${url} - Error:`, {
-          status: response.status,
-          statusText: response.statusText,
-          data,
-        });
         throw new ApiError(
           `API request failed: ${response.statusText}`,
           response.status,
@@ -135,20 +119,12 @@ export class ApiService {
         );
       }
 
-      console.log(`[API] GET ${url} - Success:`, {
-        status: response.status,
-        dataKeys:
-          typeof data === "object" && data ? Object.keys(data) : "non-object",
-        dataLength: Array.isArray(data) ? data.length : "not-array",
-      });
-
       return {
         data,
         status: response.status,
         statusText: response.statusText,
       };
     } catch (error) {
-      console.error("[API] GET request - Exception:", error);
       if (error instanceof ApiError) {
         throw error;
       }
@@ -256,8 +232,6 @@ export class ApiService {
     try {
       const url = `${this.baseUrl}${endpoint}`;
 
-      console.log(`[API] POST ${url}`, { payload });
-
       const authToken = getAccessToken?.();
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
@@ -294,8 +268,6 @@ export class ApiService {
         throw authError;
       }
 
-      console.log(`[API] POST ${url} - Headers:`, headers);
-
       const response = await fetch(url, {
         method: "POST",
         headers,
@@ -306,21 +278,9 @@ export class ApiService {
         mode: "cors",
       });
 
-      console.log(`[API] POST ${url} - Response:`, {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok,
-        headers: Object.fromEntries(response.headers.entries()),
-      });
-
       const data = await response.json();
 
       if (!response.ok) {
-        console.error(`[API] POST ${url} - Error:`, {
-          status: response.status,
-          statusText: response.statusText,
-          data,
-        });
         throw new ApiError(
           `API request failed: ${response.statusText}`,
           response.status,
@@ -328,20 +288,12 @@ export class ApiService {
         );
       }
 
-      console.log(`[API] POST ${url} - Success:`, {
-        status: response.status,
-        dataKeys:
-          typeof data === "object" && data ? Object.keys(data) : "non-object",
-        dataLength: Array.isArray(data) ? data.length : "not-array",
-      });
-
       return {
         data,
         status: response.status,
         statusText: response.statusText,
       };
     } catch (error) {
-      console.error("[API] POST request - Exception:", error);
       if (error instanceof ApiError) {
         throw error;
       }

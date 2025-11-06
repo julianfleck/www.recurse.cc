@@ -1,23 +1,22 @@
-"use client";
+'use client';
 
-import { Search } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { Button } from "@recurse/ui/components";
-import { cn } from "@/lib/utils";
-import { SearchCommandDialog } from "./dialog";
-import { documentationProvider } from "@/lib/search-provider";
-import type { SearchProvider } from "./types";
+import { Button } from '@recurse/ui/components';
+import { Search } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { documentationProvider } from '@/lib/search-provider';
+import { SearchCommandDialog } from './dialog';
+import type { SearchProvider } from './types';
 
-type ToggleProps = Omit<React.ComponentProps<"button">, "variant"> & {
+type ToggleProps = Omit<React.ComponentProps<'button'>, 'variant'> & {
   hideIfDisabled?: boolean;
-  size?: "icon" | "icon-sm" | "sm" | "default" | "lg";
+  size?: 'icon' | 'icon-sm' | 'sm' | 'default' | 'lg';
   variant?:
-    | "ghost"
-    | "default"
-    | "secondary"
-    | "destructive"
-    | "outline"
-    | "link";
+    | 'ghost'
+    | 'default'
+    | 'secondary'
+    | 'destructive'
+    | 'outline'
+    | 'link';
   provider?: SearchProvider;
   placeholder?: string;
   enableHotkey?: boolean;
@@ -25,8 +24,8 @@ type ToggleProps = Omit<React.ComponentProps<"button">, "variant"> & {
 
 export function SearchToggle({
   hideIfDisabled,
-  size = "icon-sm",
-  variant = "outline",
+  size = 'icon-sm',
+  variant = 'outline',
   provider,
   placeholder,
   enableHotkey = true,
@@ -39,18 +38,21 @@ export function SearchToggle({
   }, [provider]);
 
   useEffect(() => {
-    if (!enableHotkey) return;
+    if (!enableHotkey) {
+      return;
+    }
     const onKey = (event: KeyboardEvent) => {
       // Only trigger if "/" is pressed and not typing in an input/textarea
       const target = event.target as HTMLElement;
-      const isInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA";
-      if (event.key === "/" && !isInput && !target.isContentEditable) {
+      const isInput =
+        target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+      if (event.key === '/' && !isInput && !target.isContentEditable) {
         event.preventDefault();
         setOpen(true);
       }
     };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
   }, [enableHotkey]);
 
   return (
@@ -69,10 +71,9 @@ export function SearchToggle({
         debounceMs={300}
         onOpenChange={setOpen}
         open={open}
-        placeholder={placeholder || "Search documentation..."}
+        placeholder={placeholder || 'Search documentation...'}
         provider={resolvedProvider}
       />
     </>
   );
 }
-

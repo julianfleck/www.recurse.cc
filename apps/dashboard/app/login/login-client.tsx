@@ -3,8 +3,8 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import { LoginForm } from "@/components/auth/login-form";
 import { useAuthStore } from "@/components/auth/auth-store";
+import { LoginForm } from "@/components/auth/login-form";
 
 export function LoginPageClient() {
   const { isAuthenticated, isLoading: auth0Loading } = useAuth0();
@@ -12,22 +12,23 @@ export function LoginPageClient() {
   const searchParams = useSearchParams();
   const storeToken = useAuthStore((s) => s.accessToken);
   const storeUser = useAuthStore((s) => s.user);
-  
+
   // Check if user is already authenticated
-  const isAlreadyAuthenticated = isAuthenticated || Boolean(storeToken || storeUser);
-  
+  const isAlreadyAuthenticated =
+    isAuthenticated || Boolean(storeToken || storeUser);
+
   useEffect(() => {
     // Wait for Auth0 to finish loading before checking auth state
     if (auth0Loading) {
       return;
     }
-    
+
     // If user is already authenticated, redirect them
     if (isAlreadyAuthenticated) {
       // Check for returnTo query param (from external apps like docs/www)
       const returnTo = searchParams.get("returnTo");
       let redirectTarget = "/";
-      
+
       if (returnTo) {
         try {
           const decoded = decodeURIComponent(returnTo);
@@ -42,12 +43,12 @@ export function LoginPageClient() {
           // Invalid returnTo, fall back to default
         }
       }
-      
+
       // Redirect to target location
       router.replace(redirectTarget);
     }
   }, [isAlreadyAuthenticated, auth0Loading, searchParams, router]);
-  
+
   // Show loading while checking auth state
   if (auth0Loading || isAlreadyAuthenticated) {
     return (
@@ -58,7 +59,7 @@ export function LoginPageClient() {
       </div>
     );
   }
-  
+
   // Show login form if not authenticated
   return (
     <div className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-hidden bg-muted p-6 md:p-10">
@@ -68,4 +69,3 @@ export function LoginPageClient() {
     </div>
   );
 }
-

@@ -19,7 +19,10 @@ export function calculateNodesToExpand({
   // Build child map from treeData so metadata children are included consistently
   const childMap = new Map<string, string[]>();
   const rootIds: string[] = [];
-  const walkTree = (nodes: Array<DataNode & { children?: DataNode[] }>, parentId?: string) => {
+  const walkTree = (
+    nodes: Array<DataNode & { children?: DataNode[] }>,
+    parentId?: string
+  ) => {
     for (const n of nodes) {
       const id = n.id as string;
       if (parentId) {
