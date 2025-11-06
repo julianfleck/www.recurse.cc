@@ -18,6 +18,7 @@ import { FramesExample } from "@/components/examples/graphs/FramesExample";
 import { TemporalVersioningExample } from "@/components/examples/graphs/TemporalVersioningExample";
 import { FAQ } from "@/components/faq";
 import { GraphView } from "@/components/graph-view";
+import { ThemeImage } from "@/components/theme-image";
 import { openapi } from "@/lib/openapi";
 
 // Custom Card component that resolves icon strings
@@ -69,6 +70,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
       }
     },
     img: (props) => <ImageZoom {...(props as any)} />,
+    ThemeImage,
     ...components,
   };
 }
