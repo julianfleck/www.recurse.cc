@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@recurse/ui/components/button";
+import { Button } from "@recurse/ui/components";
 
 export function AuthDivider({
   label = "Or continue with",

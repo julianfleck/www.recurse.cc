@@ -2,7 +2,7 @@
 
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@recurse/ui/components/button";
+import { Button } from "@recurse/ui/components";
 import { requestPasswordReset } from "../lib/auth-api";
 
 import { AuthShell } from "./auth-shell";

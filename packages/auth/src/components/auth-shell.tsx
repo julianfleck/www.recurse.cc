@@ -1,8 +1,6 @@
 "use client";
 
-import { Logo } from "@recurse/ui/components/logo";
-import { Particles } from "@recurse/ui/components/backgrounds";
-import { Card, CardContent } from "@recurse/ui/components/card";
+import { Logo, Card, CardContent } from "@recurse/ui/components";
 import { cn } from "@recurse/ui/lib/utils";
 
 type AuthShellProps = {
@@ -42,13 +40,6 @@ export function AuthShell({
           {subline}
         </div>
       ) : null}
-      <Particles
-        className="size-full opacity-60"
-        isViewportSized={true}
-        particleColor="#000000"
-        particleCount={40}
-        zIndex={-1}
-      />
     </div>
   );
 }

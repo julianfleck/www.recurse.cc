@@ -1,5 +1,6 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 import type { ReactNode } from "react";
+import { Logo } from "@recurse/ui/components/logo";
 import { HealthStatus } from "../components/status-components";
 
 /**
@@ -14,14 +15,7 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: (
         <>
-          <svg
-            aria-label="Logo"
-            height="24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx={12} cy={12} fill="currentColor" r={12} />
-          </svg>
+          <Logo size={20} className="inline-block mr-1.5" />
           recurse.cc
         </>
       ),

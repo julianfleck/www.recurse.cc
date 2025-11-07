@@ -1,8 +1,10 @@
 "use client";
 
+import { Particles } from "@recurse/ui/components";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 import { useAuthStore } from "@/components/auth/auth-store";
 import { LoginForm } from "@/components/auth/login-form";
 
@@ -12,6 +14,17 @@ export function LoginPageClient() {
   const searchParams = useSearchParams();
   const storeToken = useAuthStore((s) => s.accessToken);
   const storeUser = useAuthStore((s) => s.user);
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Subtle particles - lighter for dark mode to be visible, darker for light mode
+  const particleColor = mounted && resolvedTheme === "dark"
+    ? "#aaaaaa" // Light gray for dark backgrounds - subtle but visible
+    : "#666666"; // Darker gray for light backgrounds
 
   // Check if user is already authenticated
   const isAlreadyAuthenticated =
@@ -52,7 +65,15 @@ export function LoginPageClient() {
   // Show loading while checking auth state
   if (auth0Loading || isAlreadyAuthenticated) {
     return (
-      <div className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-hidden bg-muted p-6 md:p-10">
+      <div className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-hidden bg-background/50 p-6 md:p-10">
+        <Particles
+          className="fixed inset-0"
+          isViewportSized={true}
+          particleColor={particleColor}
+          particleCount={40}
+          particleSize={2}
+          zIndex={-1}
+        />
         <div className="relative z-10 w-full max-w-sm md:max-w-3xl">
           <div className="text-center">Checking authentication...</div>
         </div>
@@ -62,7 +83,15 @@ export function LoginPageClient() {
 
   // Show login form if not authenticated
   return (
-    <div className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-hidden bg-muted p-6 md:p-10">
+    <div className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center overflow-hidden bg-background/50 p-6 md:p-10">
+      <Particles
+        className="fixed inset-0"
+        isViewportSized={true}
+        particleColor={particleColor}
+        particleCount={40}
+        particleSize={2}
+        zIndex={-1}
+      />
       <div className="relative z-10 w-full max-w-sm md:max-w-3xl">
         <LoginForm />
       </div>
