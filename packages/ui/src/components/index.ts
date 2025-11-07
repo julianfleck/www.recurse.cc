@@ -18,6 +18,7 @@ export * from './dialog';
 export * from './dropdown-menu';
 export * from './icon-toggle-button';
 export * from './input';
+export * from './kbd';
 export * from './label';
 export * from './logo';
 export * from './navigation-menu';

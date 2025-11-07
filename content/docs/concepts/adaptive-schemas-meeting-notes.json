@@ -1,240 +1,240 @@
 {
-  "baseData": {
-    "nodes": [
-      {
-        "id": "meeting-notes",
-        "type": "article",
-        "title": "Q4 Planning Meeting",
-        "summary": "Comprehensive meeting notes from the quarterly planning session covering strategic initiatives, resource allocation, and key decisions for the upcoming quarter. The meeting included detailed discussions on product roadmap, market expansion opportunities, and team capacity planning.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "agenda-frame",
-        "type": "Agenda",
-        "title": "Meeting agenda",
-        "summary": "Structured agenda covering Q4 strategic planning, feature prioritization discussions, resource allocation decisions, market expansion opportunities, and risk assessment. The agenda was designed to facilitate comprehensive decision-making across multiple business domains.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "decision-frame-1",
-        "type": "Decision",
-        "title": "Launch new feature set",
-        "summary": "After extensive deliberation and analysis of customer feedback, market trends, and technical feasibility, the team unanimously decided to prioritize feature set A over feature set B. This decision was based on strong customer demand signals, alignment with product vision, and projected revenue impact.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "background-1",
-        "type": "Background",
-        "title": "Market demand analysis",
-        "summary": "Comprehensive customer surveys and market research conducted over the past quarter revealed that 78% of existing customers expressed strong interest in feature set A, with many indicating it would significantly improve their workflow efficiency. Additionally, competitive analysis showed that feature set A would differentiate our product in key market segments.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "constraint-1",
-        "type": "Constraint",
-        "title": "Engineering capacity",
-        "summary": "Current engineering team capacity is limited to 3 full-time engineers available for Q4 development work. This constraint requires careful prioritization and may impact the scope or timeline of feature set A implementation. Resource allocation discussions are ongoing to optimize team utilization.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "decision-frame-2",
-        "type": "Decision",
-        "title": "Expand to new markets",
-        "summary": "The leadership team approved a strategic expansion to European markets in Q4, marking a significant milestone in the company's growth trajectory. This decision followed months of market research, regulatory analysis, and financial modeling to ensure sustainable and compliant market entry.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "background-2",
-        "type": "Background",
-        "title": "Revenue projection",
-        "summary": "Detailed financial modeling and market analysis project that EU expansion could generate approximately $2M in annual recurring revenue (ARR) within the first 18 months. This projection is based on conservative estimates of market penetration, customer acquisition costs, and average contract values in comparable European markets.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "risk-1",
-        "type": "Risk",
-        "title": "Regulatory complexity",
-        "summary": "GDPR compliance requirements and other European data protection regulations present significant complexity that may delay the planned Q4 launch timeline. The regulatory landscape requires careful navigation, legal review, and potentially additional technical infrastructure to ensure full compliance.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "mitigation-strategy-1",
-        "type": "MitigationStrategy",
-        "title": "Hire compliance consultant",
-        "summary": "To accelerate compliance efforts and mitigate regulatory risks, the team decided to engage an external GDPR expert consultant with extensive experience in European data protection law. This consultant will provide guidance on compliance requirements, review technical implementations, and help navigate the regulatory approval process.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "discussion-frame-1",
-        "type": "Discussion",
-        "title": "Feature prioritization debate",
-        "summary": "Extended and productive discussion about the trade-offs between different feature sets, including technical complexity, customer value, time-to-market considerations, and resource requirements. Multiple perspectives were shared, leading to a well-informed decision that balanced various stakeholder interests.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "viewpoint-1",
-        "type": "Viewpoint",
-        "title": "Engineering perspective",
-        "summary": "From an engineering standpoint, feature set B presents lower technical complexity and could be delivered more quickly with fewer resources. However, the engineering team acknowledged that feature set A, while more complex, offers superior long-term architectural benefits and aligns better with the product's technical roadmap.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "viewpoint-2",
-        "type": "Viewpoint",
-        "title": "Product perspective",
-        "summary": "The product team strongly advocated for feature set A, emphasizing that it aligns better with the overall product vision and strategic direction. Feature set A addresses key user pain points identified through extensive user research and supports the product's positioning in competitive markets.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "viewpoint-3",
-        "type": "Viewpoint",
-        "title": "Sales perspective",
-        "summary": "Sales team provided compelling evidence that feature set A has been explicitly requested by our top 3 enterprise customers, representing significant revenue opportunities. These customers have indicated that feature set A would be a key factor in their renewal and expansion decisions.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "discussion-frame-2",
-        "type": "Discussion",
-        "title": "Market expansion strategy",
-        "summary": "Comprehensive discussion about entry strategy, resource allocation, go-to-market approach, and risk mitigation for European market expansion. The conversation covered various market entry models, partnership opportunities, and the optimal sequencing of country launches to maximize success probability.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "option-1",
-        "type": "Option",
-        "title": "Phased rollout",
-        "summary": "A phased rollout strategy would involve launching in Germany first as a pilot market, then gradually expanding to other European countries based on learnings and success metrics. This approach allows for iterative refinement of market entry strategy and reduces initial resource requirements.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "option-2",
-        "type": "Option",
-        "title": "Full EU launch",
-        "summary": "A full EU launch would involve simultaneous entry into all European Union countries, requiring significant upfront investment but potentially capturing market share more quickly. This approach demands comprehensive regulatory compliance across all markets from day one.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "action-item-1",
-        "type": "ActionItem",
-        "title": "Assign feature set owner",
-        "summary": "John has been assigned as the feature set A owner, responsible for overall coordination, technical leadership, and delivery accountability. The action item includes establishing clear ownership, defining success criteria, and ensuring completion by the next sprint deadline with regular progress updates.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "subtask-1",
-        "type": "Subtask",
-        "title": "Create technical spec",
-        "summary": "John is responsible for drafting a comprehensive technical specification document that outlines architecture, implementation approach, dependencies, and integration points for feature set A. This spec will serve as the foundation for development planning and resource estimation.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "subtask-2",
-        "type": "Subtask",
-        "title": "Allocate resources",
-        "summary": "Assign three engineers from the available team to feature set A development work, ensuring appropriate skill mix and availability. This allocation must balance feature set A requirements with other ongoing projects and maintenance responsibilities.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "action-item-2",
-        "type": "ActionItem",
-        "title": "Research EU regulations",
-        "summary": "Sarah has been tasked with conducting comprehensive research into compliance requirements for EU markets, including GDPR, data localization laws, consumer protection regulations, and industry-specific requirements. This research will inform our compliance strategy and technical implementation decisions.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "subtask-3",
-        "type": "Subtask",
-        "title": "GDPR compliance checklist",
-        "summary": "Create a detailed GDPR compliance checklist that documents all requirements, implementation steps, verification criteria, and documentation needs. This checklist will serve as a working document throughout the compliance process and help track progress toward full compliance.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "subtask-4",
-        "type": "Subtask",
-        "title": "Vendor evaluation",
-        "summary": "Evaluate potential compliance consultants and vendors, assessing their expertise, track record, pricing, and cultural fit. This evaluation should result in a shortlist of recommended partners who can support our EU market entry compliance efforts.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "event-frame",
-        "type": "Event",
-        "title": "Q4 Review Meeting",
-        "summary": "Scheduled follow-up meeting in two weeks to review progress on feature set A development, EU market expansion planning, and overall Q4 initiative status. This event will include status updates from all action item owners, discussion of blockers or risks, and planning adjustments as needed.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "attendees",
-        "type": "Participants",
-        "title": "Meeting attendees",
-        "summary": "Key participants included John (Engineering Lead), Sarah (Operations Manager), Mike (Product Manager), and Lisa (Sales Director). Each participant brought domain expertise and decision-making authority, ensuring comprehensive coverage of technical, operational, product, and commercial perspectives.",
-        "children": [],
-        "metadata": {}
-      }
-    ],
-    "links": [
-      { "source": "meeting-notes", "target": "agenda-frame" },
-      { "source": "meeting-notes", "target": "decision-frame-1" },
-      { "source": "meeting-notes", "target": "decision-frame-2" },
-      { "source": "meeting-notes", "target": "discussion-frame-1" },
-      { "source": "meeting-notes", "target": "discussion-frame-2" },
-      { "source": "meeting-notes", "target": "event-frame" },
-      { "source": "meeting-notes", "target": "attendees" },
-      { "source": "agenda-frame", "target": "discussion-frame-1" },
-      { "source": "agenda-frame", "target": "discussion-frame-2" },
-      { "source": "discussion-frame-1", "target": "viewpoint-1" },
-      { "source": "discussion-frame-1", "target": "viewpoint-2" },
-      { "source": "discussion-frame-1", "target": "viewpoint-3" },
-      { "source": "discussion-frame-1", "target": "decision-frame-1" },
-      { "source": "decision-frame-1", "target": "background-1" },
-      { "source": "decision-frame-1", "target": "constraint-1" },
-      { "source": "decision-frame-1", "target": "action-item-1" },
-      { "source": "action-item-1", "target": "subtask-1" },
-      { "source": "action-item-1", "target": "subtask-2" },
-      { "source": "discussion-frame-2", "target": "option-1" },
-      { "source": "discussion-frame-2", "target": "option-2" },
-      { "source": "discussion-frame-2", "target": "decision-frame-2" },
-      { "source": "decision-frame-2", "target": "background-2" },
-      { "source": "decision-frame-2", "target": "risk-1" },
-      { "source": "risk-1", "target": "mitigation-strategy-1" },
-      { "source": "decision-frame-2", "target": "action-item-2" },
-      { "source": "action-item-2", "target": "subtask-3" },
-      { "source": "action-item-2", "target": "subtask-4" },
-      { "source": "subtask-4", "target": "mitigation-strategy-1" }
-    ]
-  },
-  "stepAdditions": {
-    "1": {
-      "nodes": [],
-      "links": []
-    }
-  },
-  "animationSteps": [
-    {
-      "stepNumber": 1,
-      "description": "Meeting frames emerge with structure: agenda, decisions, discussions, viewpoints, risks, actions, subtasks"
-    }
-  ]
+	"baseData": {
+		"nodes": [
+			{
+				"id": "meeting-notes",
+				"type": "article",
+				"title": "Q4 Planning Meeting",
+				"summary": "Comprehensive meeting notes from the quarterly planning session covering strategic initiatives, resource allocation, and key decisions for the upcoming quarter. The meeting included detailed discussions on product roadmap, market expansion opportunities, and team capacity planning.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "agenda-frame",
+				"type": "Agenda",
+				"title": "Meeting agenda",
+				"summary": "Structured agenda covering Q4 strategic planning, feature prioritization discussions, resource allocation decisions, market expansion opportunities, and risk assessment. The agenda was designed to facilitate comprehensive decision-making across multiple business domains.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "decision-frame-1",
+				"type": "Decision",
+				"title": "Launch new feature set",
+				"summary": "After extensive deliberation and analysis of customer feedback, market trends, and technical feasibility, the team unanimously decided to prioritize feature set A over feature set B. This decision was based on strong customer demand signals, alignment with product vision, and projected revenue impact.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "background-1",
+				"type": "Background",
+				"title": "Market demand analysis",
+				"summary": "Comprehensive customer surveys and market research conducted over the past quarter revealed that 78% of existing customers expressed strong interest in feature set A, with many indicating it would significantly improve their workflow efficiency. Additionally, competitive analysis showed that feature set A would differentiate our product in key market segments.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "constraint-1",
+				"type": "Constraint",
+				"title": "Engineering capacity",
+				"summary": "Current engineering team capacity is limited to 3 full-time engineers available for Q4 development work. This constraint requires careful prioritization and may impact the scope or timeline of feature set A implementation. Resource allocation discussions are ongoing to optimize team utilization.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "decision-frame-2",
+				"type": "Decision",
+				"title": "Expand to new markets",
+				"summary": "The leadership team approved a strategic expansion to European markets in Q4, marking a significant milestone in the company's growth trajectory. This decision followed months of market research, regulatory analysis, and financial modeling to ensure sustainable and compliant market entry.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "background-2",
+				"type": "Background",
+				"title": "Revenue projection",
+				"summary": "Detailed financial modeling and market analysis project that EU expansion could generate approximately $2M in annual recurring revenue (ARR) within the first 18 months. This projection is based on conservative estimates of market penetration, customer acquisition costs, and average contract values in comparable European markets.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "risk-1",
+				"type": "Risk",
+				"title": "Regulatory complexity",
+				"summary": "GDPR compliance requirements and other European data protection regulations present significant complexity that may delay the planned Q4 launch timeline. The regulatory landscape requires careful navigation, legal review, and potentially additional technical infrastructure to ensure full compliance.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "mitigation-strategy-1",
+				"type": "MitigationStrategy",
+				"title": "Hire compliance consultant",
+				"summary": "To accelerate compliance efforts and mitigate regulatory risks, the team decided to engage an external GDPR expert consultant with extensive experience in European data protection law. This consultant will provide guidance on compliance requirements, review technical implementations, and help navigate the regulatory approval process.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "discussion-frame-1",
+				"type": "Discussion",
+				"title": "Feature prioritization debate",
+				"summary": "Extended and productive discussion about the trade-offs between different feature sets, including technical complexity, customer value, time-to-market considerations, and resource requirements. Multiple perspectives were shared, leading to a well-informed decision that balanced various stakeholder interests.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "viewpoint-1",
+				"type": "Viewpoint",
+				"title": "Engineering perspective",
+				"summary": "From an engineering standpoint, feature set B presents lower technical complexity and could be delivered more quickly with fewer resources. However, the engineering team acknowledged that feature set A, while more complex, offers superior long-term architectural benefits and aligns better with the product's technical roadmap.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "viewpoint-2",
+				"type": "Viewpoint",
+				"title": "Product perspective",
+				"summary": "The product team strongly advocated for feature set A, emphasizing that it aligns better with the overall product vision and strategic direction. Feature set A addresses key user pain points identified through extensive user research and supports the product's positioning in competitive markets.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "viewpoint-3",
+				"type": "Viewpoint",
+				"title": "Sales perspective",
+				"summary": "Sales team provided compelling evidence that feature set A has been explicitly requested by our top 3 enterprise customers, representing significant revenue opportunities. These customers have indicated that feature set A would be a key factor in their renewal and expansion decisions.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "discussion-frame-2",
+				"type": "Discussion",
+				"title": "Market expansion strategy",
+				"summary": "Comprehensive discussion about entry strategy, resource allocation, go-to-market approach, and risk mitigation for European market expansion. The conversation covered various market entry models, partnership opportunities, and the optimal sequencing of country launches to maximize success probability.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "option-1",
+				"type": "Option",
+				"title": "Phased rollout",
+				"summary": "A phased rollout strategy would involve launching in Germany first as a pilot market, then gradually expanding to other European countries based on learnings and success metrics. This approach allows for iterative refinement of market entry strategy and reduces initial resource requirements.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "option-2",
+				"type": "Option",
+				"title": "Full EU launch",
+				"summary": "A full EU launch would involve simultaneous entry into all European Union countries, requiring significant upfront investment but potentially capturing market share more quickly. This approach demands comprehensive regulatory compliance across all markets from day one.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "action-item-1",
+				"type": "Task",
+				"title": "Assign feature set owner",
+				"summary": "John has been assigned as the feature set A owner, responsible for overall coordination, technical leadership, and delivery accountability. The action item includes establishing clear ownership, defining success criteria, and ensuring completion by the next sprint deadline with regular progress updates.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "subtask-1",
+				"type": "Task",
+				"title": "Create technical spec",
+				"summary": "John is responsible for drafting a comprehensive technical specification document that outlines architecture, implementation approach, dependencies, and integration points for feature set A. This spec will serve as the foundation for development planning and resource estimation.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "subtask-2",
+				"type": "Task",
+				"title": "Allocate resources",
+				"summary": "Assign three engineers from the available team to feature set A development work, ensuring appropriate skill mix and availability. This allocation must balance feature set A requirements with other ongoing projects and maintenance responsibilities.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "action-item-2",
+				"type": "Task",
+				"title": "Research EU regulations",
+				"summary": "Sarah has been tasked with conducting comprehensive research into compliance requirements for EU markets, including GDPR, data localization laws, consumer protection regulations, and industry-specific requirements. This research will inform our compliance strategy and technical implementation decisions.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "subtask-3",
+				"type": "Task",
+				"title": "GDPR compliance checklist",
+				"summary": "Create a detailed GDPR compliance checklist that documents all requirements, implementation steps, verification criteria, and documentation needs. This checklist will serve as a working document throughout the compliance process and help track progress toward full compliance.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "subtask-4",
+				"type": "Task",
+				"title": "Vendor evaluation",
+				"summary": "Evaluate potential compliance consultants and vendors, assessing their expertise, track record, pricing, and cultural fit. This evaluation should result in a shortlist of recommended partners who can support our EU market entry compliance efforts.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "event-frame",
+				"type": "Event",
+				"title": "Q4 Review Meeting",
+				"summary": "Scheduled follow-up meeting in two weeks to review progress on feature set A development, EU market expansion planning, and overall Q4 initiative status. This event will include status updates from all action item owners, discussion of blockers or risks, and planning adjustments as needed.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "attendees",
+				"type": "Participants",
+				"title": "Meeting attendees",
+				"summary": "Key participants included John (Engineering Lead), Sarah (Operations Manager), Mike (Product Manager), and Lisa (Sales Director). Each participant brought domain expertise and decision-making authority, ensuring comprehensive coverage of technical, operational, product, and commercial perspectives.",
+				"children": [],
+				"metadata": {}
+			}
+		],
+		"links": [
+			{ "source": "meeting-notes", "target": "agenda-frame" },
+			{ "source": "meeting-notes", "target": "decision-frame-1" },
+			{ "source": "meeting-notes", "target": "decision-frame-2" },
+			{ "source": "meeting-notes", "target": "discussion-frame-1" },
+			{ "source": "meeting-notes", "target": "discussion-frame-2" },
+			{ "source": "meeting-notes", "target": "event-frame" },
+			{ "source": "meeting-notes", "target": "attendees" },
+			{ "source": "agenda-frame", "target": "discussion-frame-1" },
+			{ "source": "agenda-frame", "target": "discussion-frame-2" },
+			{ "source": "discussion-frame-1", "target": "viewpoint-1" },
+			{ "source": "discussion-frame-1", "target": "viewpoint-2" },
+			{ "source": "discussion-frame-1", "target": "viewpoint-3" },
+			{ "source": "discussion-frame-1", "target": "decision-frame-1" },
+			{ "source": "decision-frame-1", "target": "background-1" },
+			{ "source": "decision-frame-1", "target": "constraint-1" },
+			{ "source": "decision-frame-1", "target": "action-item-1" },
+			{ "source": "action-item-1", "target": "subtask-1" },
+			{ "source": "action-item-1", "target": "subtask-2" },
+			{ "source": "discussion-frame-2", "target": "option-1" },
+			{ "source": "discussion-frame-2", "target": "option-2" },
+			{ "source": "discussion-frame-2", "target": "decision-frame-2" },
+			{ "source": "decision-frame-2", "target": "background-2" },
+			{ "source": "decision-frame-2", "target": "risk-1" },
+			{ "source": "risk-1", "target": "mitigation-strategy-1" },
+			{ "source": "decision-frame-2", "target": "action-item-2" },
+			{ "source": "action-item-2", "target": "subtask-3" },
+			{ "source": "action-item-2", "target": "subtask-4" },
+			{ "source": "subtask-4", "target": "mitigation-strategy-1" }
+		]
+	},
+	"stepAdditions": {
+		"1": {
+			"nodes": [],
+			"links": []
+		}
+	},
+	"animationSteps": [
+		{
+			"stepNumber": 1,
+			"description": "Meeting frames emerge with structure: agenda, decisions, discussions, viewpoints, risks, actions, subtasks"
+		}
+	]
 }

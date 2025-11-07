@@ -1,227 +1,227 @@
 {
-  "baseData": {
-    "nodes": [
-      {
-        "id": "research-paper",
-        "type": "article",
-        "title": "Neural Networks in Medical Diagnosis",
-        "summary": "Comprehensive research paper evaluating convolutional neural networks versus traditional machine learning approaches for medical image analysis. The study presents a systematic comparison of diagnostic accuracy, computational efficiency, and clinical applicability across multiple imaging modalities including CT scans, X-rays, and MRI images.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "abstract",
-        "type": "Abstract",
-        "title": "Paper abstract",
-        "summary": "The abstract provides a comprehensive overview of the research objectives, methodology, and key findings. It summarizes how convolutional neural networks were evaluated against traditional machine learning algorithms for medical imaging tasks, highlighting the significant improvements in diagnostic accuracy achieved through deep learning approaches.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "hypothesis-frame",
-        "type": "Hypothesis",
-        "title": "CNNs outperform traditional ML",
-        "summary": "The central hypothesis proposes that convolutional neural networks achieve superior diagnostic accuracy compared to traditional machine learning algorithms when applied to medical imaging tasks. This hypothesis is based on the ability of CNNs to automatically learn hierarchical feature representations from raw pixel data, potentially capturing subtle patterns that hand-engineered features might miss.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "background-frame",
-        "type": "Background",
-        "title": "Related work in medical imaging",
-        "summary": "The background section provides a comprehensive overview of prior approaches to automated medical diagnosis, including traditional computer vision techniques, early machine learning methods, and recent deep learning applications. It situates the current research within the broader context of medical imaging AI, discussing key challenges such as data scarcity, interpretability requirements, and clinical validation standards.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "method-frame",
-        "type": "Method",
-        "title": "CNN architecture and training",
-        "summary": "The methodology section describes the deep learning architecture used, including convolutional layers, pooling operations, and fully connected layers. It details the training procedure with data augmentation techniques, cross-validation strategies, and hyperparameter optimization. The method also covers preprocessing steps, data normalization, and handling of class imbalance in medical datasets.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "dataset-frame",
-        "type": "Dataset",
-        "title": "Medical imaging dataset",
-        "summary": "The dataset consists of 10,000 CT scans collected from three major hospitals, representing diverse patient populations and imaging conditions. The dataset includes annotations from board-certified radiologists, covering multiple disease categories and severity levels. Careful attention was paid to data quality, patient privacy compliance, and ethical considerations in dataset construction.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "training-procedure",
-        "type": "Procedure",
-        "title": "Model training procedure",
-        "summary": "The training procedure employed a carefully designed protocol with 5-fold cross-validation to ensure robust performance estimates. The procedure included data augmentation techniques such as rotation, scaling, and intensity normalization to increase dataset diversity. Training was conducted using Adam optimizer with learning rate scheduling and early stopping based on validation loss to prevent overfitting.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "evidence-frame",
-        "type": "Evidence",
-        "title": "92% accuracy achieved",
-        "summary": "The CNN model achieved 92% diagnostic accuracy on the held-out test dataset, significantly outperforming traditional machine learning baselines which achieved 77% accuracy. This improvement represents a 19% relative reduction in error rate. The results were consistent across different disease categories and imaging conditions, demonstrating robust performance.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "statistical-analysis",
-        "type": "Analysis",
-        "title": "Statistical significance",
-        "summary": "Statistical analysis confirmed the significance of the performance improvement, with a p-value less than 0.001, demonstrating that the observed difference is highly unlikely to have occurred by chance. Additional analyses including confidence intervals, effect sizes, and sensitivity analyses further validated the robustness of the findings across different evaluation metrics and patient subgroups.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "argument-structure",
-        "type": "Argument",
-        "title": "Performance superiority argument",
-        "summary": "The structured argument supporting CNN superiority is constructed through multiple complementary channels of evidence. This argumentative framework integrates quantitative performance metrics, qualitative case studies, and comparative analyses to build a comprehensive case for the advantages of deep learning approaches in medical imaging applications.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "claim-1",
-        "type": "Claim",
-        "title": "Superior feature extraction",
-        "summary": "The first claim asserts that CNNs automatically learn relevant features from raw medical images without requiring manual feature engineering. This capability allows the model to discover subtle diagnostic patterns that might be overlooked by traditional approaches relying on hand-crafted features based on domain expertise.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "claim-2",
-        "type": "Claim",
-        "title": "Generalization capability",
-        "summary": "The second claim emphasizes the model's ability to generalize well across different imaging conditions, patient populations, and hospital settings. This generalization capability is crucial for real-world clinical deployment, where models must perform reliably despite variations in imaging equipment, protocols, and patient demographics.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "example-frame",
-        "type": "Example",
-        "title": "CT scan classification case",
-        "summary": "A concrete example demonstrates the CNN's 15% improvement over baseline methods on lung nodule detection tasks. The example illustrates how the deep learning model correctly identified subtle malignant nodules that were missed by traditional approaches, potentially leading to earlier diagnosis and improved patient outcomes.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "example-detail",
-        "type": "ExampleDetail",
-        "title": "Case study: Patient 4371",
-        "summary": "This detailed case study focuses on Patient 4371, where the CNN correctly identified a malignant nodule measuring 8mm in diameter that was initially missed by both the baseline algorithm and a junior radiologist. The case demonstrates the model's ability to detect subtle early-stage malignancies, potentially enabling earlier intervention and improved prognosis.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "comparison-baseline",
-        "type": "Comparison",
-        "title": "Baseline performance comparison",
-        "summary": "Comparison with traditional machine learning approaches revealed that baseline methods achieved only 77% accuracy using hand-engineered features and classical algorithms like support vector machines and random forests. The performance gap highlights the advantages of end-to-end learning and automatic feature extraction capabilities of deep neural networks.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "citation-frame-1",
-        "type": "Citation",
-        "title": "LeCun et al. 2015",
-        "summary": "Foundational paper on convolutional neural network architectures and their applications in computer vision. This citation establishes the theoretical foundation for the CNN approach used in the current research and connects the work to broader advances in deep learning.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "citation-frame-2",
-        "type": "Citation",
-        "title": "Rajpurkar et al. 2017",
-        "summary": "This citation references prior work on medical imaging with deep learning, specifically the CheXNet system for chest X-ray interpretation. The paper provides important context for the current research and demonstrates the growing body of evidence supporting deep learning applications in medical diagnosis.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "citation-frame-3",
-        "type": "Citation",
-        "title": "Krizhevsky et al. 2012",
-        "summary": "Seminal AlexNet architecture reference that demonstrated the breakthrough potential of deep convolutional networks for image classification. This citation connects the current medical imaging work to foundational advances in computer vision that enabled the deep learning revolution.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "conclusion-frame",
-        "type": "Claim",
-        "title": "CNNs show promise for medical imaging",
-        "summary": "The conclusion synthesizes the findings, arguing that deep learning approaches demonstrate significant potential for medical imaging applications. The research provides evidence that CNNs can achieve clinically relevant improvements in diagnostic accuracy while maintaining computational efficiency suitable for real-world deployment in healthcare settings.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "limitation-frame",
-        "type": "Limitation",
-        "title": "Dataset size and generalizability constraints",
-        "summary": "The study acknowledges several limitations, including potential variability in model performance with smaller datasets, the need for validation across diverse patient populations, and challenges related to model interpretability in clinical settings. These limitations highlight important directions for future research and clinical translation efforts.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "future-work",
-        "type": "FutureWork",
-        "title": "Research directions",
-        "summary": "Future work directions include extending the approach to multi-modal imaging (combining CT, MRI, and clinical data), developing more interpretable models for clinical acceptance, and conducting prospective clinical trials to validate real-world performance. Additional research priorities include addressing data privacy concerns and developing federated learning approaches for multi-institutional collaboration.",
-        "children": [],
-        "metadata": {}
-      },
-      {
-        "id": "acknowledgments",
-        "type": "Acknowledgment",
-        "title": "Funding and contributions",
-        "summary": "The authors acknowledge NIH grant support that enabled this research, as well as collaboration with three major hospitals that provided de-identified imaging data. Contributions from radiologists who provided expert annotations and feedback are also recognized, along with computational resources provided by cloud infrastructure partners.",
-        "children": [],
-        "metadata": {}
-      }
-    ],
-    "links": [
-      { "source": "research-paper", "target": "abstract" },
-      { "source": "research-paper", "target": "hypothesis-frame" },
-      { "source": "research-paper", "target": "background-frame" },
-      { "source": "research-paper", "target": "method-frame" },
-      { "source": "research-paper", "target": "evidence-frame" },
-      { "source": "research-paper", "target": "conclusion-frame" },
-      { "source": "research-paper", "target": "acknowledgments" },
-      { "source": "abstract", "target": "hypothesis-frame" },
-      { "source": "background-frame", "target": "citation-frame-2" },
-      { "source": "background-frame", "target": "citation-frame-3" },
-      { "source": "hypothesis-frame", "target": "argument-structure" },
-      { "source": "argument-structure", "target": "claim-1" },
-      { "source": "argument-structure", "target": "claim-2" },
-      { "source": "claim-1", "target": "evidence-frame" },
-      { "source": "claim-2", "target": "evidence-frame" },
-      { "source": "argument-structure", "target": "example-frame" },
-      { "source": "example-frame", "target": "example-detail" },
-      { "source": "example-frame", "target": "comparison-baseline" },
-      { "source": "example-detail", "target": "evidence-frame" },
-      { "source": "example-frame", "target": "citation-frame-1" },
-      { "source": "method-frame", "target": "dataset-frame" },
-      { "source": "method-frame", "target": "training-procedure" },
-      { "source": "training-procedure", "target": "evidence-frame" },
-      { "source": "dataset-frame", "target": "evidence-frame" },
-      { "source": "evidence-frame", "target": "statistical-analysis" },
-      { "source": "statistical-analysis", "target": "conclusion-frame" },
-      { "source": "evidence-frame", "target": "citation-frame-2" },
-      { "source": "evidence-frame", "target": "conclusion-frame" },
-      { "source": "conclusion-frame", "target": "future-work" },
-      { "source": "conclusion-frame", "target": "limitation-frame" }
-    ]
-  },
-  "stepAdditions": {
-    "1": {
-      "nodes": [],
-      "links": []
-    }
-  },
-  "animationSteps": [
-    {
-      "stepNumber": 1,
-      "description": "Academic frames emerge with deep nesting: abstract, hypothesis, methods, evidence, arguments, claims, examples, citations"
-    }
-  ],
-  "initialDepth": 4
+	"baseData": {
+		"nodes": [
+			{
+				"id": "research-paper",
+				"type": "article",
+				"title": "Neural Networks in Medical Diagnosis",
+				"summary": "Comprehensive research paper evaluating convolutional neural networks versus traditional machine learning approaches for medical image analysis. The study presents a systematic comparison of diagnostic accuracy, computational efficiency, and clinical applicability across multiple imaging modalities including CT scans, X-rays, and MRI images.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "abstract",
+				"type": "Abstract",
+				"title": "Paper abstract",
+				"summary": "The abstract provides a comprehensive overview of the research objectives, methodology, and key findings. It summarizes how convolutional neural networks were evaluated against traditional machine learning algorithms for medical imaging tasks, highlighting the significant improvements in diagnostic accuracy achieved through deep learning approaches.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "hypothesis-frame",
+				"type": "Hypothesis",
+				"title": "CNNs outperform traditional ML",
+				"summary": "The central hypothesis proposes that convolutional neural networks achieve superior diagnostic accuracy compared to traditional machine learning algorithms when applied to medical imaging tasks. This hypothesis is based on the ability of CNNs to automatically learn hierarchical feature representations from raw pixel data, potentially capturing subtle patterns that hand-engineered features might miss.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "background-frame",
+				"type": "Background",
+				"title": "Related work in medical imaging",
+				"summary": "The background section provides a comprehensive overview of prior approaches to automated medical diagnosis, including traditional computer vision techniques, early machine learning methods, and recent deep learning applications. It situates the current research within the broader context of medical imaging AI, discussing key challenges such as data scarcity, interpretability requirements, and clinical validation standards.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "method-frame",
+				"type": "Method",
+				"title": "CNN architecture and training",
+				"summary": "The methodology section describes the deep learning architecture used, including convolutional layers, pooling operations, and fully connected layers. It details the training procedure with data augmentation techniques, cross-validation strategies, and hyperparameter optimization. The method also covers preprocessing steps, data normalization, and handling of class imbalance in medical datasets.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "dataset-frame",
+				"type": "Dataset",
+				"title": "Medical imaging dataset",
+				"summary": "The dataset consists of 10,000 CT scans collected from three major hospitals, representing diverse patient populations and imaging conditions. The dataset includes annotations from board-certified radiologists, covering multiple disease categories and severity levels. Careful attention was paid to data quality, patient privacy compliance, and ethical considerations in dataset construction.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "training-procedure",
+				"type": "Procedure",
+				"title": "Model training procedure",
+				"summary": "The training procedure employed a carefully designed protocol with 5-fold cross-validation to ensure robust performance estimates. The procedure included data augmentation techniques such as rotation, scaling, and intensity normalization to increase dataset diversity. Training was conducted using Adam optimizer with learning rate scheduling and early stopping based on validation loss to prevent overfitting.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "evidence-frame",
+				"type": "Evidence",
+				"title": "92% accuracy achieved",
+				"summary": "The CNN model achieved 92% diagnostic accuracy on the held-out test dataset, significantly outperforming traditional machine learning baselines which achieved 77% accuracy. This improvement represents a 19% relative reduction in error rate. The results were consistent across different disease categories and imaging conditions, demonstrating robust performance.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "statistical-analysis",
+				"type": "Analysis",
+				"title": "Statistical significance",
+				"summary": "Statistical analysis confirmed the significance of the performance improvement, with a p-value less than 0.001, demonstrating that the observed difference is highly unlikely to have occurred by chance. Additional analyses including confidence intervals, effect sizes, and sensitivity analyses further validated the robustness of the findings across different evaluation metrics and patient subgroups.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "argument-structure",
+				"type": "Argument",
+				"title": "Performance superiority argument",
+				"summary": "The structured argument supporting CNN superiority is constructed through multiple complementary channels of evidence. This argumentative framework integrates quantitative performance metrics, qualitative case studies, and comparative analyses to build a comprehensive case for the advantages of deep learning approaches in medical imaging applications.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "claim-1",
+				"type": "Claim",
+				"title": "Superior feature extraction",
+				"summary": "The first claim asserts that CNNs automatically learn relevant features from raw medical images without requiring manual feature engineering. This capability allows the model to discover subtle diagnostic patterns that might be overlooked by traditional approaches relying on hand-crafted features based on domain expertise.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "claim-2",
+				"type": "Claim",
+				"title": "Generalization capability",
+				"summary": "The second claim emphasizes the model's ability to generalize well across different imaging conditions, patient populations, and hospital settings. This generalization capability is crucial for real-world clinical deployment, where models must perform reliably despite variations in imaging equipment, protocols, and patient demographics.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "example-frame",
+				"type": "Example",
+				"title": "CT scan classification case",
+				"summary": "A concrete example demonstrates the CNN's 15% improvement over baseline methods on lung nodule detection tasks. The example illustrates how the deep learning model correctly identified subtle malignant nodules that were missed by traditional approaches, potentially leading to earlier diagnosis and improved patient outcomes.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "example",
+				"type": "Example",
+				"title": "Case study: Patient 4371",
+				"summary": "This detailed case study focuses on Patient 4371, where the CNN correctly identified a malignant nodule measuring 8mm in diameter that was initially missed by both the baseline algorithm and a junior radiologist. The case demonstrates the model's ability to detect subtle early-stage malignancies, potentially enabling earlier intervention and improved prognosis.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "comparison-baseline",
+				"type": "Comparison",
+				"title": "Baseline performance comparison",
+				"summary": "Comparison with traditional machine learning approaches revealed that baseline methods achieved only 77% accuracy using hand-engineered features and classical algorithms like support vector machines and random forests. The performance gap highlights the advantages of end-to-end learning and automatic feature extraction capabilities of deep neural networks.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "citation-frame-1",
+				"type": "Citation",
+				"title": "LeCun et al. 2015",
+				"summary": "Foundational paper on convolutional neural network architectures and their applications in computer vision. This citation establishes the theoretical foundation for the CNN approach used in the current research and connects the work to broader advances in deep learning.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "citation-frame-2",
+				"type": "Citation",
+				"title": "Rajpurkar et al. 2017",
+				"summary": "This citation references prior work on medical imaging with deep learning, specifically the CheXNet system for chest X-ray interpretation. The paper provides important context for the current research and demonstrates the growing body of evidence supporting deep learning applications in medical diagnosis.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "citation-frame-3",
+				"type": "Citation",
+				"title": "Krizhevsky et al. 2012",
+				"summary": "Seminal AlexNet architecture reference that demonstrated the breakthrough potential of deep convolutional networks for image classification. This citation connects the current medical imaging work to foundational advances in computer vision that enabled the deep learning revolution.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "conclusion-frame",
+				"type": "Claim",
+				"title": "CNNs show promise for medical imaging",
+				"summary": "The conclusion synthesizes the findings, arguing that deep learning approaches demonstrate significant potential for medical imaging applications. The research provides evidence that CNNs can achieve clinically relevant improvements in diagnostic accuracy while maintaining computational efficiency suitable for real-world deployment in healthcare settings.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "limitation-frame",
+				"type": "Limitation",
+				"title": "Dataset size and generalizability constraints",
+				"summary": "The study acknowledges several limitations, including potential variability in model performance with smaller datasets, the need for validation across diverse patient populations, and challenges related to model interpretability in clinical settings. These limitations highlight important directions for future research and clinical translation efforts.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "future-work",
+				"type": "FutureWork",
+				"title": "Research directions",
+				"summary": "Future work directions include extending the approach to multi-modal imaging (combining CT, MRI, and clinical data), developing more interpretable models for clinical acceptance, and conducting prospective clinical trials to validate real-world performance. Additional research priorities include addressing data privacy concerns and developing federated learning approaches for multi-institutional collaboration.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "acknowledgments",
+				"type": "Acknowledgment",
+				"title": "Funding and contributions",
+				"summary": "The authors acknowledge NIH grant support that enabled this research, as well as collaboration with three major hospitals that provided de-identified imaging data. Contributions from radiologists who provided expert annotations and feedback are also recognized, along with computational resources provided by cloud infrastructure partners.",
+				"children": [],
+				"metadata": {}
+			}
+		],
+		"links": [
+			{ "source": "research-paper", "target": "abstract" },
+			{ "source": "research-paper", "target": "hypothesis-frame" },
+			{ "source": "research-paper", "target": "background-frame" },
+			{ "source": "research-paper", "target": "method-frame" },
+			{ "source": "research-paper", "target": "evidence-frame" },
+			{ "source": "research-paper", "target": "conclusion-frame" },
+			{ "source": "research-paper", "target": "acknowledgments" },
+			{ "source": "abstract", "target": "hypothesis-frame" },
+			{ "source": "background-frame", "target": "citation-frame-2" },
+			{ "source": "background-frame", "target": "citation-frame-3" },
+			{ "source": "hypothesis-frame", "target": "argument-structure" },
+			{ "source": "argument-structure", "target": "claim-1" },
+			{ "source": "argument-structure", "target": "claim-2" },
+			{ "source": "claim-1", "target": "evidence-frame" },
+			{ "source": "claim-2", "target": "evidence-frame" },
+			{ "source": "argument-structure", "target": "example-frame" },
+			{ "source": "example-frame", "target": "example-detail" },
+			{ "source": "example-frame", "target": "comparison-baseline" },
+			{ "source": "example-detail", "target": "evidence-frame" },
+			{ "source": "example-frame", "target": "citation-frame-1" },
+			{ "source": "method-frame", "target": "dataset-frame" },
+			{ "source": "method-frame", "target": "training-procedure" },
+			{ "source": "training-procedure", "target": "evidence-frame" },
+			{ "source": "dataset-frame", "target": "evidence-frame" },
+			{ "source": "evidence-frame", "target": "statistical-analysis" },
+			{ "source": "statistical-analysis", "target": "conclusion-frame" },
+			{ "source": "evidence-frame", "target": "citation-frame-2" },
+			{ "source": "evidence-frame", "target": "conclusion-frame" },
+			{ "source": "conclusion-frame", "target": "future-work" },
+			{ "source": "conclusion-frame", "target": "limitation-frame" }
+		]
+	},
+	"stepAdditions": {
+		"1": {
+			"nodes": [],
+			"links": []
+		}
+	},
+	"animationSteps": [
+		{
+			"stepNumber": 1,
+			"description": "Academic frames emerge with deep nesting: abstract, hypothesis, methods, evidence, arguments, claims, examples, citations"
+		}
+	],
+	"initialDepth": 4
 }
