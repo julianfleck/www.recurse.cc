@@ -2,7 +2,7 @@
 description: "Fumadocs framework configuration and MDX patterns"
 globs: ["apps/**/content/**/*.mdx", "apps/**/content/**/meta.json", "apps/**/source.config.ts"]
 alwaysApply: false
-lastVerified: 2025-10-28T03:15:00Z
+lastVerified: 2025-01-27T00:00:00Z
 sources:
   - name: "Fumadocs Integration Research"
     url: "docs/research/2025-10-28/03-fumadocs-integration.md"
@@ -189,13 +189,36 @@ export const transformers = [ /* ... */ ];
 ```typescript
 // apps/docs/content/docs/
 // apps/www/content/blog/
-// apps/dashboard/content/help/
+// apps/dashboard/content/dashboard/
 ```
 
 Each app has own content directory:
 - **apps/docs**: `/docs/*` documentation
 - **apps/www**: `/blog/*` blog posts
-- **apps/dashboard**: Optional in-app help
+- **apps/dashboard**: `/` and other MDX pages (content/dashboard/)
+
+### Dashboard App MDX Routing
+
+The dashboard app uses a specific pattern for MDX routing:
+
+```typescript
+// Root route handles index.mdx
+app/(dashboard)/page.tsx
+  → dashboardSource.getPage([])
+  → content/dashboard/index.mdx
+
+// Required catch-all handles other MDX files
+app/(dashboard)/[...slug]/page.tsx
+  → dashboardSource.getPage(['context'])
+  → content/dashboard/context.mdx
+```
+
+**Important:**
+- Use **required catch-all** `[...slug]` not optional `[[...slug]]` to avoid conflicts with root route
+- Both routes must be in the same route group `(dashboard)` to inherit layout
+- Root route uses `getPage([])` for index.mdx
+- Catch-all route uses `getPage(params.slug)` for other MDX files
+- See routing.mdc for complete pattern details
 
 ### Code Highlighting Themes
 

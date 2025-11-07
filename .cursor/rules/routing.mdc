@@ -2,7 +2,7 @@
 description: "Next.js App Router patterns and route organization"
 globs: ["apps/**/app/**/*.{ts,tsx}"]
 alwaysApply: false
-lastVerified: 2025-10-28T03:15:00Z
+lastVerified: 2025-01-27T00:00:00Z
 sources:
   - name: "Next.js 15 App Router Research"
     url: "docs/research/2025-10-28/02-nextjs-15-patterns.md"
@@ -25,22 +25,27 @@ All route files in:
 ### Route Groups
 
 ```typescript
-// ✅ Good: Use route groups for organization
+// ✅ Good: Use route groups for organization and shared layouts
 app/
-  (home)/
-    page.tsx           # / route
-  (docs)/
-    docs/
-      [[...slug]]/
-        page.tsx        # /docs/* routes
-  (dashboard)/
-    dashboard/
-      page.tsx          # /dashboard routes
+  (dashboard)/              # Protected routes with shared layout
+    layout.tsx              # Shared DocsLayout + ProtectedContent
+    page.tsx                # / route (root)
+    [...slug]/              # Required catch-all for MDX pages
+      page.tsx              # /context, /other-mdx-pages
+    context/
+      page.tsx              # /context (React component route)
+    usage/
+      page.tsx              # /usage (inherits layout from route group)
+  login/
+    page.tsx                # /login (no layout, separate route)
 ```
 
-- **Route groups** `(group-name)` don't affect URL
-- Use for organizing shared layouts
-- Use for separating app sections
+**Critical patterns:**
+- **Route groups** `(group-name)` don't affect URL but share layouts
+- **All routes inside a route group** inherit the group's `layout.tsx`
+- **Routes outside route groups** don't inherit layouts (e.g., `/login`, `/signup`)
+- **Use route groups** for protected routes that need shared authentication/layout
+- **Keep related routes together** in the same route group
 
 ### Dynamic Routes
 
@@ -51,23 +56,32 @@ app/
     [id]/
       page.tsx         # /users/:id
 
-// ✅ Good: Catch-all
+// ✅ Good: Required catch-all (doesn't match root)
+app/
+  (dashboard)/
+    [...slug]/
+      page.tsx         # /context, /other (NOT /)
+
+// ✅ Good: Optional catch-all (matches root too)
 app/
   docs/
     [[...slug]]/
-      page.tsx         # /docs/* (can be empty)
+      page.tsx         # /docs and /docs/*
 
-// ✅ Good: Optional catch-all
+// ❌ Bad: Optional catch-all conflicts with root route
 app/
-  shop/
-    [[...slug]]/
-      page.tsx         # /shop and /shop/*
+  (dashboard)/
+    page.tsx           # /
+    [[...slug]]/       # ERROR: Conflicts with / route
+      page.tsx
 ```
 
 **Conventions:**
 - `[slug]` - Required dynamic segment
-- `[[...slug]]` - Optional catch-all
-- `[...slug]` - Required catch-all
+- `[[...slug]]` - Optional catch-all (matches empty path too)
+- `[...slug]` - Required catch-all (doesn't match empty path)
+
+**Important:** Don't use `[[...slug]]` in the same route group as a `page.tsx` that handles the root. Use `[...slug]` instead to avoid route conflicts.
 
 ### Special Files
 
@@ -231,10 +245,75 @@ Before committing route changes:
 - [ ] Middleware configured correctly
 - [ ] Cross-app links use absolute URLs
 
+## Dashboard App Specific Patterns
+
+### Protected Routes with Route Groups
+
+```typescript
+// ✅ Good: Protected routes in route group
+app/
+  (dashboard)/
+    layout.tsx              # Wraps with DocsLayout + ProtectedContent
+    page.tsx                # Root page (MDX from content/dashboard/index.mdx)
+    [...slug]/
+      page.tsx              # MDX pages (content/dashboard/*.mdx)
+    context/
+      page.tsx              # React component route
+    usage/
+      page.tsx              # React component route (inherits layout)
+```
+
+**Key points:**
+- **Route group `(dashboard)`** provides shared `DocsLayout` with sidebar
+- **`ProtectedContent` wrapper** in layout handles authentication
+- **All routes inside** `(dashboard)` get sidebar and protection
+- **Routes outside** `(dashboard)` (like `/login`) don't get sidebar
+
+### MDX Routing Pattern
+
+```typescript
+// Root route handles index.mdx
+app/(dashboard)/page.tsx
+  → dashboardSource.getPage([])
+  → content/dashboard/index.mdx
+
+// Catch-all handles other MDX files
+app/(dashboard)/[...slug]/page.tsx
+  → dashboardSource.getPage(['context'])
+  → content/dashboard/context.mdx
+```
+
+**Requirements:**
+- Root route (`page.tsx`) handles `index.mdx` with `getPage([])`
+- Catch-all route (`[...slug]/page.tsx`) handles other MDX files
+- Use **required catch-all** `[...slug]` not optional `[[...slug]]` to avoid conflicts
+- Both routes use same `dashboardSource` and `DocsPage` components
+
+### Authentication Pattern
+
+```typescript
+// ✅ Good: ProtectedContent in route group layout
+app/(dashboard)/layout.tsx
+export default function Layout({ children }) {
+  return (
+    <DocsLayout {...props}>
+      <ProtectedContent>{children}</ProtectedContent>
+    </DocsLayout>
+  );
+}
+```
+
+**Critical:** `ProtectedContent` must:
+- Render children on server (so MDX content is in HTML)
+- Show content during hydration (prevent flash)
+- Only hide content when certain user isn't authenticated
+- Never return `null` on server (breaks SSR)
+
 ## Exceptions
 
 - **Fumadocs routes**: Follow fumadocs.mdc for MDX routing
-- **Protected routes**: Document in README or route comments
+- **Protected routes**: Use route groups with `ProtectedContent` wrapper
+- **Auth pages**: Keep outside route groups (no sidebar needed)
 
 ## Proposed Changes
 

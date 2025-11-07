@@ -1,4 +1,3 @@
-import { Book, Brain } from "lucide-react";
 import { ProtectedContent } from "@/components/auth/protected";
 import { DocsLayout } from "@/components/layout/docs";
 import { LargeSearchToggle } from "@/components/search/toggle";
@@ -36,18 +35,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       }}
       sidebar={{
         ...(options.sidebar ?? {}),
-        tabs: [
-          {
-            title: "Documentation",
-            url: "/docs",
-            icon: <Book className="size-4" />,
-          },
-          {
-            title: "Dashboard",
-            url: "/",
-            icon: <Brain className="size-4" />,
-          },
-        ],
+        tabs: false, // Disable tabs/root toggle since we have Dashboard link in sidebar
         footer: <DocumentCountStatus />,
       }}
       tree={dashboardSource.pageTree}

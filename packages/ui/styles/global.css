@@ -230,15 +230,16 @@ body {
 }
 
 .prose :where(h1, h2) {
-  font-weight: 420;
+  font-weight: var(--font-weight-regular);
   letter-spacing: -0.04em;
-  color: var(--foreground);
-  line-height: var(--leading-tight);
+  line-height: var(--leading-normal);
   padding-top: calc(var(--spacing) * 2);
+  margin-top: 0;
+  padding-right: 8rem;
 }
 
 .prose :where(h3, h4, h5, h6) {
-  font-weight: 440;
+  font-weight: var(--font-weight-medium);
   letter-spacing: 0.01em;
 }
 
@@ -297,10 +298,10 @@ html:not(.prose) {
 
 h1,
 h2 {
-  font-weight: 420;
+  font-weight: var(--font-weight-regular);
   color: var(--accent-foreground);
   letter-spacing: -0.04em;
-  line-height: 1.2;
+  line-height: var(--leading-normal);
 }
 
 h3,

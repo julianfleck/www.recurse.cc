@@ -83,6 +83,7 @@ export function PageArticle(props: ComponentProps<"article">) {
     <article
       {...props}
       className={cn(
+        "prose",
         "md:!pr-16 flex w-full min-w-0 flex-col gap-4 px-4 pt-8 md:px-12",
         props.className
       )}

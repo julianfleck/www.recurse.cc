@@ -264,6 +264,7 @@ export function PageFooter({ items, ...props }: FooterProps) {
     <div
       {...props}
       className={cn(
+        "not-prose",
         "group/page-footer @container mt-12 grid gap-4 pb-6",
         previous && next ? "grid-cols-2" : "grid-cols-1",
         props.className
