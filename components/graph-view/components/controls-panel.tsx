@@ -14,7 +14,7 @@ import {
   IconTopologyStar3,
 } from "@tabler/icons-react";
 import { IconToggleButton } from "@/components/ui/icon-toggle-button";
-import { Kbd } from "@/components/ui/kibo-ui/kbd";
+import { Kbd } from "@recurse/ui/components/kbd";
 
 type GraphControlsProps = {
   onZoomIn: () => void;
