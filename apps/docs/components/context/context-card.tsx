@@ -3,7 +3,7 @@
 import { Badge } from "@recurse/ui/components/badge";
 import { Card, CardContent } from "@recurse/ui/components/card";
 import { motion } from "framer-motion";
-import { GenericTooltipLayout } from "@/components/graph-view/components/node-tooltip";
+import { GenericTooltipLayout } from "@/components/graph-view";
 
 type ContextCardProps = {
   id: string;

@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@recurse/ui/components/badge";
 import { getNodeIcon } from "../config/icon-config";
 import type { GraphLink, GraphNode } from "../utils/data/data-manager";
 import { getTypeDisplayName } from "../utils/type-display";
@@ -132,7 +132,7 @@ export function deriveConnectedMetadataTitles(
   const result = new Set<string>();
 
   for (const e of edges) {
-    if (!(e && e.source && e.target)) {
+    if (!(e?.source && e.target)) {
       continue;
     }
     const sId =

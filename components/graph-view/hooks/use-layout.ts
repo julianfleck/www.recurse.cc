@@ -1,10 +1,17 @@
-import type { Simulation, SimulationLinkDatum, SimulationNodeDatum } from "d3-force";
+import type {
+  Simulation,
+  SimulationLinkDatum,
+  SimulationNodeDatum,
+} from "d3-force";
 import type React from "react";
 import { HierarchicalLayout } from "../utils/layout/tree-layout";
 
 type Point = { x: number; y: number };
 
-export function healLayout<T extends SimulationNodeDatum, L extends SimulationLinkDatum<T>>(
+export function healLayout<
+  T extends SimulationNodeDatum,
+  L extends SimulationLinkDatum<T>,
+>(
   deps: {
     simulationRef: React.MutableRefObject<Simulation<T, L> | null>;
   },

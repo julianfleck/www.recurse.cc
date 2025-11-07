@@ -17,6 +17,7 @@
     "incremental": true,
     "paths": {
       "@/.source": ["./.source/index.ts"],
+      "@/components/graph-view": ["../../components/graph-view"],
       "@/*": ["./*"],
       "@/lib/utils": ["./lib/cn.ts"]
     },

@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import { GraphView } from "@recurse/graph-view";
+import { GraphView } from "@/components/graph-view";
 import { cn } from "@/lib/cn";
 import defaultData from "./default-example.json" with { type: "json" };
 

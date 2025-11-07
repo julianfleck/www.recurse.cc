@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@recurse/ui/components/button";
 import {
   IconArrowsJoin,
   IconArrowsMaximize,
@@ -12,7 +13,6 @@ import {
   IconPlus,
   IconTopologyStar3,
 } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
 import { IconToggleButton } from "@/components/ui/icon-toggle-button";
 import { Kbd } from "@/components/ui/kibo-ui/kbd";
 

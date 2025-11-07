@@ -25,7 +25,9 @@ export function calculateVisibleNodeIds({
 }: VisibleNodesParams): Set<string> {
   // 1) Derive visible content nodes from treeData + expandedNodes (same rule as side panel)
   const contentVisible = new Set<string>();
-  const walkTreeVisible = (nodes: Array<DataNode & { children?: DataNode[] }>) => {
+  const walkTreeVisible = (
+    nodes: Array<DataNode & { children?: DataNode[] }>
+  ) => {
     for (const n of nodes) {
       const id = String(n.id);
       contentVisible.add(id);
@@ -60,7 +62,7 @@ export function calculateVisibleNodeIds({
   // 2) Compute metadata connections
   const metaConnections = new Map<string, Set<string>>(); // metaId -> set(contentId)
   for (const l of allLinks) {
-    if (!(l && l.source && l.target)) {
+    if (!(l?.source && l.target)) {
       continue;
     }
     const s = typeof l.source === "string" ? l.source : l.source.id;

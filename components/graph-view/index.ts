@@ -6,6 +6,11 @@ export { GraphApiClient, graphApiClient } from "./api";
 export type { GraphViewProps } from "./components/graph-canvas";
 // Main component and types
 export { GraphView } from "./components/graph-canvas";
+// Components
+export { GenericTooltipLayout } from "./components/node-tooltip";
+// Config (icons, visual config, etc.)
+export { getNodeIcon, getNodeIcons, renderNodeIcon } from "./config";
+export type { IconLookupResult, IconOptions } from "./config/icon-config";
 export type {
   FlatNode,
   GraphData,
