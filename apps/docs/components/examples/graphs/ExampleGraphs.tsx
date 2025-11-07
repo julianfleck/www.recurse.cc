@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { GraphView } from "@/components/graph-view";
+import { GraphView } from "@recurse/graph-view";
 import codeDocumentationData from "./code-documentation.json" with {
   type: "json",
 };

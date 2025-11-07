@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import { GraphView } from "@/components/graph-view/components/graph-canvas";
+import { GraphView } from "@recurse/graph-view";
 import { cn } from "@/lib/cn";
 import defaultData from "./default-example.json" with { type: "json" };
 
@@ -39,6 +39,7 @@ export type AnimationData = {
     { nodes: GraphNode[]; links: GraphLink[] }
   >;
   animationSteps: AnimationStep[];
+  initialDepth?: number;
 };
 
 // Function to build data structure up to a given step
@@ -88,7 +89,8 @@ export function AnimatedGraphExample({
 }: AnimatedGraphExampleProps = {}) {
   const animationData = data ?? (defaultData as AnimationData);
 
-  const { baseData, stepAdditions, animationSteps } = animationData;
+  const { baseData, stepAdditions, animationSteps, initialDepth } =
+    animationData;
 
   const [currentStep, setCurrentStep] = useState(0); // Start with step 0 (first step)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true); // Auto-play by default
@@ -266,7 +268,7 @@ export function AnimatedGraphExample({
       >
         <GraphView
           data={graphData}
-          depth={1000}
+          depth={initialDepth ?? 1000}
           fitSignal={fitTick}
           withSidebar={false}
           zoomModifier="cmd"

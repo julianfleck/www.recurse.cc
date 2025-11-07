@@ -20,6 +20,7 @@ const researchPaperData: AnimationData = {
     { nodes: any[]; links: any[] }
   >,
   animationSteps: researchPaperDataImport.animationSteps,
+  initialDepth: researchPaperDataImport.initialDepth,
 };
 
 const meetingNotesData: AnimationData = {
@@ -29,6 +30,7 @@ const meetingNotesData: AnimationData = {
     { nodes: any[]; links: any[] }
   >,
   animationSteps: meetingNotesDataImport.animationSteps,
+  initialDepth: meetingNotesDataImport.initialDepth,
 };
 
 export function AdaptiveSchemasExample() {
