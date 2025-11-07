@@ -6,6 +6,7 @@ export * from './accordion-menu';
 export * from './alert';
 export * from './avatar';
 export * from './badge';
+export * from './backgrounds';
 export * from './button';
 export * from './calendar';
 export * from './card';

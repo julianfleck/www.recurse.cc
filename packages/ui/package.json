@@ -16,6 +16,7 @@
     "./lib/*": "./src/lib/*.ts",
     "./components": "./src/components/index.ts",
     "./components/*": "./src/components/*.tsx",
+    "./components/backgrounds": "./src/components/backgrounds/index.ts",
     "./hooks/*": "./src/hooks/*.ts",
     "./styles": "./styles/index.css",
     "./styles/*": "./styles/*.css",
