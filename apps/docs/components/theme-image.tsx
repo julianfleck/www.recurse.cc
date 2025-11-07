@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import type { ImageProps } from "fumadocs-core/framework";
 import Zoom from "react-medium-image-zoom";
+import { cn } from "../lib/cn";
 import "../styles/image-zoom.css";
 
 export type ThemeImageProps = Omit<ImageProps, "src" | "alt"> & {
@@ -111,6 +112,10 @@ export function ThemeImage({
     return resolvedTheme === "dark" ? (dark ?? "") : (light ?? "");
   })();
 
+  // Extract className from props if present and merge with explicit className
+  const { className: propsClassName, ...restProps } = props as any;
+  const mergedClassName = cn(className, propsClassName);
+
   // If width and height are provided, use ImageZoom with Next.js Image optimization
   // Otherwise, use a regular img tag wrapped in Zoom for public folder images
   if (props.width && props.height) {
@@ -119,23 +124,96 @@ export function ThemeImage({
         src={imageSrc}
         alt={alt}
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 900px"
-        className={className}
-        {...props}
+        className={mergedClassName}
+        {...restProps}
       />
     );
   }
 
   // For public folder images without dimensions, use regular img tag with zoom
+  // Split classes: container gets margin/spacing, image gets shadow/border/rounded/sizing
+  // Shadow classes go on image using filter: drop-shadow() which works better for images
+  const hasShadow = mergedClassName?.includes("shadow-");
+  
+  const containerClasses = mergedClassName
+    ? mergedClassName
+        .split(" ")
+        .filter(
+          (cls) =>
+            !cls.includes("shadow-") &&
+            !cls.includes("size-") &&
+            !cls.includes("w-") &&
+            !cls.includes("h-") &&
+            !cls.includes("max-w-") &&
+            !cls.includes("max-h-") &&
+            !cls.includes("min-w-") &&
+            !cls.includes("min-h-") &&
+            !cls.includes("border") &&
+            !cls.includes("rounded") &&
+            (cls.includes("m-") ||
+            cls.includes("p-") ||
+            cls.includes("mx-") ||
+            cls.includes("my-") ||
+            cls.includes("mt-") ||
+            cls.includes("mb-") ||
+            cls.includes("ml-") ||
+            cls.includes("mr-") ||
+            cls.includes("px-") ||
+            cls.includes("py-") ||
+            cls.includes("pt-") ||
+            cls.includes("pb-") ||
+            cls.includes("pl-") ||
+            cls.includes("pr-"))
+        )
+        .join(" ")
+    : "";
+
+  // Image gets shadow, border, rounded, and sizing classes
+  const imageClasses = mergedClassName
+    ? mergedClassName
+        .split(" ")
+        .filter(
+          (cls) =>
+            cls.includes("shadow-") ||
+            cls.includes("border") ||
+            cls.includes("rounded") ||
+            cls.includes("size-") ||
+            cls.includes("w-") ||
+            cls.includes("h-") ||
+            cls.includes("max-w-") ||
+            cls.includes("max-h-") ||
+            cls.includes("min-w-") ||
+            cls.includes("min-h-")
+        )
+        .join(" ")
+    : "";
+
   return (
-    <Zoom wrapElement="span" zoomMargin={20}>
-      <img
-        src={imageSrc}
-        alt={alt}
-        className={className}
-        style={{ maxWidth: "100%", height: "auto" }}
-        {...(props as any)}
-      />
-    </Zoom>
+    <div 
+      className={containerClasses || undefined} 
+      style={{ display: "inline-block", lineHeight: 0, overflow: "visible" }}
+    >
+      <Zoom wrapElement="span" zoomMargin={20}>
+        <img
+          src={imageSrc}
+          alt={alt}
+          className={imageClasses || undefined}
+          style={{ 
+            maxWidth: "100%", 
+            height: "auto", 
+            display: "block", 
+            verticalAlign: "top",
+            margin: 0,
+            padding: 0,
+            // Apply shadow using filter for better image shadow support
+            ...(hasShadow ? { 
+              filter: "drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))" 
+            } : {})
+          }}
+          {...restProps}
+        />
+      </Zoom>
+    </div>
   );
 }
 
