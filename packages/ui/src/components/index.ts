@@ -6,7 +6,6 @@ export * from './accordion-menu';
 export * from './alert';
 export * from './avatar';
 export * from './badge';
-export * from './backgrounds';
 export * from './button';
 export * from './calendar';
 export * from './card';
@@ -20,6 +19,7 @@ export * from './dropdown-menu';
 export * from './icon-toggle-button';
 export * from './input';
 export * from './label';
+export * from './logo';
 export * from './navigation-menu';
 export * from './popover';
 export * from './progress';
@@ -34,3 +34,6 @@ export * from './theme-provider';
 export * from './theme-toggle';
 export * from './tooltip';
 export * from './tree';
+
+// Component variants (directories without top-level .tsx)
+export * from './backgrounds/Particles';

@@ -3,10 +3,10 @@
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-import { loginWithPassword } from "@/lib/auth-api";
-import { cn } from "@/lib/utils";
+import { Button } from "@recurse/ui/components/button";
+import { Spinner } from "@recurse/ui/components/spinner";
+import { loginWithPassword } from "../lib/auth-api";
+import { cn } from "@recurse/ui/lib/utils";
 import { AuthDivider, SocialButtons } from "./auth-shared";
 import { AuthShell } from "./auth-shell";
 import { useAuthStore } from "./auth-store";

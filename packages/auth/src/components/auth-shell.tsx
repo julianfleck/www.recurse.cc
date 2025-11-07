@@ -1,8 +1,9 @@
 "use client";
 
-import Particles from "@/components/backgrounds/Particles";
-import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { Logo } from "@recurse/ui/components/logo";
+import { Particles } from "@recurse/ui/components/backgrounds";
+import { Card, CardContent } from "@recurse/ui/components/card";
+import { cn } from "@recurse/ui/lib/utils";
 
 type AuthShellProps = {
   header: React.ReactNode;
@@ -54,14 +55,14 @@ export function AuthShell({
 
 export function AuthSideVisual() {
   return (
-    <div className="relative hidden h-full overflow-hidden border-l bg-chart-1/20 bg-blend-multiply md:block">
-      <div className="absolute inset-0 flex items-center justify-center font-bold text-2xl">
-        recurse.cc
+    <div className="relative hidden h-full overflow-hidden border-l bg-chart-1/20 bg-blend-multiply md:block text-foreground">
+      <div className="absolute inset-0 flex items-center justify-center">
+        <Logo size={120} className="drop-shadow-lg" />
       </div>
       <Particles
         className="absolute inset-0"
         isViewportSized={false}
-        particleColor="#000000"
+        particleColor="currentColor"
         particleCount={20}
         particleSize={2}
         zIndex={1}

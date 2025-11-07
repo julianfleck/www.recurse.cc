@@ -5,13 +5,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
+import { Button } from "@recurse/ui/components/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+} from "@recurse/ui/components/tooltip";
+import { cn } from "@recurse/ui/lib/utils";
 import { AuthDivider, SocialButtons } from "./auth-shared";
 import { AuthShell } from "./auth-shell";
 

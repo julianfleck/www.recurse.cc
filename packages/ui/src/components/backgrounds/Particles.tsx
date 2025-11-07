@@ -61,6 +61,13 @@ export function Particles({
     // Get computed color if using currentColor
     const getActualColor = () => {
       if (particleColor === "currentColor") {
+        // Canvas elements don't inherit color, so get it from parent element
+        const parent = canvas.parentElement;
+        if (parent) {
+          const computedStyle = window.getComputedStyle(parent);
+          return computedStyle.color;
+        }
+        // Fallback: try canvas itself
         const computedStyle = window.getComputedStyle(canvas);
         return computedStyle.color;
       }

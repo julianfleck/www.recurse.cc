@@ -6,8 +6,9 @@
   "types": "./src/index.ts",
   "scripts": {
     "generate-exports": "node scripts/generate-exports.mjs",
-    "predev": "pnpm generate-exports",
-    "prebuild": "pnpm generate-exports"
+    "sync-assets": "node scripts/sync-assets.mjs",
+    "predev": "pnpm generate-exports && pnpm sync-assets",
+    "prebuild": "pnpm generate-exports && pnpm sync-assets"
   },
   "exports": {
     ".": "./src/index.ts",
