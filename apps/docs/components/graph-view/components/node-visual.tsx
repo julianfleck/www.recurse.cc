@@ -17,7 +17,7 @@ export {
   getEdgeTailwindClass,
 } from "../utils/styling/node-styles";
 
-export function NodeVisual({ data, currentZoomLevel, state }: NodeVisualProps) {
+export function NodeVisual({ data, currentZoomLevel, state, isHighlighted }: NodeVisualProps) {
   const getNodeContent = (): string | JSX.Element | null => {
     const nodeType = (data.type || "").toLowerCase();
 
@@ -43,13 +43,24 @@ export function NodeVisual({ data, currentZoomLevel, state }: NodeVisualProps) {
     ? `0 0 0 ${borderWidth}px ${ringColor}`
     : "none";
 
+  // Add highlight glow effect for nodes from knowledge base
+  const highlightGlow = isHighlighted
+    ? `0 0 ${Math.max(8, borderWidth * 2)}px rgba(59, 130, 246, 0.5), 0 0 ${Math.max(12, borderWidth * 3)}px rgba(59, 130, 246, 0.3)`
+    : "none";
+
+  const combinedBoxShadow = ringBoxShadow !== "none" && highlightGlow !== "none"
+    ? `${ringBoxShadow}, ${highlightGlow}`
+    : ringBoxShadow !== "none"
+    ? ringBoxShadow
+    : highlightGlow;
+
   return (
     <div
       className="flex h-full w-full cursor-crosshair items-center justify-center rounded-full border-0 bg-transparent p-[15%]"
       style={
         {
           transition: "box-shadow 0.2s ease",
-          boxShadow: ringBoxShadow,
+          boxShadow: combinedBoxShadow,
         } as React.CSSProperties
       }
     >

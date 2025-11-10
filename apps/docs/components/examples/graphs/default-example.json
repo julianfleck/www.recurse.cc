@@ -1,222 +1,590 @@
 {
-  "baseData": {
-    "nodes": [
-      {
-        "id": "doc-1",
-        "type": "Document:newsletter",
-        "title": "Tech Policy Newsletter #47",
-        "summary": "Weekly roundup of regulatory developments in technology, AI, and data privacy",
-        "children": [],
-        "metadata": {}
-      }
-    ],
-    "links": []
-  },
-  "stepAdditions": {
-    "1": {
-      "nodes": [],
-      "links": []
-    },
-    "2": {
-      "nodes": [
-        {
-          "id": "sec-1",
-          "type": "heading_section",
-          "title": "AI Regulation Updates",
-          "summary": "Latest developments in artificial intelligence governance and policy",
-          "children": [],
-          "metadata": {
-            "tags": ["AI", "Regulation", "Europe"],
-            "hypernyms": ["Technology Policy", "Governance"]
-          }
-        },
-        {
-          "id": "sec-2",
-          "type": "heading_section",
-          "title": "Data Privacy Developments",
-          "summary": "Recent changes and proposed updates to data protection laws",
-          "children": [],
-          "metadata": {
-            "tags": ["Privacy", "Data Protection", "US Policy"],
-            "hypernyms": ["Consumer Rights", "Digital Regulation"]
-          }
-        },
-        {
-          "id": "sec-3",
-          "type": "heading_section",
-          "title": "Emerging Technologies",
-          "summary": "Latest developments in AI, quantum computing, and next-generation technologies",
-          "children": [],
-          "metadata": {
-            "tags": ["AI", "Quantum Computing", "Innovation"],
-            "hypernyms": ["Technology Advancement", "Research"]
-          }
-        }
-      ],
-      "links": [
-        { "source": "doc-1", "target": "sec-1" },
-        { "source": "doc-1", "target": "sec-2" },
-        { "source": "doc-1", "target": "sec-3" }
-      ]
-    },
-    "3": {
-      "nodes": [
-        {
-          "id": "claim-1",
-          "type": "claim",
-          "title": "New EU AI Act requires transparency",
-          "summary": "The European Union's comprehensive AI legislation mandates clear documentation and accountability for AI systems",
-          "children": [],
-          "metadata": {
-            "tags": ["EU AI Act", "Regulation", "Transparency"],
-            "hypernyms": ["AI Governance", "European Policy"]
-          }
-        },
-        {
-          "id": "evidence-1",
-          "type": "evidence",
-          "title": "European Parliament vote results",
-          "summary": "Parliament approved the AI Act with amendments strengthening risk assessment requirements",
-          "children": [],
-          "metadata": {
-            "tags": ["European Parliament", "Legislation", "Voting"],
-            "hypernyms": ["Policy Making", "Democratic Process"]
-          }
-        },
-        {
-          "id": "claim-2",
-          "type": "claim",
-          "title": "US considers federal privacy law",
-          "summary": "Congress is advancing bipartisan legislation to establish comprehensive data privacy standards",
-          "children": [],
-          "metadata": {
-            "tags": ["Privacy Law", "Federal Legislation", "Data Protection"],
-            "hypernyms": ["US Policy", "Consumer Protection"]
-          }
-        },
-        {
-          "id": "evidence-2",
-          "type": "evidence",
-          "title": "Congress committee hearings",
-          "summary": "Multiple committees held hearings on data privacy frameworks and industry accountability",
-          "children": [],
-          "metadata": {
-            "tags": ["Congress", "Hearings", "Oversight"],
-            "hypernyms": ["Government Process", "Policy Development"]
-          }
-        },
-        {
-          "id": "claim-3",
-          "type": "claim",
-          "title": "Quantum computing achieves major milestone",
-          "summary": "Recent breakthroughs in quantum error correction bring scalable quantum computing closer to reality",
-          "children": [],
-          "metadata": {
-            "tags": ["Quantum Computing", "Breakthrough", "Scalability"],
-            "hypernyms": ["Technology Advancement", "Computing Innovation"]
-          }
-        },
-        {
-          "id": "evidence-3",
-          "type": "evidence",
-          "title": "IBM quantum roadmap update",
-          "summary": "IBM announced significant progress in quantum error correction and plans for 1000+ qubit systems by 2025",
-          "children": [],
-          "metadata": {
-            "tags": ["IBM", "Quantum Roadmap", "Error Correction"],
-            "hypernyms": ["Technology Development", "Corporate Strategy"]
-          }
-        }
-      ],
-      "links": [
-        { "source": "sec-1", "target": "claim-1" },
-        { "source": "sec-1", "target": "evidence-1" },
-        { "source": "claim-1", "target": "evidence-1" },
-        { "source": "sec-2", "target": "claim-2" },
-        { "source": "sec-2", "target": "evidence-2" },
-        { "source": "claim-2", "target": "evidence-2" },
-        { "source": "sec-3", "target": "claim-3" },
-        { "source": "sec-3", "target": "evidence-3" },
-        { "source": "claim-3", "target": "evidence-3" }
-      ]
-    },
-    "4": {
-      "nodes": [
-        {
-          "id": "doc-related-1",
-          "type": "Document:article",
-          "title": "AI Ethics Framework v2.1",
-          "summary": "Comprehensive ethical guidelines for AI development and deployment",
-          "children": [],
-          "metadata": {
-            "tags": ["AI Ethics", "Guidelines", "Development"],
-            "hypernyms": ["AI Governance", "Technology Standards"]
-          }
-        },
-        {
-          "id": "doc-related-2",
-          "type": "Document:policy",
-          "title": "Data Protection Regulation 2024",
-          "summary": "Updated privacy regulations for the digital age",
-          "children": [],
-          "metadata": {
-            "tags": ["Privacy", "Regulation", "Data Protection"],
-            "hypernyms": ["Consumer Rights", "Digital Law"]
-          }
-        },
-        {
-          "id": "tag-ai-governance",
-          "type": "concept",
-          "title": "AI Governance",
-          "summary": "Framework for regulating artificial intelligence systems and applications",
-          "children": [],
-          "metadata": {
-            "tags": ["AI", "Governance", "Regulation"],
-            "hypernyms": ["Technology Policy", "Public Policy"]
-          }
-        },
-        {
-          "id": "tag-privacy-rights",
-          "type": "concept",
-          "title": "Privacy Rights",
-          "summary": "Legal and ethical rights concerning personal data protection",
-          "children": [],
-          "metadata": {
-            "tags": ["Privacy", "Rights", "Data Protection"],
-            "hypernyms": ["Consumer Protection", "Digital Rights"]
-          }
-        }
-      ],
-      "links": [
-        { "source": "doc-1", "target": "doc-related-1" },
-        { "source": "doc-1", "target": "doc-related-2" },
-        { "source": "sec-1", "target": "tag-ai-governance" },
-        { "source": "claim-1", "target": "tag-ai-governance" },
-        { "source": "evidence-1", "target": "tag-ai-governance" },
-        { "source": "sec-2", "target": "tag-privacy-rights" },
-        { "source": "claim-2", "target": "tag-privacy-rights" },
-        { "source": "evidence-2", "target": "tag-privacy-rights" },
-        { "source": "doc-related-1", "target": "tag-ai-governance" },
-        { "source": "doc-related-2", "target": "tag-privacy-rights" }
-      ]
-    }
-  },
-  "animationSteps": [
-    {
-      "stepNumber": 1,
-      "description": "Document ingested and basic metadata extracted"
-    },
-    {
-      "stepNumber": 2,
-      "description": "Identified semantic structure and section hierarchy"
-    },
-    {
-      "stepNumber": 3,
-      "description": "Extracted semantic frames"
-    },
-    {
-      "stepNumber": 4,
-      "description": "Establishing connections to existing knowledge base"
-    }
-  ]
+	"baseData": {
+		"nodes": [
+			{
+				"id": "doc-1",
+				"type": "Document:article",
+				"title": "Introduction to Recurse",
+				"summary": "Recurse is infrastructure for sense-making, not just retrieval—it structures knowledge so both humans and AI can explore and develop deep understanding",
+				"children": ["sec-problem", "sec-principles", "sec-how-it-works"],
+				"metadata": {}
+			},
+			{
+				"id": "sec-problem",
+				"type": "heading_section",
+				"title": "The Problem with Similarity-Based Systems",
+				"summary": "Most AI memory systems work by similarity matching—you ask a question and get back similar-looking results. This approach works when you know what you're looking for, but it systematically prevents discovery of unexpected connections.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "sec-principles",
+				"type": "heading_section",
+				"title": "Recurse Principles",
+				"summary": "Recurse is built on three different principles: prioritizing structure over similarity, relationships over rankings, and evolution over static storage. These principles enable fundamentally different capabilities.",
+				"children": [],
+				"metadata": {}
+			},
+			{
+				"id": "sec-how-it-works",
+				"type": "heading_section",
+				"title": "How Recurse Works",
+				"summary": "Instead of returning similar text chunks or entities, Recurse extracts semantic structure—understanding what sources argue, what evidence supports those arguments, and how different pieces of information relate to each other.",
+				"children": [],
+				"metadata": {}
+			}
+		],
+		"links": [
+			{ "source": "doc-1", "target": "sec-problem" },
+			{ "source": "doc-1", "target": "sec-principles" },
+			{ "source": "doc-1", "target": "sec-how-it-works" }
+		]
+	},
+	"stepAdditions": {
+		"1": {
+			"nodes": [],
+			"links": []
+		},
+		"2": {
+			"nodes": [],
+			"links": []
+		},
+		"3": {
+			"nodes": [
+				{
+					"id": "problem-similarity",
+					"type": "problem",
+					"title": "Similarity matching prevents discovery",
+					"summary": "The core problem with similarity-based systems is that they only return results that look similar to your query. This works fine when you already know what you're looking for, but it means you can't discover connections you didn't know existed in the first place.",
+					"children": ["observation-limitations"],
+					"metadata": {}
+				},
+				{
+					"id": "observation-limitations",
+					"type": "observation",
+					"title": "Three things similarity can't do",
+					"summary": "Similarity-based systems have three fundamental limitations: they can't find connections you didn't know existed, they can't surface context from unexpected places, and they can't help you explore ideas that branch away from your original query.",
+					"children": [],
+					"metadata": {}
+				},
+				{
+					"id": "insight-structure",
+					"type": "insight",
+					"title": "Structure over similarity",
+					"summary": "The key insight is that when knowledge is organized by its underlying structure rather than surface-level similarity, it becomes possible to navigate by following relationships instead of matching keywords. This enables a fundamentally different kind of exploration.",
+					"children": ["goal-sense-making"],
+					"metadata": {}
+				},
+				{
+					"id": "goal-sense-making",
+					"type": "goal",
+					"title": "Infrastructure for sense-making",
+					"summary": "The goal is to build infrastructure that supports sense-making and exploration, not just retrieval and question-answering. This means creating systems that help users build understanding, not just find isolated facts.",
+					"children": ["insight-living-memory"],
+					"metadata": {}
+				},
+				{
+					"id": "insight-living-memory",
+					"type": "insight",
+					"title": "Memory as living structure",
+					"summary": "Memory should be treated as a living structure—something you can navigate yourself and share with others—rather than static storage that just sits there. This living quality means the knowledge can grow and evolve over time.",
+					"children": ["example-question-types"],
+					"metadata": {}
+				},
+				{
+					"id": "example-question-types",
+					"type": "example",
+					"title": "New types of questions",
+					"summary": "With structured, navigable memory, you can ask fundamentally different questions: 'what connects to this?' instead of 'what's most similar?', 'what supports this claim?' instead of keyword searches, and 'how did my understanding of this evolve?' to trace the development of ideas over time.",
+					"children": [],
+					"metadata": {}
+				},
+				{
+					"id": "claim-semantic-structure",
+					"type": "claim",
+					"title": "Semantic structure extraction",
+					"summary": "Recurse extracts semantic structure from sources—understanding what they argue, what evidence supports those arguments, and how different pieces relate to each other. It then maps out how these elements connect across your entire knowledge base.",
+					"children": ["evidence-cross-references", "claim-trace-connections"],
+					"metadata": {}
+				},
+				{
+					"id": "evidence-cross-references",
+					"type": "evidence",
+					"title": "Cross-knowledge-base references",
+					"summary": "The extracted structure enables information to reference other information across your entire knowledge base. An argument in one paper can connect to supporting data from three other sources. A technique described in one document can link to examples of its use elsewhere.",
+					"children": ["insight-web-relationships"],
+					"metadata": {}
+				},
+				{
+					"id": "insight-web-relationships",
+					"type": "insight",
+					"title": "Knowledge as relationship web",
+					"summary": "The result is that your knowledge base becomes a web of relationships rather than a collection of isolated text chunks. Information is connected through meaningful relationships, not just stored as separate documents.",
+					"children": [],
+					"metadata": {}
+				},
+				{
+					"id": "claim-trace-connections",
+					"type": "claim",
+					"title": "Trace and explore connections",
+					"summary": "When you query Recurse, you don't just get back similar text. You can trace connections between ideas, follow chains of supporting evidence, and explore how different concepts relate to each other—navigation through meaning rather than text similarity.",
+					"children": ["example-implicit-connections"],
+					"metadata": {}
+				},
+				{
+					"id": "example-implicit-connections",
+					"type": "example",
+					"title": "Implicit connections surface",
+					"summary": "The system can discover and surface connections that weren't even explicit in the original sources. By understanding the semantic structure, it can identify relationships that emerge from how concepts are organized and related.",
+					"children": [],
+					"metadata": {}
+				}
+			],
+			"links": [
+				{ "source": "sec-problem", "target": "problem-similarity" },
+				{ "source": "problem-similarity", "target": "observation-limitations" },
+				{ "source": "sec-principles", "target": "insight-structure" },
+				{ "source": "insight-structure", "target": "goal-sense-making" },
+				{ "source": "goal-sense-making", "target": "insight-living-memory" },
+				{
+					"source": "insight-living-memory",
+					"target": "example-question-types"
+				},
+				{ "source": "sec-how-it-works", "target": "claim-semantic-structure" },
+				{
+					"source": "claim-semantic-structure",
+					"target": "evidence-cross-references"
+				},
+				{
+					"source": "evidence-cross-references",
+					"target": "insight-web-relationships"
+				},
+				{
+					"source": "claim-semantic-structure",
+					"target": "claim-trace-connections"
+				},
+				{
+					"source": "claim-trace-connections",
+					"target": "example-implicit-connections"
+				}
+			]
+		},
+		"4": {
+			"nodes": [
+				{
+					"id": "doc-frames",
+					"type": "Document:article",
+					"title": "Frames",
+					"summary": "Frames are semantic units with slots—structured patterns that capture how specific pieces of information consistently appear together and relate in meaningful ways. They enable navigation by semantic meaning instead of just keyword matching.",
+					"children": [
+						"frames-sec-text-structure",
+						"frames-sec-slots",
+						"frames-sec-recursive"
+					],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "doc-rage",
+					"type": "Document:article",
+					"title": "RAGE",
+					"summary": "RAGE stands for Recursive, Agentic Graph Embeddings—it's the processing engine that powers Recurse by transforming unstructured sources into a navigable knowledge substrate. The technology combines four key capabilities that work together.",
+					"children": [
+						"rage-sec-recursive",
+						"rage-sec-agentic",
+						"rage-sec-graph"
+					],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-sec-recursive",
+					"type": "heading_section",
+					"title": "Recursive",
+					"summary": "Knowledge doesn't exist in flat layers—ideas nest inside other ideas, arguments reference evidence that was gathered using methods that depend on assumptions. RAGE treats this nesting explicitly through recursive frame composition.",
+					"children": ["rage-claim-recursive", "rage-def-recursive-frames"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-claim-recursive",
+					"type": "claim",
+					"title": "Knowledge isn't flat",
+					"summary": "An argument references evidence, that evidence was gathered using specific methods, those methods depend on theoretical assumptions, and those assumptions often connect back to other arguments. This creates nested structures where ideas exist inside other ideas.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-def-recursive-frames",
+					"type": "definition",
+					"title": "Recursive frame composition",
+					"summary": "Frames can contain other frames, which can contain still more frames, creating structures of arbitrary depth. This mirrors how concepts actually relate in practice—not as flat categories but as nested, hierarchical relationships.",
+					"children": ["rage-example-traversal"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-example-traversal",
+					"type": "example",
+					"title": "Traversing decisions to constraints",
+					"summary": "When you query about a decision, you can traverse down to the discussions that led to it, then to the constraints that shaped those discussions, then to the prior decisions that established those constraints. Or you can move back up from a technical detail to see the broader context that makes it meaningful.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-sec-agentic",
+					"type": "heading_section",
+					"title": "Agentic",
+					"summary": "Most knowledge graphs just store static information—nodes and edges that represent facts but don't actually do anything. RAGE frames carry executable instructions that guide how to navigate and work with the knowledge.",
+					"children": ["rage-claim-agentic", "rage-evidence-agentic"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-claim-agentic",
+					"type": "claim",
+					"title": "Frames are executable",
+					"summary": "Unlike static knowledge graphs where nodes and edges just represent facts, RAGE frames carry executable instructions. Each frame knows how to validate itself, what relationships to follow, and how to guide further exploration.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-evidence-agentic",
+					"type": "evidence",
+					"title": "Frames as navigation junctions",
+					"summary": "Each frame becomes a junction that can inform further actions. When an agent encounters a Problem frame, that frame carries instructions for how to search for related Diagnosis frames. A Claim frame knows how to validate itself by checking its Evidence slots and following connections to supporting Method frames.",
+					"children": ["rage-reference-minsky"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-reference-minsky",
+					"type": "reference",
+					"title": "Minsky's frames-with-slots",
+					"summary": "The concept builds on Marvin Minsky's frames-with-slots theory, but extends it by making frames executable. Each frame carries both semantic structure (what it represents) and behavioral instructions (how agents should work with it).",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-sec-graph",
+					"type": "heading_section",
+					"title": "Graph",
+					"summary": "Structure without relationships is just organized text. RAGE treats knowledge as a web of typed connections where frames don't just link to related frames—they point to specific frames with explicit relationship types that preserve meaning.",
+					"children": ["rage-claim-graph", "rage-evidence-graph"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-claim-graph",
+					"type": "claim",
+					"title": "Knowledge as typed connections",
+					"summary": "A Claim frame doesn't just link to related claims—it points to specific Evidence frames that support it, Method frames that describe how that evidence was gathered, and Critique frames that challenge its validity. The connections are explicit, typed relationships.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-evidence-graph",
+					"type": "evidence",
+					"title": "Specific typed relationships",
+					"summary": "The graph uses typed relationships that preserve meaning: 'supports,' 'contradicts,' 'depends on,' 'refines.' You can follow these across your entire knowledge base—from a solution back to the problem it addresses, from a concept to all examples that illustrate it.",
+					"children": ["rage-def-typed-relationships"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-def-typed-relationships",
+					"type": "definition",
+					"title": "Relationship types",
+					"summary": "The graph defines explicit relationship types: 'supports' (evidence backing claims), 'contradicts' (opposing viewpoints), 'depends on' (prerequisite knowledge), 'refines' (elaborations and specifications). These typed relationships enable precise navigation through the knowledge graph.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "frames-sec-text-structure",
+					"type": "heading_section",
+					"title": "From Text to Structure",
+					"summary": "Without frames, you just have text chunks with no explicit relationships. With frames, the same content becomes structured semantic units where a Problem frame captures symptoms and triggers, a Diagnosis frame records investigation steps, and they link to each other through explicit relationships.",
+					"children": ["frames-def-frame", "frames-example-troubleshooting"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "frames-def-frame",
+					"type": "definition",
+					"title": "What is a frame",
+					"summary": "A frame is a structured pattern where specific roles (like problem, trigger, diagnosis, cause, solution) consistently appear together and relate to each other in predictable, meaningful ways. When you describe troubleshooting a bug, these elements always show up and connect in similar patterns.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "frames-example-troubleshooting",
+					"type": "example",
+					"title": "Troubleshooting frame",
+					"summary": "When describing how to troubleshoot a software bug, certain elements always appear: the problem itself (what's broken), what triggered it (when it happens), steps taken to diagnose it (the investigation), the root cause discovered (why it broke), and the solution applied (how to fix it). These form a recognizable pattern—a troubleshooting frame.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "frames-sec-slots",
+					"type": "heading_section",
+					"title": "Slots and Relationships",
+					"summary": "Each frame type defines slots—named places where specific information lives. A Decision frame might have slots for the decision itself, who made it, options considered, and reasoning used. Crucially, these slots hold references to other frames, creating a web of typed relationships.",
+					"children": ["frames-claim-slots", "frames-evidence-slots-reference"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "frames-claim-slots",
+					"type": "claim",
+					"title": "Slots capture essentials",
+					"summary": "Each frame type defines slots for the key information and connections it needs. An Argument frame captures the claim being made, supporting evidence, methodology used, and limitations acknowledged. But rather than storing text, slots hold references to other frames—the evidence slot links to Evidence frames, methodology to Method frames.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "frames-evidence-slots-reference",
+					"type": "evidence",
+					"title": "Slots reference frames",
+					"summary": "Instead of storing information as isolated text, slots hold references to other frames. The evidence slot links to Evidence frames. The methodology slot links to Method frames. The related arguments slot links to other Argument frames. This creates a web of typed relationships—not just 'these documents are similar' but 'this claim is supported by this evidence, gathered using this method.'",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "frames-sec-recursive",
+					"type": "heading_section",
+					"title": "Recursive Composition",
+					"summary": "Frames don't exist in isolation—they nest and reference each other recursively. A Decision frame might reference a Discussion frame that captured what led to this decision. That Discussion frame might reference prior Decision frames that were being reconsidered, each with their own links to constraints and alternatives.",
+					"children": [
+						"frames-evidence-recursive-composition",
+						"frames-claim-navigation"
+					],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "frames-evidence-recursive-composition",
+					"type": "evidence",
+					"title": "Frames nest recursively",
+					"summary": "A Decision frame might reference a Discussion frame that led to it. That Discussion frame might reference prior Decision frames being reconsidered, each with links to TechnicalConstraint frames that shaped those earlier choices. It might also reference Alternative frames that were debated but rejected, each documented with its own reasoning. This recursive structure mirrors how concepts actually relate in practice.",
+					"children": ["frames-nested-discussion"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "frames-nested-discussion",
+					"type": "discussion",
+					"title": "Discussion that led to decision",
+					"summary": "A discussion captured in its own frame, containing the context and reasoning that led to a particular decision. This discussion references prior decisions being reconsidered and the constraints that shaped the conversation—creating a traceable chain of reasoning.",
+					"children": ["frames-nested-decision", "frames-option-rejected"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "frames-nested-decision",
+					"type": "decision",
+					"title": "Decision being reconsidered",
+					"summary": "A prior decision that's being revisited in the current discussion. This decision has its own links to the constraints, discussions, and technical factors that originally shaped it—maintaining the full context of why it was made.",
+					"children": ["frames-nested-constraint"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "frames-nested-constraint",
+					"type": "constraint",
+					"title": "Technical constraint",
+					"summary": "A technical limitation or requirement that influenced earlier decisions. This constraint shaped what options were viable at the time and continues to influence subsequent discussions and choices.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "frames-option-rejected",
+					"type": "option",
+					"title": "Alternative considered but rejected",
+					"summary": "An alternative approach that was discussed and debated during the decision process but ultimately not chosen. This option is documented with its own reasoning—why it was considered, what made it attractive, and what factors led to its rejection.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "frames-claim-navigation",
+					"type": "claim",
+					"title": "Navigate by meaning",
+					"summary": "With frames, you navigate semantic structure instead of matching keywords. You're not searching for documents that contain certain words—you're traversing a knowledge graph where the structure itself carries meaning about how concepts relate.",
+					"children": ["frames-example-navigation"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "frames-example-navigation",
+					"type": "example",
+					"title": "Semantic queries",
+					"summary": "Instead of asking 'find documents about API timeouts,' you can ask 'find problems where timeouts were the symptom, show me what diagnoses were performed, and surface solutions that worked.' The system follows typed relationships between frames—symptom to diagnosis to cause to solution—rather than just matching text.",
+					"children": ["frames-insight-structure-meaning"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "frames-insight-structure-meaning",
+					"type": "insight",
+					"title": "Structure carries meaning",
+					"summary": "You're not just searching documents—you're traversing a knowledge graph where the structure itself encodes relationships. The way frames nest, reference each other, and connect through typed relationships captures meaning that wouldn't be apparent from text similarity alone.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				}
+			],
+			"links": [
+				{ "source": "doc-1", "target": "doc-frames" },
+				{ "source": "doc-1", "target": "doc-rage" },
+				{ "source": "doc-rage", "target": "rage-sec-recursive" },
+				{ "source": "doc-rage", "target": "rage-sec-agentic" },
+				{ "source": "doc-rage", "target": "rage-sec-graph" },
+				{ "source": "rage-sec-recursive", "target": "rage-claim-recursive" },
+				{
+					"source": "rage-claim-recursive",
+					"target": "rage-def-recursive-frames"
+				},
+				{
+					"source": "rage-def-recursive-frames",
+					"target": "rage-example-traversal"
+				},
+				{ "source": "rage-sec-agentic", "target": "rage-claim-agentic" },
+				{ "source": "rage-claim-agentic", "target": "rage-evidence-agentic" },
+				{
+					"source": "rage-evidence-agentic",
+					"target": "rage-reference-minsky"
+				},
+				{ "source": "rage-sec-graph", "target": "rage-claim-graph" },
+				{ "source": "rage-claim-graph", "target": "rage-evidence-graph" },
+				{
+					"source": "rage-evidence-graph",
+					"target": "rage-def-typed-relationships"
+				},
+				{ "source": "doc-frames", "target": "frames-sec-text-structure" },
+				{ "source": "doc-frames", "target": "frames-sec-slots" },
+				{ "source": "doc-frames", "target": "frames-sec-recursive" },
+				{ "source": "frames-sec-text-structure", "target": "frames-def-frame" },
+				{
+					"source": "frames-def-frame",
+					"target": "frames-example-troubleshooting"
+				},
+				{ "source": "frames-sec-slots", "target": "frames-claim-slots" },
+				{
+					"source": "frames-claim-slots",
+					"target": "frames-evidence-slots-reference"
+				},
+				{
+					"source": "frames-sec-recursive",
+					"target": "frames-evidence-recursive-composition"
+				},
+				{
+					"source": "frames-evidence-recursive-composition",
+					"target": "frames-nested-discussion"
+				},
+				{
+					"source": "frames-nested-discussion",
+					"target": "frames-nested-decision"
+				},
+				{
+					"source": "frames-nested-decision",
+					"target": "frames-nested-constraint"
+				},
+				{
+					"source": "frames-nested-discussion",
+					"target": "frames-option-rejected"
+				},
+				{
+					"source": "frames-sec-recursive",
+					"target": "frames-claim-navigation"
+				},
+				{
+					"source": "frames-claim-navigation",
+					"target": "frames-example-navigation"
+				},
+				{
+					"source": "frames-example-navigation",
+					"target": "frames-insight-structure-meaning"
+				},
+				{ "source": "claim-semantic-structure", "target": "frames-def-frame" },
+				{
+					"source": "rage-def-recursive-frames",
+					"target": "frames-evidence-recursive-composition"
+				},
+				{
+					"source": "evidence-cross-references",
+					"target": "frames-evidence-slots-reference"
+				},
+				{
+					"source": "claim-trace-connections",
+					"target": "frames-claim-navigation"
+				},
+				{
+					"source": "rage-evidence-graph",
+					"target": "frames-evidence-slots-reference"
+				},
+				{
+					"source": "rage-example-traversal",
+					"target": "frames-evidence-recursive-composition"
+				}
+			]
+		}
+	},
+	"animationSteps": [
+		{
+			"stepNumber": 1,
+			"description": "Document ingested and basic metadata extracted"
+		},
+		{
+			"stepNumber": 2,
+			"description": "Identified semantic structure and section hierarchy"
+		},
+		{
+			"stepNumber": 3,
+			"description": "Extracted semantic frames with their relationships"
+		},
+		{
+			"stepNumber": 4,
+			"description": "Establishing connections to existing knowledge base"
+		}
+	]
 }

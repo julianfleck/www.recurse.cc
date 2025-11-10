@@ -13,4 +13,5 @@ export type NodeVisualProps = {
   currentZoomLevel: number;
   layout: NodeLayoutMode;
   data: NodeVisualData;
+  isHighlighted?: boolean;
 };

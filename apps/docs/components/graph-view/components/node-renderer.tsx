@@ -75,6 +75,10 @@ export function GraphNodeRenderer({
     nodeState = "dimmed";
   }
 
+  // Check if node has highlighted flag in metadata (for knowledge base connections)
+  const nodeWithMetadata = n as typeof n & { metadata?: { highlighted?: boolean } };
+  const isHighlighted = nodeWithMetadata.metadata?.highlighted === true;
+
   const layoutModeProp: NodeLayoutMode =
     layoutMode === "hierarchical" ? "hierarchical" : "force";
   const zoomLevel = transformRef.current.k || 1;
@@ -137,6 +141,7 @@ export function GraphNodeRenderer({
                   type: n.type,
                   summary: n.summary,
                 }}
+                isHighlighted={isHighlighted}
                 layout={layoutModeProp}
                 state={nodeState}
               />
