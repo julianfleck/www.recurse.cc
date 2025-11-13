@@ -6,21 +6,21 @@ import { useEffect } from "react";
 import { useAuthStore } from "./auth-store";
 
 export function AuthGate() {
-  const { isAuthenticated, isLoading } = useAuth0();
-  const router = useRouter();
-  const storeUser = useAuthStore((s) => s.user);
-  const storeToken = useAuthStore((s) => s.accessToken);
-  const isClientAuthenticated = Boolean(storeToken || storeUser);
+	const { isAuthenticated, isLoading } = useAuth0();
+	const router = useRouter();
+	const storeUser = useAuthStore((s) => s.user);
+	const storeToken = useAuthStore((s) => s.accessToken);
+	const isClientAuthenticated = Boolean(storeToken || storeUser);
 
-  useEffect(() => {
-    if (isLoading) {
-      return;
-    }
-    const unauthenticated = !(isAuthenticated || isClientAuthenticated);
-    if (unauthenticated) {
-      router.replace("/login");
-    }
-  }, [isAuthenticated, isClientAuthenticated, isLoading, router]);
+	useEffect(() => {
+		if (isLoading) {
+			return;
+		}
+		const unauthenticated = !(isAuthenticated || isClientAuthenticated);
+		if (unauthenticated) {
+			router.replace("/login");
+		}
+	}, [isAuthenticated, isClientAuthenticated, isLoading, router]);
 
-  return null;
+	return null;
 }

@@ -4,5 +4,5 @@
 import { NextResponse } from "next/server";
 
 export function GET() {
-  return NextResponse.redirect("/login");
+	return NextResponse.redirect("/login");
 }

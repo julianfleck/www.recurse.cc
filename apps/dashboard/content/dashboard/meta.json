@@ -1,17 +1,17 @@
 {
-  "title": "Dashboard",
-  "description": "Manage your RAGE knowledge infrastructure",
-  "root": true,
-  "icon": "brain",
-  "pages": [
-    "[Brain][Dashboard](/)",
-    "---Knowledge Base---",
-    "[Share2][Graph](/graph)",
-    "[Brain][Context](/context)",
-    "[Bot][Chat](/chat)",
-    "---Account---",
-    "[FileText][Usage](/usage)",
-    "[Code][API Keys](/api-keys)",
-    "[Edit][Settings](/settings)"
-  ]
+	"title": "Dashboard",
+	"description": "Manage your RAGE knowledge infrastructure",
+	"root": true,
+	"icon": "brain",
+	"pages": [
+		"[Brain][Dashboard](/)",
+		"---Knowledge Base---",
+		"[Share2][Graph](/graph)",
+		"[Brain][Context](/context)",
+		"[Bot][Chat](/chat)",
+		"---Account---",
+		"[FileText][Usage](/usage)",
+		"[Code][API Keys](/api-keys)",
+		"[Edit][Settings](/settings)"
+	]
 }

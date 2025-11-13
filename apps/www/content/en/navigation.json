@@ -1,31 +1,31 @@
 {
-  "home": "Home",
-  "features": "Features",
-  "details": "Details",
-  "faq": "FAQ",
-  "technology": "Technology",
-  "demo": "Try It Out",
-  "beta": "Join Beta",
-  "featureDropdown": [
-    {
-      "title": "Semantic Frame Parsing",
-      "href": "/features/frame-parsing",
-      "description": "Automatically extract structured semantic frames from unstructured text, preserving meaning and relationships."
-    },
-    {
-      "title": "Recursive Memory",
-      "href": "/features/recursive-memory",
-      "description": "Build knowledge graphs that learn from every interaction, creating self-improving memory systems."
-    },
-    {
-      "title": "Context-Aware Operations",
-      "href": "/features/operations",
-      "description": "Smart operation suggestions that adapt to content type and context, with self-instructing capabilities."
-    },
-    {
-      "title": "Multi-Source Ingestion",
-      "href": "/features/ingestion",
-      "description": "Ingest from any source—Slack, email, docs, audio—and transform into structured, queryable knowledge."
-    }
-  ]
+	"home": "Home",
+	"features": "Features",
+	"details": "Details",
+	"faq": "FAQ",
+	"technology": "Technology",
+	"demo": "Try It Out",
+	"beta": "Join Beta",
+	"featureDropdown": [
+		{
+			"title": "Semantic Frame Parsing",
+			"href": "/features/frame-parsing",
+			"description": "Automatically extract structured semantic frames from unstructured text, preserving meaning and relationships."
+		},
+		{
+			"title": "Recursive Memory",
+			"href": "/features/recursive-memory",
+			"description": "Build knowledge graphs that learn from every interaction, creating self-improving memory systems."
+		},
+		{
+			"title": "Context-Aware Operations",
+			"href": "/features/operations",
+			"description": "Smart operation suggestions that adapt to content type and context, with self-instructing capabilities."
+		},
+		{
+			"title": "Multi-Source Ingestion",
+			"href": "/features/ingestion",
+			"description": "Ingest from any source—Slack, email, docs, audio—and transform into structured, queryable knowledge."
+		}
+	]
 }

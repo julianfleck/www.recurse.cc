@@ -7,11 +7,11 @@
     "dev:docs": "pnpm --filter @recurse/ui sync-assets && pnpm --filter @recurse/ui generate-exports && pnpm --filter docs.recurse.cc dev",
     "dev:dashboard": "pnpm --filter @recurse/ui sync-assets && pnpm --filter @recurse/ui generate-exports && pnpm --filter @recurse/dashboard dev",
     "dev:all": "pnpm --filter @recurse/ui sync-assets && pnpm --filter @recurse/ui generate-exports && pnpm --parallel --filter '@recurse/*' dev",
-    "prebuild": "pnpm --filter @recurse/ui sync-assets && pnpm --filter @recurse/ui generate-exports",
+    "prebuild": "pnpm fix && pnpm --filter @recurse/ui sync-assets && pnpm --filter @recurse/ui generate-exports",
     "build": "pnpm -r build",
     "build:check": "node scripts/check-builds.mjs",
-    "lint": "pnpm -r exec ultracite check",
-    "fix": "pnpm -r exec ultracite fix"
+    "lint": "pnpm --filter './apps/*' exec ultracite check",
+    "fix": "pnpm --filter './apps/*' exec ultracite fix"
   },
   "devDependencies": {
     "shadcn": "^3.5.0",

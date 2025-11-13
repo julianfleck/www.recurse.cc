@@ -5,66 +5,72 @@ import { computeNodeStyle } from "../utils/styling/node-styles";
 
 // Re-export types for convenience
 export type {
-  NodeLayoutMode,
-  NodeVisualData,
-  NodeVisualProps,
-  NodeVisualState,
+	NodeLayoutMode,
+	NodeVisualData,
+	NodeVisualProps,
+	NodeVisualState,
 } from "../types/visual-types";
 // Re-export styling utilities from dedicated file
 export {
-  computeEdgeStrokeWidth,
-  computeNodeSize,
-  getEdgeTailwindClass,
+	computeEdgeStrokeWidth,
+	computeNodeSize,
+	getEdgeTailwindClass,
 } from "../utils/styling/node-styles";
 
-export function NodeVisual({ data, currentZoomLevel, state, isHighlighted }: NodeVisualProps) {
-  const getNodeContent = (): string | JSX.Element | null => {
-    const nodeType = (data.type || "").toLowerCase();
+export function NodeVisual({
+	data,
+	currentZoomLevel,
+	state,
+	isHighlighted,
+}: NodeVisualProps) {
+	const getNodeContent = (): string | JSX.Element | null => {
+		const nodeType = (data.type || "").toLowerCase();
 
-    // Use icons that fill the parent; size controlled by parent container
-    return renderNodeIcon(nodeType);
-  };
+		// Use icons that fill the parent; size controlled by parent container
+		return renderNodeIcon(nodeType);
+	};
 
-  const { borderWidth } = computeNodeStyle({
-    currentZoomLevel,
-    state: "default",
-    layout: "force",
-    data,
-  });
+	const { borderWidth } = computeNodeStyle({
+		currentZoomLevel,
+		state: "default",
+		layout: "force",
+		data,
+	});
 
-  const content = getNodeContent();
+	const content = getNodeContent();
 
-  // Ring uses a single token color; background comes from container bg-* classes
-  const ringColor = "var(--ring)";
+	// Ring uses a single token color; background comes from container bg-* classes
+	const ringColor = "var(--ring)";
 
-  // Determine if this node should have the hover ring effect
-  const shouldShowRing = state === "hovered" || state === "selected";
-  const ringBoxShadow = shouldShowRing
-    ? `0 0 0 ${borderWidth}px ${ringColor}`
-    : "none";
+	// Determine if this node should have the hover ring effect
+	const shouldShowRing = state === "hovered" || state === "selected";
+	const ringBoxShadow = shouldShowRing
+		? `0 0 0 ${borderWidth}px ${ringColor}`
+		: "none";
 
-  // Add highlight glow effect for nodes from knowledge base
-  const highlightGlow = isHighlighted
-    ? `0 0 ${Math.max(8, borderWidth * 2)}px rgba(59, 130, 246, 0.5), 0 0 ${Math.max(12, borderWidth * 3)}px rgba(59, 130, 246, 0.3)`
-    : "none";
+	// Add highlight glow effect for nodes from knowledge base
+	const highlightGlow = isHighlighted
+		? `0 0 ${Math.max(8, borderWidth * 2)}px rgba(59, 130, 246, 0.5), 0 0 ${Math.max(12, borderWidth * 3)}px rgba(59, 130, 246, 0.3)`
+		: "none";
 
-  const combinedBoxShadow = ringBoxShadow !== "none" && highlightGlow !== "none"
-    ? `${ringBoxShadow}, ${highlightGlow}`
-    : ringBoxShadow !== "none"
-    ? ringBoxShadow
-    : highlightGlow;
+	const combinedBoxShadow =
+		ringBoxShadow !== "none" && highlightGlow !== "none"
+			? `${ringBoxShadow}, ${highlightGlow}`
+			: ringBoxShadow !== "none"
+				? ringBoxShadow
+				: highlightGlow;
 
-  return (
-    <div
-      className="flex h-full w-full cursor-crosshair items-center justify-center rounded-full border-0 bg-transparent p-[15%]"
-      style={
-        {
-          transition: "box-shadow 0.2s ease",
-          boxShadow: combinedBoxShadow,
-        } as React.CSSProperties
-      }
-    >
-      {content}
-    </div>
-  );
+	return (
+		<div
+			className="flex h-full w-full cursor-crosshair items-center justify-center rounded-full border-0 bg-transparent p-[15%]"
+			style={
+				{
+					transition: "box-shadow 0.2s ease",
+					boxShadow: combinedBoxShadow,
+				} as React.CSSProperties
+			}
+		>
+			{content}
+		</div>
+	);
 }

@@ -2,9 +2,9 @@
 // The Google OAuth callback is handled in app/auth/google/route.ts
 
 export async function GET() {
-  return Response.redirect("/login");
+	return Response.redirect("/login");
 }
 
 export async function POST() {
-  return Response.redirect("/login");
+	return Response.redirect("/login");
 }

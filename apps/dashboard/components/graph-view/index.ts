@@ -7,11 +7,11 @@ export type { GraphViewProps } from "./components/graph-canvas";
 // Main component and types
 export { GraphView } from "./components/graph-canvas";
 export type {
-  FlatNode,
-  GraphData,
-  GraphLink,
-  GraphNode,
-  HierarchicalNode,
+	FlatNode,
+	GraphData,
+	GraphLink,
+	GraphNode,
+	HierarchicalNode,
 } from "./utils/data/data-manager";
 // Data management
 export { GraphDataManager } from "./utils/data/data-manager";

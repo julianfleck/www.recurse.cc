@@ -6,42 +6,41 @@ import { docsOptions } from "@/lib/layout.shared";
 import { dashboardSource } from "@/lib/source";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const options = docsOptions();
-  return (
-    <DocsLayout
-      {...options}
-      disableDocActions
-      searchText="Search Knowledge Base"
-      searchToggle={{
-        enabled: true,
-        components: {
-          sm: (
-            <LargeSearchToggle
-              customText="Search"
-              enableHotkey={false}
-              placeholder="Search..."
-              providerKey="knowledgeBase"
-            />
-          ),
-          lg: (
-            <LargeSearchToggle
-              customText="Search Knowledge Base"
-              enableHotkey
-              placeholder="Search knowledge base..."
-              providerKey="knowledgeBase"
-            />
-          ),
-        },
-      }}
-      sidebar={{
-        ...(options.sidebar ?? {}),
-        tabs: false, // Disable tabs/root toggle since we have Dashboard link in sidebar
-        footer: <DocumentCountStatus />,
-      }}
-      tree={dashboardSource.pageTree}
-    >
-      <ProtectedContent>{children}</ProtectedContent>
-    </DocsLayout>
-  );
+	const options = docsOptions();
+	return (
+		<DocsLayout
+			{...options}
+			disableDocActions
+			searchText="Search Knowledge Base"
+			searchToggle={{
+				enabled: true,
+				components: {
+					sm: (
+						<LargeSearchToggle
+							customText="Search"
+							enableHotkey={false}
+							placeholder="Search..."
+							providerKey="knowledgeBase"
+						/>
+					),
+					lg: (
+						<LargeSearchToggle
+							customText="Search Knowledge Base"
+							enableHotkey
+							placeholder="Search knowledge base..."
+							providerKey="knowledgeBase"
+						/>
+					),
+				},
+			}}
+			sidebar={{
+				...(options.sidebar ?? {}),
+				tabs: false, // Disable tabs/root toggle since we have Dashboard link in sidebar
+				footer: <DocumentCountStatus />,
+			}}
+			tree={dashboardSource.pageTree}
+		>
+			<ProtectedContent>{children}</ProtectedContent>
+		</DocsLayout>
+	);
 }
-

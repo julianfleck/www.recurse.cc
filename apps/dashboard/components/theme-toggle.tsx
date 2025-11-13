@@ -6,84 +6,84 @@ import { type HTMLAttributes, useLayoutEffect, useState } from "react";
 import { cn } from "../lib/cn";
 
 const itemVariants = cva(
-  "size-6.5 rounded-full p-1.5 text-fd-muted-foreground",
-  {
-    variants: {
-      active: {
-        true: "bg-fd-accent text-fd-accent-foreground",
-        false: "text-fd-muted-foreground",
-      },
-    },
-  }
+	"size-6.5 rounded-full p-1.5 text-fd-muted-foreground",
+	{
+		variants: {
+			active: {
+				true: "bg-fd-accent text-fd-accent-foreground",
+				false: "text-fd-muted-foreground",
+			},
+		},
+	},
 );
 
 const full = [
-  ["light", Sun] as const,
-  ["dark", Moon] as const,
-  ["system", Airplay] as const,
+	["light", Sun] as const,
+	["dark", Moon] as const,
+	["system", Airplay] as const,
 ];
 
 export function ThemeToggle({
-  className,
-  mode = "light-dark",
-  ...props
+	className,
+	mode = "light-dark",
+	...props
 }: HTMLAttributes<HTMLElement> & {
-  mode?: "light-dark" | "light-dark-system";
+	mode?: "light-dark" | "light-dark-system";
 }) {
-  const { setTheme, theme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+	const { setTheme, theme, resolvedTheme } = useTheme();
+	const [mounted, setMounted] = useState(false);
 
-  useLayoutEffect(() => {
-    setMounted(true);
-  }, []);
+	useLayoutEffect(() => {
+		setMounted(true);
+	}, []);
 
-  const container = cn(
-    "inline-flex items-center rounded-full border p-1",
-    className
-  );
+	const container = cn(
+		"inline-flex items-center rounded-full border p-1",
+		className,
+	);
 
-  if (mode === "light-dark") {
-    const value = mounted ? resolvedTheme : null;
+	if (mode === "light-dark") {
+		const value = mounted ? resolvedTheme : null;
 
-    return (
-      <button
-        aria-label={"Toggle Theme"}
-        className={container}
-        data-theme-toggle=""
-        onClick={() => setTheme(value === "light" ? "dark" : "light")}
-        {...props}
-      >
-        {full.map(([key, Icon]) => {
-          if (key === "system") {
-            return;
-          }
+		return (
+			<button
+				aria-label={"Toggle Theme"}
+				className={container}
+				data-theme-toggle=""
+				onClick={() => setTheme(value === "light" ? "dark" : "light")}
+				{...props}
+			>
+				{full.map(([key, Icon]) => {
+					if (key === "system") {
+						return;
+					}
 
-          return (
-            <Icon
-              className={cn(itemVariants({ active: value === key }))}
-              fill="currentColor"
-              key={key}
-            />
-          );
-        })}
-      </button>
-    );
-  }
+					return (
+						<Icon
+							className={cn(itemVariants({ active: value === key }))}
+							fill="currentColor"
+							key={key}
+						/>
+					);
+				})}
+			</button>
+		);
+	}
 
-  const value = mounted ? theme : null;
+	const value = mounted ? theme : null;
 
-  return (
-    <div className={container} data-theme-toggle="" {...props}>
-      {full.map(([key, Icon]) => (
-        <button
-          aria-label={key}
-          className={cn(itemVariants({ active: value === key }))}
-          key={key}
-          onClick={() => setTheme(key)}
-        >
-          <Icon className="size-full" fill="currentColor" />
-        </button>
-      ))}
-    </div>
-  );
+	return (
+		<div className={container} data-theme-toggle="" {...props}>
+			{full.map(([key, Icon]) => (
+				<button
+					aria-label={key}
+					className={cn(itemVariants({ active: value === key }))}
+					key={key}
+					onClick={() => setTheme(key)}
+				>
+					<Icon className="size-full" fill="currentColor" />
+				</button>
+			))}
+		</div>
+	);
 }

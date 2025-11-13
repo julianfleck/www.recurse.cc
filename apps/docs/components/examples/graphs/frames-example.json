@@ -1,93 +1,93 @@
 {
-  "baseData": {
-    "nodes": [
-      {
-        "id": "bug-report",
-        "type": "article",
-        "title": "Application timeout error",
-        "summary": "Bug report about timeout errors during form submission",
-        "children": [],
-        "metadata": {}
-      }
-    ],
-    "links": []
-  },
-  "stepAdditions": {
-    "1": {
-      "nodes": [],
-      "links": []
-    },
-    "2": {
-      "nodes": [
-        {
-          "id": "problem-frame",
-          "type": "Problem",
-          "title": "Timeout errors",
-          "summary": "Application times out when users submit forms",
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "links": [{ "source": "bug-report", "target": "problem-frame" }]
-    },
-    "3": {
-      "nodes": [
-        {
-          "id": "diagnosis-frame",
-          "type": "Diagnosis",
-          "title": "API connection issue",
-          "summary": "Investigation revealed API server connection limits",
-          "children": [],
-          "metadata": {}
-        },
-        {
-          "id": "root-cause-frame",
-          "type": "RootCause",
-          "title": "Connection pool exhausted",
-          "summary": "API connection pool size was too small for concurrent load",
-          "children": [],
-          "metadata": {}
-        },
-        {
-          "id": "solution-frame",
-          "type": "Solution",
-          "title": "Increased connection pool",
-          "summary": "Fixed by increasing API connection pool size from 10 to 100",
-          "children": [],
-          "metadata": {}
-        },
-        {
-          "id": "impact-frame",
-          "type": "Impact",
-          "title": "Affected user sessions",
-          "summary": "Approximately 30% of form submissions experienced timeouts",
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "links": [
-        { "source": "bug-report", "target": "diagnosis-frame" },
-        { "source": "problem-frame", "target": "impact-frame" },
-        { "source": "problem-frame", "target": "diagnosis-frame" },
-        { "source": "diagnosis-frame", "target": "root-cause-frame" },
-        { "source": "root-cause-frame", "target": "solution-frame" },
-        { "source": "solution-frame", "target": "problem-frame" }
-      ]
-    }
-  },
-  "animationSteps": [
-    {
-      "stepNumber": 1,
-      "description": "Bug report ingested as unstructured text"
-    },
-    {
-      "stepNumber": 2,
-      "description": "Problem frame extracted from text"
-    },
-    {
-      "stepNumber": 3,
-      "description": "Diagnosis, root cause, solution, and impact frames emerge and connect"
-    }
-  ],
-  "initialDepth": 2
+	"baseData": {
+		"nodes": [
+			{
+				"id": "bug-report",
+				"type": "article",
+				"title": "Application timeout error",
+				"summary": "Bug report about timeout errors during form submission",
+				"children": [],
+				"metadata": {}
+			}
+		],
+		"links": []
+	},
+	"stepAdditions": {
+		"1": {
+			"nodes": [],
+			"links": []
+		},
+		"2": {
+			"nodes": [
+				{
+					"id": "problem-frame",
+					"type": "Problem",
+					"title": "Timeout errors",
+					"summary": "Application times out when users submit forms",
+					"children": [],
+					"metadata": {}
+				}
+			],
+			"links": [{ "source": "bug-report", "target": "problem-frame" }]
+		},
+		"3": {
+			"nodes": [
+				{
+					"id": "diagnosis-frame",
+					"type": "Diagnosis",
+					"title": "API connection issue",
+					"summary": "Investigation revealed API server connection limits",
+					"children": [],
+					"metadata": {}
+				},
+				{
+					"id": "root-cause-frame",
+					"type": "RootCause",
+					"title": "Connection pool exhausted",
+					"summary": "API connection pool size was too small for concurrent load",
+					"children": [],
+					"metadata": {}
+				},
+				{
+					"id": "solution-frame",
+					"type": "Solution",
+					"title": "Increased connection pool",
+					"summary": "Fixed by increasing API connection pool size from 10 to 100",
+					"children": [],
+					"metadata": {}
+				},
+				{
+					"id": "impact-frame",
+					"type": "Impact",
+					"title": "Affected user sessions",
+					"summary": "Approximately 30% of form submissions experienced timeouts",
+					"children": [],
+					"metadata": {}
+				}
+			],
+			"links": [
+				{ "source": "bug-report", "target": "diagnosis-frame" },
+				{ "source": "problem-frame", "target": "impact-frame" },
+				{ "source": "problem-frame", "target": "diagnosis-frame" },
+				{ "source": "diagnosis-frame", "target": "root-cause-frame" },
+				{ "source": "root-cause-frame", "target": "solution-frame" },
+				{ "source": "solution-frame", "target": "problem-frame" }
+			]
+		}
+	},
+	"animationSteps": [
+		{
+			"stepNumber": 1,
+			"description": "Bug report ingested as unstructured text"
+		},
+		{
+			"stepNumber": 2,
+			"description": "Problem frame extracted from text"
+		},
+		{
+			"stepNumber": 3,
+			"description": "Diagnosis, root cause, solution, and impact frames emerge and connect"
+		}
+	],
+	"initialDepth": 2
 }

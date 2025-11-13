@@ -1,92 +1,92 @@
 {
-  "baseData": {
-    "nodes": [
-      {
-        "id": "paper-2020",
-        "type": "article",
-        "title": "Neural Networks 2020",
-        "summary": "2020 research paper claiming state-of-the-art performance",
-        "children": [],
-        "metadata": {}
-      }
-    ],
-    "links": []
-  },
-  "stepAdditions": {
-    "1": {
-      "nodes": [
-        {
-          "id": "claim-v1",
-          "type": "claim",
-          "title": "Method achieves state-of-the-art",
-          "summary": "Our method achieves state-of-the-art performance (2020)",
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "links": [{ "source": "paper-2020", "target": "claim-v1" }]
-    },
-    "2": {
-      "nodes": [
-        {
-          "id": "paper-2022",
-          "type": "article",
-          "title": "Improved Approach 2022",
-          "summary": "2022 paper demonstrating improved method",
-          "children": [],
-          "metadata": {}
-        },
-        {
-          "id": "claim-v2",
-          "type": "claim",
-          "title": "Method achieves state-of-the-art (updated)",
-          "summary": "Method achieved state-of-the-art in 2020, superseded by newer approaches in 2022",
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "links": [
-        { "source": "paper-2022", "target": "claim-v2" },
-        { "source": "claim-v1", "target": "claim-v2" }
-      ]
-    },
-    "3": {
-      "nodes": [
-        {
-          "id": "paper-2024",
-          "type": "article",
-          "title": "Latest Breakthrough 2024",
-          "summary": "2024 paper with latest performance improvements",
-          "children": [],
-          "metadata": {}
-        },
-        {
-          "id": "claim-v3",
-          "type": "claim",
-          "title": "Method achieves state-of-the-art (current)",
-          "summary": "Method achieved state-of-the-art in 2020, was superseded in 2022, now superseded again in 2024 with new improvements",
-          "children": [],
-          "metadata": {}
-        }
-      ],
-      "links": [
-        { "source": "paper-2024", "target": "claim-v3" },
-        { "source": "claim-v2", "target": "claim-v3" }
-      ]
-    }
-  },
-  "animationSteps": [
-    {
-      "stepNumber": 1,
-      "description": "2020 paper: initial claim of state-of-the-art performance"
-    },
-    {
-      "stepNumber": 2,
-      "description": "2022 update: claim evolved, preserving 2020 version history"
-    },
-    {
-      "stepNumber": 3,
-      "description": "2024 update: claim further evolved, complete version chain preserved"
-    }
-  ]
+	"baseData": {
+		"nodes": [
+			{
+				"id": "paper-2020",
+				"type": "article",
+				"title": "Neural Networks 2020",
+				"summary": "2020 research paper claiming state-of-the-art performance",
+				"children": [],
+				"metadata": {}
+			}
+		],
+		"links": []
+	},
+	"stepAdditions": {
+		"1": {
+			"nodes": [
+				{
+					"id": "claim-v1",
+					"type": "claim",
+					"title": "Method achieves state-of-the-art",
+					"summary": "Our method achieves state-of-the-art performance (2020)",
+					"children": [],
+					"metadata": {}
+				}
+			],
+			"links": [{ "source": "paper-2020", "target": "claim-v1" }]
+		},
+		"2": {
+			"nodes": [
+				{
+					"id": "paper-2022",
+					"type": "article",
+					"title": "Improved Approach 2022",
+					"summary": "2022 paper demonstrating improved method",
+					"children": [],
+					"metadata": {}
+				},
+				{
+					"id": "claim-v2",
+					"type": "claim",
+					"title": "Method achieves state-of-the-art (updated)",
+					"summary": "Method achieved state-of-the-art in 2020, superseded by newer approaches in 2022",
+					"children": [],
+					"metadata": {}
+				}
+			],
+			"links": [
+				{ "source": "paper-2022", "target": "claim-v2" },
+				{ "source": "claim-v1", "target": "claim-v2" }
+			]
+		},
+		"3": {
+			"nodes": [
+				{
+					"id": "paper-2024",
+					"type": "article",
+					"title": "Latest Breakthrough 2024",
+					"summary": "2024 paper with latest performance improvements",
+					"children": [],
+					"metadata": {}
+				},
+				{
+					"id": "claim-v3",
+					"type": "claim",
+					"title": "Method achieves state-of-the-art (current)",
+					"summary": "Method achieved state-of-the-art in 2020, was superseded in 2022, now superseded again in 2024 with new improvements",
+					"children": [],
+					"metadata": {}
+				}
+			],
+			"links": [
+				{ "source": "paper-2024", "target": "claim-v3" },
+				{ "source": "claim-v2", "target": "claim-v3" }
+			]
+		}
+	},
+	"animationSteps": [
+		{
+			"stepNumber": 1,
+			"description": "2020 paper: initial claim of state-of-the-art performance"
+		},
+		{
+			"stepNumber": 2,
+			"description": "2022 update: claim evolved, preserving 2020 version history"
+		},
+		{
+			"stepNumber": 3,
+			"description": "2024 update: claim further evolved, complete version chain preserved"
+		}
+	]
 }

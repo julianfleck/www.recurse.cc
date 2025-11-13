@@ -1,13 +1,13 @@
 {
-  "pages": [
-    "introduction",
-    "quickstart",
-    "faq",
-    "---Guides---",
-    "...guide",
-    "---About---",
-    "...About",
-    "---[FileText]API Documentation---",
-    "...api-documentation"
-  ]
+	"pages": [
+		"introduction",
+		"quickstart",
+		"faq",
+		"---Guides---",
+		"...guide",
+		"---About---",
+		"...About",
+		"---[FileText]API Documentation---",
+		"...api-documentation"
+	]
 }

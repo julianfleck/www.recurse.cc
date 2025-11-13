@@ -2,8 +2,8 @@ import { resolveIcon } from "@recurse/fumadocs/icons";
 import { APIPage } from "fumadocs-openapi/ui";
 import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
 import {
-  Card as FumadocsCard,
-  Cards as FumadocsCards,
+	Card as FumadocsCard,
+	Cards as FumadocsCards,
 } from "fumadocs-ui/components/card";
 import { ImageZoom } from "fumadocs-ui/components/image-zoom";
 import * as TabsComponents from "fumadocs-ui/components/tabs";
@@ -23,54 +23,54 @@ import { openapi } from "@/lib/openapi";
 
 // Custom Card component that resolves icon strings
 function Card({ icon, ...props }: any) {
-  const resolvedIcon = typeof icon === "string" ? resolveIcon(icon) : icon;
-  return <FumadocsCard icon={resolvedIcon} {...props} />;
+	const resolvedIcon = typeof icon === "string" ? resolveIcon(icon) : icon;
+	return <FumadocsCard icon={resolvedIcon} {...props} />;
 }
 
 // Custom Cards component
 function Cards(props: any) {
-  return <FumadocsCards {...props} />;
+	return <FumadocsCards {...props} />;
 }
 
 // use this function to get MDX components, you will need it for rendering MDX
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
-  return {
-    ...defaultMdxComponents,
-    ...TabsComponents,
-    TypeTable,
-    Accordion,
-    Accordions,
-    Card,
-    Cards,
-    FAQ,
-    GraphView,
-    ExampleGraphs,
-    AnimatedGraphExample,
-    FramesExample,
-    AdaptiveSchemasExample,
-    TemporalVersioningExample,
-    Tab,
-    Tabs,
-    APIPage: (props) => {
-      try {
-        const apiProps = openapi.getAPIPageProps(props);
-        return (
-          <div className="fd-openapi">
-            <APIPage {...apiProps} />
-          </div>
-        );
-      } catch (_error) {
-        return (
-          <div className="fd-openapi">
-            <p className="text-muted-foreground">
-              API documentation unavailable during build
-            </p>
-          </div>
-        );
-      }
-    },
-    img: (props) => <ImageZoom {...(props as any)} />,
-    ThemeImage,
-    ...components,
-  };
+	return {
+		...defaultMdxComponents,
+		...TabsComponents,
+		TypeTable,
+		Accordion,
+		Accordions,
+		Card,
+		Cards,
+		FAQ,
+		GraphView,
+		ExampleGraphs,
+		AnimatedGraphExample,
+		FramesExample,
+		AdaptiveSchemasExample,
+		TemporalVersioningExample,
+		Tab,
+		Tabs,
+		APIPage: (props) => {
+			try {
+				const apiProps = openapi.getAPIPageProps(props);
+				return (
+					<div className="fd-openapi">
+						<APIPage {...apiProps} />
+					</div>
+				);
+			} catch (_error) {
+				return (
+					<div className="fd-openapi">
+						<p className="text-muted-foreground">
+							API documentation unavailable during build
+						</p>
+					</div>
+				);
+			}
+		},
+		img: (props) => <ImageZoom {...(props as any)} />,
+		ThemeImage,
+		...components,
+	};
 }

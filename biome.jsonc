@@ -1,4 +1,19 @@
 {
-  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "extends": ["ultracite"]
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"extends": ["ultracite"],
+	"files": {
+		"ignore": [
+			"**/node_modules/**",
+			"**/.next/**",
+			"**/dist/**",
+			"**/build/**",
+			"**/.source/**",
+			"**/.turbo/**",
+			"**/out/**",
+			"**/.vercel/**",
+			"**/coverage/**",
+			"**/*.tsbuildinfo",
+			"**/pnpm-lock.yaml"
+		]
+	}
 }

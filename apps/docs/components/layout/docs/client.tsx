@@ -11,127 +11,127 @@ import { isTabActive } from "../../../lib/is-active";
 import type { Option } from "../../root-toggle";
 
 export function Navbar({
-  mode,
-  ...props
+	mode,
+	...props
 }: ComponentProps<"header"> & { mode: "top" | "auto" }) {
-  const { open, collapsed } = useSidebar();
-  const { isTransparent } = useNav();
+	const { open, collapsed } = useSidebar();
+	const { isTransparent } = useNav();
 
-  return (
-    <header
-      id="nd-subnav"
-      {...props}
-      className={cn(
-        "fixed top-(--fd-banner-height) right-(--removed-body-scroll-bar-size,0) left-0 z-10 flex h-(--fd-nav-height) flex-col px-(--fd-layout-offset) backdrop-blur-sm transition-colors",
-        (!isTransparent || open) && "bg-fd-background/80",
-        mode === "auto" &&
-          !collapsed &&
-          "ps-[calc(var(--fd-layout-offset)+var(--fd-sidebar-width))]",
-        props.className
-      )}
-    >
-      {props.children}
-    </header>
-  );
+	return (
+		<header
+			id="nd-subnav"
+			{...props}
+			className={cn(
+				"fixed top-(--fd-banner-height) right-(--removed-body-scroll-bar-size,0) left-0 z-10 flex h-(--fd-nav-height) flex-col px-(--fd-layout-offset) backdrop-blur-sm transition-colors",
+				(!isTransparent || open) && "bg-fd-background/80",
+				mode === "auto" &&
+					!collapsed &&
+					"ps-[calc(var(--fd-layout-offset)+var(--fd-sidebar-width))]",
+				props.className,
+			)}
+		>
+			{props.children}
+		</header>
+	);
 }
 
 export function LayoutBody(props: ComponentProps<"main">) {
-  const { collapsed } = useSidebar();
+	const { collapsed } = useSidebar();
 
-  return (
-    <main
-      id="nd-docs-layout"
-      {...props}
-      className={cn(
-        "fd-notebook-layout flex flex-1 flex-col pt-(--fd-nav-height) transition-[padding]",
-        // Remove extra horizontal margins so content stays left-aligned
-        props.className
-      )}
-      style={{
-        ...props.style,
-        // Use a small constant offset when collapsed; sidebar width when expanded
-        paddingInlineStart: collapsed
-          ? "calc(var(--fd-layout-offset))"
-          : "var(--fd-sidebar-width)",
-      }}
-    >
-      {props.children}
-    </main>
-  );
+	return (
+		<main
+			id="nd-docs-layout"
+			{...props}
+			className={cn(
+				"fd-notebook-layout flex flex-1 flex-col pt-(--fd-nav-height) transition-[padding]",
+				// Remove extra horizontal margins so content stays left-aligned
+				props.className,
+			)}
+			style={{
+				...props.style,
+				// Use a small constant offset when collapsed; sidebar width when expanded
+				paddingInlineStart: collapsed
+					? "calc(var(--fd-layout-offset))"
+					: "var(--fd-sidebar-width)",
+			}}
+		>
+			{props.children}
+		</main>
+	);
 }
 
 export function NavbarSidebarTrigger({
-  className,
-  ...props
+	className,
+	...props
 }: ComponentProps<"button">) {
-  const { setOpen } = useSidebar();
+	const { setOpen } = useSidebar();
 
-  return (
-    <button
-      {...props}
-      className={cn(
-        buttonVariants({
-          variant: "ghost",
-          size: "icon-sm",
-          className,
-        })
-      )}
-      onClick={() => setOpen((prev) => !prev)}
-    >
-      <SidebarIcon />
-    </button>
-  );
+	return (
+		<button
+			{...props}
+			className={cn(
+				buttonVariants({
+					variant: "ghost",
+					size: "icon-sm",
+					className,
+				}),
+			)}
+			onClick={() => setOpen((prev) => !prev)}
+		>
+			<SidebarIcon />
+		</button>
+	);
 }
 
 export function LayoutTabs({
-  options,
-  ...props
+	options,
+	...props
 }: ComponentProps<"div"> & {
-  options: Option[];
+	options: Option[];
 }) {
-  const pathname = usePathname();
-  const selected = useMemo(() => {
-    return options.findLast((option) => isTabActive(option, pathname));
-  }, [options, pathname]);
+	const pathname = usePathname();
+	const selected = useMemo(() => {
+		return options.findLast((option) => isTabActive(option, pathname));
+	}, [options, pathname]);
 
-  return (
-    <div
-      {...props}
-      className={cn(
-        "flex flex-row items-end gap-6 overflow-auto",
-        props.className
-      )}
-    >
-      {options.map((option) => (
-        <LayoutTab
-          key={option.url}
-          option={option}
-          selected={selected === option}
-        />
-      ))}
-    </div>
-  );
+	return (
+		<div
+			{...props}
+			className={cn(
+				"flex flex-row items-end gap-6 overflow-auto",
+				props.className,
+			)}
+		>
+			{options.map((option) => (
+				<LayoutTab
+					key={option.url}
+					option={option}
+					selected={selected === option}
+				/>
+			))}
+		</div>
+	);
 }
 
 function LayoutTab({
-  option: { title, url, unlisted, props },
-  selected = false,
+	option: { title, url, unlisted, props },
+	selected = false,
 }: {
-  option: Option;
-  selected?: boolean;
+	option: Option;
+	selected?: boolean;
 }) {
-  return (
-    <Link
-      href={url}
-      {...props}
-      className={cn(
-        "inline-flex items-center gap-2 text-nowrap border-transparent border-b-2 pb-1.5 font-medium text-fd-muted-foreground text-sm transition-colors hover:text-fd-accent-foreground",
-        unlisted && !selected && "hidden",
-        selected && "border-fd-primary text-fd-primary",
-        props?.className
-      )}
-    >
-      {title}
-    </Link>
-  );
+	return (
+		<Link
+			href={url}
+			{...props}
+			className={cn(
+				"inline-flex items-center gap-2 text-nowrap border-transparent border-b-2 pb-1.5 font-medium text-fd-muted-foreground text-sm transition-colors hover:text-fd-accent-foreground",
+				unlisted && !selected && "hidden",
+				selected && "border-fd-primary text-fd-primary",
+				props?.className,
+			)}
+		>
+			{title}
+		</Link>
+	);
 }

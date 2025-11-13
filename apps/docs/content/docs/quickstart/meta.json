@@ -1,6 +1,6 @@
 {
-  "title": "Quickstart",
-  "icon": "run",
-  "pages": ["ui", "api"],
-  "defaultOpen": true
+	"title": "Quickstart",
+	"icon": "run",
+	"pages": ["ui", "api"],
+	"defaultOpen": true
 }
