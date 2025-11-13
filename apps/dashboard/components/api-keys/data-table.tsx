@@ -336,7 +336,8 @@ const DataTableWithColumnFilterDemo = () => {
 function Filter({ column }: { column: Column<any, unknown> }) {
 	const id = useId();
 	const columnFilterValue = column.getFilterValue();
-	const { filterVariant } = column.columnDef.meta ?? {};
+	const meta = column.columnDef.meta as { filterVariant?: "text" | "range" | "select" } | undefined;
+	const filterVariant = meta?.filterVariant;
 	const columnHeader =
 		typeof column.columnDef.header === "string" ? column.columnDef.header : "";
 

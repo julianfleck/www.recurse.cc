@@ -1,6 +1,6 @@
 "use client";
 
-import { Logo, Card, CardContent } from "@recurse/ui/components";
+import { Logo, Card, CardContent, Particles } from "@recurse/ui/components";
 import { cn } from "@recurse/ui/lib/utils";
 
 type AuthShellProps = {
