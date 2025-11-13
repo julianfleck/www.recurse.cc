@@ -51,7 +51,9 @@ export const dynamicParams = true; // Allow dynamic params for pages not in gene
 
 export async function generateStaticParams() {
 	// Generate params for all dashboard MDX pages
-	return dashboardSource.generateParams();
+	// Filter out empty slugs since root path is handled by app/(dashboard)/page.tsx
+	const params = dashboardSource.generateParams();
+	return params.filter((param) => param.slug && param.slug.length > 0);
 }
 
 export async function generateMetadata(props: {
