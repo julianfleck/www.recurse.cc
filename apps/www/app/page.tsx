@@ -34,33 +34,23 @@ export default function HomePage() {
 			{/* Hero Section - Combined Content */}
 			<div className="relative z-10 space-y-24 md:space-y-32">
 				<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-					<MagicBentoGrid
-						enableSpotlight={true}
-						enableBorderGlow={true}
-						enableStars={false}
-						disableAnimations={false}
-						gridColumns={4}
-					>
-						{/* Hero Card 1 - Headline, subheadline, and buttons (full width) */}
-						<div
-							className="magic-bento-card magic-bento-card--border-glow"
-							data-col-span="1"
-							data-md-col-span="2"
-							data-lg-col-span="4"
-							data-row-span="1"
-							style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
-						>
-							<FlushCard className="h-full">
-								<div className="space-y-8 py-8 text-center md:py-12 lg:py-16">
+					<Grid8Col className="py-12">
+						{/* Hero Card - Full width (8 columns) */}
+						<GridCell colSpan={8}>
+							<GridCard 
+								enableHoverEffect 
+								gridPadding={{ left: 2, right: 2, top: 1, bottom: 1 }}
+							>
+								<div className="space-y-8 text-left">
 									<div className="space-y-4">
 										<h1 className="font-medium text-2xl leading-tight tracking-tight md:text-4xl lg:text-6xl">
 											{homepageContent.hero.headline}
 										</h1>
-										<p className="mx-auto max-w-3xl font-medium text-foreground text-lg leading-normal md:text-xl lg:text-2xl">
+										<p className="max-w-3xl font-medium text-foreground text-lg leading-normal md:text-xl lg:text-2xl">
 											{homepageContent.hero.subheadline}
 										</p>
 									</div>
-									<div className="flex flex-wrap justify-center gap-4">
+									<div className="flex flex-wrap gap-4">
 										<Button
 											asChild
 											className="group rounded-full px-4 py-3 font-medium text-base"
@@ -77,11 +67,10 @@ export default function HomePage() {
 										</DocsLinkButton>
 									</div>
 								</div>
-							</FlushCard>
-						</div>
-					</MagicBentoGrid>
-
-			</ScrollAnimation>
+							</GridCard>
+						</GridCell>
+					</Grid8Col>
+				</ScrollAnimation>
 
 			{/* About Section - Simple 8 column grid */}
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>

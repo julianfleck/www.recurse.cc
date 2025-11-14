@@ -8,13 +8,19 @@ interface GridCardProps {
 	children: ReactNode;
 	className?: string;
 	enableHoverEffect?: boolean;
+	gridPadding?: {
+		left?: number;
+		right?: number;
+		top?: number;
+		bottom?: number;
+	};
 }
 
 /**
  * GridCard - Card component for use within the 8-column grid
- * Optional border glow hover effect
+ * Optional border glow hover effect and grid-based padding
  */
-export function GridCard({ children, className, enableHoverEffect = false }: GridCardProps) {
+export function GridCard({ children, className, enableHoverEffect = false, gridPadding }: GridCardProps) {
 	const cardRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -45,25 +51,35 @@ export function GridCard({ children, className, enableHoverEffect = false }: Gri
 		};
 	}, [enableHoverEffect]);
 
+	// Calculate padding based on grid units
+	const paddingStyle = gridPadding ? {
+		paddingLeft: gridPadding.left ? `calc(var(--grid-unit) * ${gridPadding.left})` : undefined,
+		paddingRight: gridPadding.right ? `calc(var(--grid-unit) * ${gridPadding.right})` : undefined,
+		paddingTop: gridPadding.top ? `calc(var(--grid-unit) * ${gridPadding.top})` : undefined,
+		paddingBottom: gridPadding.bottom ? `calc(var(--grid-unit) * ${gridPadding.bottom})` : undefined,
+	} : undefined;
+
 	return (
 		<div
 			ref={cardRef}
 			className={cn(
-				"relative rounded-lg border border-border bg-card p-6",
+				"relative rounded-lg border border-border bg-card",
+				!gridPadding && "p-6", // Default padding if no grid padding specified
 				enableHoverEffect && "grid-card-glow",
 				className
 			)}
-			style={
-				enableHoverEffect
-					? ({
+			style={{
+				...(enableHoverEffect
+					? {
 							'--glow-x': '50%',
 							'--glow-y': '50%',
 							'--glow-intensity': '0',
 							'--glow-radius': '200px',
 							'--glow-color': '132, 0, 255',
-						} as React.CSSProperties)
-					: undefined
-			}
+						}
+					: {}),
+				...paddingStyle,
+			} as React.CSSProperties}
 		>
 			{children}
 		</div>

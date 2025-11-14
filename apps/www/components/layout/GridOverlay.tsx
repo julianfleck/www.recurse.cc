@@ -12,7 +12,13 @@ export function GridOverlay() {
 				{Array.from({ length: 8 }).map((_, i) => (
 					<div
 						key={i}
-						className="relative border-muted border-l last:border-r"
+						className={
+							i === 0
+								? "relative border-muted border-l"
+								: i === 7
+									? "relative border-muted/60 border-l border-muted border-r"
+									: "relative border-muted/60 border-l"
+						}
 					/>
 				))}
 			</div>

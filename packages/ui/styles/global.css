@@ -63,6 +63,10 @@
   --shadow-2xl: 0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.25);
   --tracking-normal: -0.015em;
   --spacing: 0.25rem;
+  
+  /* Grid System */
+  --grid-columns: 8;
+  --grid-unit: calc(100% / var(--grid-columns));
 }
 
 .dark {

@@ -48,7 +48,7 @@ export default function RootLayout({
 								<Footer />
 							</div>
 							{/* Particles Background for Entire Site */}
-							<div className="pointer-events-none fixed inset-0 z-0 opacity-80 dark:opacity-50">
+							{/* <div className="pointer-events-none fixed inset-0 z-0 opacity-80 dark:opacity-50">
 								<Particles
 									className="text-red-orange-300 dark:text-white"
 									enableMouseFollow={true}
@@ -58,17 +58,17 @@ export default function RootLayout({
 									particleSize={3}
 									speed={0.3}
 								/>
-							</div>
+							</div> */}
 
 							{/* Aurora Background at Bottom */}
-							<div className="pointer-events-none fixed right-0 bottom-0 left-0 z-0 h-full scale-y-[-1] opacity-15 dark:opacity-15">
-								{/* <Aurora
+							{/* <div className="pointer-events-none fixed right-0 bottom-0 left-0 z-0 h-full scale-y-[-1] opacity-15 dark:opacity-15">
+								<Aurora
 									amplitude={0.8}
 									blend={0.6}
 									colorStops={["#1976D2", "#8A9BB5", "#A0A9B5"]}
 									speed={1.5}
-								/> */}
-							</div>
+								/>
+							</div> */}
 						</ScrollProvider>
 					</ThemeProvider>
 				</Providers>
