@@ -45,7 +45,7 @@ export function HeaderCard({
 			<Link href={href} className="block">
 				<GridCard 
 					enableHoverEffect
-					className={cn("group cursor-pointer px-4 py-6 md:px-6 lg:px-8 lg:py-4", className)}
+					className={cn("group cursor-pointer px-1col py-1col lg:px-2col lg:py-halfcol", className)}
 				>
 					{content}
 				</GridCard>
@@ -56,7 +56,7 @@ export function HeaderCard({
 	return (
 		<GridCard 
 			enableHoverEffect
-			className={cn("group px-4 py-6 md:px-6 lg:px-8 lg:py-4", className)}
+			className={cn("group px-1col py-1col lg:px-2col lg:py-halfcol", className)}
 		>
 			{content}
 		</GridCard>
