@@ -140,6 +140,10 @@
   .card-grid.grid-cols-5 {
     grid-template-columns: repeat(5, 1fr) !important;
   }
+
+  .card-grid.grid-cols-8 {
+    grid-template-columns: repeat(8, 1fr) !important;
+  }
 }
 
 /* Grid column spans using data attributes for responsive control */
@@ -195,6 +199,22 @@
 
   .magic-bento-card[data-lg-col-span="4"] {
     grid-column: span 4 !important;
+  }
+
+  .magic-bento-card[data-lg-col-span="5"] {
+    grid-column: span 5 !important;
+  }
+
+  .magic-bento-card[data-lg-col-span="6"] {
+    grid-column: span 6 !important;
+  }
+
+  .magic-bento-card[data-lg-col-span="7"] {
+    grid-column: span 7 !important;
+  }
+
+  .magic-bento-card[data-lg-col-span="8"] {
+    grid-column: span 8 !important;
   }
 
   /* Row spans for taller cards */

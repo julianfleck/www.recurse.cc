@@ -1,0 +1,72 @@
+"use client";
+
+import { cn } from "@/lib/utils";
+import type { ReactNode } from "react";
+import { useEffect, useRef } from "react";
+
+interface GridCardProps {
+	children: ReactNode;
+	className?: string;
+	enableHoverEffect?: boolean;
+}
+
+/**
+ * GridCard - Card component for use within the 8-column grid
+ * Optional border glow hover effect
+ */
+export function GridCard({ children, className, enableHoverEffect = false }: GridCardProps) {
+	const cardRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (!enableHoverEffect || !cardRef.current) return;
+
+		const card = cardRef.current;
+
+		const handleMouseMove = (e: MouseEvent) => {
+			const rect = card.getBoundingClientRect();
+			const relativeX = ((e.clientX - rect.left) / rect.width) * 100;
+			const relativeY = ((e.clientY - rect.top) / rect.height) * 100;
+
+			card.style.setProperty('--glow-x', `${relativeX}%`);
+			card.style.setProperty('--glow-y', `${relativeY}%`);
+			card.style.setProperty('--glow-intensity', '1');
+		};
+
+		const handleMouseLeave = () => {
+			card.style.setProperty('--glow-intensity', '0');
+		};
+
+		card.addEventListener('mousemove', handleMouseMove);
+		card.addEventListener('mouseleave', handleMouseLeave);
+
+		return () => {
+			card.removeEventListener('mousemove', handleMouseMove);
+			card.removeEventListener('mouseleave', handleMouseLeave);
+		};
+	}, [enableHoverEffect]);
+
+	return (
+		<div
+			ref={cardRef}
+			className={cn(
+				"relative rounded-lg border border-border bg-card p-6",
+				enableHoverEffect && "grid-card-glow",
+				className
+			)}
+			style={
+				enableHoverEffect
+					? ({
+							'--glow-x': '50%',
+							'--glow-y': '50%',
+							'--glow-intensity': '0',
+							'--glow-radius': '200px',
+							'--glow-color': '132, 0, 255',
+						} as React.CSSProperties)
+					: undefined
+			}
+		>
+			{children}
+		</div>
+	);
+}
+

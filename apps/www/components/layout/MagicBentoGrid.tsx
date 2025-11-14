@@ -8,7 +8,7 @@ import "@/components/MagicBento.css";
 interface MagicBentoGridProps extends Partial<BentoProps> {
 	children: ReactNode;
 	className?: string;
-	gridColumns?: 3 | 4 | 5;
+	gridColumns?: 3 | 4 | 5 | 8;
 }
 
 /**

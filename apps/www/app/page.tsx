@@ -18,6 +18,9 @@ import { CTASection } from "@/components/common/CTASection";
 import { DocsLinkButton } from "@/components/common/DocsLinkButton";
 import { SignupForm } from "@/components/forms/SignupForm";
 import { FlushCard } from "@/components/layout/FlushCard";
+import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
+import { GridCard } from "@/components/layout/GridCard";
+import { HeaderCard } from "@/components/layout/HeaderCard";
 import { IntroCard } from "@/components/layout/IntroCard";
 import { IntroCardContent } from "@/components/layout/IntroCardContent";
 import { TextCard } from "@/components/layout/TextCard";
@@ -78,76 +81,60 @@ export default function HomePage() {
 						</div>
 					</MagicBentoGrid>
 
-					{/* Second row - 3 column grid with 4 cards */}
-					<MagicBentoGrid
-						enableSpotlight={true}
-						enableBorderGlow={true}
-						enableStars={false}
-						disableAnimations={false}
-						gridColumns={3}
-					>
-						{/* Card 1 - IntroCard "Not quite" (left, 2 rows) */}
-						<IntroCard
-							title={homepageContent.intro.title}
-							text="Recurse is memory infrastructure for systems that actually understand."
-							data-col-span="1"
-							data-md-col-span="2"
-							data-lg-col-span="1"
-							data-row-span="2"
-						/>
+			</ScrollAnimation>
 
-						{/* Card 2 - The problem (center top, 1 row) */}
-						<div
-							className="magic-bento-card magic-bento-card--border-glow"
-							data-col-span="1"
-							data-md-col-span="2"
-							data-lg-col-span="1"
-							data-row-span="1"
-							style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
-						>
-							<FlushCard className="h-full">
-								<p className="font-light text-sm text-muted-foreground leading-relaxed md:text-base">
-									Most AI memory systems optimize for similarity—ask a question, get the most similar chunks back. But you can't discover connections you didn't know existed, can't stumble onto relevant context from unexpected sources, can't follow threads that diverge from your initial question. The infrastructure is optimized for retrieval, not exploration.
-								</p>
-							</FlushCard>
-						</div>
+			{/* About Section - Simple 8 column grid */}
+			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
+				<Grid8Col className="py-12">
+					{/* Header - spans all 8 columns */}
+					<GridCell colSpan={8}>
+						<GridCard enableHoverEffect className="flex items-center justify-center py-16">
+							<h2 className="font-medium text-5xl leading-tight tracking-tight lg:text-7xl">
+								About
+							</h2>
+						</GridCard>
+					</GridCell>
 
-						{/* Card 4 - Action statement (right, 2 rows) */}
-						<div
-							className="magic-bento-card magic-bento-card--border-glow"
-							data-col-span="1"
-							data-md-col-span="2"
-							data-lg-col-span="1"
-							data-row-span="2"
-							style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
-						>
-							<FlushCard className="h-full">
-								<p className="font-medium text-base text-foreground leading-relaxed md:text-lg lg:text-xl">
-									Ingest unstructured content from anywhere, transform it into a living knowledge graph that AI (and you) can reason through and act on.
-								</p>
-							</FlushCard>
-						</div>
+					{/* Card 1 - 2/8 columns */}
+					<GridCell colSpan={2} rowSpan={2}>
+						<GridCard enableHoverEffect className="flex h-full flex-col justify-between">
+							<p className="font-light text-base text-muted-foreground leading-relaxed">
+								Yet Another AI Memory System?
+							</p>
+							<p className="font-light text-base text-muted-foreground leading-relaxed">
+								Not quite.
+							</p>
+						</GridCard>
+					</GridCell>
 
-						{/* Card 3 - Principles (center bottom, 1 row) */}
-						<div
-							className="magic-bento-card magic-bento-card--border-glow"
-							data-col-span="1"
-							data-md-col-span="2"
-							data-lg-col-span="1"
-							data-row-span="1"
-							style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
-						>
-							<FlushCard className="h-full">
-								<p className="font-light text-sm text-muted-foreground leading-relaxed md:text-base">
-									{homepageContent.intro.text}
-								</p>
-							</FlushCard>
-						</div>
-					</MagicBentoGrid>
-				</ScrollAnimation>
+					{/* Card 2 - 3/8 columns */}
+					<GridCell colSpan={3} rowSpan={2}>
+						<GridCard enableHoverEffect className="flex h-full flex-col justify-between">
+							<p className="font-light text-sm text-muted-foreground leading-relaxed">
+								Most AI memory systems optimize for one thing: similarity. Ask a question, get the most similar chunks back. This works if you know what you're looking for. But it systematically prevents the kind of exploration that leads to genuine understanding.
+							</p>
+							<p className="font-light text-sm text-muted-foreground leading-relaxed">
+								You can't discover connections you didn't know existed. Can't stumble onto relevant context from unexpected sources. Can't follow threads that diverge from your initial question. The infrastructure is optimized for retrieval, not exploration.
+							</p>
+						</GridCard>
+					</GridCell>
 
-				{/* Core Capabilities Section - 5 column grid (Icon:2, Text:2, Table:1) */}
-				<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
+					{/* Card 3 - 3/8 columns */}
+					<GridCell colSpan={3} rowSpan={2}>
+						<GridCard enableHoverEffect className="flex h-full flex-col justify-between">
+							<p className="font-light text-base text-muted-foreground leading-relaxed">
+								Recurse is memory infrastructure for systems that actually understand.
+							</p>
+							<p className="font-light text-sm text-muted-foreground leading-relaxed">
+								We are building on different principles: structure over similarity, relationships over rankings, evolution over static storage.
+							</p>
+						</GridCard>
+					</GridCell>
+				</Grid8Col>
+			</ScrollAnimation>
+
+			{/* Core Capabilities Section - 5 column grid (Icon:2, Text:2, Table:1) */}
+			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 					<MagicBentoGrid
 						enableSpotlight={true}
 						enableBorderGlow={true}
