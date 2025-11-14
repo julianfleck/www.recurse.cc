@@ -35,18 +35,18 @@ export default function HomePage() {
 			<div className="relative z-10 space-y-24 md:space-y-32">
 				<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 					<Grid8Col className="py-12">
-						{/* Hero Card - Full width (8 columns) */}
-						<GridCell colSpan={8}>
+						{/* Hero Card - Full width across all breakpoints */}
+						<GridCell colSpan={4} mdColSpan={6} lgColSpan={8}>
 							<GridCard 
 								enableHoverEffect 
-								gridPadding={{ left: 2, right: 2, top: 1, bottom: 1 }}
+								gridPadding={{ left: 2, right: 1.8, top: 1, bottom: 1 }}
 							>
 								<div className="space-y-8 text-left">
-									<div className="space-y-4">
-										<h1 className="font-semibold text-2xl leading-snug tracking-tight md:text-4xl lg:text-5xl">
+									<div className="space-y-8">
+										<h1 className="font-semibold text-2xl leading-[1.15]! tracking-tight md:text-4xl lg:text-5xl text-accent-foreground">
 											{homepageContent.hero.headline}
 										</h1>
-										<p className="max-w-3xl font-medium text-foreground text-lg leading-normal md:text-xl lg:text-2xl">
+										<p className="max-w-4xl text-muted-foreground text-lg leading-normal md:text-xl lg:text-2xl">
 											{homepageContent.hero.subheadline}
 										</p>
 									</div>
@@ -75,13 +75,13 @@ export default function HomePage() {
 			{/* About Section - Simple 8 column grid */}
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 				<Grid8Col className="py-12">
-					{/* Header - spans all 8 columns */}
-					<GridCell colSpan={8}>
+					{/* Header - spans all columns */}
+					<GridCell colSpan={4} mdColSpan={6} lgColSpan={8}>
 						<HeaderCard title="About" />
 					</GridCell>
 
-					{/* Card 1 - 2/8 columns */}
-					<GridCell colSpan={2} rowSpan={2}>
+					{/* Card 1 - Mobile: full width, Tablet: 2/6, Desktop: 2/8 columns */}
+					<GridCell colSpan={4} mdColSpan={2} lgColSpan={2} rowSpan={2}>
 						<GridCard enableHoverEffect className="flex h-full flex-col justify-between">
 							<p className="font-light text-base text-muted-foreground leading-relaxed">
 								Yet Another AI Memory System?
@@ -92,8 +92,8 @@ export default function HomePage() {
 						</GridCard>
 					</GridCell>
 
-					{/* Card 2 - 3/8 columns */}
-					<GridCell colSpan={3} rowSpan={2}>
+					{/* Card 2 - Mobile: full width, Tablet: 4/6, Desktop: 3/8 columns */}
+					<GridCell colSpan={4} mdColSpan={4} lgColSpan={3} rowSpan={2}>
 						<GridCard enableHoverEffect className="flex h-full flex-col justify-between">
 							<p className="font-light text-sm text-muted-foreground leading-relaxed">
 								Most AI memory systems optimize for one thing: similarity. Ask a question, get the most similar chunks back. This works if you know what you're looking for. But it systematically prevents the kind of exploration that leads to genuine understanding.
@@ -104,8 +104,8 @@ export default function HomePage() {
 						</GridCard>
 					</GridCell>
 
-					{/* Card 3 - 3/8 columns */}
-					<GridCell colSpan={3} rowSpan={2}>
+					{/* Card 3 - Mobile: full width, Tablet: full width (6/6), Desktop: 3/8 columns */}
+					<GridCell colSpan={4} mdColSpan={6} lgColSpan={3} rowSpan={2}>
 						<GridCard enableHoverEffect className="flex h-full flex-col justify-between">
 							<p className="font-light text-base text-muted-foreground leading-relaxed">
 								Recurse is memory infrastructure for systems that actually understand.
