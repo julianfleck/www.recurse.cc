@@ -10,12 +10,12 @@ interface Grid8ColProps {
 
 /**
  * 8-column grid container at all breakpoints
- * Cards stack on mobile using colSpan, but grid stays 8 columns
- * This keeps padding proportional and text readable on mobile
+ * Mobile: full width (no padding), cards handle their own padding
+ * Tablet+: horizontal margins for centered layout
  */
 export function Grid8Col({ children, className }: Grid8ColProps) {
 	return (
-		<div className={cn("mx-auto grid max-w-7xl grid-cols-8 px-6 md:px-32 lg:px-40", className)}>
+		<div className={cn("mx-auto grid max-w-7xl grid-cols-8 md:px-32 lg:px-40", className)}>
 			{children}
 		</div>
 	);
