@@ -194,6 +194,7 @@
 
   /* Grid unit spacing - responsive via CSS variables */
   --spacing-0\.5col: calc(var(--grid-unit) * 0.5);
+  --spacing-halfcol: calc(var(--grid-unit) * 0.5);
   --spacing-1col: calc(var(--grid-unit) * 1);
   --spacing-1\.5col: calc(var(--grid-unit) * 1.5);
   --spacing-2col: calc(var(--grid-unit) * 2);
