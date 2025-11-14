@@ -43,7 +43,7 @@ export const homepageContent = {
 	coreCapabilities: {
 		title: "Core Capabilities",
 		description:
-			"Most AI memory systems optimize for similarity—find the most similar chunks and return them.",
+			"",
 		capabilities: [
 			{
 				title: "Structure Over Similarity",

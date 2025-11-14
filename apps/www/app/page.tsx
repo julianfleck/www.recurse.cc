@@ -28,53 +28,44 @@ import { homepageContent } from "@/content/homepage";
 export default function HomePage() {
 	return (
 		<>
-			{/* Hero Section */}
-			<ScrollAnimation
-				enableFadeIn={true}
-				enableFadeOut={true}
-				exitBlur={12}
-				exitScale={0.9}
-			>
-				<div className="relative z-10 mx-auto max-w-4xl pb-16">
-					<div className="container mx-auto px-4 py-12 sm:px-6 md:px-12 md:py-20 lg:px-16 xl:px-20">
-						<div className="mx-auto max-w-6xl text-left">
-							<AnimatedContent
-								blur={true}
-								delay={0.3}
-								direction="vertical"
-								distance={80}
-								duration={1.0}
-								initialBlur={8}
-							>
-								<h1 className="mb-12 font-medium text-2xl leading-tight tracking-tight md:text-4xl lg:text-6xl">
-									{homepageContent.hero.headline}
-								</h1>
-							</AnimatedContent>
-
-							<AnimatedContent
-								blur={true}
-								delay={1.5}
-								direction="vertical"
-								distance={60}
-								duration={0.8}
-								initialBlur={6}
-							>
-								<div>
-									<p className="mx-auto mb-2 max-w-5xl text-left font-medium text-foreground text-lg leading-normal md:text-2xl">
-										{homepageContent.hero.subheadline}
-									</p>
-									<p className="mx-auto mb-12 max-w-5xl text-left font-light text-base text-muted-foreground leading-normal transition-colors duration-300 hover:text-foreground/80 md:text-2xl hyphens-auto">
-										{homepageContent.hero.introText}
-									</p>
-									<div className="flex justify-start gap-4">
+			{/* Hero Section - Combined Content */}
+			<div className="relative z-10 space-y-24 md:space-y-32">
+				<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
+					<MagicBentoGrid
+						enableSpotlight={true}
+						enableBorderGlow={true}
+						enableStars={false}
+						disableAnimations={false}
+						gridColumns={4}
+					>
+						{/* Hero Card 1 - Headline, subheadline, and buttons (full width) */}
+						<div
+							className="magic-bento-card magic-bento-card--border-glow"
+							data-col-span="1"
+							data-md-col-span="2"
+							data-lg-col-span="4"
+							data-row-span="1"
+							style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
+						>
+							<FlushCard className="h-full">
+								<div className="space-y-8 py-8 text-center md:py-12 lg:py-16">
+									<div className="space-y-4">
+										<h1 className="font-medium text-2xl leading-tight tracking-tight md:text-4xl lg:text-6xl">
+											{homepageContent.hero.headline}
+										</h1>
+										<p className="mx-auto max-w-3xl font-medium text-foreground text-lg leading-normal md:text-xl lg:text-2xl">
+											{homepageContent.hero.subheadline}
+										</p>
+									</div>
+									<div className="flex flex-wrap justify-center gap-4">
 										<Button
 											asChild
 											className="group rounded-full px-4 py-3 font-medium text-base"
 											size="default"
 											variant="default"
 										>
-											<Link href={homepageContent.hero.learnMoreHref}>
-												{homepageContent.hero.learnMoreText}
+											<Link href="#signup">
+												Sign up
 												<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
 											</Link>
 										</Button>
@@ -83,112 +74,163 @@ export default function HomePage() {
 										</DocsLinkButton>
 									</div>
 								</div>
-							</AnimatedContent>
+							</FlushCard>
 						</div>
-					</div>
-				</div>
-			</ScrollAnimation>
+					</MagicBentoGrid>
 
-			{/* Main Content with Magic Bento Grid - Sections with Scroll Fade-in */}
-			<div className="relative z-10 space-y-24 md:space-y-32">
-				{/* Intro Section */}
-				<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
+					{/* Second row - 3 column grid with 4 cards */}
 					<MagicBentoGrid
 						enableSpotlight={true}
 						enableBorderGlow={true}
 						enableStars={false}
 						disableAnimations={false}
+						gridColumns={3}
 					>
-						{/* Title - Large card 2x2 */}
+						{/* Card 1 - IntroCard "Not quite" (left, 2 rows) */}
 						<IntroCard
 							title={homepageContent.intro.title}
-							text={homepageContent.intro.text}
+							text="Recurse is memory infrastructure for systems that actually understand."
 							data-col-span="1"
 							data-md-col-span="2"
-							data-lg-col-span="2"
+							data-lg-col-span="1"
 							data-row-span="2"
 						/>
 
-						{/* Intro content - Combined card 2x2 */}
-						<TextCard
-							texts={[
-								homepageContent.intro.content.top,
-								homepageContent.intro.content.bottom,
-							]}
+						{/* Card 2 - The problem (center top, 1 row) */}
+						<div
+							className="magic-bento-card magic-bento-card--border-glow"
 							data-col-span="1"
 							data-md-col-span="2"
-							data-lg-col-span="2"
+							data-lg-col-span="1"
+							data-row-span="1"
+							style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
+						>
+							<FlushCard className="h-full">
+								<p className="font-light text-sm text-muted-foreground leading-relaxed md:text-base">
+									Most AI memory systems optimize for similarity—ask a question, get the most similar chunks back. But you can't discover connections you didn't know existed, can't stumble onto relevant context from unexpected sources, can't follow threads that diverge from your initial question. The infrastructure is optimized for retrieval, not exploration.
+								</p>
+							</FlushCard>
+						</div>
+
+						{/* Card 4 - Action statement (right, 2 rows) */}
+						<div
+							className="magic-bento-card magic-bento-card--border-glow"
+							data-col-span="1"
+							data-md-col-span="2"
+							data-lg-col-span="1"
 							data-row-span="2"
-						/>
+							style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
+						>
+							<FlushCard className="h-full">
+								<p className="font-medium text-base text-foreground leading-relaxed md:text-lg lg:text-xl">
+									Ingest unstructured content from anywhere, transform it into a living knowledge graph that AI (and you) can reason through and act on.
+								</p>
+							</FlushCard>
+						</div>
+
+						{/* Card 3 - Principles (center bottom, 1 row) */}
+						<div
+							className="magic-bento-card magic-bento-card--border-glow"
+							data-col-span="1"
+							data-md-col-span="2"
+							data-lg-col-span="1"
+							data-row-span="1"
+							style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
+						>
+							<FlushCard className="h-full">
+								<p className="font-light text-sm text-muted-foreground leading-relaxed md:text-base">
+									{homepageContent.intro.text}
+								</p>
+							</FlushCard>
+						</div>
 					</MagicBentoGrid>
 				</ScrollAnimation>
 
-				{/* Core Capabilities Section */}
+				{/* Core Capabilities Section - 5 column grid (Icon:2, Text:2, Table:1) */}
 				<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 					<MagicBentoGrid
 						enableSpotlight={true}
 						enableBorderGlow={true}
 						enableStars={false}
 						disableAnimations={false}
+						gridColumns={5}
 					>
-						{/* Core Capabilities Header - Large card 2x2 */}
-						<IntroCard
-							title={homepageContent.coreCapabilities.title}
-							text={homepageContent.coreCapabilities.description}
-							data-col-span="1"
-							data-md-col-span="2"
-							data-lg-col-span="2"
-							data-row-span="2"
-						/>
-
-						{/* Core Capabilities Cards - All 1x1 in 4-column grid */}
 						{homepageContent.coreCapabilities.capabilities.map(
 							(capability, index) => (
-								<div
-									key={index}
-									className="magic-bento-card magic-bento-card--border-glow"
-									data-col-span="1"
-									data-md-col-span="2"
-									data-lg-col-span="1"
-									data-row-span="1"
-									style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
-								>
-									<FlushCard className="h-full">
-										<div className="space-y-4">
-											{capability.icon && (
-												<div className="flex items-center justify-start">
-													<div className="rounded-md border border-accent/20 bg-accent/10 p-2">
+								<>
+									{/* Icon Card (2/5) */}
+									<div
+										key={`${index}-icon`}
+										className="magic-bento-card magic-bento-card--border-glow"
+										data-col-span="1"
+										data-md-col-span="2"
+										data-lg-col-span="2"
+										data-row-span="1"
+										style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
+									>
+										<FlushCard className="h-full">
+											<div className="flex h-full items-center justify-center">
+												{capability.icon && (
+													<div className="rounded-md border border-accent/20 bg-accent/10 p-6">
 														<capability.icon
-															className="h-6 w-6 text-accent"
-															strokeWidth={2}
+															className="h-12 w-12 text-accent md:h-16 md:w-16 lg:h-20 lg:w-20"
+															strokeWidth={1.5}
 														/>
 													</div>
-												</div>
-											)}
+												)}
+											</div>
+										</FlushCard>
+									</div>
+
+									{/* Text Card (2/5) */}
+									<div
+										key={`${index}-text`}
+										className="magic-bento-card magic-bento-card--border-glow"
+										data-col-span="1"
+										data-md-col-span="2"
+										data-lg-col-span="2"
+										data-row-span="1"
+										style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
+									>
+										<FlushCard className="h-full">
 											<div className="space-y-3">
-												<h3 className="font-medium text-lg group-hover:text-primary">
+												<h3 className="font-medium text-lg md:text-xl">
 													{capability.title}
 												</h3>
-												<p className="font-light text-muted-foreground text-sm leading-relaxed">
+												<p className="font-light text-muted-foreground text-sm leading-relaxed md:text-base">
 													{capability.description}
 												</p>
-												{capability.features &&
-													capability.features.length > 0 && (
-														<ul className="mt-4 space-y-2">
-															{capability.features.map((feature, idx) => (
-																<li
-																	key={idx}
-																	className="font-light text-muted-foreground text-sm"
-																>
-																	{feature}
-																</li>
-															))}
-														</ul>
-													)}
 											</div>
-										</div>
-									</FlushCard>
-								</div>
+										</FlushCard>
+									</div>
+
+									{/* Feature Table Card (1/5) */}
+									<div
+										key={`${index}-features`}
+										className="magic-bento-card magic-bento-card--border-glow"
+										data-col-span="1"
+										data-md-col-span="2"
+										data-lg-col-span="1"
+										data-row-span="1"
+										style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
+									>
+										<FlushCard className="h-full">
+											{capability.features && capability.features.length > 0 && (
+												<Table className="w-full">
+													<TableBody>
+														{capability.features.map((feature, idx) => (
+															<TableRow key={idx}>
+																<TableCell className="font-light text-muted-foreground text-xs leading-relaxed md:text-sm">
+																	{feature}
+																</TableCell>
+															</TableRow>
+														))}
+													</TableBody>
+												</Table>
+											)}
+										</FlushCard>
+									</div>
+								</>
 							),
 						)}
 					</MagicBentoGrid>
@@ -385,7 +427,7 @@ export default function HomePage() {
 			</div>
 
 			{/* Signup Form Section */}
-			<div className="relative z-10 py-16 md:py-24">
+			<div id="signup" className="relative z-10 py-16 md:py-24">
 				<ScrollAnimation enableFadeOut={true} exitBlur={2} exitScale={0.99}>
 					<AnimatedContent
 						delay={0.2}

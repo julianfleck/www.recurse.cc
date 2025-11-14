@@ -8,6 +8,7 @@ import "@/components/MagicBento.css";
 interface MagicBentoGridProps extends Partial<BentoProps> {
 	children: ReactNode;
 	className?: string;
+	gridColumns?: 3 | 4 | 5;
 }
 
 /**
@@ -17,6 +18,7 @@ interface MagicBentoGridProps extends Partial<BentoProps> {
 export function MagicBentoGrid({
 	children,
 	className,
+	gridColumns = 4,
 	enableSpotlight = true,
 	enableStars = false,
 	enableBorderGlow = true,
@@ -26,6 +28,7 @@ export function MagicBentoGrid({
 	...props
 }: MagicBentoGridProps) {
 	const gridRef = useRef<HTMLDivElement>(null);
+	const gridClassName = gridColumns === 4 ? '' : `grid-cols-${gridColumns}`;
 
 	return (
 		<div className={className}>
@@ -38,7 +41,7 @@ export function MagicBentoGrid({
 					glowColor={glowColor}
 				/>
 			)}
-			<BentoCardGrid gridRef={gridRef}>
+			<BentoCardGrid gridRef={gridRef} className={gridClassName}>
 				{children}
 			</BentoCardGrid>
 		</div>

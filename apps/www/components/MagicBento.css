@@ -127,6 +127,19 @@
   .card-grid {
     grid-template-columns: repeat(4, 1fr) !important;
   }
+
+  /* Custom grid column counts */
+  .card-grid.grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .card-grid.grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+
+  .card-grid.grid-cols-5 {
+    grid-template-columns: repeat(5, 1fr) !important;
+  }
 }
 
 /* Grid column spans using data attributes for responsive control */

@@ -494,8 +494,9 @@ const GlobalSpotlight: React.FC<{
 export const BentoCardGrid: React.FC<{
   children: React.ReactNode;
   gridRef?: React.RefObject<HTMLDivElement | null>;
-}> = ({ children, gridRef }) => (
-  <div className="card-grid bento-section" ref={gridRef}>
+  className?: string;
+}> = ({ children, gridRef, className = '' }) => (
+  <div className={`card-grid bento-section ${className}`} ref={gridRef}>
     {children}
   </div>
 );
