@@ -64,15 +64,9 @@
   --tracking-normal: -0.015em;
   --spacing: 0.25rem;
   
-  /* Grid System - 8 columns with responsive padding */
+  /* Grid System - 8 columns at all breakpoints */
   --grid-columns: 8;
-  --grid-unit: calc(100% / var(--grid-columns) * 0.5); /* Half size on mobile */
-}
-
-@media (min-width: 768px) {
-  :root {
-    --grid-unit: calc(100% / var(--grid-columns)); /* Full size on tablet+ */
-  }
+  --grid-unit: calc(100% / var(--grid-columns));
 }
 
 .dark {
