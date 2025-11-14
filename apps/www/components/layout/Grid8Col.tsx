@@ -9,15 +9,13 @@ interface Grid8ColProps {
 }
 
 /**
- * Responsive grid container
- * - Mobile: 4 columns
- * - Tablet: 6 columns  
- * - Desktop: 8 columns
- * Uses CSS variables (--grid-columns) for automatic responsive behavior
+ * 8-column grid container at all breakpoints
+ * Cards stack on mobile using colSpan, but grid stays 8 columns
+ * This keeps padding proportional and text readable on mobile
  */
 export function Grid8Col({ children, className }: Grid8ColProps) {
 	return (
-		<div className={cn("mx-auto grid max-w-7xl grid-cols-4 px-6 md:grid-cols-6 md:px-32 lg:grid-cols-8 lg:px-40", className)}>
+		<div className={cn("mx-auto grid max-w-7xl grid-cols-8 px-6 md:px-32 lg:px-40", className)}>
 			{children}
 		</div>
 	);
@@ -33,34 +31,32 @@ interface GridCellProps {
 }
 
 /**
- * Responsive grid cell with column and row span
- * - colSpan: mobile (4-column grid)
- * - mdColSpan: tablet (6-column grid)  
- * - lgColSpan: desktop (8-column grid)
+ * Grid cell with responsive column and row span
+ * Grid is always 8 columns, use colSpan/mdColSpan/lgColSpan for responsive layouts
  */
 export function GridCell({ children, className, colSpan = 1, mdColSpan, lgColSpan, rowSpan = 1 }: GridCellProps) {
 	return (
 		<div
 			className={cn(
-				// Mobile column spans (4-column grid)
+				// Mobile column spans
 				colSpan === 1 && "col-span-1",
 				colSpan === 2 && "col-span-2",
 				colSpan === 3 && "col-span-3",
 				colSpan === 4 && "col-span-4",
-				colSpan === 5 && "col-span-4", // Max 4 on mobile
-				colSpan === 6 && "col-span-4",
-				colSpan === 7 && "col-span-4",
-				colSpan === 8 && "col-span-4",
-				// Tablet column spans (6-column grid)
+				colSpan === 5 && "col-span-5",
+				colSpan === 6 && "col-span-6",
+				colSpan === 7 && "col-span-7",
+				colSpan === 8 && "col-span-8",
+				// Tablet column spans
 				mdColSpan === 1 && "md:col-span-1",
 				mdColSpan === 2 && "md:col-span-2",
 				mdColSpan === 3 && "md:col-span-3",
 				mdColSpan === 4 && "md:col-span-4",
 				mdColSpan === 5 && "md:col-span-5",
 				mdColSpan === 6 && "md:col-span-6",
-				mdColSpan === 7 && "md:col-span-6", // Max 6 on tablet
-				mdColSpan === 8 && "md:col-span-6",
-				// Desktop column spans (8-column grid)
+				mdColSpan === 7 && "md:col-span-7",
+				mdColSpan === 8 && "md:col-span-8",
+				// Desktop column spans
 				lgColSpan === 1 && "lg:col-span-1",
 				lgColSpan === 2 && "lg:col-span-2",
 				lgColSpan === 3 && "lg:col-span-3",

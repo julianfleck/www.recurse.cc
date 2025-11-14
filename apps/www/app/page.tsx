@@ -35,8 +35,8 @@ export default function HomePage() {
 			<div className="relative z-10 space-y-24 md:space-y-32">
 				<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 					<Grid8Col className="py-12">
-						{/* Hero Card - Full width across all breakpoints */}
-						<GridCell colSpan={4} mdColSpan={6} lgColSpan={8}>
+						{/* Hero Card - Full width (8 columns) at all breakpoints */}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
 							<GridCard 
 								enableHoverEffect 
 								gridPadding={{ left: 2, right: 1.8, top: 1, bottom: 1 }}
@@ -76,12 +76,12 @@ export default function HomePage() {
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 				<Grid8Col className="py-12">
 					{/* Header - spans all columns */}
-					<GridCell colSpan={4} mdColSpan={6} lgColSpan={8}>
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
 						<HeaderCard title="About" />
 					</GridCell>
 
-					{/* Card 1 - Mobile: full width, Tablet: 2/6, Desktop: 2/8 columns */}
-					<GridCell colSpan={4} mdColSpan={2} lgColSpan={2} rowSpan={2}>
+					{/* Card 1 - Mobile: full width (8/8), Tablet: 2/8, Desktop: 2/8 columns */}
+					<GridCell colSpan={8} mdColSpan={2} lgColSpan={2} rowSpan={2}>
 						<GridCard enableHoverEffect className="flex h-full flex-col justify-between">
 							<p className="font-light text-base text-muted-foreground leading-relaxed">
 								Yet Another AI Memory System?
@@ -92,8 +92,8 @@ export default function HomePage() {
 						</GridCard>
 					</GridCell>
 
-					{/* Card 2 - Mobile: full width, Tablet: 4/6, Desktop: 3/8 columns */}
-					<GridCell colSpan={4} mdColSpan={4} lgColSpan={3} rowSpan={2}>
+					{/* Card 2 - Mobile: full width (8/8), Tablet: 3/8, Desktop: 3/8 columns */}
+					<GridCell colSpan={8} mdColSpan={3} lgColSpan={3} rowSpan={2}>
 						<GridCard enableHoverEffect className="flex h-full flex-col justify-between">
 							<p className="font-light text-sm text-muted-foreground leading-relaxed">
 								Most AI memory systems optimize for one thing: similarity. Ask a question, get the most similar chunks back. This works if you know what you're looking for. But it systematically prevents the kind of exploration that leads to genuine understanding.
@@ -104,8 +104,8 @@ export default function HomePage() {
 						</GridCard>
 					</GridCell>
 
-					{/* Card 3 - Mobile: full width, Tablet: full width (6/6), Desktop: 3/8 columns */}
-					<GridCell colSpan={4} mdColSpan={6} lgColSpan={3} rowSpan={2}>
+					{/* Card 3 - Mobile: full width (8/8), Tablet: 3/8, Desktop: 3/8 columns */}
+					<GridCell colSpan={8} mdColSpan={3} lgColSpan={3} rowSpan={2}>
 						<GridCard enableHoverEffect className="flex h-full flex-col justify-between">
 							<p className="font-light text-base text-muted-foreground leading-relaxed">
 								Recurse is memory infrastructure for systems that actually understand.
