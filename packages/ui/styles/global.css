@@ -67,6 +67,10 @@
   /* Grid System - 8 columns at all breakpoints */
   --grid-columns: 8;
   --grid-unit: calc(100% / var(--grid-columns));
+  
+  /* Grid container max-width for absolute calculations */
+  --grid-max-width: 80rem; /* 1280px - matches max-w-7xl */
+  --grid-unit-abs: calc(var(--grid-max-width) / var(--grid-columns));
 }
 
 .dark {
@@ -206,6 +210,11 @@
   --spacing-6col: calc(var(--grid-unit) * 6);
   --spacing-7col: calc(var(--grid-unit) * 7);
   --spacing-8col: calc(var(--grid-unit) * 8);
+  
+  /* Absolute grid spacing - consistent regardless of element width */
+  --spacing-halfcol-abs: calc(var(--grid-unit-abs) * 0.5);
+  --spacing-1col-abs: calc(var(--grid-unit-abs) * 1);
+  --spacing-2col-abs: calc(var(--grid-unit-abs) * 2);
 }
 
 body {
