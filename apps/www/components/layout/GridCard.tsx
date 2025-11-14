@@ -50,7 +50,7 @@ export function GridCard({ children, className, enableHoverEffect = false }: Gri
 		<div
 			ref={cardRef}
 			className={cn(
-				"relative rounded-lg border border-border bg-card p-6",
+				"relative rounded-lg border border-border bg-card",
 				enableHoverEffect && "grid-card-glow",
 				className
 			)}
