@@ -39,7 +39,7 @@ export default function HomePage() {
 						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
 							<GridCard 
 								enableHoverEffect 
-								className="px-1col py-2col md:py-1col lg:px-2col"
+								className="px-1col py-1col lg:px-2col"
 							>
 								<div className="space-y-8 text-left">
 									<div className="space-y-8">
