@@ -9,9 +9,7 @@ Most AI memory systems work by looking at query similarity – you ask a questio
 
 Recurse is built on different principles: **structure over similarity**, **relationships over rankings**, **evolution over static storage**. We are building infrastructure for sense-making, not just retrieval. For exploration, not just question-answering. For building understanding, not just finding facts.
 
-We treat memory as a living structure – one you can navigate yourself and share with others. So that instead of asking "what's most similar?" you can ask "what connects?", "what supports this?", "how did my understanding evolve?" Those are fundamentally different questions that require fundamentally different infrastructure.
-
-<AnimatedGraphExample />
+---
 
 ## How Recurse Works
 
@@ -23,81 +21,70 @@ When you (or your AI agent) query Recurse, you don't just get back similar text 
 
 ---
 
-### Core Features
+## Core Mechanisms
+
+The system works through several interconnected mechanisms:
 
 <Cards>
-  <Card href="/docs/concepts/frames" title="Semantic Frames" icon="cube">
-    Recurse extracts semantic units with typed relationships – not just text chunks or entities. Arguments link to evidence, decisions connect to discussions, concepts nest within hierarchies. Frame types adapt to your content.
+  <Card href="/docs/concepts/frames" title="Frames" icon="box">
+    **Typed semantic units with named slots that capture meaning and relationships.** 
+    
+    The fundamental building blocks that enable navigation by structure. Frames reference each other and nest recursively to form knowledge graphs.
   </Card>
 
-  <Card href="/docs/guides/using-the-proxy" title="Context Injection" icon="arrow-right-left">
-    Route AI requests through our proxy. Context bundles matching your query get assembled and enriched before forwarding to OpenAI, Anthropic, or any provider. One line change in your code.
+  <Card href="/docs/concepts/adaptive-schemas" title="Adaptive Schemas" icon="sparkles">
+    **Schema discovery without predefined ontologies.** 
+    
+    The system learns frame patterns from your content automatically. Creates emergent structure that adapts as you add sources across different domains.
   </Card>
 
-  <Card href="/docs/concepts/adaptive-schemas" title="Emergent Structure" icon="sparkles">
-    No predefined schemas required. Recurse discovers frame patterns in your content automatically – research papers, code docs, meeting notes – and adapts to your domain as you upload more.
-  </Card>
-
-  <Card href="/docs/concepts/temporal-versioning" title="Living Memory" icon="git-branch">
-    Knowledge evolves without losing history. New information updates previous understanding with timestamps and diffs. Track how understanding changed over months or years.
+  <Card href="/docs/concepts/temporal-versioning" title="Temporal Versioning" icon="git-branch">
+    **Evolution tracking with complete history preservation.** 
+    
+    New information updates previous understanding while maintaining timestamps, diffs, and explanations. Creates living memory that stays current without losing context.
   </Card>
 
   <Card href="/docs/concepts/subscriptions" title="Source Subscriptions" icon="rss">
-    Subscribe to newsletters, RSS feeds, or docs for continuous ingestion. New content gets processed automatically. Your knowledge stays current without manual uploads.
+    **Continuous, automatic ingestion from individual feeds.** 
+    
+    Monitor URLs and RSS for ongoing updates. Temporal versioning maintains both current understanding and complete evolution history as sources change.
+  </Card>
+  
+  <Card href="/docs/concepts/streams" title="Context Streams" icon="broadcast">
+    **Domain expertise sharing based on trust and authority.** 
+    
+    Experts share subgraphs of their knowledge bases—sources, documents, and semantic connections. Subscribe to streams from people you trust for queryable expertise.
   </Card>
 
-  <Card href="/docs/concepts/streams" title="Context Streams" icon="broadcast">
-    Subscribe to expert-curated collections. One click gives you (or your AI model) domain-specific knowledge – AI safety research, engineering best practices, legal precedents – maintained by experts.
+  <Card href="/docs/concepts/rage" title="RAGE" icon="cpu">
+    **The processing engine that transforms unstructured sources into structured knowledge graphs.** 
+    
+    Handles source ingestion, frame extraction, and relationship mapping. Creates evolving structures that navigate meaning rather than just matching keywords.
   </Card>
 </Cards>
 
 ---
 
-## Ways to Use Recurse
+## How These Work Together
 
-**Chat interface**: [chat.recurse.cc](https://chat.recurse.cc) provides a familiar interface connected to your knowledge graph. Ask "how does X relate to Y?" and navigate your structured knowledge conversationally. Tag collections, explore relationships, query across everything you've accumulated. No code required.
+**Frame extraction** provides structured semantic units. **Adaptive schemas** enable the structure to emerge from your content. **Temporal versioning** maintains knowledge currency while preserving evolution history. **Source subscriptions** keep information flowing automatically. **Context Streams** package expertise for sharing. **RAGE** integrates all these mechanisms into a coherent system.
 
-**Proxy**: Route requests from any AI provider through our proxy for automatic context injection. Change one line in your existing code – context bundles matching your query intent get assembled and enriched before forwarding to OpenAI, Anthropic, or any other provider.
-
-**API integration**: Build custom experiences on top of the knowledge substrate. Your AI agents get full programmatic access to frame extraction, relationship navigation, and graph operations. Direct control over uploads, search, and retrieval.
-
-Use whichever fits your workflow – or combine them.
+The architectural consequence: Recurse treats knowledge as living structures rather than static text. This enables retrieval systems that navigate relationships rather than just matching keywords, accumulate genuine understanding rather than aggregating text, and support actual inquiry rather than just answering questions.
 
 ---
 
-## Get Started
+## Getting Started
 
 <Cards>
   <Card href="/docs/getting-started/quickstart" title="Quickstart">
-    Get running in 5 minutes – upload sources and start querying
+    Learn how Recurse works and choose your path
   </Card>
   
   <Card href="/docs/guides/using-the-proxy" title="Proxy Guide">
-    Automatic context injection for AI applications
+    Setting up automatic context injection
   </Card>
   
-  <Card href="/docs/guides/context-streams" title="Context Streams">
-    Subscribe to expert-curated knowledge
-  </Card>
-  
-  <Card href="/docs/concepts" title="Core Concepts">
-    Understand how RAGE, frames, and structural extraction work
+  <Card href="/docs/guides/context-streams" title="Context Streams Guide">
+    Creating and subscribing to curated collections
   </Card>
 </Cards>
-
----
-
-## What Makes Recurse Different
-
-If you've worked with RAG systems or knowledge graphs, you might wonder what makes Recurse different. Here's a quick comparison:
-
-| Feature | Traditional RAG | GraphRAG | Recurse |
-|:--------|:----------------|:---------|:--------|
-| **Understanding** | Similarity matching | Entity extraction | Semantic structure |
-| **Navigation** | Flat chunk retrieval | Entity relationships | Recursive traversal |
-| **Adaptation** | Static | Fixed ontology | Emergent schemas |
-| **Memory** | Session-based | Static graph | Living substrate |
-
-<Card href="/docs/concepts/rage" title="Learn more about RAGE">
-  Learn about the technology behind Recurse and how it differs from traditional retrieval systems
-</Card>

@@ -20,6 +20,7 @@ import {
 	type MouseEvent,
 } from "react";
 import { SearchToggle } from "@/components/search/toggle";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { TooltipProvider } from "@/components/ui/tooltip";
 // Import content files
 import navContent from "@/content/en/navigation.json" with { type: "json" };
@@ -350,6 +351,14 @@ export function DefaultNavigation({
 							<IconQuestionMark className="size-5" strokeWidth={1.5} />
 						</Button>
 					</Link>
+
+					{/* Theme Toggle Button */}
+					<ThemeToggle
+						className={cn(
+							menuItemTransition,
+							isCompact ? "h-9 w-9" : "h-10 w-10",
+						)}
+					/>
 				</div>
 			</TooltipProvider>
 		</div>

@@ -2,11 +2,15 @@
 
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { BentoCard } from "./BentoCard";
+import { BentoGrid, BentoSection } from "./BentoGrid";
 
 interface GridLayoutProps {
 	children: ReactNode;
 	className?: string;
 	maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl" | "full";
+	columns?: 1 | 2 | 3 | 4 | 6;
+	gap?: "sm" | "md" | "lg";
 }
 
 interface GridSectionProps {
@@ -18,64 +22,84 @@ interface GridSectionProps {
 interface GridCellProps {
 	children: ReactNode;
 	className?: string;
+	span?: 1 | 2 | 3 | 4;
+	rowSpan?: 1 | 2 | 3 | 4;
 }
 
-const maxWidthClasses = {
-	sm: "max-w-screen-sm",
-	md: "max-w-screen-md",
-	lg: "max-w-screen-lg",
-	xl: "max-w-screen-xl",
-	"2xl": "max-w-screen-2xl",
-	full: "max-w-full",
-};
-
-// Main grid container
+/**
+ * GridLayout - Main container for bento grid layout
+ * Wraps BentoGrid with backward-compatible API
+ */
 export function GridLayout({
 	children,
 	className,
 	maxWidth = "xl",
+	columns = 4,
+	gap = "md",
 }: GridLayoutProps) {
 	return (
-		<div
-			className={cn(
-				"mx-auto px-4 sm:px-6 md:px-12 lg:px-16 xl:px-20",
-				maxWidthClasses[maxWidth],
-				className,
-			)}
+		<BentoGrid
+			className={className}
+			maxWidth={maxWidth}
+			columns={columns}
+			gap={gap}
 		>
-			<div className="border border-border-accent bg-background/80 backdrop-blur-2xl dark:bg-background/60">
-				{children}
-			</div>
-		</div>
+			{children}
+		</BentoGrid>
 	);
 }
 
-// Grid section with configurable columns - now responsive
+/**
+ * GridSection - Section wrapper for grid content
+ * Maps to BentoSection for consistency
+ */
 export function GridSection({
 	children,
 	columns = 1,
 	className,
 }: GridSectionProps) {
-	const gridCols = {
-		1: "grid-cols-1",
-		2: "grid-cols-1 md:grid-cols-2",
-		3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
-		4: "grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
-	};
-
+	// For backward compatibility, we'll wrap in a section
+	// but the actual grid is handled by GridLayout
 	return (
-		<div className={cn("grid", gridCols[columns], className)}>{children}</div>
+		<BentoSection className={className}>
+			<div
+				className={cn(
+					"grid",
+					columns === 1 && "grid-cols-1",
+					columns === 2 && "grid-cols-1 md:grid-cols-2",
+					columns === 3 && "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+					columns === 4 && "grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
+				)}
+			>
+				{children}
+			</div>
+		</BentoSection>
 	);
 }
 
-// Individual grid cell - now with responsive borders
-export function GridCell({ children, className }: GridCellProps) {
+/**
+ * GridCell - Individual grid cell wrapper
+ * For cards with corner crosses, use BentoCard directly
+ */
+export function GridCell({
+	children,
+	className,
+	span = 1,
+	rowSpan = 1,
+}: GridCellProps) {
 	return (
 		<div
 			className={cn(
-				"border-border-accent border-b",
-				"md:border-r md:last:border-r-0",
-				"p-8 md:p-12",
+				// Grid spans (only apply if used in a grid context)
+				span === 1 && "col-span-1",
+				span === 2 && "col-span-1 md:col-span-2",
+				span === 3 && "col-span-1 md:col-span-2 lg:col-span-3",
+				span === 4 && "col-span-1 md:col-span-2 lg:col-span-4",
+				// Row spans
+				rowSpan === 1 && "row-span-1",
+				rowSpan === 2 && "row-span-1 md:row-span-2",
+				rowSpan === 3 && "row-span-1 md:row-span-2 lg:row-span-3",
+				rowSpan === 4 && "row-span-1 md:row-span-2 lg:row-span-4",
 				className,
 			)}
 		>
@@ -84,26 +108,10 @@ export function GridCell({ children, className }: GridCellProps) {
 	);
 }
 
-// Static section component (no animations)
-function StaticSection({
-	children,
-	className,
-	columns,
-	id,
-}: {
-	children: ReactNode;
-	className?: string;
-	columns: 1 | 2 | 3 | 4;
-	id?: string;
-}) {
-	return (
-		<div className={className} id={id}>
-			<GridSection columns={columns}>{children}</GridSection>
-		</div>
-	);
-}
-
-// Specialized components for common layouts
+/**
+ * SingleColumnSection - Full-width single column section
+ * Spans the full width of the grid
+ */
 export function SingleColumnSection({
 	children,
 	className,
@@ -116,28 +124,16 @@ export function SingleColumnSection({
 	id?: string;
 }) {
 	return (
-		<StaticSection className={className} columns={1} id={id}>
-			<GridCell className={cn("md:border-r-0", cellClassName)}>
-				{children}
-			</GridCell>
-		</StaticSection>
+		<div className={cn("col-span-full", className)} id={id}>
+			<div className={cellClassName}>{children}</div>
+		</div>
 	);
 }
 
-export function ThreeColumnSection({
-	children,
-	className,
-}: {
-	children: ReactNode;
-	className?: string;
-}) {
-	return (
-		<StaticSection className={className} columns={3}>
-			{children}
-		</StaticSection>
-	);
-}
-
+/**
+ * TwoColumnSection - Two column section
+ * Spans full width and creates a 2-column sub-grid
+ */
 export function TwoColumnSection({
 	children,
 	className,
@@ -146,8 +142,33 @@ export function TwoColumnSection({
 	className?: string;
 }) {
 	return (
-		<StaticSection className={className} columns={2}>
-			{children}
-		</StaticSection>
+		<div className={cn("col-span-full", className)}>
+			<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+				{children}
+			</div>
+		</div>
 	);
 }
+
+/**
+ * ThreeColumnSection - Three column section
+ * Spans full width and creates a 3-column sub-grid
+ */
+export function ThreeColumnSection({
+	children,
+	className,
+}: {
+	children: ReactNode;
+	className?: string;
+}) {
+	return (
+		<div className={cn("col-span-full", className)}>
+			<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+				{children}
+			</div>
+		</div>
+	);
+}
+
+// Re-export Bento components for direct use
+export { BentoCard, BentoGrid, BentoSection };
