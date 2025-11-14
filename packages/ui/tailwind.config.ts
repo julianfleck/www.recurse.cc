@@ -12,6 +12,7 @@ const rootDir = resolve(__dirname, '../..');
 const config: Config = {
   // Note: Content paths are now specified via @source directives in CSS files (Tailwind v4 CSS-first approach)
   // Each app's globals.css includes @source directives for its own components and packages/ui
+  // Custom spacing values (grid units) are defined in global.css via @theme directive
   theme: {
     extend: {
       fontFamily: {

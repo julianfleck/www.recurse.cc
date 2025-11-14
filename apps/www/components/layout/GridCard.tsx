@@ -8,20 +8,14 @@ interface GridCardProps {
 	children: ReactNode;
 	className?: string;
 	enableHoverEffect?: boolean;
-	gridPadding?: {
-		left?: number;
-		right?: number;
-		top?: number;
-		bottom?: number;
-	};
 }
 
 /**
  * GridCard - Card component for use within the 8-column grid
- * Optional border glow hover effect and grid-based padding
- * Grid padding accepts fractional values (e.g., 0.5 for half a grid unit)
+ * Use Tailwind spacing utilities (px-2col, py-1col, etc.) for grid-based padding
+ * Optional border glow hover effect
  */
-export function GridCard({ children, className, enableHoverEffect = false, gridPadding }: GridCardProps) {
+export function GridCard({ children, className, enableHoverEffect = false }: GridCardProps) {
 	const cardRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -52,35 +46,25 @@ export function GridCard({ children, className, enableHoverEffect = false, gridP
 		};
 	}, [enableHoverEffect]);
 
-	// Calculate padding based on grid units
-	const paddingStyle = gridPadding ? {
-		paddingLeft: gridPadding.left ? `calc(var(--grid-unit) * ${gridPadding.left})` : undefined,
-		paddingRight: gridPadding.right ? `calc(var(--grid-unit) * ${gridPadding.right})` : undefined,
-		paddingTop: gridPadding.top ? `calc(var(--grid-unit) * ${gridPadding.top})` : undefined,
-		paddingBottom: gridPadding.bottom ? `calc(var(--grid-unit) * ${gridPadding.bottom})` : undefined,
-	} : undefined;
-
 	return (
 		<div
 			ref={cardRef}
 			className={cn(
-				"relative rounded-lg border border-border bg-card",
-				!gridPadding && "p-6", // Default padding if no grid padding specified
+				"relative rounded-lg border border-border bg-card p-6",
 				enableHoverEffect && "grid-card-glow",
 				className
 			)}
-			style={{
-				...(enableHoverEffect
-					? {
+			style={
+				enableHoverEffect
+					? ({
 							'--glow-x': '50%',
 							'--glow-y': '50%',
 							'--glow-intensity': '0',
 							'--glow-radius': '200px',
 							'--glow-color': '132, 0, 255',
-						}
-					: {}),
-				...paddingStyle,
-			} as React.CSSProperties}
+						} as React.CSSProperties)
+					: undefined
+			}
 		>
 			{children}
 		</div>

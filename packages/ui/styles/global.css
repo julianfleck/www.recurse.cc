@@ -197,6 +197,20 @@
   --tracking-wide: calc(var(--tracking-normal) + 0.025em);
   --tracking-wider: calc(var(--tracking-normal) + 0.05em);
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
+
+  /* Grid unit spacing - responsive via CSS variables */
+  --spacing-0\.5col: calc(var(--grid-unit) * 0.5);
+  --spacing-1col: calc(var(--grid-unit) * 1);
+  --spacing-1\.5col: calc(var(--grid-unit) * 1.5);
+  --spacing-2col: calc(var(--grid-unit) * 2);
+  --spacing-2\.5col: calc(var(--grid-unit) * 2.5);
+  --spacing-3col: calc(var(--grid-unit) * 3);
+  --spacing-3\.5col: calc(var(--grid-unit) * 3.5);
+  --spacing-4col: calc(var(--grid-unit) * 4);
+  --spacing-5col: calc(var(--grid-unit) * 5);
+  --spacing-6col: calc(var(--grid-unit) * 6);
+  --spacing-7col: calc(var(--grid-unit) * 7);
+  --spacing-8col: calc(var(--grid-unit) * 8);
 }
 
 body {

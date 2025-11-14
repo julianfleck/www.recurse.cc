@@ -45,8 +45,7 @@ export function HeaderCard({
 			<Link href={href} className="block">
 				<GridCard 
 					enableHoverEffect
-					gridPadding={{ left: 2, right: 2, top: 0.5, bottom: 0.5 }}
-					className={cn("group cursor-pointer", className)}
+					className={cn("group cursor-pointer px-2col py-0.5col", className)}
 				>
 					{content}
 				</GridCard>
@@ -57,8 +56,7 @@ export function HeaderCard({
 	return (
 		<GridCard 
 			enableHoverEffect
-			gridPadding={{ left: 2, right: 2, top: 0.5, bottom: 0.5 }}
-			className={cn("group", className)}
+			className={cn("group px-2col py-0.5col", className)}
 		>
 			{content}
 		</GridCard>
