@@ -17,8 +17,9 @@ export function FlushCard({ children, className }: FlushCardProps) {
 	return (
 		<div
 			className={cn(
-				"group relative overflow-hidden border border-border bg-card h-full w-full transition-colors",
-				"hover:border-border-accent hover:bg-accent/5",
+				"group relative overflow-hidden border border-border h-full w-full transition-all duration-300",
+				"bg-card/80 backdrop-blur-sm opacity-80",
+				"hover:bg-card/60 hover:backdrop-blur-lg hover:border-primary/20 hover:opacity-100",
 				className,
 			)}
 		>
@@ -99,8 +100,8 @@ export function FlushCard({ children, className }: FlushCardProps) {
 				</div>
 			</div>
 
-			{/* Content - zoom only the content on hover, not the card */}
-			<div className="relative z-0 flex h-full p-6 transition-transform duration-300 group-hover:scale-[1.02]" style={{ userSelect: 'text' }}>
+			{/* Content - no zoom */}
+			<div className="relative z-0 flex h-full p-6" style={{ userSelect: 'text' }}>
 				{children}
 			</div>
 		</div>

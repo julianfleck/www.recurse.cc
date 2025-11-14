@@ -33,14 +33,17 @@ export const homepageContent = {
 
 	intro: {
 		title: "Yet Another AI Memory System? Not quite.",
-		content:
-			"Most AI memory systems optimize for one thing: similarity. Ask a question, get the most similar chunks back. This works if you know what you're looking for. But it systematically prevents the kind of exploration that leads to genuine understanding.\n\nYou can't discover connections you didn't know existed. Can't stumble onto relevant context from unexpected sources. Can't follow threads that diverge from your initial question. The infrastructure is optimized for retrieval, not exploration.\n\nRecurse is built on different principles: structure over similarity, relationships over rankings, evolution over static storage.",
+		text: "Recurse is built on different principles: structure over similarity, relationships over rankings, evolution over static storage.",
+		content: {
+			top: "Most AI memory systems optimize for one thing: similarity. Ask a question, get the most similar chunks back. This works if you know what you're looking for. But it systematically prevents the kind of exploration that leads to genuine understanding.",
+			bottom: "You can't discover connections you didn't know existed. Can't stumble onto relevant context from unexpected sources. Can't follow threads that diverge from your initial question. The infrastructure is optimized for retrieval, not exploration.",
+		},
 	},
 
 	coreCapabilities: {
 		title: "Core Capabilities",
 		description:
-			"Most AI memory systems optimize for similarity—find the most similar chunks and return them. Recurse is built on different principles: structure over similarity, relationships over rankings, evolution over static storage.",
+			"Most AI memory systems optimize for similarity—find the most similar chunks and return them.",
 		capabilities: [
 			{
 				title: "Structure Over Similarity",
@@ -143,6 +146,7 @@ export const homepageContent = {
 
 	comparison: {
 		title: "How Recurse Compares",
+		description: "Recurse goes beyond traditional RAG and Graph RAG by creating living knowledge structures that adapt and evolve with your content.",
 		rows: [
 			{
 				feature: "Understanding",

@@ -20,8 +20,9 @@ import { SignupForm } from "@/components/forms/SignupForm";
 import { FlushCard } from "@/components/layout/FlushCard";
 import { IntroCard } from "@/components/layout/IntroCard";
 import { IntroCardContent } from "@/components/layout/IntroCardContent";
+import { TextCard } from "@/components/layout/TextCard";
 import { MagicBentoGrid } from "@/components/layout/MagicBentoGrid";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { homepageContent } from "@/content/homepage";
 
 export default function HomePage() {
@@ -101,35 +102,24 @@ export default function HomePage() {
 						{/* Title - Large card 2x2 */}
 						<IntroCard
 							title={homepageContent.intro.title}
+							text={homepageContent.intro.text}
 							data-col-span="1"
 							data-md-col-span="2"
 							data-lg-col-span="2"
 							data-row-span="2"
 						/>
 
-						{/* Intro paragraphs - Small cards 1x1 */}
-						{homepageContent.intro.content
-							.split("\n\n")
-							.filter((p) => p.trim())
-							.map((paragraph, index) => (
-								<div
-									key={index}
-									className="magic-bento-card magic-bento-card--border-glow"
-									data-col-span="1"
-									data-md-col-span="2"
-									data-lg-col-span="1"
-									data-row-span="1"
-									style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
-								>
-									<FlushCard className="h-full">
-										<div className="text-left">
-											<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
-												{paragraph.trim()}
-											</p>
-										</div>
-									</FlushCard>
-								</div>
-							))}
+						{/* Intro content - Combined card 2x2 */}
+						<TextCard
+							texts={[
+								homepageContent.intro.content.top,
+								homepageContent.intro.content.bottom,
+							]}
+							data-col-span="1"
+							data-md-col-span="2"
+							data-lg-col-span="2"
+							data-row-span="2"
+						/>
 					</MagicBentoGrid>
 				</ScrollAnimation>
 
@@ -151,7 +141,7 @@ export default function HomePage() {
 							data-row-span="2"
 						/>
 
-						{/* Core Capabilities Cards - Small cards 1x1 */}
+						{/* Core Capabilities Cards - All 1x1 in 4-column grid */}
 						{homepageContent.coreCapabilities.capabilities.map(
 							(capability, index) => (
 								<div
@@ -311,47 +301,85 @@ export default function HomePage() {
 						enableStars={false}
 						disableAnimations={false}
 					>
-						{/* Comparison - Large card 2x2 */}
+						{/* Comparison Card 1 - Headline and button (1/4) */}
 						<IntroCard
 							title={homepageContent.comparison.title}
 							data-col-span="1"
 							data-md-col-span="2"
-							data-lg-col-span="2"
-							data-row-span="2"
+							data-lg-col-span="1"
+							data-row-span="1"
 						>
-							<div className="max-w-full overflow-x-auto">
-								<Table>
-									<TableBody>
-										{homepageContent.comparison.rows.map((row, index) => (
-											<TableRow key={index}>
-												<TableCell className="font-medium">
-													{row.feature}
-												</TableCell>
-												<TableCell className="font-light text-muted-foreground">
-													{row.traditionalRAG}
-												</TableCell>
-												<TableCell className="font-light text-muted-foreground">
-													{row.graphRAG}
-												</TableCell>
-												<TableCell className="font-medium">
-													{row.recurse}
-												</TableCell>
-											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</div>
 							{homepageContent.comparison.detailedComparisonHref && (
-								<div className="mt-6">
-									<a
-										href={homepageContent.comparison.detailedComparisonHref}
-										className="font-medium text-primary text-sm hover:underline"
-									>
-										Detailed comparison →
-									</a>
-								</div>
+								<Button
+									asChild
+									className="group rounded-full px-4 py-3 font-medium text-sm"
+									size="default"
+									variant="outline"
+								>
+									<Link href={homepageContent.comparison.detailedComparisonHref}>
+										Detailed comparison
+										<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+									</Link>
+								</Button>
 							)}
 						</IntroCard>
+
+						{/* Comparison Card 2 - Description text (1/4) */}
+						<div
+							className="magic-bento-card magic-bento-card--border-glow"
+							data-col-span="1"
+							data-md-col-span="2"
+							data-lg-col-span="1"
+							data-row-span="1"
+							style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
+						>
+							<FlushCard className="h-full">
+								<p className="font-light text-muted-foreground leading-relaxed">
+									{homepageContent.comparison.description}
+								</p>
+							</FlushCard>
+						</div>
+
+						{/* Comparison Card 3 - Table (2/4) */}
+						<div
+							className="magic-bento-card magic-bento-card--border-glow"
+							data-col-span="1"
+							data-md-col-span="2"
+							data-lg-col-span="2"
+							data-row-span="1"
+							style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
+						>
+						<FlushCard className="h-full">
+							<Table className="w-full">
+								<TableHeader>
+									<TableRow>
+										<TableHead>Feature</TableHead>
+										<TableHead>Traditional RAG</TableHead>
+										<TableHead>Graph RAG</TableHead>
+										<TableHead>Recurse</TableHead>
+									</TableRow>
+								</TableHeader>
+								<TableBody>
+									{homepageContent.comparison.rows.map((row, index) => (
+										<TableRow key={index}>
+											<TableCell className="font-medium">
+												{row.feature}
+											</TableCell>
+											<TableCell className="font-light text-muted-foreground">
+												{row.traditionalRAG}
+											</TableCell>
+											<TableCell className="font-light text-muted-foreground">
+												{row.graphRAG}
+											</TableCell>
+											<TableCell className="font-medium">
+												{row.recurse}
+											</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+						</FlushCard>
+						</div>
 					</MagicBentoGrid>
 				</ScrollAnimation>
 			</div>
