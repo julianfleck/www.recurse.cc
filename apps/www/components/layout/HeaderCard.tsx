@@ -2,53 +2,65 @@
 
 import type { ReactNode } from "react";
 import React from "react";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { FlushCard } from "./FlushCard";
+import { GridCard } from "./GridCard";
 
 interface HeaderCardProps {
 	title: string;
+	href?: string;
 	children?: ReactNode;
 	className?: string;
-	"data-col-span"?: string;
-	"data-md-col-span"?: string;
-	"data-lg-col-span"?: string;
-	"data-row-span"?: string;
 }
 
 /**
- * HeaderCard - Component for section headers using intro-style typography
- * Uses large headline typography matching the intro section style
+ * HeaderCard - Component for section headers using large headline typography
+ * Spans full width with grid-based padding and optional hover arrow link
  */
 export function HeaderCard({
 	title,
+	href,
 	children,
 	className,
-	"data-col-span": dataColSpan,
-	"data-md-col-span": dataMdColSpan,
-	"data-lg-col-span": dataLgColSpan,
-	"data-row-span": dataRowSpan,
 }: HeaderCardProps) {
-	return (
-		<div
-			className={cn(
-				"magic-bento-card magic-bento-card--border-glow",
-				className,
-			)}
-			style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
-			data-col-span={dataColSpan}
-			data-md-col-span={dataMdColSpan}
-			data-lg-col-span={dataLgColSpan}
-			data-row-span={dataRowSpan}
-		>
-			<FlushCard className="h-full">
-				<div className="flex h-full items-center justify-center py-8 text-center md:py-12 lg:py-16">
-					<h2 className="font-medium text-3xl leading-tight tracking-tight md:text-5xl lg:text-6xl">
-						{title}
-					</h2>
-					{children}
-				</div>
-			</FlushCard>
+	const content = (
+		<div className="relative flex items-center">
+			<h2 className="font-medium text-3xl text-muted-foreground transition-colors duration-300 leading-tight tracking-tight group-hover:text-foreground md:text-5xl lg:text-6xl">
+				{title}
+			</h2>
+			<ArrowRight 
+				className={cn(
+					"absolute right-0 h-8 w-8 text-muted-foreground transition-all duration-300 group-hover:animate-pulse md:h-12 md:w-12 lg:h-16 lg:w-16",
+					"opacity-0 -translate-x-12 group-hover:opacity-100 group-hover:translate-x-0"
+				)}
+				strokeWidth={1}
+			/>
+			{children}
 		</div>
 	);
-}
 
+	if (href) {
+		return (
+			<Link href={href} className="block">
+				<GridCard 
+					enableHoverEffect
+					gridPadding={{ left: 2, right: 2, top: 0.5, bottom: 0.5 }}
+					className={cn("group cursor-pointer", className)}
+				>
+					{content}
+				</GridCard>
+			</Link>
+		);
+	}
+
+	return (
+		<GridCard 
+			enableHoverEffect
+			gridPadding={{ left: 2, right: 2, top: 0.5, bottom: 0.5 }}
+			className={cn("group", className)}
+		>
+			{content}
+		</GridCard>
+	);
+}

@@ -43,7 +43,7 @@ export default function HomePage() {
 							>
 								<div className="space-y-8 text-left">
 									<div className="space-y-4">
-										<h1 className="font-medium text-2xl leading-tight tracking-tight md:text-4xl lg:text-6xl">
+										<h1 className="font-semibold text-2xl leading-snug tracking-tight md:text-4xl lg:text-5xl">
 											{homepageContent.hero.headline}
 										</h1>
 										<p className="max-w-3xl font-medium text-foreground text-lg leading-normal md:text-xl lg:text-2xl">
@@ -77,11 +77,7 @@ export default function HomePage() {
 				<Grid8Col className="py-12">
 					{/* Header - spans all 8 columns */}
 					<GridCell colSpan={8}>
-						<GridCard enableHoverEffect className="flex items-center justify-center py-16">
-							<h2 className="font-medium text-5xl leading-tight tracking-tight lg:text-7xl">
-								About
-							</h2>
-						</GridCard>
+						<HeaderCard title="About" />
 					</GridCell>
 
 					{/* Card 1 - 2/8 columns */}

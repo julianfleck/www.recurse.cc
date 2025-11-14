@@ -19,6 +19,7 @@ interface GridCardProps {
 /**
  * GridCard - Card component for use within the 8-column grid
  * Optional border glow hover effect and grid-based padding
+ * Grid padding accepts fractional values (e.g., 0.5 for half a grid unit)
  */
 export function GridCard({ children, className, enableHoverEffect = false, gridPadding }: GridCardProps) {
 	const cardRef = useRef<HTMLDivElement>(null);

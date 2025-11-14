@@ -21,7 +21,7 @@ import type {
  */
 export const homepageContent = {
 	hero: {
-		headline: "The Reasoning Substrate for Humans and AI",
+		headline: "The Memory Substrate for Sense-making, not just Similarity Search",
 		subheadline:
 			"Recurse transforms unstructured content into living knowledge graphs that you and your AI can navigate, explore, and reason through.",
 		introText:
