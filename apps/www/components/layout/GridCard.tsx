@@ -86,7 +86,7 @@ export function GridCard({ children, className, enableHoverEffect = false, enabl
 							'--glow-x': '50%',
 							'--glow-y': '50%',
 							'--glow-intensity': '0',
-							'--glow-radius': '200px',
+							'--glow-radius': '400px',
 							'--glow-color': '132, 0, 255',
 						} as React.CSSProperties)
 					: undefined

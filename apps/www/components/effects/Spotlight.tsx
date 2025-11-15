@@ -4,11 +4,11 @@ import { useEffect, useRef } from "react";
 import { useUIStore } from "@recurse/ui";
 
 /**
- * GlobalSpotlight - Cursor-following spotlight effect
+ * Spotlight - Cursor-following spotlight effect
  * Shows when hovering over cards, extends across card boundaries
  * Uses the same purple color as border glow effect
  */
-export function GlobalSpotlight() {
+export function Spotlight() {
 	const spotlightRef = useRef<HTMLDivElement>(null);
 	const spotlightActive = useUIStore((state) => state.spotlightActive);
 

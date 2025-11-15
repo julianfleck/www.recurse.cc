@@ -8,7 +8,7 @@ import Particles from "@/components/backgrounds/Particles/Particles";
 import { Footer } from "@/components/common/Footer";
 import { Header } from "@/components/common/header";
 import { GridOverlay } from "@/components/layout/GridOverlay";
-import { GlobalSpotlight } from "@/components/effects/GlobalSpotlight";
+import { Spotlight } from "@/components/effects/Spotlight";
 import { ScrollProvider } from "@/contexts/ScrollContext";
 import { Providers } from "./providers";
 
@@ -43,8 +43,8 @@ export default function RootLayout({
 							{/* Global Grid Overlay - spans entire page height */}
 							<GridOverlay />
 							
-							{/* Global Spotlight - cursor-following effect */}
-							<GlobalSpotlight />
+							{/* Spotlight - cursor-following effect */}
+							<Spotlight />
 							
 							<div className="relative min-h-screen bg-background">
 								<Header />
