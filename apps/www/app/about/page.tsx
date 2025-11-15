@@ -38,21 +38,48 @@ export default function AboutPage() {
 							<HeaderCard title="The Problem" enableSpotlight />
 						</GridCell>
 
-						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-							<GridCard enableHoverEffect enableSpotlight className="p-6 md:p-8 lg:p-10">
-								<div className="space-y-6">
-									<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
-										You spend hours building understanding with Claude. Then you switch to ChatGPT for a different task. All that context? Gone. You're explaining yourself from scratch again.
+						{/* Main problem statement */}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<p className="font-light text-base text-muted-foreground leading-relaxed">
+									You spend hours building understanding with Claude. Then you switch to ChatGPT for a different task. All that context? Gone. You're explaining yourself from scratch again.
+								</p>
+							</GridCard>
+						</GridCell>
+
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<p className="font-light text-base text-muted-foreground leading-relaxed">
+									This is inconvenient. And it's an architectural problem baked into current AI systems. Each provider treats memory as their feature, not your infrastructure. None of it transfers.
+								</p>
+							</GridCard>
+						</GridCell>
+
+						{/* Deeper issues */}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={5}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<div className="space-y-4">
+									<h3 className="font-medium text-lg text-foreground">
+										The Retrieval Trap
+									</h3>
+									<p className="font-light text-base text-muted-foreground leading-relaxed">
+										Even if context were portable, most AI memory systems couldn't support genuine exploration. They're optimized for retrieval—find the most similar chunks, return them, generate an answer.
 									</p>
-									<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
-										This is inconvenient. And it's an architectural problem baked into current AI systems. Each provider treats memory as their feature, not your infrastructure. None of it transfers. Your intellectual work stays locked to whoever you happened to talk to that day.
-									</p>
-									<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
-										But there's something deeper. Even if context were portable, most AI memory systems couldn't support genuine exploration. They're optimized for retrieval—find the most similar chunks, return them, generate an answer. If you know what you're looking for, this works. But it systematically prevents the kind of exploration that leads to breakthrough insights.
-									</p>
-									<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
-										You can't discover connections you didn't know existed. Can't follow threads that diverge from your initial query. Can't navigate knowledge by structure and relationship—only by keyword similarity. The infrastructure optimizes for answering questions, not exploring domains.
-									</p>
+								</div>
+							</GridCard>
+						</GridCell>
+
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={3}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<div className="space-y-4">
+									<h3 className="font-medium text-lg text-foreground">
+										What You Can't Do
+									</h3>
+									<ul className="space-y-2 font-light text-base text-muted-foreground leading-relaxed">
+										<li>→ Discover unexpected connections</li>
+										<li>→ Follow divergent threads</li>
+										<li>→ Navigate by structure</li>
+									</ul>
 								</div>
 							</GridCard>
 						</GridCell>
@@ -66,20 +93,53 @@ export default function AboutPage() {
 							<HeaderCard title="How We Think About Knowledge" enableSpotlight />
 						</GridCell>
 
-						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-							<GridCard enableHoverEffect enableSpotlight className="p-6 md:p-8 lg:p-10">
-								<div className="space-y-6">
-									<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
-										Human memory doesn't work through similarity search. When you try to remember something, you don't scan through a mental database of text chunks. You follow associations—reconstructing context, playing memory chords that trigger related thoughts, navigating a web of connections until you find what you're looking for.
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={3}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<div className="space-y-4">
+									<h3 className="font-medium text-lg text-foreground">
+										Memory Chords
+									</h3>
+									<p className="font-light text-base text-muted-foreground leading-relaxed">
+										Human memory doesn't work through similarity search. You follow associations—reconstructing context, playing memory chords that trigger related thoughts, navigating a web of connections.
 									</p>
-									<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
-										Our minds are auto-associative. Information doesn't live in isolated categories. It exists in rich networks of relationships: temporal connections (when did I learn this?), spatial associations (where was I?), conceptual links (what else relates to this?), emotional context (how did I feel about it?). We think in movements between these connections, shifting fluidly between different levels of abstraction.
+								</div>
+							</GridCard>
+						</GridCell>
+
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={5}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<div className="space-y-4">
+									<h3 className="font-medium text-lg text-foreground">
+										Auto-Associative Networks
+									</h3>
+									<p className="font-light text-base text-muted-foreground leading-relaxed">
+										Our minds are auto-associative. Information exists in rich networks of relationships: temporal connections (when?), spatial associations (where?), conceptual links (what else?), emotional context (how did I feel?).
 									</p>
-									<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
-										This is fundamental to how understanding develops. You don't learn by filing facts into predefined categories. You learn by building mental models that evolve over time: connecting new information to existing knowledge, refining understanding as you encounter contradictions, maintaining history of how your thinking changed.
+								</div>
+							</GridCard>
+						</GridCell>
+
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<div className="space-y-4">
+									<h3 className="font-medium text-lg text-foreground">
+										Evolving Models
+									</h3>
+									<p className="font-light text-base text-muted-foreground leading-relaxed">
+										You don't learn by filing facts into predefined categories. You build mental models that evolve: connecting new information, refining understanding, maintaining history.
 									</p>
-									<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
-										Knowledge work should be supported by systems that mirror this process. Not rigid hierarchies that force multi-dimensional relationships into linear structures. Not similarity search that collapses exploration into retrieval. Infrastructure that creates dynamic connections, preserves context, enables navigation by relationship, and evolves with use.
+								</div>
+							</GridCard>
+						</GridCell>
+
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<div className="space-y-4">
+									<h3 className="font-medium text-lg text-foreground">
+										What We Need
+									</h3>
+									<p className="font-light text-base text-muted-foreground leading-relaxed">
+										Infrastructure that creates dynamic connections, preserves context, enables navigation by relationship, and evolves with use. Not rigid hierarchies or similarity search.
 									</p>
 								</div>
 							</GridCard>
@@ -181,19 +241,52 @@ export default function AboutPage() {
 							<HeaderCard title="The Vision" enableSpotlight />
 						</GridCell>
 
-						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-							<GridCard enableHoverEffect enableSpotlight className="p-6 md:p-8 lg:p-10">
-								<div className="space-y-6">
-									<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
-										Today, you use Recurse to make your knowledge portable. Upload documents once, query from anywhere. Route requests through our proxy, get automatic context injection with any AI provider. Your intellectual work isn't locked to specific vendors—it's infrastructure you control.
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={3}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<div className="space-y-4">
+									<h3 className="font-medium text-lg text-foreground">
+										Today
+									</h3>
+									<p className="font-light text-base text-muted-foreground leading-relaxed">
+										You use Recurse to make your knowledge portable. Upload documents once, query from anywhere. Route requests through our proxy, get automatic context injection with any AI provider.
 									</p>
-									<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
-										Tomorrow, this becomes universal memory infrastructure. Your knowledge graph follows you across AI systems. Experts share structured understanding through Context Streams—subscribe to domain expertise maintained by people you trust. Teams build shared knowledge substrates where decisions link to discussions, claims connect to evidence, understanding evolves collaboratively.
+								</div>
+							</GridCard>
+						</GridCell>
+
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={5}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<div className="space-y-4">
+									<h3 className="font-medium text-lg text-foreground">
+										Tomorrow
+									</h3>
+									<p className="font-light text-base text-muted-foreground leading-relaxed">
+										This becomes universal memory infrastructure. Your knowledge graph follows you across AI systems. Experts share structured understanding through Context Streams. Teams build shared knowledge substrates where decisions link to discussions, claims connect to evidence.
 									</p>
-									<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
-										Eventually, this enables genuine AI collaboration. Not autocomplete that forgets. Not chatbots that restart every conversation. Systems that accumulate understanding, navigate complex relationships, and build on what came before. Systems that support inquiry, not just question-answering. That enable discovery, not just retrieval. That compound knowledge instead of fragmenting it across vendors.
+								</div>
+							</GridCard>
+						</GridCell>
+
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<div className="space-y-4">
+									<h3 className="font-medium text-lg text-foreground">
+										Eventually
+									</h3>
+									<p className="font-light text-base text-muted-foreground leading-relaxed">
+										Systems that accumulate understanding, navigate complex relationships, and build on what came before. That support inquiry, not just question-answering. That enable discovery, not just retrieval.
 									</p>
-									<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
+								</div>
+							</GridCard>
+						</GridCell>
+
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<div className="space-y-4">
+									<h3 className="font-medium text-lg text-foreground">
+										The Foundation
+									</h3>
+									<p className="font-light text-base text-muted-foreground leading-relaxed">
 										The infrastructure already works. The mechanisms exist. What we're building is the foundation for how humans and AI work together as understanding accumulates instead of resets.
 									</p>
 								</div>
@@ -209,28 +302,47 @@ export default function AboutPage() {
 							<HeaderCard title="Who's Building This" enableSpotlight />
 						</GridCell>
 
-						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-							<GridCard enableHoverEffect enableSpotlight className="p-6 md:p-8 lg:p-10">
-								<div className="space-y-6">
-									<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
-										Recurse is built by{" "}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={5}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<div className="space-y-4">
+									<h3 className="font-medium text-lg text-foreground">
 										<a
 											href="https://julianfleck.net"
-											className="font-medium text-accent underline decoration-accent/30 underline-offset-2 transition-colors hover:decoration-accent"
+											className="text-accent underline decoration-accent/30 underline-offset-2 transition-colors hover:decoration-accent"
 											target="_blank"
 											rel="noopener noreferrer"
 										>
 											Julian Fleck
 										</a>
-										, a designer and researcher who's spent years exploring interface paradigms for navigating complex information spaces.
-									</p>
-									<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
-										The work spans spatial knowledge interfaces (Metasphere, Trails), embodied cognition in digital environments, frame-based semantics, and systems that mirror how we actually think rather than forcing us into rigid structures.
-									</p>
-									<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
-										Recurse is the practical implementation of ideas developed across projects like auto-associative workspaces, divergence engines, and cognitive cartography—years of research on how knowledge systems can better support human cognition and collaborative understanding.
+									</h3>
+									<p className="font-light text-base text-muted-foreground leading-relaxed">
+										A designer and researcher who's spent years exploring interface paradigms for navigating complex information spaces.
 									</p>
 								</div>
+							</GridCard>
+						</GridCell>
+
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={3}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<div className="space-y-4">
+									<h3 className="font-medium text-lg text-foreground">
+										Research Areas
+									</h3>
+									<ul className="space-y-2 font-light text-base text-muted-foreground leading-relaxed">
+										<li>→ Spatial knowledge interfaces</li>
+										<li>→ Embodied cognition</li>
+										<li>→ Frame-based semantics</li>
+										<li>→ Auto-associative systems</li>
+									</ul>
+								</div>
+							</GridCard>
+						</GridCell>
+
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
+							<GridCard enableHoverEffect enableSpotlight className="p-4 md:p-6">
+								<p className="font-light text-base text-muted-foreground leading-relaxed">
+									Recurse is the practical implementation of ideas developed across projects like auto-associative workspaces, divergence engines, and cognitive cartography—years of research on how knowledge systems can better support human cognition and collaborative understanding.
+								</p>
 							</GridCard>
 						</GridCell>
 					</Grid8Col>
