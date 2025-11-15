@@ -24,6 +24,10 @@ export type UIState = {
 
   contextOpen: boolean;
   setContextOpen: (open: boolean) => void;
+
+  // Spotlight cursor effect (transient - not persisted)
+  spotlightActive: boolean;
+  setSpotlightActive: (active: boolean) => void;
 };
 
 const STORAGE_KEY = 'recurse_ui_store';
@@ -160,6 +164,9 @@ export const useUIStore = create<UIState>((set) => {
     chatOpen: persisted.chatOpen ?? false,
     contextOpen: persisted.contextOpen ?? false,
 
+    // Transient state (not persisted)
+    spotlightActive: false,
+
     // Theme management
     setTheme: (theme) => {
       set((state) => {
@@ -200,6 +207,11 @@ export const useUIStore = create<UIState>((set) => {
         persist(next);
         return next;
       });
+    },
+
+    // Spotlight state (transient - not persisted)
+    setSpotlightActive: (active) => {
+      set({ spotlightActive: active });
     },
   };
 });

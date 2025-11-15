@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
+import { useUIStore } from "@recurse/ui";
 
 interface GridCardProps {
 	children: ReactNode;
@@ -14,10 +15,11 @@ interface GridCardProps {
 /**
  * GridCard - Card component for use within the 8-column grid
  * Use Tailwind spacing utilities (px-2col, py-1col, etc.) for grid-based padding
- * Optional border glow hover effect and spotlight cursor effect
+ * Optional border glow hover effect and global spotlight cursor effect
  */
 export function GridCard({ children, className, enableHoverEffect = false, enableSpotlight = false }: GridCardProps) {
 	const cardRef = useRef<HTMLDivElement>(null);
+	const setSpotlightActive = useUIStore((state) => state.setSpotlightActive);
 
 	useEffect(() => {
 		if (!enableHoverEffect || !cardRef.current) return;
@@ -47,27 +49,28 @@ export function GridCard({ children, className, enableHoverEffect = false, enabl
 		};
 	}, [enableHoverEffect]);
 
-	// Spotlight effect
+	// Spotlight effect - activate global spotlight on hover
 	useEffect(() => {
 		if (!enableSpotlight || !cardRef.current) return;
 
 		const card = cardRef.current;
 
-		const handleMouseMove = (e: MouseEvent) => {
-			const rect = card.getBoundingClientRect();
-			const x = e.clientX - rect.left;
-			const y = e.clientY - rect.top;
-
-			card.style.setProperty('--spotlight-x', `${x}px`);
-			card.style.setProperty('--spotlight-y', `${y}px`);
+		const handleMouseEnter = () => {
+			setSpotlightActive(true);
 		};
 
-		card.addEventListener('mousemove', handleMouseMove);
+		const handleMouseLeave = () => {
+			setSpotlightActive(false);
+		};
+
+		card.addEventListener('mouseenter', handleMouseEnter);
+		card.addEventListener('mouseleave', handleMouseLeave);
 
 		return () => {
-			card.removeEventListener('mousemove', handleMouseMove);
+			card.removeEventListener('mouseenter', handleMouseEnter);
+			card.removeEventListener('mouseleave', handleMouseLeave);
 		};
-	}, [enableSpotlight]);
+	}, [enableSpotlight, setSpotlightActive]);
 
 	return (
 		<div
@@ -75,23 +78,16 @@ export function GridCard({ children, className, enableHoverEffect = false, enabl
 			className={cn(
 				"relative rounded-lg border border-border bg-card",
 				enableHoverEffect && "grid-card-glow",
-				enableSpotlight && "grid-card-spotlight",
 				className
 			)}
 			style={
-				enableHoverEffect || enableSpotlight
+				enableHoverEffect
 					? ({
-							...(enableHoverEffect && {
-								'--glow-x': '50%',
-								'--glow-y': '50%',
-								'--glow-intensity': '0',
-								'--glow-radius': '200px',
-								'--glow-color': '132, 0, 255',
-							}),
-							...(enableSpotlight && {
-								'--spotlight-x': '50%',
-								'--spotlight-y': '50%',
-							}),
+							'--glow-x': '50%',
+							'--glow-y': '50%',
+							'--glow-intensity': '0',
+							'--glow-radius': '200px',
+							'--glow-color': '132, 0, 255',
 						} as React.CSSProperties)
 					: undefined
 			}
