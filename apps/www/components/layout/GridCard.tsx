@@ -4,22 +4,26 @@ import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 import { useUIStore } from "@recurse/ui";
+import Link from "next/link";
 
 interface GridCardProps {
 	children: ReactNode;
 	className?: string;
 	enableHoverEffect?: boolean;
 	enableSpotlight?: boolean;
+	href?: string;
 }
 
 /**
  * GridCard - Card component for use within the 8-column grid
  * Use Tailwind spacing utilities (px-2col, py-1col, etc.) for grid-based padding
  * Optional border glow hover effect and global spotlight cursor effect
+ * Optional href for clickable cards
  */
-export function GridCard({ children, className, enableHoverEffect = false, enableSpotlight = false }: GridCardProps) {
+export function GridCard({ children, className, enableHoverEffect = false, enableSpotlight = false, href }: GridCardProps) {
 	const cardRef = useRef<HTMLDivElement>(null);
 	const setSpotlightActive = useUIStore((state) => state.setSpotlightActive);
+	const isLinked = Boolean(href);
 
 	useEffect(() => {
 		if (!enableHoverEffect || !cardRef.current) return;
@@ -72,12 +76,14 @@ export function GridCard({ children, className, enableHoverEffect = false, enabl
 		};
 	}, [enableSpotlight, setSpotlightActive]);
 
-	return (
+	const cardContent = (
 		<div
 			ref={cardRef}
 			className={cn(
 				"relative rounded-lg border border-border bg-card",
 				enableHoverEffect && "grid-card-glow",
+				enableHoverEffect && isLinked && "grid-card-glow--linked",
+				isLinked && "cursor-pointer",
 				className
 			)}
 			style={
@@ -95,5 +101,15 @@ export function GridCard({ children, className, enableHoverEffect = false, enabl
 			{children}
 		</div>
 	);
+
+	if (href) {
+		return (
+			<Link href={href} className="block">
+				{cardContent}
+			</Link>
+		);
+	}
+
+	return cardContent;
 }
 
