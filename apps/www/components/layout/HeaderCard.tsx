@@ -12,6 +12,7 @@ interface HeaderCardProps {
 	href?: string;
 	children?: ReactNode;
 	className?: string;
+	enableSpotlight?: boolean;
 }
 
 /**
@@ -23,6 +24,7 @@ export function HeaderCard({
 	href,
 	children,
 	className,
+	enableSpotlight = false,
 }: HeaderCardProps) {
 	const content = (
 		<div className="relative flex items-center">
@@ -45,6 +47,7 @@ export function HeaderCard({
 			<Link href={href} className="block">
 				<GridCard 
 					enableHoverEffect
+					enableSpotlight={enableSpotlight}
 					className={cn("group cursor-pointer px-1col py-1col lg:px-2col lg:py-halfcol", className)}
 				>
 					{content}
@@ -56,6 +59,7 @@ export function HeaderCard({
 	return (
 		<GridCard 
 			enableHoverEffect
+			enableSpotlight={enableSpotlight}
 			className={cn("group px-1col py-1col lg:px-2col lg:py-halfcol", className)}
 		>
 			{content}

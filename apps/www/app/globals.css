@@ -38,3 +38,30 @@
 .grid-card-glow[style*="--glow-intensity"]::after {
   opacity: calc(var(--glow-intensity, 0) * 0.6 + 0.2);
 }
+
+/* Grid Card Spotlight Effect */
+.grid-card-spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    600px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+    rgba(255, 255, 255, 0.06),
+    transparent 40%
+  );
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.grid-card-spotlight:hover::before {
+  opacity: 1;
+}
+
+/* Ensure card content is above spotlight */
+.grid-card-spotlight > * {
+  position: relative;
+  z-index: 2;
+}

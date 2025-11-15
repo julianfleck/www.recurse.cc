@@ -39,6 +39,7 @@ export default function HomePage() {
 						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
 							<GridCard 
 								enableHoverEffect 
+								enableSpotlight
 								className="px-1col py-1col lg:px-2col"
 							>
 								<div className="space-y-8 text-left">
@@ -77,12 +78,12 @@ export default function HomePage() {
 				<Grid8Col className="py-12">
 					{/* Header - spans all columns */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-						<HeaderCard title="About" />
+						<HeaderCard title="About" enableSpotlight />
 					</GridCell>
 
 					{/* Card 1 - Mobile: full width (8/8), Tablet: 2/8, Desktop: 2/8 columns */}
 					<GridCell colSpan={8} mdColSpan={2} lgColSpan={2} rowSpan={2}>
-						<GridCard enableHoverEffect className="flex h-full flex-col justify-between p-4 md:p-6">
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
 							<p className="font-light text-base text-muted-foreground leading-relaxed">
 								Yet Another AI Memory System?
 							</p>
@@ -94,7 +95,7 @@ export default function HomePage() {
 
 					{/* Card 2 - Mobile: full width (8/8), Tablet: 3/8, Desktop: 3/8 columns */}
 					<GridCell colSpan={8} mdColSpan={3} lgColSpan={3} rowSpan={2}>
-						<GridCard enableHoverEffect className="flex h-full flex-col justify-between p-4 md:p-6">
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
 							<p className="font-light text-sm text-muted-foreground leading-relaxed">
 								Most AI memory systems optimize for one thing: similarity. Ask a question, get the most similar chunks back. This works if you know what you're looking for. But it systematically prevents the kind of exploration that leads to genuine understanding.
 							</p>
@@ -106,7 +107,7 @@ export default function HomePage() {
 
 					{/* Card 3 - Mobile: full width (8/8), Tablet: 3/8, Desktop: 3/8 columns */}
 					<GridCell colSpan={8} mdColSpan={3} lgColSpan={3} rowSpan={2}>
-						<GridCard enableHoverEffect className="flex h-full flex-col justify-between p-4 md:p-6">
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
 							<p className="font-light text-base text-muted-foreground leading-relaxed">
 								Recurse is memory infrastructure for systems that actually understand.
 							</p>
