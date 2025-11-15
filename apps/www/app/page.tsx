@@ -119,211 +119,139 @@ export default function HomePage() {
 				</Grid8Col>
 			</ScrollAnimation>
 
-			{/* Core Capabilities Section - 5 column grid (Icon:2, Text:2, Table:1) */}
+			{/* Core Capabilities Section */}
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-					<MagicBentoGrid
-						enableSpotlight={true}
-						enableBorderGlow={true}
-						enableStars={false}
-						disableAnimations={false}
-						gridColumns={5}
-					>
-						{homepageContent.coreCapabilities.capabilities.map(
-							(capability, index) => (
-								<>
-									{/* Icon Card (2/5) */}
-									<div
-										key={`${index}-icon`}
-										className="magic-bento-card magic-bento-card--border-glow"
-										data-col-span="1"
-										data-md-col-span="2"
-										data-lg-col-span="2"
-										data-row-span="1"
-										style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
-									>
-										<FlushCard className="h-full">
-											<div className="flex h-full items-center justify-center">
-												{capability.icon && (
-													<div className="rounded-md border border-accent/20 bg-accent/10 p-6">
-														<capability.icon
-															className="h-12 w-12 text-accent md:h-16 md:w-16 lg:h-20 lg:w-20"
-															strokeWidth={1.5}
-														/>
-													</div>
-												)}
-											</div>
-										</FlushCard>
-									</div>
+				<Grid8Col className="py-12">
+					{/* Header - spans all columns */}
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
+						<HeaderCard title="Core Capabilities" enableSpotlight />
+					</GridCell>
 
-									{/* Text Card (2/5) */}
-									<div
-										key={`${index}-text`}
-										className="magic-bento-card magic-bento-card--border-glow"
-										data-col-span="1"
-										data-md-col-span="2"
-										data-lg-col-span="2"
-										data-row-span="1"
-										style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
-									>
-										<FlushCard className="h-full">
-											<div className="space-y-3">
-												<h3 className="font-medium text-lg md:text-xl">
-													{capability.title}
-												</h3>
-												<p className="font-light text-muted-foreground text-sm leading-relaxed md:text-base">
-													{capability.description}
-												</p>
-											</div>
-										</FlushCard>
-									</div>
-
-									{/* Feature Table Card (1/5) */}
-									<div
-										key={`${index}-features`}
-										className="magic-bento-card magic-bento-card--border-glow"
-										data-col-span="1"
-										data-md-col-span="2"
-										data-lg-col-span="1"
-										data-row-span="1"
-										style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
-									>
-										<FlushCard className="h-full">
-											{capability.features && capability.features.length > 0 && (
-												<Table className="w-full">
-													<TableBody>
-														{capability.features.map((feature, idx) => (
-															<TableRow key={idx}>
-																<TableCell className="font-light text-muted-foreground text-xs leading-relaxed md:text-sm">
-																	{feature}
-																</TableCell>
-															</TableRow>
-														))}
-													</TableBody>
-												</Table>
-											)}
-										</FlushCard>
-									</div>
-								</>
-							),
-						)}
-					</MagicBentoGrid>
-				</ScrollAnimation>
-
-				{/* What You Can Build Section */}
-				<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-					<MagicBentoGrid
-						enableSpotlight={true}
-						enableBorderGlow={true}
-						enableStars={false}
-						disableAnimations={false}
-					>
-						{/* Header - Large card 2x2 */}
-						<IntroCard
-							title={homepageContent.whatYouCanBuild.title}
-							text={homepageContent.whatYouCanBuild.description}
-							data-col-span="1"
-							data-md-col-span="2"
-							data-lg-col-span="2"
-							data-row-span="2"
-						/>
-
-						{/* Build Items as Individual Cards - Small cards 1x1 */}
-						{homepageContent.whatYouCanBuild.items.map((item, index) => (
-							<div
-								key={index}
-								className="magic-bento-card magic-bento-card--border-glow"
-								data-col-span="1"
-								data-md-col-span="2"
-								data-lg-col-span="1"
-								data-row-span="1"
-								style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
-							>
-								<FlushCard className="h-full">
-									<div className="space-y-3">
-										<h3 className="font-medium text-lg group-hover:text-primary">
-											{item.what}
-										</h3>
-										<p className="font-light text-muted-foreground text-sm leading-relaxed">
-											{item.description}
-										</p>
-									</div>
-								</FlushCard>
-							</div>
-						))}
-					</MagicBentoGrid>
-				</ScrollAnimation>
-
-				{/* Who This Is For Section */}
-				<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-					<MagicBentoGrid
-						enableSpotlight={true}
-						enableBorderGlow={true}
-						enableStars={false}
-						disableAnimations={false}
-					>
-						{/* Who This Is For Header - Large card 2x2 */}
-						<IntroCard
-							title={homepageContent.whoThisIsFor.title}
-							data-col-span="1"
-							data-md-col-span="2"
-							data-lg-col-span="2"
-							data-row-span="2"
-						/>
-
-						{/* Who This Is For Cards - Small cards 1x1 */}
-						{homepageContent.whoThisIsFor.audiences.map((audience, index) => (
-							<div
-								key={index}
-								className="magic-bento-card magic-bento-card--border-glow"
-								data-col-span="1"
-								data-md-col-span="2"
-								data-lg-col-span="1"
-								data-row-span="1"
-								style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
-							>
-								<FlushCard className="h-full">
-									<div className="space-y-4">
-										{audience.icon && (
-											<div className="flex items-center justify-start">
-												<div className="rounded-md border border-accent/20 bg-accent/10 p-2">
-													<audience.icon
-														className="h-6 w-6 text-accent"
-														strokeWidth={1.5}
-													/>
-												</div>
+					{homepageContent.coreCapabilities.capabilities.map(
+						(capability, index) => (
+							<React.Fragment key={index}>
+								{/* Icon Card - Mobile: 8/8, Tablet: 2/8, Desktop: 2/8 */}
+								<GridCell colSpan={8} mdColSpan={2} lgColSpan={2}>
+									<GridCard enableHoverEffect enableSpotlight className="flex h-full items-center justify-center p-6 md:p-8">
+										{capability.icon && (
+											<div className="rounded-md border border-accent/20 bg-accent/10 p-6">
+												<capability.icon
+													className="h-12 w-12 text-accent md:h-16 md:w-16 lg:h-20 lg:w-20"
+													strokeWidth={1.5}
+												/>
 											</div>
 										)}
+									</GridCard>
+								</GridCell>
+
+								{/* Text Card - Mobile: 8/8, Tablet: 4/8, Desktop: 4/8 */}
+								<GridCell colSpan={8} mdColSpan={4} lgColSpan={4}>
+									<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-center p-4 md:p-6">
 										<div className="space-y-3">
-											<h3 className="font-semibold text-foreground text-xl">
-												{audience.title}
+											<h3 className="font-medium text-lg md:text-xl">
+												{capability.title}
 											</h3>
-											<p className="text-muted-foreground leading-relaxed">
-												{audience.description}
+											<p className="font-light text-muted-foreground text-sm leading-relaxed md:text-base">
+												{capability.description}
 											</p>
 										</div>
-									</div>
-								</FlushCard>
-							</div>
-						))}
-					</MagicBentoGrid>
-				</ScrollAnimation>
+									</GridCard>
+								</GridCell>
 
-				{/* Comparison Section */}
-				<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-					<MagicBentoGrid
-						enableSpotlight={true}
-						enableBorderGlow={true}
-						enableStars={false}
-						disableAnimations={false}
-					>
-						{/* Comparison Card 1 - Headline and button (1/4) */}
-						<IntroCard
-							title={homepageContent.comparison.title}
-							data-col-span="1"
-							data-md-col-span="2"
-							data-lg-col-span="1"
-							data-row-span="1"
-						>
+								{/* Feature Table Card - Mobile: 8/8, Tablet: 2/8, Desktop: 2/8 */}
+								<GridCell colSpan={8} mdColSpan={2} lgColSpan={2}>
+									<GridCard enableHoverEffect enableSpotlight className="h-full p-4 md:p-6">
+										{capability.features && capability.features.length > 0 && (
+											<Table className="w-full">
+												<TableBody>
+													{capability.features.map((feature, idx) => (
+														<TableRow key={idx}>
+															<TableCell className="font-light text-muted-foreground text-xs leading-relaxed md:text-sm">
+																{feature}
+															</TableCell>
+														</TableRow>
+													))}
+												</TableBody>
+											</Table>
+										)}
+									</GridCard>
+								</GridCell>
+							</React.Fragment>
+						),
+					)}
+				</Grid8Col>
+			</ScrollAnimation>
+
+			{/* What You Can Build Section */}
+			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
+				<Grid8Col className="py-12">
+					{/* Header - spans all columns */}
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
+						<HeaderCard title={homepageContent.whatYouCanBuild.title} enableSpotlight />
+					</GridCell>
+
+					{/* Build Items as Individual Cards - Mobile: 8/8, Tablet: 4/8, Desktop: 2/8 */}
+					{homepageContent.whatYouCanBuild.items.map((item, index) => (
+						<GridCell key={index} colSpan={8} mdColSpan={4} lgColSpan={2}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<div className="space-y-3">
+									<h3 className="font-medium text-lg">
+										{item.what}
+									</h3>
+									<p className="font-light text-muted-foreground text-sm leading-relaxed">
+										{item.description}
+									</p>
+								</div>
+							</GridCard>
+						</GridCell>
+					))}
+				</Grid8Col>
+			</ScrollAnimation>
+
+			{/* Who This Is For Section */}
+			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
+				<Grid8Col className="py-12">
+					{/* Header - spans all columns */}
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
+						<HeaderCard title={homepageContent.whoThisIsFor.title} enableSpotlight />
+					</GridCell>
+
+					{/* Who This Is For Cards - Mobile: 8/8, Tablet: 4/8, Desktop: 2/8 */}
+					{homepageContent.whoThisIsFor.audiences.map((audience, index) => (
+						<GridCell key={index} colSpan={8} mdColSpan={4} lgColSpan={2}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col p-4 md:p-6">
+								<div className="space-y-4">
+									{audience.icon && (
+										<div className="flex items-center justify-start">
+											<div className="rounded-md border border-accent/20 bg-accent/10 p-2">
+												<audience.icon
+													className="h-6 w-6 text-accent"
+													strokeWidth={1.5}
+												/>
+											</div>
+										</div>
+									)}
+									<div className="space-y-3">
+										<h3 className="font-semibold text-foreground text-xl">
+											{audience.title}
+										</h3>
+										<p className="text-muted-foreground leading-relaxed">
+											{audience.description}
+										</p>
+									</div>
+								</div>
+							</GridCard>
+						</GridCell>
+					))}
+				</Grid8Col>
+			</ScrollAnimation>
+
+			{/* Comparison Section */}
+			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
+				<Grid8Col className="py-12">
+					{/* Header - spans all columns */}
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
+						<HeaderCard title={homepageContent.comparison.title} enableSpotlight>
 							{homepageContent.comparison.detailedComparisonHref && (
 								<Button
 									asChild
@@ -337,34 +265,21 @@ export default function HomePage() {
 									</Link>
 								</Button>
 							)}
-						</IntroCard>
+						</HeaderCard>
+					</GridCell>
 
-						{/* Comparison Card 2 - Description text (1/4) */}
-						<div
-							className="magic-bento-card magic-bento-card--border-glow"
-							data-col-span="1"
-							data-md-col-span="2"
-							data-lg-col-span="1"
-							data-row-span="1"
-							style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
-						>
-							<FlushCard className="h-full">
-								<p className="font-light text-muted-foreground leading-relaxed">
-									{homepageContent.comparison.description}
-								</p>
-							</FlushCard>
-						</div>
+					{/* Description Card - Mobile: 8/8, Tablet: 8/8, Desktop: 2/8 */}
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full items-center p-4 md:p-6">
+							<p className="font-light text-muted-foreground leading-relaxed">
+								{homepageContent.comparison.description}
+							</p>
+						</GridCard>
+					</GridCell>
 
-						{/* Comparison Card 3 - Table (2/4) */}
-						<div
-							className="magic-bento-card magic-bento-card--border-glow"
-							data-col-span="1"
-							data-md-col-span="2"
-							data-lg-col-span="2"
-							data-row-span="1"
-							style={{ '--glow-color': '132, 0, 255' } as React.CSSProperties}
-						>
-						<FlushCard className="h-full">
+					{/* Comparison Table - Mobile: 8/8, Tablet: 8/8, Desktop: 6/8 */}
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={6}>
+						<GridCard enableHoverEffect enableSpotlight className="h-full p-4 md:p-6">
 							<Table className="w-full">
 								<TableHeader>
 									<TableRow>
@@ -393,11 +308,11 @@ export default function HomePage() {
 									))}
 								</TableBody>
 							</Table>
-						</FlushCard>
-						</div>
-					</MagicBentoGrid>
-				</ScrollAnimation>
-			</div>
+						</GridCard>
+					</GridCell>
+				</Grid8Col>
+			</ScrollAnimation>
+		</div>
 
 			{/* Signup Form Section */}
 			<div id="signup" className="relative z-10 py-16 md:py-24">
