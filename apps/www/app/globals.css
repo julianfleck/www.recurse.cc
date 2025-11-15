@@ -40,18 +40,23 @@
 }
 
 /* Grid Card Spotlight Effect */
+.grid-card-spotlight {
+  overflow: hidden;
+}
+
 .grid-card-spotlight::before {
   content: '';
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    600px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
-    rgba(255, 255, 255, 0.06),
-    transparent 40%
+    300px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.05) 40%,
+    transparent 70%
   );
   border-radius: inherit;
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.2s ease;
   pointer-events: none;
   z-index: 1;
 }
