@@ -35,13 +35,16 @@ export default function HomePage() {
 							<GridCard 
 								enableHoverEffect 
 								enableSpotlight
-								className="px-1col py-1col lg:px-2col"
+								className="px-1col py-1col lg:pl-2col lg:pr-1.5col"
 							>
 								<div className="space-y-8 text-left">
 									<div className="space-y-8">
-										<h1 className="font-semibold text-2xl leading-[1.15]! tracking-tight md:text-4xl lg:text-5xl text-accent-foreground">
-											{homepageContent.hero.headline}
-										</h1>
+										{/* TODO: place text swap component here */}
+										<div className="lg:max-w-lg">
+											<h1 className="font-semibold text-2xl leading-[1.15]! tracking-tight md:text-4xl lg:text-5xl text-accent-foreground lg:max-w-3xl">
+												{homepageContent.hero.headline}
+											</h1>
+										</div>
 										<p className="max-w-4xl text-muted-foreground text-lg leading-normal md:text-xl lg:text-2xl">
 											{homepageContent.hero.subheadline}
 										</p>
