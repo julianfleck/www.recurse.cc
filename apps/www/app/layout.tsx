@@ -48,7 +48,7 @@ export default function RootLayout({
 							
 							<div className="relative min-h-screen bg-background">
 								<Header />
-								<main className="relative z-10 pt-[120px]">{children}</main>
+								<main className="relative z-10 pt-[120px] transition-all duration-300">{children}</main>
 								<Footer />
 							</div>
 							{/* Particles Background for Entire Site */}

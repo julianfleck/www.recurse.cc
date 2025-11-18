@@ -31,9 +31,8 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
 	return (
 		<IconToggleButton
 			buttonProps={{
-				variant: "ghost",
+				variant: "outline",
 				size: "icon",
-				className: "h-8 w-8",
 				children: <span className="sr-only">Toggle theme</span>,
 			}}
 			className={className}

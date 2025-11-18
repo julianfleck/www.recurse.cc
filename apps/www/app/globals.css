@@ -7,6 +7,15 @@
 @import "fumadocs-openapi/css/preset.css";
 @import "tw-animate-css";
 
+/* Header state-based content displacement */
+body.header-expanded main {
+  padding-top: calc(var(--spacing-halfcol-abs) * 1.5);
+}
+
+body.header-compact main {
+  padding-top: calc(var(--spacing-halfcol-abs) * 1);
+}
+
 /* Grid Card Hover Effect */
 .grid-card-glow::after {
   content: '';
@@ -54,4 +63,12 @@
 .grid-card-glow--linked:hover::after,
 .grid-card-glow--linked[style*="--glow-intensity"]::after {
   opacity: calc(var(--glow-intensity, 0) * 0.8 + 0.4);
+}
+
+main {
+  padding-top: calc(var(--spacing-halfcol-abs) * 0.5 + 2rem); /* Expanded padding + buffer */
+}
+
+.header-compact main {
+  padding-top: calc(var(--spacing-halfcol-abs) * 0.2 + 1.5rem); /* Collapsed padding + buffer */
 }

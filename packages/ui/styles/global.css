@@ -154,6 +154,21 @@
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
 
+  /* Font sizes - reduced by ~6-8% from Tailwind defaults */
+  --font-size-xs: 0.7rem;      /* was 0.75rem */
+  --font-size-sm: 0.8rem;      /* was 0.875rem */
+  --font-size-base: 0.95rem;    /* was 1rem */
+  --font-size-lg: 1.05rem;     /* was 1.125rem */
+  --font-size-xl: 1.15rem;     /* was 1.25rem */
+  --font-size-2xl: 1.4rem;     /* was 1.5rem */
+  --font-size-3xl: 1.7rem;     /* was 1.875rem */
+  --font-size-4xl: 2rem;       /* was 2.25rem */
+  --font-size-5xl: 2.7rem;     /* was 3rem */
+  --font-size-6xl: 3.4rem;     /* was 3.75rem */
+  --font-size-7xl: 4rem;       /* was 4.5rem */
+  --font-size-8xl: 5.4rem;     /* was 6rem */
+  --font-size-9xl: 7.2rem;     /* was 8rem */
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
