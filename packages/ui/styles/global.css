@@ -804,3 +804,58 @@ h6 {
   --glow-opacity-multiplier-2: 0.4;
   --glow-opacity-multiplier-3: 0.2;
 }
+
+/* ============================================================================
+ * Navigation Menu Hover States
+ * ============================================================================
+ * Harmonized hover states for all navigation items using chart-1 (yellow/green) color
+ */
+
+/* Light mode: yellow/green background + border */
+[data-slot="navigation-menu-trigger"]:hover,
+[data-slot="navigation-menu-link"]:hover {
+  background-color: var(--chart-1);
+  border-color: var(--chart-1);
+  color: var(--foreground);
+}
+
+[data-slot="navigation-menu-trigger"]:focus,
+[data-slot="navigation-menu-link"]:focus {
+  background-color: var(--chart-1);
+  border-color: var(--chart-1);
+  color: var(--foreground);
+}
+
+/* Open/active state - lighter tone for better visibility */
+[data-slot="navigation-menu-trigger"][data-active="true"],
+[data-slot="navigation-menu-link"][data-active="true"],
+[data-slot="navigation-menu-trigger"][data-state="open"],
+[data-slot="navigation-menu-link"][data-state="open"] {
+  background-color: color-mix(in oklch, var(--chart-1) 30%, transparent);
+  border-color: var(--chart-1);
+  color: var(--foreground);
+}
+
+/* Dark mode: green/violet border, no background, keep text color */
+.dark [data-slot="navigation-menu-trigger"]:hover,
+.dark [data-slot="navigation-menu-link"]:hover {
+  background-color: transparent;
+  border-color: var(--chart-2);
+  /* Keep default text color, don't change typography */
+}
+
+.dark [data-slot="navigation-menu-trigger"]:focus,
+.dark [data-slot="navigation-menu-link"]:focus {
+  background-color: transparent;
+  border-color: var(--chart-2);
+  /* Keep default text color, don't change typography */
+}
+
+.dark [data-slot="navigation-menu-trigger"][data-active="true"],
+.dark [data-slot="navigation-menu-link"][data-active="true"],
+.dark [data-slot="navigation-menu-trigger"][data-state="open"],
+.dark [data-slot="navigation-menu-link"][data-state="open"] {
+  background-color: transparent;
+  border-color: var(--chart-2);
+  /* Keep default text color, don't change typography */
+}

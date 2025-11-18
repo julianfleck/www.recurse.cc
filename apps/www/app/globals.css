@@ -17,11 +17,18 @@ body.header-compact main {
 }
 
 /* Grid Card Hover Effect */
+/* Glow border - sits exactly on top of the regular border */
 .grid-card-glow::after {
   content: '';
   position: absolute;
-  inset: 0;
-  padding: 1px;
+  /* Position to align with the regular border edge - extend 1px outside */
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  /* Use radial gradient for the glow effect */
   background: radial-gradient(
     var(--glow-radius, 400px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
     rgba(var(--glow-color-rgb, 132, 0, 255), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-1, 0.6))) 0%,
@@ -29,7 +36,7 @@ body.header-compact main {
     rgba(var(--glow-color-rgb, 132, 0, 255), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-3, 0.2))) 40%,
     transparent 70%
   );
-  border-radius: inherit;
+  /* Create border effect using mask - 1px padding creates border that aligns with regular border */
   mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
@@ -38,14 +45,25 @@ body.header-compact main {
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 5;
-  opacity: 0;
+  padding: 1px;
+  box-sizing: border-box;
 }
 
-.grid-card-glow:hover::after,
-.grid-card-glow[style*="--glow-intensity"]::after {
+/* Show glow border on hover and raise z-index */
+.grid-card-glow:hover {
+  z-index: 30;
+}
+
+.grid-card-glow:hover::after {
+  opacity: calc(var(--glow-intensity, 0) * 0.5 + 0.2);
+}
+
+/* When glow intensity is set via style attribute, show glow and raise z-index */
+.grid-card-glow[style*="--glow-intensity: 1"] {
+  z-index: 30;
+}
+
+.grid-card-glow[style*="--glow-intensity: 1"]::after {
   opacity: calc(var(--glow-intensity, 0) * 0.5 + 0.2);
 }
 

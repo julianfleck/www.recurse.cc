@@ -14,57 +14,26 @@ import { IconQuestionMark } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-	type ComponentPropsWithoutRef,
-	type ElementRef,
-	forwardRef,
 	type MouseEvent,
 } from "react";
 import { SearchToggle } from "@/components/search/toggle";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { TooltipProvider } from "@/components/ui/tooltip";
-// Import content files
 import navContent from "@/content/en/navigation.json" with { type: "json" };
 import { useScroll } from "@/contexts/ScrollContext";
 import { cn } from "@/lib/utils";
+import { GridCard } from "@/components/layout/GridCard";
 
-// Define the type for feature components based on usage
 interface FeatureComponent {
 	title: string;
 	href: string;
 	description: string;
 }
 
-// Define props type including isCompact and isHovered
 interface DefaultNavigationProps {
 	isCompact: boolean;
 	isHovered: boolean;
 }
-
-// Reusable ListItem component
-const ListItem = forwardRef<ElementRef<"a">, ComponentPropsWithoutRef<"a">>(
-	({ className, title, children, ...props }, ref) => {
-		return (
-			<li>
-				<NavigationMenuLink asChild>
-					<a
-						className={cn(
-							"block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-							className,
-						)}
-						ref={ref}
-						{...props}
-					>
-						<div className="font-medium text-sm leading-none">{title}</div>
-						<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
-							{children}
-						</p>
-					</a>
-				</NavigationMenuLink>
-			</li>
-		);
-	},
-);
-ListItem.displayName = "ListItem";
 
 // Accept isCompact and isHovered props
 export function DefaultNavigation({
@@ -185,13 +154,19 @@ export function DefaultNavigation({
 							<NavigationMenuContent>
 								<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
 									{(navContent as any).featureDropdown.map((component: FeatureComponent) => (
-										<ListItem
-											href={component.href}
-											key={component.title}
-											title={component.title}
-										>
-											{component.description}
-										</ListItem>
+										<li key={component.title}>
+											<GridCard
+												href={component.href}
+												enableHoverEffect={true}
+												rounded={true}
+												className="p-3"
+											>
+												<div className="font-medium text-sm leading-none">{component.title}</div>
+												<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
+													{component.description}
+												</p>
+											</GridCard>
+										</li>
 									))}
 								</ul>
 							</NavigationMenuContent>
@@ -209,18 +184,58 @@ export function DefaultNavigation({
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
 								<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-									<ListItem href="/about#frame-semantics" title="Frame Semantics">
-										Structured knowledge representation using semantic frames with defined roles and relationships.
-									</ListItem>
-									<ListItem href="/about#recursive-graphs" title="Recursive Graph Construction">
-										Dynamic graph building that learns from every interaction, creating self-improving knowledge structures.
-									</ListItem>
-									<ListItem href="/about#operations-as-knowledge" title="Operations as Knowledge">
-										How the system stores and uses knowledge about how to work with knowledge.
-									</ListItem>
-									<ListItem href="/about#comparison" title="RAGE vs. RAG">
-										Compare Recursive Agentic Graph Embeddings with traditional RAG approaches.
-									</ListItem>
+									<li>
+										<GridCard
+											href="/about#frame-semantics"
+											enableHoverEffect={true}
+											rounded={true}
+											className="p-3"
+										>
+											<div className="font-medium text-sm leading-none">Frame Semantics</div>
+											<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
+												Structured knowledge representation using semantic frames with defined roles and relationships.
+											</p>
+										</GridCard>
+									</li>
+									<li>
+										<GridCard
+											href="/about#recursive-graphs"
+											enableHoverEffect={true}
+											rounded={true}
+											className="p-3"
+										>
+											<div className="font-medium text-sm leading-none">Recursive Graph Construction</div>
+											<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
+												Dynamic graph building that learns from every interaction, creating self-improving knowledge structures.
+											</p>
+										</GridCard>
+									</li>
+									<li>
+										<GridCard
+											href="/about#operations-as-knowledge"
+											enableHoverEffect={true}
+											rounded={true}
+											className="p-3"
+										>
+											<div className="font-medium text-sm leading-none">Operations as Knowledge</div>
+											<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
+												How the system stores and uses knowledge about how to work with knowledge.
+											</p>
+										</GridCard>
+									</li>
+									<li>
+										<GridCard
+											href="/about#comparison"
+											enableHoverEffect={true}
+											rounded={true}
+											className="p-3"
+										>
+											<div className="font-medium text-sm leading-none">RAGE vs. RAG</div>
+											<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
+												Compare Recursive Agentic Graph Embeddings with traditional RAG approaches.
+											</p>
+										</GridCard>
+									</li>
 								</ul>
 							</NavigationMenuContent>
 						</NavigationMenuItem>

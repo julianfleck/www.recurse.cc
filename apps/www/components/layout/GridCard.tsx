@@ -12,6 +12,7 @@ interface GridCardProps {
 	enableHoverEffect?: boolean;
 	enableSpotlight?: boolean;
 	href?: string;
+	rounded?: boolean;
 }
 
 /**
@@ -20,7 +21,7 @@ interface GridCardProps {
  * Optional border glow hover effect and global spotlight cursor effect
  * Optional href for clickable cards
  */
-export function GridCard({ children, className, enableHoverEffect = false, enableSpotlight = false, href }: GridCardProps) {
+export function GridCard({ children, className, enableHoverEffect = false, enableSpotlight = false, href, rounded = false }: GridCardProps) {
 	const cardRef = useRef<HTMLDivElement>(null);
 	const setSpotlightActive = useUIStore((state) => state.setSpotlightActive);
 	const isLinked = Boolean(href);
@@ -80,7 +81,13 @@ export function GridCard({ children, className, enableHoverEffect = false, enabl
 		<div
 			ref={cardRef}
 			className={cn(
-				"relative rounded-lg border border-border bg-card",
+				"relative bg-card z-20",
+				// Optional rounded corners
+				rounded && "rounded-lg",
+				// Standard border approach with negative margins to collapse adjacent borders
+				"border border-border",
+				// Negative margins collapse borders: -ml-px -mt-px collapses left and top borders
+				"-ml-px -mt-px",
 				enableHoverEffect && "grid-card-glow",
 				enableHoverEffect && isLinked && "grid-card-glow--linked",
 				isLinked && "cursor-pointer",
