@@ -63,8 +63,9 @@ export function DefaultNavigation({
 			{/* Left side: Logo, Wordmark and navigation */}
 			<div className={cn(
 				"flex items-center transition-all duration-300",
-				isCompact ? "gap-8" : "gap-6"
+				isCompact ? "gap-20" : "gap-6"
 			)}>
+				<div className={cn("flex items-start gap-4", isCompact ? "gap-6" : "gap-8")}>
 				{/* Logo */}
 				<Link
 					href="/"
@@ -98,6 +99,8 @@ export function DefaultNavigation({
 					<span>recurse</span>
 					<span className="font-normal">.cc</span>
 				</Link>
+
+				</div>
 
 				{/* Navigation Menu */}
 				<NavigationMenu
@@ -261,18 +264,27 @@ export function DefaultNavigation({
 
 			{/* Right side: Utility buttons */}
 			<TooltipProvider delayDuration={0}>
-				<div className="flex items-center gap-2">
+				<div className={cn(
+					"flex items-center transition-all duration-300",
+					isCompact ? "gap-1" : "gap-2"
+				)}>
 					<Button
-						className="h-10 transition-all duration-300"
+						className={cn(
+							"transition-all duration-300",
+							isCompact ? "h-9 text-sm px-3" : "h-10"
+						)}
 						onClick={handleBetaClick}
-						size="default"
+						size={isCompact ? "sm" : "default"}
 						variant="subtle"
 					>
 						Join Beta
 					</Button>
 
 					<SearchToggle
-						className="h-10 w-10 p-0 transition-all duration-300"
+						className={cn(
+							"p-0 transition-all duration-300",
+							isCompact ? "h-9 w-9" : "h-10 w-10"
+						)}
 						enableHotkey={true}
 						placeholder="Search documentation..."
 						size="icon"
@@ -281,16 +293,27 @@ export function DefaultNavigation({
 
 					<Link href="/faq">
 						<Button
-							className="h-10 w-10 p-0 transition-all duration-300"
+							className={cn(
+								"p-0 transition-all duration-300",
+								isCompact ? "h-9 w-9" : "h-10 w-10"
+							)}
 							size="icon"
 							tooltip="Frequently Asked Questions"
 							variant="outline"
 						>
-							<IconQuestionMark className="size-5" strokeWidth={1.5} />
+							<IconQuestionMark 
+								className={cn(
+									isCompact ? "size-4" : "size-5"
+								)} 
+								strokeWidth={1.5} 
+							/>
 						</Button>
 					</Link>
 
-					<ThemeToggle className="h-10 w-10 transition-all duration-300" />
+					<ThemeToggle className={cn(
+						"transition-all duration-300",
+						isCompact ? "h-9 w-9" : "h-10 w-10"
+					)} />
 				</div>
 			</TooltipProvider>
 		</div>

@@ -81,7 +81,7 @@ export function GridCard({ children, className, enableHoverEffect = false, enabl
 		<div
 			ref={cardRef}
 			className={cn(
-				"relative bg-card z-20",
+				"relative z-20",
 				// Optional rounded corners
 				rounded && "rounded-lg",
 				// Standard border approach with negative margins to collapse adjacent borders
