@@ -1,3 +1,4 @@
+import type React from "react";
 import {
 	Brain,
 	GitGraph,
@@ -8,12 +9,32 @@ import {
 	SendToBack,
 	Clock,
 } from "lucide-react";
-import type {
-	Audience,
-	BuildItem,
-	Capability,
-	ComparisonRow,
-} from "@/components/sections/homepage";
+
+// Type definitions for homepage content
+export type Capability = {
+	title: string;
+	description: string;
+	icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+	features: string[];
+};
+
+export type BuildItem = {
+	what: string;
+	description: string;
+};
+
+export type Audience = {
+	title: string;
+	description: string;
+	icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+};
+
+export type ComparisonRow = {
+	feature: string;
+	traditionalRAG: string;
+	graphRAG: string;
+	recurse: string;
+};
 
 /**
  * Homepage content data

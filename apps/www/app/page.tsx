@@ -17,14 +17,9 @@ import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnima
 import { CTASection } from "@/components/common/CTASection";
 import { DocsLinkButton } from "@/components/common/DocsLinkButton";
 import { SignupForm } from "@/components/forms/SignupForm";
-import { FlushCard } from "@/components/layout/FlushCard";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";
 import { HeaderCard } from "@/components/layout/HeaderCard";
-import { IntroCard } from "@/components/layout/IntroCard";
-import { IntroCardContent } from "@/components/layout/IntroCardContent";
-import { TextCard } from "@/components/layout/TextCard";
-import { MagicBentoGrid } from "@/components/layout/MagicBentoGrid";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { homepageContent } from "@/content/homepage";
 
