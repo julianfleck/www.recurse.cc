@@ -6,7 +6,7 @@ import { useUIStore } from "@recurse/ui";
 /**
  * Spotlight - Cursor-following spotlight effect
  * Shows when hovering over cards, extends across card boundaries
- * Uses the same purple color as border glow effect
+ * Uses yellow/green in light mode, violet/purple in dark mode
  */
 export function Spotlight() {
 	const spotlightRef = useRef<HTMLDivElement>(null);
@@ -39,8 +39,8 @@ export function Spotlight() {
 				marginTop: "-300px",
 				opacity: spotlightActive ? 1 : 0,
 				background:
-					"radial-gradient(circle, rgba(132, 0, 255, 0.08) 0%, rgba(132, 0, 255, 0.04) 30%, transparent 60%)",
-				mixBlendMode: "screen",
+					`radial-gradient(circle, rgba(var(--glow-color-rgb), var(--glow-opacity-base, 0.4)) 0%, rgba(var(--glow-color-rgb), var(--glow-opacity-fade, 0.25)) 30%, transparent 60%)`,
+				mixBlendMode: "var(--glow-blend-mode, multiply)",
 			}}
 		/>
 	);

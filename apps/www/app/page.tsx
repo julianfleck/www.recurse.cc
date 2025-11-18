@@ -84,10 +84,10 @@ export default function HomePage() {
 					{/* Card 1 - Mobile: full width (8/8), Tablet: 2/8, Desktop: 2/8 columns */}
 					<GridCell colSpan={8} mdColSpan={2} lgColSpan={2} rowSpan={2}>
 						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
-							<p className="font-light text-base text-muted-foreground leading-relaxed">
+							<h2 className="font-light text-xl md:text-2xl lg:text-2xl text-foreground">
 								Yet Another AI Memory System?
-							</p>
-							<p className="font-light text-base text-muted-foreground leading-relaxed">
+							</h2>
+							<p className="font-light text-xl md:text-2xl lg:text-2xl text-muted-foreground">
 								Not quite.
 							</p>
 						</GridCard>
@@ -96,10 +96,10 @@ export default function HomePage() {
 					{/* Card 2 - Mobile: full width (8/8), Tablet: 3/8, Desktop: 3/8 columns */}
 					<GridCell colSpan={8} mdColSpan={3} lgColSpan={3} rowSpan={2}>
 						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
-							<p className="font-light text-sm text-muted-foreground leading-relaxed">
+							<p className="font-light text-md text-foreground pb-8 leading-relaxed">
 								Most AI memory systems optimize for one thing: similarity. Ask a question, get the most similar chunks back. This works if you know what you're looking for. But it systematically prevents the kind of exploration that leads to genuine understanding.
 							</p>
-							<p className="font-light text-sm text-muted-foreground leading-relaxed">
+							<p className="font-light text-md text-muted-foreground leading-relaxed">
 								You can't discover connections you didn't know existed. Can't stumble onto relevant context from unexpected sources. Can't follow threads that diverge from your initial question. The infrastructure is optimized for retrieval, not exploration.
 							</p>
 						</GridCard>
@@ -108,10 +108,10 @@ export default function HomePage() {
 					{/* Card 3 - Mobile: full width (8/8), Tablet: 3/8, Desktop: 3/8 columns */}
 					<GridCell colSpan={8} mdColSpan={3} lgColSpan={3} rowSpan={2}>
 						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
-							<p className="font-light text-base text-muted-foreground leading-relaxed">
+							<p className="font-light text-xl md:text-2xl lg:text-2xl text-muted-foreground">
 								Recurse is memory infrastructure for systems that actually understand.
 							</p>
-							<p className="font-light text-sm text-muted-foreground leading-relaxed">
+							<p className="font-light text-base md:text-xl lg:text-xl text-foreground">
 								We are building on different principles: structure over similarity, relationships over rankings, evolution over static storage.
 							</p>
 						</GridCard>

@@ -1,34 +1,34 @@
 @import "./switzer.css";
 
 :root {
-  --background: oklch(0.98 0 0);
-  --foreground: oklch(0.371 0 0);
-  --card: oklch(0.985 0 0);
-  --card-foreground: oklch(0.439 0 0);
+  --background: oklch(0.9800 0 0);
+  --foreground: oklch(0.3710 0 0);
+  --card: oklch(0.9850 0 0);
+  --card-foreground: oklch(0.4390 0 0);
   --popover: oklch(0.9911 0 0);
   --popover-foreground: oklch(0 0 0);
-  --primary: oklch(0.439 0 0);
-  --primary-foreground: oklch(0.97 0 0);
-  --secondary: oklch(0.97 0 0);
+  --primary: oklch(0.6000 0.2719 287.8001);
+  --primary-foreground: oklch(0.9700 0 0);
+  --secondary: oklch(0.9700 0 0);
   --secondary-foreground: oklch(0 0 0);
-  --muted: oklch(0.95 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.98 0.03 122.328);
+  --muted: oklch(0.9500 0 0);
+  --muted-foreground: oklch(0.5560 0 0);
+  --accent: oklch(0.9800 0.0300 122.3280);
   --accent-foreground: oklch(0 0 0);
-  --destructive: oklch(0.837 0.128 66.29);
-  --destructive-foreground: oklch(0.269 0 0);
-  --border: oklch(0.92 0 0);
-  --input: oklch(0.92 0 0);
-  --ring: oklch(0.7 0 0);
-  --chart-1: oklch(0.938 0.127 124.321);
-  --chart-2: oklch(0.811 0.111 293.571);
-  --chart-3: oklch(0.75 0.183 55.934);
-  --chart-4: oklch(0.559 0 0);
+  --destructive: oklch(0.8370 0.1280 66.2900);
+  --destructive-foreground: oklch(0.2690 0 0);
+  --border: oklch(0.9200 0 0);
+  --input: oklch(0.9200 0 0);
+  --ring: oklch(0.7000 0 0);
+  --chart-1: oklch(0.9380 0.1270 124.3210);
+  --chart-2: oklch(0.8110 0.1110 293.5710);
+  --chart-3: oklch(0.7500 0.1830 55.9340);
+  --chart-4: oklch(0.5590 0 0);
   --chart-5: oklch(0.9189 0 0);
-  --sidebar: oklch(0.97 0 0);
-  --sidebar-foreground: oklch(0.371 0 0);
+  --sidebar: oklch(0.9700 0 0);
+  --sidebar-foreground: oklch(0.3710 0 0);
   --sidebar-primary: oklch(0 0 0);
-  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-primary-foreground: oklch(1.0000 0 0);
   --sidebar-accent: oklch(0.9401 0 0);
   --sidebar-accent-foreground: oklch(0 0 0);
   --sidebar-border: oklch(0.9401 0 0);
@@ -45,23 +45,13 @@
   --shadow-color: oklch(0.87 0 0);
   --shadow-2xs: 0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.05);
   --shadow-xs: 0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.05);
-  --shadow-sm:
-    0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.1), 0px 1px 2px -1px
-    hsl(223.8136 0.0000% 83.1444% / 0.1);
-  --shadow:
-    0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.1), 0px 1px 2px -1px
-    hsl(223.8136 0.0000% 83.1444% / 0.1);
-  --shadow-md:
-    0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.1), 0px 2px 4px -1px
-    hsl(223.8136 0.0000% 83.1444% / 0.1);
-  --shadow-lg:
-    0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.1), 0px 4px 6px -1px
-    hsl(223.8136 0.0000% 83.1444% / 0.1);
-  --shadow-xl:
-    0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.1), 0px 8px 10px -1px
-    hsl(223.8136 0.0000% 83.1444% / 0.1);
+  --shadow-sm: 0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.10), 0px 1px 2px -1px hsl(223.8136 0.0000% 83.1444% / 0.10);
+  --shadow: 0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.10), 0px 1px 2px -1px hsl(223.8136 0.0000% 83.1444% / 0.10);
+  --shadow-md: 0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.10), 0px 2px 4px -1px hsl(223.8136 0.0000% 83.1444% / 0.10);
+  --shadow-lg: 0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.10), 0px 4px 6px -1px hsl(223.8136 0.0000% 83.1444% / 0.10);
+  --shadow-xl: 0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.10), 0px 8px 10px -1px hsl(223.8136 0.0000% 83.1444% / 0.10);
   --shadow-2xl: 0px 0px 10px 0px hsl(223.8136 0.0000% 83.1444% / 0.25);
-  --tracking-normal: -0.015em;
+  --tracking-normal: -0.01em;
   --spacing: 0.25rem;
   
   /* Grid System - 8 columns at all breakpoints */
@@ -74,38 +64,37 @@
 }
 
 .dark {
-  /* --background: #1E1E1E; */
-  --background: oklch(0.151 0.005 285.823);
-  --foreground: oklch(0.8 0 0);
-  --card: oklch(0.155 0 0);
-  --card-foreground: oklch(0.8 0 0);
-  --popover: oklch(0.224 0 0);
-  --popover-foreground: oklch(0.75 0 0);
-  --primary: oklch(0.5837 0.1754 294.261);
-  --primary-foreground: oklch(0.87 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.922 0 0);
-  --muted: oklch(0.2 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.87 0 0);
-  --destructive: oklch(0.75 0.183 55.934);
+  --background: oklch(0.2100 0 0);
+  --foreground: oklch(0.8000 0 0);
+  --card: oklch(0.1822 0 0);
+  --card-foreground: oklch(0.8000 0 0);
+  --popover: oklch(0.2100 0 0);
+  --popover-foreground: oklch(0.7500 0 0);
+  --primary: oklch(0.5412 0.2719 287.8001);
+  --primary-foreground: oklch(0.8700 0 0);
+  --secondary: oklch(0.2690 0 0);
+  --secondary-foreground: oklch(0.9220 0 0);
+  --muted: oklch(0.2000 0 0);
+  --muted-foreground: oklch(0.5560 0 0);
+  --accent: oklch(0.2046 0 0);
+  --accent-foreground: oklch(0.8700 0 0);
+  --destructive: oklch(0.7500 0.1830 55.9340);
   --destructive-foreground: oklch(0 0 0);
-  --border: oklch(0.25 0 0);
-  --input: oklch(0.28 0 0);
-  --ring: oklch(0.4 0 0);
-  --chart-1: oklch(0.5837 0.1754 294.261);
-  --chart-2: oklch(0.938 0.127 124.321);
-  --chart-3: oklch(0.75 0.183 55.934);
-  --chart-4: oklch(0.559 0 0);
+  --border: oklch(0.2500 0 0);
+  --input: oklch(0.2800 0 0);
+  --ring: oklch(0.4000 0 0);
+  --chart-1: oklch(0.5837 0.1754 294.2610);
+  --chart-2: oklch(0.9380 0.1270 124.3210);
+  --chart-3: oklch(0.7500 0.1830 55.9340);
+  --chart-4: oklch(0.5590 0 0);
   --chart-5: oklch(0.4386 0 0);
-  --sidebar: oklch(0.151 0.005 285.823);
-  --sidebar-foreground: oklch(0.708 0 0);
-  --sidebar-primary: oklch(0.97 0 0);
+  --sidebar: oklch(0.2100 0 0);
+  --sidebar-foreground: oklch(0.7080 0 0);
+  --sidebar-primary: oklch(0.9700 0 0);
   --sidebar-primary-foreground: oklch(0 0 0);
   --sidebar-accent: oklch(0.3211 0 0);
-  --sidebar-accent-foreground: oklch(1 0 0);
-  --sidebar-border: oklch(0.24 0 0);
+  --sidebar-accent-foreground: oklch(1.0000 0 0);
+  --sidebar-border: oklch(0.2400 0 0);
   --sidebar-ring: oklch(0.7187 0 0);
   --font-sans: Switzer, Geist, ui-sans-serif, system-ui, sans-serif;
   --font-serif: Georgia, serif;
@@ -119,21 +108,11 @@
   --shadow-color: oklch(0.205 0 0);
   --shadow-2xs: 0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.05);
   --shadow-xs: 0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.05);
-  --shadow-sm:
-    0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.1), 0px 1px 2px -1px
-    hsl(223.8136 0.0000% 9.0527% / 0.1);
-  --shadow:
-    0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.1), 0px 1px 2px -1px
-    hsl(223.8136 0.0000% 9.0527% / 0.1);
-  --shadow-md:
-    0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.1), 0px 2px 4px -1px
-    hsl(223.8136 0.0000% 9.0527% / 0.1);
-  --shadow-lg:
-    0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.1), 0px 4px 6px -1px
-    hsl(223.8136 0.0000% 9.0527% / 0.1);
-  --shadow-xl:
-    0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.1), 0px 8px 10px -1px
-    hsl(223.8136 0.0000% 9.0527% / 0.1);
+  --shadow-sm: 0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.10), 0px 1px 2px -1px hsl(223.8136 0.0000% 9.0527% / 0.10);
+  --shadow: 0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.10), 0px 1px 2px -1px hsl(223.8136 0.0000% 9.0527% / 0.10);
+  --shadow-md: 0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.10), 0px 2px 4px -1px hsl(223.8136 0.0000% 9.0527% / 0.10);
+  --shadow-lg: 0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.10), 0px 4px 6px -1px hsl(223.8136 0.0000% 9.0527% / 0.10);
+  --shadow-xl: 0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.10), 0px 8px 10px -1px hsl(223.8136 0.0000% 9.0527% / 0.10);
   --shadow-2xl: 0px 0px 10px 0px hsl(223.8136 0.0000% 9.0527% / 0.25);
 }
 
@@ -777,4 +756,36 @@ h6 {
 [role="region"] .prose ul,
 [role="region"] .prose ol {
   @apply text-foreground max-w-lg;
+}
+
+/* ============================================================================
+ * Glow Effect Theme Variables
+ * ============================================================================
+ * These variables control the mouse follower and card border glow effects.
+ * Defined after @theme to ensure they override any Tailwind defaults.
+ * Uses Tailwind color system: chart-1 (green/yellow) for light, primary (purple) for dark.
+ */
+
+:root {
+  /* Light mode: Uses chart-1 color (oklch(0.9380 0.1270 124.3210)) ≈ rgb(166, 200, 46) */
+  --glow-color-rgb: 166, 200, 46;
+  --glow-opacity-base: 0.2;
+  --glow-opacity-fade: 0.08;
+  --glow-blend-mode: multiply;
+  /* Higher opacity multipliers for cleaner look in light mode */
+  --glow-opacity-multiplier-1: 0.9;
+  --glow-opacity-multiplier-2: 0.6;
+  --glow-opacity-multiplier-3: 0.3;
+}
+
+.dark {
+  /* Dark mode: Uses primary color (oklch(0.5412 0.2719 287.8001)) ≈ rgb(132, 0, 255) */
+  --glow-color-rgb: 132, 0, 255;
+  --glow-opacity-base: 0.15;
+  --glow-opacity-fade: 0.06;
+  --glow-blend-mode: screen;
+  /* Standard opacity multipliers for dark mode */
+  --glow-opacity-multiplier-1: 0.6;
+  --glow-opacity-multiplier-2: 0.4;
+  --glow-opacity-multiplier-3: 0.2;
 }
