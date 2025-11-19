@@ -1,0 +1,124 @@
+"use client";
+
+import { Button } from "@recurse/ui/components";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
+import { DocsLinkButton } from "@/components/common/DocsLinkButton";
+import { AnimatedGraphExample } from "@/components/examples/graphs/AnimatedGraphExample";
+import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
+import { GridCard } from "@/components/layout/GridCard";
+import { HeaderCard } from "@/components/layout/HeaderCard";
+import { homepageContent } from "@/content/homepage";
+
+export function Hero() {
+	return (
+		<div className="relative z-10">
+			{/* Hero Card */}
+			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
+				<Grid8Col className="pt-12">
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
+						<GridCard enableHoverEffect enableSpotlight className="px-1col py-1col lg:pl-2col lg:pr-1.5col">
+							<div className="space-y-8 text-left pl-6">
+								<div className="space-y-8">
+									{/* TODO: place text swap component here */}
+									<div className="lg:max-w-lg">
+										<h1 className="font-semibold text-2xl leading-[1.15]! tracking-tight md:text-4xl lg:text-5xl text-accent-foreground lg:max-w-3xl">
+											The Memory Substrate for Sense-making, not just Similarity Search
+										</h1>
+									</div>
+								</div>
+								<div className="flex flex-wrap gap-4">
+									<Button asChild className="group rounded-full px-4 py-3 font-medium text-base" size="default" variant="default">
+										<Link href="#signup">
+											Sign up
+											<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+										</Link>
+									</Button>
+									<DocsLinkButton variant="subtle">{homepageContent.hero.docsText}</DocsLinkButton>
+								</div>
+							</div>
+						</GridCard>
+					</GridCell>
+				</Grid8Col>
+			</ScrollAnimation>
+
+			{/* Example Graph Section */}
+			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
+				<Grid8Col>
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
+							<p className="font-medium text-foreground text-xl leading-relaxed">
+								Recurse turns raw input into structured, actionable context
+							</p>
+							<p className="font-light text-muted-foreground text-base leading-relaxed">
+								Add any type of content and we transform it into a living, semantically typed knowledge graph that you (and
+								your AI agents) can act on, reason through, and build on top of. <br className="hidden md:block" />
+								<br className="hidden md:block" />
+								<mark>Zero config needed.</mark> Change just one line of code to make your AI context-aware.
+							</p>
+						</GridCard>
+					</GridCell>
+
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={6}>
+						<GridCard enableHoverEffect enableSpotlight>
+							<AnimatedGraphExample className="rounded-none border-0 bg-background" showControls={false} showControlsOnHoverOnly={true} />
+						</GridCard>
+					</GridCell>
+				</Grid8Col>
+			</ScrollAnimation>
+		</div>
+	);
+}
+
+export function About() {
+	return (
+		<div className="relative z-10 space-y-24 md:space-y-32">
+			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
+				<Grid8Col className="">
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
+						<HeaderCard title="Yet Another AI Memory System?" enableSpotlight />
+					</GridCell>
+
+					<GridCell colSpan={8} mdColSpan={2} lgColSpan={2} rowSpan={2}>
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
+							<p className="font-light text-2xl text-foreground">
+								Not quite.
+								<br className="hidden md:block" /> We are a built a bit differently...
+							</p>
+							<p className="font-light text-xl text-foreground">
+								Recurse is memory infrastructure for systems that actually <mark className=" underline-offset-6 text-foreground">understand</mark>.
+							</p>
+						</GridCard>
+					</GridCell>
+
+					<GridCell colSpan={8} mdColSpan={3} lgColSpan={3} rowSpan={2}>
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
+							<p className="font-light text-2xl text-muted-foreground pb-8 leading-relaxed">
+								Most context management systems are optimized for retrieval, not exploration.
+							</p>
+							<p className="font-light text-lg text-muted-foreground leading-relaxed">
+								Ask a question, get back what looks most similar to your query. This works if you know what you're looking for.
+								But it systematically prevents the kind of exploration that leads to genuine understanding and novel insights.
+							</p>
+						</GridCard>
+					</GridCell>
+
+					<GridCell colSpan={8} mdColSpan={3} lgColSpan={3} rowSpan={2}>
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8 gap-8">
+							<p className="font-light text-lg text-foreground pb-8 leading-relaxed">
+								Standard retrieval systems don't allow you to discover connections you didn't know existed, stumble onto relevant
+								context from unexpected sources or follow threads that diverge from your initial question.
+							</p>
+							<p className="font-light text-xl text-foreground leading-relaxed pr-8">
+								Recurse favors <mark>depth</mark> over similarity, <mark>relationships</mark> over rankings and <mark>evolution</mark> over
+								static storage.
+							</p>
+						</GridCard>
+					</GridCell>
+				</Grid8Col>
+			</ScrollAnimation>
+		</div>
+	);
+}
+
