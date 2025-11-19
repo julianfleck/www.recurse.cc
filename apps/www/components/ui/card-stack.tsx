@@ -1,0 +1,130 @@
+"use client";
+
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { motion } from "framer-motion";
+
+type Card = {
+	id: number;
+	content: React.ReactNode;
+	className: string;
+};
+
+const CardStackComponent = ({
+	items,
+	offset,
+	scaleFactor,
+	isPaused = false,
+	isHovered = false,
+}: {
+	items: Card[];
+	offset?: number;
+	scaleFactor?: number;
+	isPaused?: boolean;
+	isHovered?: boolean;
+}) => {
+	const CARD_OFFSET = offset || 10;
+	const SCALE_FACTOR = scaleFactor || 0.06;
+	const [cards, setCards] = useState<Card[]>(items);
+	const [isAnimating, setIsAnimating] = useState(false);
+	const intervalRef = useRef<any>(null);
+
+	const stopFlipping = useCallback(() => {
+		if (intervalRef.current) {
+			clearInterval(intervalRef.current);
+			intervalRef.current = null;
+		}
+	}, []);
+
+	const startFlipping = useCallback(() => {
+		stopFlipping();
+		// Reset animation state when starting
+		setIsAnimating(false);
+		intervalRef.current = setInterval(() => {
+			setIsAnimating(true);
+			// Small delay for animation to complete
+			setTimeout(() => {
+				setCards((prevCards: Card[]) => {
+					const newArray = [...prevCards];
+					// Cycle from front to back: move first card to back
+					newArray.push(newArray.shift()!);
+					return newArray;
+				});
+				setIsAnimating(false);
+			}, 350);
+		}, 3000);
+	}, [stopFlipping]);
+
+	useEffect(() => {
+		if (!isPaused) {
+			startFlipping();
+		} else {
+			stopFlipping();
+			// Reset animation state when pausing
+			setIsAnimating(false);
+		}
+		return () => {
+			stopFlipping();
+		};
+	}, [isPaused, startFlipping, stopFlipping]);
+
+	return (
+		<div className="relative h-60 w-full">
+			{cards.map((card, index) => {
+				// Calculate target position for each card during animation
+				// When animating, all cards move toward their next position simultaneously
+				const targetIndex = isAnimating && index > 0 ? index - 1 : index;
+				
+				// Top offset: 0 when hovered (stacked), otherwise fanned out
+				const topOffset = isHovered ? 0 : targetIndex * -CARD_OFFSET;
+				
+				// Reduced blur aggressiveness: 1px per card depth (was 2px)
+				const baseBlur = targetIndex * 1;
+				
+				// During animation:
+				// - Top card (index 0) fades/blurs out heavily
+				// - Other cards move to their next position (less blur, bigger scale)
+				const isTopCard = index === 0;
+				const blurAmount = isAnimating && isTopCard 
+					? 8  // Fade out the top card with heavy blur
+					: baseBlur;
+				
+			// Opacity: top card fades during animation, others stay visible
+			// When hovered, all cards are solid (no transparency)
+			const opacity = isAnimating && isTopCard ? 0 : isHovered ? 1 : targetIndex === 0 ? 1 : 0.95;
+				
+				// Scale: during animation, all cards grow toward their next position
+				const baseScale = 1 - targetIndex * SCALE_FACTOR;
+				const scale = isAnimating && isTopCard 
+					? 1.05  // Top card scales up slightly as it fades
+					: baseScale;
+				
+				return (
+					<motion.div
+						key={card.id}
+						className={`absolute h-60 w-full rounded-lg bg-card ${card.className}`}
+						style={{
+							transformOrigin: "top center",
+							zIndex: cards.length - index,
+						}}
+						initial={false}
+						animate={{
+							top: topOffset,
+							scale,
+							filter: `blur(${blurAmount}px)`,
+							opacity,
+						}}
+						transition={{
+							duration: 0.35,
+							ease: "easeOut",
+						}}
+					>
+						{card.content}
+					</motion.div>
+				);
+			})}
+		</div>
+	);
+};
+
+export const CardStack = React.memo(CardStackComponent);
+
