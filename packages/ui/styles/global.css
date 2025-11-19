@@ -335,15 +335,8 @@ mark {
   );
 }
 
-/* When hovering an element that contains a mark, change mark text color */
-:hover:has(> mark) mark,
-p:hover:has(mark) mark,
-h1:hover:has(mark) mark,
-h2:hover:has(mark) mark,
-h3:hover:has(mark) mark,
-h4:hover:has(mark) mark,
-h5:hover:has(mark) mark,
-h6:hover:has(mark) mark {
+/* When hovering a group that contains marks, change mark text color */
+:is([class*="group/"]):hover mark:not(pre *, code *) {
   color: var(--accent-foreground);
 }
 
