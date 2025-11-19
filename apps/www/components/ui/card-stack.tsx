@@ -28,6 +28,27 @@ const CardStackComponent = ({
 	const [isAnimating, setIsAnimating] = useState(false);
 	const intervalRef = useRef<any>(null);
 
+	const advanceCard = useCallback(() => {
+		if (isAnimating) return; // Prevent double-clicks during animation
+		
+		setIsAnimating(true);
+		
+		// Wait a moment for animation to start, then reorder cards
+		setTimeout(() => {
+			setCards((prevCards: Card[]) => {
+				const newArray = [...prevCards];
+				// Cycle from front to back: move first card to back
+				newArray.push(newArray.shift()!);
+				return newArray;
+			});
+		}, 50); // Small delay to ensure animation starts
+		
+		// Reset animation state after animation completes
+		setTimeout(() => {
+			setIsAnimating(false);
+		}, 350);
+	}, [isAnimating]);
+
 	const stopFlipping = useCallback(() => {
 		if (intervalRef.current) {
 			clearInterval(intervalRef.current);
@@ -40,19 +61,9 @@ const CardStackComponent = ({
 		// Reset animation state when starting
 		setIsAnimating(false);
 		intervalRef.current = setInterval(() => {
-			setIsAnimating(true);
-			// Small delay for animation to complete
-			setTimeout(() => {
-				setCards((prevCards: Card[]) => {
-					const newArray = [...prevCards];
-					// Cycle from front to back: move first card to back
-					newArray.push(newArray.shift()!);
-					return newArray;
-				});
-				setIsAnimating(false);
-			}, 350);
+			advanceCard();
 		}, 3000);
-	}, [stopFlipping]);
+	}, [stopFlipping, advanceCard]);
 
 	useEffect(() => {
 		if (!isPaused) {
@@ -68,7 +79,13 @@ const CardStackComponent = ({
 	}, [isPaused, startFlipping, stopFlipping]);
 
 	return (
-		<div className="relative h-60 w-full">
+		<div 
+			className="relative h-60 w-full select-none"
+			onClick={isHovered ? advanceCard : undefined}
+			style={{
+				cursor: isHovered ? 'pointer' : 'default',
+			}}
+		>
 			{cards.map((card, index) => {
 				// Calculate target position for each card during animation
 				// When animating, all cards move toward their next position simultaneously
