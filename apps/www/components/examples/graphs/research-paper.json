@@ -1,0 +1,193 @@
+{
+	"nodes": [
+		{
+			"id": "doc-1",
+			"type": "Document:research_paper",
+			"title": "Neural Networks in Medical Diagnosis",
+			"summary": "Comprehensive evaluation of convolutional neural networks versus traditional machine learning approaches for medical image analysis",
+			"children": [
+				{
+					"id": "abstract",
+					"type": "heading_section",
+					"title": "Abstract",
+					"summary": "Overview of research objectives, methodology, and key findings",
+					"children": [
+						{
+							"id": "hypothesis-1",
+							"type": "hypothesis",
+							"title": "CNNs outperform traditional ML in X-ray analysis",
+							"summary": "Convolutional neural networks achieve superior diagnostic accuracy compared to traditional machine learning algorithms",
+							"children": [],
+							"metadata": {
+								"tags": ["CNN", "X-ray Analysis", "Diagnostic Accuracy"],
+								"hypernyms": ["Machine Learning", "Medical Imaging"]
+							}
+						}
+					],
+					"metadata": {
+						"tags": ["Research Summary", "Objectives", "Findings"],
+						"hypernyms": ["Academic Writing", "Scientific Communication"]
+					}
+				},
+				{
+					"id": "methodology",
+					"type": "heading_section",
+					"title": "Methodology",
+					"summary": "Detailed description of experimental design, data collection, and analytical approaches",
+					"children": [
+						{
+							"id": "method-1",
+							"type": "method",
+							"title": "Convolutional Neural Network architecture",
+							"summary": "Deep learning model consisting of multiple convolutional layers for feature extraction and classification",
+							"children": [],
+							"metadata": {
+								"tags": ["Deep Learning", "Architecture", "Feature Extraction"],
+								"hypernyms": ["Neural Networks", "Computer Vision"]
+							}
+						},
+						{
+							"id": "method-2",
+							"type": "method",
+							"title": "Traditional ML baseline models",
+							"summary": "Support vector machines and random forest algorithms for comparative analysis",
+							"children": [],
+							"metadata": {
+								"tags": ["SVM", "Random Forest", "Baseline"],
+								"hypernyms": ["Machine Learning", "Statistical Models"]
+							}
+						}
+					],
+					"metadata": {
+						"tags": ["Experimental Design", "Data Collection", "Analysis"],
+						"hypernyms": ["Research Methods", "Scientific Methodology"]
+					}
+				},
+				{
+					"id": "results",
+					"type": "heading_section",
+					"title": "Results",
+					"summary": "Presentation and analysis of experimental outcomes and performance metrics",
+					"children": [
+						{
+							"id": "evidence-1",
+							"type": "evidence",
+							"title": "92% accuracy on test dataset",
+							"summary": "CNN model achieved 92% diagnostic accuracy on held-out test data, significantly outperforming traditional methods",
+							"children": [],
+							"metadata": {
+								"tags": ["Accuracy", "Performance Metrics", "Test Results"],
+								"hypernyms": ["Model Evaluation", "Statistical Analysis"]
+							}
+						},
+						{
+							"id": "limitation-1",
+							"type": "limitation",
+							"title": "Limited dataset size affects generalizability",
+							"summary": "Small dataset size may limit model's ability to generalize to diverse patient populations",
+							"children": [],
+							"metadata": {
+								"tags": ["Dataset Size", "Generalizability", "Bias"],
+								"hypernyms": ["Research Limitations", "Statistical Concerns"]
+							}
+						}
+					],
+					"metadata": {
+						"tags": ["Performance", "Metrics", "Analysis"],
+						"hypernyms": ["Data Interpretation", "Scientific Results"]
+					}
+				},
+				{
+					"id": "conclusion",
+					"type": "heading_section",
+					"title": "Discussion & Conclusion",
+					"summary": "Interpretation of results, implications for clinical practice, and future research directions",
+					"children": [
+						{
+							"id": "conclusion-1",
+							"type": "claim",
+							"title": "CNNs show promise for medical imaging",
+							"summary": "Deep learning approaches demonstrate significant potential for improving diagnostic accuracy in medical imaging applications",
+							"children": [],
+							"metadata": {
+								"tags": [
+									"Clinical Applications",
+									"Future Research",
+									"Medical Imaging"
+								],
+								"hypernyms": ["Healthcare Innovation", "Technology Adoption"]
+							}
+						}
+					],
+					"metadata": {
+						"tags": ["Implications", "Future Work", "Clinical Practice"],
+						"hypernyms": ["Scientific Discussion", "Research Conclusion"]
+					}
+				}
+			],
+			"metadata": {
+				"tags": [
+					"Neural Networks",
+					"Medical Diagnosis",
+					"Machine Learning",
+					"Computer Vision"
+				],
+				"hypernyms": ["Artificial Intelligence", "Healthcare Technology"]
+			}
+		}
+	],
+	"links": [
+		{
+			"source": "doc-1",
+			"target": "abstract"
+		},
+		{
+			"source": "doc-1",
+			"target": "methodology"
+		},
+		{
+			"source": "doc-1",
+			"target": "results"
+		},
+		{
+			"source": "doc-1",
+			"target": "conclusion"
+		},
+		{
+			"source": "abstract",
+			"target": "hypothesis-1"
+		},
+		{
+			"source": "methodology",
+			"target": "method-1"
+		},
+		{
+			"source": "methodology",
+			"target": "method-2"
+		},
+		{
+			"source": "results",
+			"target": "evidence-1"
+		},
+		{
+			"source": "results",
+			"target": "limitation-1"
+		},
+		{
+			"source": "conclusion",
+			"target": "conclusion-1"
+		},
+		{
+			"source": "hypothesis-1",
+			"target": "evidence-1"
+		},
+		{
+			"source": "method-1",
+			"target": "evidence-1"
+		},
+		{
+			"source": "method-2",
+			"target": "evidence-1"
+		}
+	]
+}

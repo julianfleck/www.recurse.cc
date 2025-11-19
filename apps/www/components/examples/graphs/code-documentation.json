@@ -1,0 +1,217 @@
+{
+	"nodes": [
+		{
+			"id": "doc-1",
+			"type": "Document:code",
+			"title": "React Component Library",
+			"summary": "A comprehensive collection of reusable React components with TypeScript support and modern design patterns",
+			"children": [
+				{
+					"id": "sec-components",
+					"type": "heading_section",
+					"title": "Components",
+					"summary": "Core UI components with consistent API and accessibility features",
+					"children": [
+						{
+							"id": "component-1",
+							"type": "function",
+							"title": "Button Component",
+							"summary": "Interactive button component supporting multiple variants, sizes, and states",
+							"children": [
+								{
+									"id": "prop-1",
+									"type": "parameter",
+									"title": "onClick prop",
+									"summary": "Event handler function called when the button is clicked",
+									"children": [],
+									"metadata": {
+										"tags": ["Event Handler", "User Interaction", "Callback"],
+										"hypernyms": ["Component API", "React Props"]
+									}
+								},
+								{
+									"id": "prop-2",
+									"type": "parameter",
+									"title": "disabled prop",
+									"summary": "Boolean flag to disable button interaction and apply disabled styling",
+									"children": [],
+									"metadata": {
+										"tags": ["Accessibility", "State Management", "UI Control"],
+										"hypernyms": ["Component Configuration", "User Experience"]
+									}
+								},
+								{
+									"id": "example-1",
+									"type": "example",
+									"title": "Basic usage example",
+									"summary": "Simple button implementation with click handler",
+									"children": [],
+									"metadata": {
+										"tags": [
+											"Usage Example",
+											"Implementation",
+											"Getting Started"
+										],
+										"hypernyms": ["Code Sample", "Documentation"]
+									}
+								}
+							],
+							"metadata": {
+								"tags": ["UI Component", "Interactive", "Variants"],
+								"hypernyms": ["React Components", "User Interface"]
+							}
+						},
+						{
+							"id": "component-2",
+							"type": "function",
+							"title": "Input Component",
+							"summary": "Form input component with validation, accessibility, and multiple input types",
+							"children": [
+								{
+									"id": "example-2",
+									"type": "example",
+									"title": "Disabled state example",
+									"summary": "Input component in disabled state for read-only scenarios",
+									"children": [],
+									"metadata": {
+										"tags": ["Form Control", "Accessibility", "State"],
+										"hypernyms": ["UI Pattern", "Component Example"]
+									}
+								}
+							],
+							"metadata": {
+								"tags": ["Form Control", "Validation", "Accessibility"],
+								"hypernyms": ["Input Components", "Form Elements"]
+							}
+						}
+					],
+					"metadata": {
+						"tags": ["UI Library", "Components", "Design System"],
+						"hypernyms": ["Frontend Development", "Component Architecture"]
+					}
+				},
+				{
+					"id": "sec-hooks",
+					"type": "heading_section",
+					"title": "Custom Hooks",
+					"summary": "Reusable logic hooks for state management and side effects",
+					"children": [
+						{
+							"id": "hook-1",
+							"type": "function",
+							"title": "useState Hook",
+							"summary": "State management hook for local component state with TypeScript support",
+							"children": [],
+							"metadata": {
+								"tags": ["State Management", "TypeScript", "React Hooks"],
+								"hypernyms": ["React Patterns", "State Logic"]
+							}
+						},
+						{
+							"id": "hook-2",
+							"type": "function",
+							"title": "useLocalStorage Hook",
+							"summary": "Custom hook for persisting state in browser localStorage with synchronization",
+							"children": [],
+							"metadata": {
+								"tags": ["Persistence", "Browser Storage", "Synchronization"],
+								"hypernyms": ["Data Management", "Side Effects"]
+							}
+						}
+					],
+					"metadata": {
+						"tags": ["React Hooks", "Logic Reuse", "State Management"],
+						"hypernyms": ["React Patterns", "Custom Logic"]
+					}
+				},
+				{
+					"id": "sec-utils",
+					"type": "heading_section",
+					"title": "Utility Functions",
+					"summary": "Helper functions for common operations and data transformations",
+					"children": [
+						{
+							"id": "util-1",
+							"type": "function",
+							"title": "formatDate",
+							"summary": "Utility function for formatting dates with internationalization support",
+							"children": [],
+							"metadata": {
+								"tags": [
+									"Date Formatting",
+									"Internationalization",
+									"Utilities"
+								],
+								"hypernyms": ["Helper Functions", "Data Processing"]
+							}
+						}
+					],
+					"metadata": {
+						"tags": ["Utilities", "Helper Functions", "Data Processing"],
+						"hypernyms": ["Code Organization", "Developer Tools"]
+					}
+				}
+			],
+			"metadata": {
+				"tags": [
+					"React",
+					"TypeScript",
+					"Component Library",
+					"UI",
+					"Design System"
+				],
+				"hypernyms": ["Frontend Development", "Software Engineering"]
+			}
+		}
+	],
+	"links": [
+		{
+			"source": "doc-1",
+			"target": "sec-components"
+		},
+		{
+			"source": "doc-1",
+			"target": "sec-hooks"
+		},
+		{
+			"source": "doc-1",
+			"target": "sec-utils"
+		},
+		{
+			"source": "sec-components",
+			"target": "component-1"
+		},
+		{
+			"source": "sec-components",
+			"target": "component-2"
+		},
+		{
+			"source": "component-1",
+			"target": "prop-1"
+		},
+		{
+			"source": "component-1",
+			"target": "prop-2"
+		},
+		{
+			"source": "component-1",
+			"target": "example-1"
+		},
+		{
+			"source": "component-2",
+			"target": "example-2"
+		},
+		{
+			"source": "sec-hooks",
+			"target": "hook-1"
+		},
+		{
+			"source": "sec-hooks",
+			"target": "hook-2"
+		},
+		{
+			"source": "sec-utils",
+			"target": "util-1"
+		}
+	]
+}

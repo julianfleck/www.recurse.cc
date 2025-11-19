@@ -22,14 +22,15 @@ import { GridCard } from "@/components/layout/GridCard";
 import { HeaderCard } from "@/components/layout/HeaderCard";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { homepageContent } from "@/content/homepage";
+import { AnimatedGraphExample } from "@/components/examples/graphs/AnimatedGraphExample";
 
 export default function HomePage() {
 	return (
 		<>
 			{/* Hero Section - Combined Content */}
-			<div className="relative z-10 space-y-24 md:space-y-32">
+			<div className="relative z-10">
 				<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-					<Grid8Col className="py-12">
+					<Grid8Col className="pt-12">
 						{/* Hero Card - Full width (8 columns) at all breakpoints */}
 						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
 							<GridCard 
@@ -71,7 +72,20 @@ export default function HomePage() {
 					</Grid8Col>
 				</ScrollAnimation>
 
+				{/* Example Graph Section - Full width below hero */}
+				<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
+					<Grid8Col>
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
+							<GridCard enableHoverEffect enableSpotlight>
+								<AnimatedGraphExample className="rounded-none border-0" showControls={false} />
+							</GridCard>
+						</GridCell>
+					</Grid8Col>
+				</ScrollAnimation>
+			</div>
+
 			{/* About Section - Simple 8 column grid */}
+			<div className="relative z-10 space-y-24 md:space-y-32">
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 				<Grid8Col className="py-12">
 					{/* Header - spans all columns */}

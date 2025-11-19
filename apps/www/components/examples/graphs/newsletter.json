@@ -1,0 +1,129 @@
+{
+	"nodes": [
+		{
+			"id": "doc-1",
+			"type": "Document:newsletter",
+			"title": "Tech Policy Newsletter #47",
+			"summary": "Weekly roundup of regulatory developments in technology, AI, and data privacy",
+			"children": [
+				{
+					"id": "sec-1",
+					"type": "heading_section",
+					"title": "AI Regulation Updates",
+					"summary": "Latest developments in artificial intelligence governance and policy",
+					"children": [
+						{
+							"id": "claim-1",
+							"type": "claim",
+							"title": "New EU AI Act requires transparency",
+							"summary": "The European Union's comprehensive AI legislation mandates clear documentation and accountability for AI systems",
+							"children": [],
+							"metadata": {
+								"tags": ["EU AI Act", "Regulation", "Transparency"],
+								"hypernyms": ["AI Governance", "European Policy"],
+								"hyponyms": []
+							}
+						},
+						{
+							"id": "evidence-1",
+							"type": "evidence",
+							"title": "European Parliament vote results",
+							"summary": "Parliament approved the AI Act with amendments strengthening risk assessment requirements",
+							"children": [],
+							"metadata": {
+								"tags": ["European Parliament", "Legislation", "Voting"],
+								"hypernyms": ["Policy Making", "Democratic Process"],
+								"hyponyms": []
+							}
+						}
+					],
+					"metadata": {
+						"tags": ["AI", "Regulation", "Europe"],
+						"hypernyms": ["Technology Policy", "Governance"],
+						"hyponyms": []
+					}
+				},
+				{
+					"id": "sec-2",
+					"type": "heading_section",
+					"title": "Data Privacy Developments",
+					"summary": "Recent changes and proposed updates to data protection laws",
+					"children": [
+						{
+							"id": "claim-2",
+							"type": "claim",
+							"title": "US considers federal privacy law",
+							"summary": "Congress is advancing bipartisan legislation to establish comprehensive data privacy standards",
+							"children": [],
+							"metadata": {
+								"tags": [
+									"Privacy Law",
+									"Federal Legislation",
+									"Data Protection"
+								],
+								"hypernyms": ["US Policy", "Consumer Protection"],
+								"hyponyms": []
+							}
+						},
+						{
+							"id": "evidence-2",
+							"type": "evidence",
+							"title": "Congress committee hearings",
+							"summary": "Multiple committees held hearings on data privacy frameworks and industry accountability",
+							"children": [],
+							"metadata": {
+								"tags": ["Congress", "Hearings", "Oversight"],
+								"hypernyms": ["Government Process", "Policy Development"],
+								"hyponyms": []
+							}
+						}
+					],
+					"metadata": {
+						"tags": ["Privacy", "Data Protection", "US Policy"],
+						"hypernyms": ["Consumer Rights", "Digital Regulation"],
+						"hyponyms": []
+					}
+				}
+			],
+			"metadata": {
+				"tags": ["Technology", "Policy", "AI", "Privacy", "Regulation"],
+				"hypernyms": ["Government", "Technology Sector"],
+				"hyponyms": ["Newsletter", "Weekly Roundup"]
+			}
+		}
+	],
+	"links": [
+		{
+			"source": "doc-1",
+			"target": "sec-1"
+		},
+		{
+			"source": "doc-1",
+			"target": "sec-2"
+		},
+		{
+			"source": "sec-1",
+			"target": "claim-1"
+		},
+		{
+			"source": "sec-1",
+			"target": "evidence-1"
+		},
+		{
+			"source": "sec-2",
+			"target": "claim-2"
+		},
+		{
+			"source": "sec-2",
+			"target": "evidence-2"
+		},
+		{
+			"source": "claim-1",
+			"target": "evidence-1"
+		},
+		{
+			"source": "claim-2",
+			"target": "evidence-2"
+		}
+	]
+}

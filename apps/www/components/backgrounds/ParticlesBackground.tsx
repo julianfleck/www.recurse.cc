@@ -6,35 +6,27 @@ import Particles from "./Particles/Particles";
 export function ParticlesBackground() {
 	// Calculate initial opacity based on current scroll position
 	const getOpacityForScroll = (scrollPercentage: number) => {
-		if (scrollPercentage < 0.15) {
+		if (scrollPercentage < 0.05) {
 			return 1;
-		} else if (scrollPercentage < 0.25) {
-			const fadeProgress = (scrollPercentage - 0.15) / 0.1;
+		} else if (scrollPercentage < 0.15) {
+			const fadeProgress = (scrollPercentage - 0.05) / 0.1;
 			return 1 - (fadeProgress * 0.6);
-		} else if (scrollPercentage < 0.6) {
+		} else if (scrollPercentage < 0.7) {
 			return 0.4;
 		} else if (scrollPercentage < 0.85) {
-			const fadeProgress = (scrollPercentage - 0.6) / 0.25;
+			const fadeProgress = (scrollPercentage - 0.7) / 0.15;
 			return 0.4 + (fadeProgress * 0.6);
 		} else {
 			return 1;
 		}
 	};
 
-	const [opacity, setOpacity] = useState(() => {
-		// Calculate initial opacity on mount
-		if (typeof window !== 'undefined') {
-			const scrollY = window.scrollY;
-			const viewportHeight = window.innerHeight;
-			const documentHeight = document.documentElement.scrollHeight;
-			const maxScroll = documentHeight - viewportHeight;
-			const scrollPercentage = maxScroll > 0 ? scrollY / maxScroll : 0;
-			return getOpacityForScroll(scrollPercentage);
-		}
-		return 1;
-	});
+	const [opacity, setOpacity] = useState(1); // Always start with 1 for SSR
+	const [isMounted, setIsMounted] = useState(false);
 
 	useEffect(() => {
+		setIsMounted(true);
+		
 		const handleScroll = () => {
 			const scrollY = window.scrollY;
 			const viewportHeight = window.innerHeight;
@@ -75,8 +67,8 @@ export function ParticlesBackground() {
 			/>
 			</div>
 			
-			{/* Gradient mask at top only - always at full opacity */}
-			<div className="absolute inset-x-0 top-0 h-120 bg-gradient-to-b from-background via-background/80 to-transparent z-10 pointer-events-none" />
+		{/* Gradient mask at top only - always at full opacity */}
+		<div className="absolute inset-x-0 top-0 h-120 bg-linear-to-b from-background via-background/80 to-transparent z-10 pointer-events-none" />
 		</div>
 	);
 }

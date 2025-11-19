@@ -65,11 +65,11 @@ export function DefaultNavigation({
 				"flex items-center transition-all duration-300",
 				isCompact ? "gap-20" : "gap-6"
 			)}>
-				<div className={cn("flex items-start gap-4", isCompact ? "gap-6" : "gap-8")}>
+				<div className={cn("flex items-start gap-8")}>
 				{/* Logo */}
 				<Link
 					href="/"
-					className="flex items-center"
+					className="flex items-center pl-2"
 					aria-label="Recurse Logo"
 				>
 					<svg
@@ -91,8 +91,8 @@ export function DefaultNavigation({
 				{/* Wordmark */}
 				<Link
 					className={cn(
-						"whitespace-nowrap font-bold flex items-center transition-all duration-300",
-						isCompact ? "text-[1rem]" : "text-[1.8rem]"
+						"whitespace-nowrap font-bold flex items-center transition-all duration-300 pl-2",
+						isCompact ? "text-[1rem]" : "text-[1.6rem]"
 					)}
 					href="/"
 				>
