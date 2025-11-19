@@ -22,7 +22,7 @@ interface GridCardProps {
  * Optional border glow hover effect and global spotlight cursor effect
  * Optional href for clickable cards
  */
-export function GridCard({ children, className, enableHoverEffect = false, enableSpotlight = false, href, rounded = false, glowColor = "chart-2" }: GridCardProps) {
+export function GridCard({ children, className, enableHoverEffect = false, enableSpotlight = false, href, rounded = false, glowColor }: GridCardProps) {
 	const cardRef = useRef<HTMLDivElement>(null);
 	const setSpotlightActive = useUIStore((state) => state.setSpotlightActive);
 	const isLinked = Boolean(href);
@@ -101,7 +101,8 @@ export function GridCard({ children, className, enableHoverEffect = false, enabl
 							'--glow-y': '50%',
 							'--glow-intensity': '0',
 							'--glow-radius': '400px',
-							'--glow-color': `var(--${glowColor})`,
+							...(glowColor === 'chart-1' && { '--glow-color-rgb': '166, 200, 46' }),
+							...(glowColor === 'chart-2' && { '--glow-color-rgb': '132, 0, 255' }),
 						} as React.CSSProperties)
 					: undefined
 			}
