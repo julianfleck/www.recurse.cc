@@ -325,7 +325,7 @@ mark {
   background-size: 0% 100%;
   background-repeat: no-repeat;
   background-position: left center;
-  transition: background-size 0.4s ease-out, border-color 0.4s ease-out;
+  transition: background-size 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .dark mark {
@@ -358,7 +358,7 @@ mark {
   border-color: color-mix(in oklch, var(--primary) 40%, transparent);
 }
 
-/* Stagger animation for multiple marks in same section */
+/* Stagger animation for multiple marks - animate one after another */
 .group\/hero:hover mark:nth-of-type(1),
 .group\/about:hover mark:nth-of-type(1),
 .group\/features:hover mark:nth-of-type(1),
@@ -376,7 +376,7 @@ mark {
 .group\/build-with-recurse:hover mark:nth-of-type(2),
 .group\/comparison:hover mark:nth-of-type(2),
 .group\/signup:hover mark:nth-of-type(2) {
-  transition-delay: 0.1s;
+  transition-delay: 0.3s;
 }
 
 .group\/hero:hover mark:nth-of-type(3),
@@ -386,7 +386,17 @@ mark {
 .group\/build-with-recurse:hover mark:nth-of-type(3),
 .group\/comparison:hover mark:nth-of-type(3),
 .group\/signup:hover mark:nth-of-type(3) {
-  transition-delay: 0.2s;
+  transition-delay: 0.6s;
+}
+
+.group\/hero:hover mark:nth-of-type(4),
+.group\/about:hover mark:nth-of-type(4),
+.group\/features:hover mark:nth-of-type(4),
+.group\/chat-or-code:hover mark:nth-of-type(4),
+.group\/build-with-recurse:hover mark:nth-of-type(4),
+.group\/comparison:hover mark:nth-of-type(4),
+.group\/signup:hover mark:nth-of-type(4) {
+  transition-delay: 0.9s;
 }
 
 /* Global styles (apply outside prose as well) */
