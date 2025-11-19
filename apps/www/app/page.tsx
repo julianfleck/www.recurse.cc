@@ -1,59 +1,25 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@recurse/ui/components";
-import { Badge } from "@recurse/ui/components";
-import {
-	ArrowRight,
-	Brain,
-	GitGraph,
-	Layers,
-	Network,
-	Search,
-	Clock,
-} from "lucide-react";
+import { ArrowRight, Brain, GitGraph, Layers, Network, Search, Clock } from "lucide-react";
 import { IconCircleCheck, IconCircleCheckFilled } from "@tabler/icons-react";
 import Link from "next/link";
-import AnimatedContent from "@/components/animations/AnimatedContent/AnimatedContent";
+import { useState } from "react";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
 import { CTASection } from "@/components/common/CTASection";
 import { DocsLinkButton } from "@/components/common/DocsLinkButton";
-import { SignupForm } from "@/components/forms/SignupForm";
+import { AnimatedGraphExample } from "@/components/examples/graphs/AnimatedGraphExample";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";
 import { HeaderCard } from "@/components/layout/HeaderCard";
-import { FeatureCardUIPreview } from "@/components/layout/FeatureCardUIPreview";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { TypingText } from "@recurse/ui/components";
+import { ChatOrCodeSection } from "@/components/landingpage/chat-or-code";
+import { BuildWithRecurseSection } from "@/components/landingpage/build-with-recurse";
+import { ComparisonSection } from "@/components/landingpage/comparison";
+import { SignupSection } from "@/components/landingpage/signup";
 import { homepageContent } from "@/content/homepage";
-import { AnimatedGraphExample } from "@/components/examples/graphs/AnimatedGraphExample";
+import { Badge } from "@recurse/ui/components";
 
 export default function HomePage() {
-	const [typingKey, setTypingKey] = useState(0);
-	const [typingStage, setTypingStage] = useState(0);
-	const sectionRef = useRef<HTMLDivElement>(null);
-
-	// Reset typing animation when section comes into view
-	useEffect(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						setTypingKey((prev) => prev + 1);
-						setTypingStage(0); // Reset to stage 0
-					}
-				});
-			},
-			{ threshold: 0.3 }
-		);
-
-		if (sectionRef.current) {
-			observer.observe(sectionRef.current);
-		}
-
-		return () => observer.disconnect();
-	}, []);
-
 	return (
 		<>
 			{/* Hero Section - Combined Content */}
@@ -372,27 +338,7 @@ export default function HomePage() {
 						{/* Right: Use case cards in 2x2 grid (4 cols total) */}
 						<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
 							<div className="grid grid-cols-2 gap-0 h-full">
-								{/* Card 1: Chat Interface */}
-								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-6 md:p-8">
-									<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
-										Chat & Query
-									</h4>
-									<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto transition-colors duration-300 group-hover/use-case:text-foreground">
-										Ask questions naturally and get answers grounded in your sources. Chat interface works like ChatGPT but connected to your knowledge graph—no code required.
-									</p>
-								</GridCard>
-
-								{/* Card 2: Graph Visualization */}
-								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-6 md:p-8">
-									<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
-										Visual Exploration
-									</h4>
-									<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto transition-colors duration-300 group-hover/use-case:text-foreground">
-										Visualize how ideas connect. Navigate relationships between concepts, discover patterns, and see the full context around any piece of knowledge.
-									</p>
-								</GridCard>
-
-								{/* Card 3: Content Upload */}
+								{/* Card 1: Content Upload (top-left) */}
 								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-6 md:p-8">
 									<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
 										Content Upload
@@ -402,50 +348,73 @@ export default function HomePage() {
 									</p>
 								</GridCard>
 
-								{/* Card 4: Organize with Scopes */}
+								{/* Card 2: Chat & Query (top-right) */}
 								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-6 md:p-8">
 									<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
-										Organize with Scopes
+										Chat & Query
 									</h4>
 									<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto transition-colors duration-300 group-hover/use-case:text-foreground">
-										Tag content with scopes like folders. Focus queries by scoping retrieval to specific collections—research papers, meeting notes, or project docs.
+										Ask questions naturally and get answers grounded in your sources. Works like ChatGPT but connected to your knowledge graph—no code required.
+									</p>
+								</GridCard>
+
+								{/* Card 3: Visual Exploration (bottom-left) */}
+								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-6 md:p-8">
+									<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
+										Explore Visually
+									</h4>
+									<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto transition-colors duration-300 group-hover/use-case:text-foreground">
+										See how your ideas connect. Navigate relationships between concepts, discover patterns, and trace reasoning chains through your knowledge.
+									</p>
+								</GridCard>
+
+								{/* Card 4: Developer Teaser (bottom-right) */}
+								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-6 md:p-8">
+									<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
+										For Developers
+									</h4>
+									<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto transition-colors duration-300 group-hover/use-case:text-foreground">
+										Stop reinventing memory infrastructure. Integrate Recurse with one line of code—works with any AI provider.
 									</p>
 								</GridCard>
 							</div>
 						</GridCell>
 
-						{/* CTA Card - Full width below */}
-						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-							<GridCard enableHoverEffect enableSpotlight className="p-8 md:p-12">
-								<div className="grid grid-cols-1 md:grid-cols-8 gap-8 items-center">
-									{/* Left: Headline (2 cols) */}
-									<div className="md:col-span-2">
-										<h3 className="text-2xl font-medium text-foreground">
-											Start exploring
-										</h3>
-									</div>
+						{/* CTA Cards - 2-4-2 layout */}
+						{/* Left Card: Headline (2 cols) */}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
+								<h3 className="text-2xl font-medium text-foreground">
+									Start exploring
+								</h3>
+								<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto pt-6">
+									Access the chat interface, graph visualizer, and source management tools—no coding required.
+								</p>
+							</GridCard>
+						</GridCell>
 
-									{/* Center: Description (4 cols) */}
-									<div className="md:col-span-4">
-										<p className="font-light text-muted-foreground text-base leading-relaxed">
-											Use whichever fits your workflow—or both. Chat interface for exploration and discovery. Full API access for building custom experiences on top of your knowledge substrate.
-										</p>
-									</div>
+						{/* Center Card: Description (4 cols) */}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full items-center p-6 md:p-8">
+								<p className="font-light text-muted-foreground text-base leading-relaxed">
+									Use whichever fits your workflow—or both. Chat interface for exploration and discovery. Full API access for building custom experiences on top of your knowledge substrate.
+								</p>
+							</GridCard>
+						</GridCell>
 
-									{/* Right: Button (2 cols) */}
-									<div className="md:col-span-2 flex justify-end">
-										<Button
-											asChild
-											size="lg"
-											className="group"
-										>
-											<Link href="/docs/getting-started/using-the-ui">
-												Get started
-												<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-											</Link>
-										</Button>
-									</div>
-								</div>
+						{/* Right Card: Button (2 cols) */}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full items-center justify-center p-6 md:p-8">
+								<Button
+									asChild
+									size="lg"
+									className="group w-full"
+								>
+									<Link href="/docs/getting-started/using-the-ui">
+										Get started
+										<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+									</Link>
+								</Button>
 							</GridCard>
 						</GridCell>
 					</Grid8Col>
