@@ -3,11 +3,11 @@
   "icon": "rocket",
   "defaultOpen": false,
   "pages": [
+    "beta",
     "quickstart",
     "user-interface",
     "using-the-proxy",
     "using-the-api",
-    "api-vs-proxy",
-    "beta"
+    "api-vs-proxy"
   ]
 }
