@@ -64,15 +64,15 @@ export function ParticlesBackground() {
 				className="absolute inset-0 transition-opacity duration-500 ease-in-out"
 				style={{ opacity }}
 			>
-				<Particles
-					className="text-red-orange-300 dark:text-white"
-					enableMouseFollow={true}
-					parallaxStrength={0.5}
-					particleColor="currentColor"
-					particleCount={80}
-					particleSize={3}
-					speed={0.3}
-				/>
+			<Particles
+				className="text-red-orange-300 dark:text-white"
+				enableMouseFollow={true}
+				parallaxStrength={0.15}
+				particleColor="currentColor"
+				particleCount={80}
+				particleSize={3}
+				speed={0.3}
+			/>
 			</div>
 			
 			{/* Gradient mask at top only - always at full opacity */}
