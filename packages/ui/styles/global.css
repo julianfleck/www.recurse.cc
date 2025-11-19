@@ -319,8 +319,8 @@ mark {
   border: none;
   background-image: linear-gradient(
     to right,
-    color-mix(in oklch, var(--chart-1) 40%, transparent) 0%,
-    color-mix(in oklch, var(--chart-1) 40%, transparent) 100%
+    color-mix(in oklch, var(--chart-1) 60%, transparent) 0%,
+    color-mix(in oklch, var(--chart-1) 60%, transparent) 100%
   );
   background-size: 0% 100%;
   background-repeat: no-repeat;
@@ -330,9 +330,21 @@ mark {
 .dark mark {
   background-image: linear-gradient(
     to right,
-    color-mix(in oklch, var(--primary) 30%, transparent) 0%,
-    color-mix(in oklch, var(--primary) 30%, transparent) 100%
+    color-mix(in oklch, var(--primary) 40%, transparent) 0%,
+    color-mix(in oklch, var(--primary) 40%, transparent) 100%
   );
+}
+
+/* When hovering an element that contains a mark, change mark text color */
+:hover:has(> mark) mark,
+p:hover:has(mark) mark,
+h1:hover:has(mark) mark,
+h2:hover:has(mark) mark,
+h3:hover:has(mark) mark,
+h4:hover:has(mark) mark,
+h5:hover:has(mark) mark,
+h6:hover:has(mark) mark {
+  color: var(--accent-foreground);
 }
 
 /* Marks inside code blocks should always be visible (exclude from animation) */
