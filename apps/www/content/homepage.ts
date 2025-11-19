@@ -18,6 +18,7 @@ export type Capability = {
 	icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
 	features: string[];
 	docLink?: string;
+	comingSoon?: boolean;
 };
 
 export type BuildItem = {
@@ -83,7 +84,7 @@ export const homepageContent = {
 			{
 				title: "Let's You Navigate Semantic Structure",
 				description:
-					"Recurse creates typed relationships between semantic units—arguments link to evidence, decisions connect to discussions. Navigate meaning through actual reasoning chains, not keyword similarity.",
+					"Recurse creates typed relationships between semantic units—arguments link to evidence, decisions connect to discussions. <mark>Navigate meaning</mark> through actual reasoning chains, not keyword similarity.",
 				icon: Network,
 				features: [
 					"Follow typed relationships",
@@ -95,7 +96,7 @@ export const homepageContent = {
 			{
 				title: "Discovers Schemas Automatically",
 				description:
-					"Recurse learns patterns from any content you add to it, be it research papers, bug reports, meeting notes, etc, and created relationships between them without needing any predefined ontologies. Source-agnostic schema discovery adapts to your domain.",
+					"Recurse <mark>learns patterns from any content</mark> you add to it, be it research papers, bug reports, meeting notes, etc, and created relationships between them without needing any predefined ontologies. Source-agnostic schema discovery adapts to your domain.",
 				icon: IconSparkles,
 				features: [
 					"Works with any content",
@@ -107,7 +108,7 @@ export const homepageContent = {
 			{
 				title: "Evolves Knowledge Graphs Over Time",
 				description:
-					"Recurse updates knowledge while preserving complete history with timestamps, diffs, and explanations of what changed. This turns your Recurse graphs into a living memory that maintains both current understanding and historical context.",
+					"Recurse updates knowledge while preserving complete history with timestamps, diffs, and explanations of what changed. This turns your Recurse graphs into a <mark>living memory</mark> that maintains both current understanding and historical context.",
 				icon: GitGraph,
 				features: [
 					"Preserve historical context",
@@ -119,7 +120,7 @@ export const homepageContent = {
 			{
 				title: "Let's You Tap into Expert Knowledge",
 				description:
-					"Subscribe to domain experts' knowledge bases—their sources, synthesis, and connections become queryable. You and your AI agents can draw from their expertise with one click.",
+					"Subscribe to domain experts' knowledge bases directly—their sources, synthesis, and connections become queryable. <mark>Your AI draws from their expertise</mark> automatically, updating as they learn. Access how they organize and connect information, not just their published output.",
 				icon: Brain,
 				features: [
 					"Access expert knowledge",
@@ -127,14 +128,19 @@ export const homepageContent = {
 					"Automatic updates",
 				],
 				docLink: "/docs/concepts/streams",
+				comingSoon: true,
 			},
 		] as Capability[],
 	},
 
 	whatYouCanBuild: {
-		title: "What You Can Build",
+		title: "Build with Recurse",
+		claim: "Context-aware agents with just one line of code",
+		leftHeadline: "Get started in minutes",
 		description:
-			"Simply swap your API base URL to point to the Recurse proxy. Recurse automatically builds your knowledge graph and injects context into every request you make through it.",
+			"Point your OpenAI SDK to the Recurse proxy. When you send a request, Recurse retrieves relevant context from your knowledge graph and injects it into your prompt. After your AI provider responds, Recurse extracts semantic frames from the response and stores them back in your knowledge graph. Your code sees a standard OpenAI-compatible response—the context enrichment and knowledge extraction happen transparently.",
+		ctaText: "Get started",
+		ctaLink: "/docs/getting-started/using-the-proxy",
 		codeExamples: [
 			{
 				label: "JavaScript",

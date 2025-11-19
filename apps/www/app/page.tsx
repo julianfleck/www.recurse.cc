@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@recurse/ui/components";
+import { Badge } from "@recurse/ui/components";
 import {
 	ArrowRight,
 	Brain,
@@ -21,6 +22,7 @@ import { SignupForm } from "@/components/forms/SignupForm";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";
 import { HeaderCard } from "@/components/layout/HeaderCard";
+import { FeatureCardUIPreview } from "@/components/layout/FeatureCardUIPreview";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TypingText } from "@recurse/ui/components";
 import { homepageContent } from "@/content/homepage";
@@ -28,6 +30,7 @@ import { AnimatedGraphExample } from "@/components/examples/graphs/AnimatedGraph
 
 export default function HomePage() {
 	const [typingKey, setTypingKey] = useState(0);
+	const [typingStage, setTypingStage] = useState(0);
 	const sectionRef = useRef<HTMLDivElement>(null);
 
 	// Reset typing animation when section comes into view
@@ -37,6 +40,7 @@ export default function HomePage() {
 				entries.forEach((entry) => {
 					if (entry.isIntersecting) {
 						setTypingKey((prev) => prev + 1);
+						setTypingStage(0); // Reset to stage 0
 					}
 				});
 			},
@@ -101,7 +105,7 @@ export default function HomePage() {
 							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
 								<p className="font-medium text-foreground text-xl leading-relaxed">Recurse turns raw input into structured, actionable context
 								</p>
-								<p className="font-light text-muted-foreground text-base leading-relaxed">Add any type of content and we transform it into a living, semantically typed knowledge graph that you (and your AI agents) can act on, reason through, and build on top of. Plug and play, no configuration needed, <mark>change just one line of code</mark> to get started.
+								<p className="font-light text-muted-foreground text-base leading-relaxed">Add any type of content and we transform it into a living, semantically typed knowledge graph that you (and your AI agents) can act on, reason through, and build on top of. <br className="hidden md:block" /><br className="hidden md:block" /><mark>Zero config needed.</mark> Change just one line of code to make your AI context-aware.
 								</p>
 							</GridCard>
 						</GridCell>
@@ -211,7 +215,7 @@ export default function HomePage() {
 										<p className="font-light text-muted-foreground group-hover/build-card:text-foreground text-sm leading-relaxed transition-colors duration-300">
 										{item.description}
 									</p>
-									</div>
+								</div>
 								</GridCard>
 							))}
 						</div>
@@ -220,97 +224,232 @@ export default function HomePage() {
 					{/* Code Example Card - Mobile: 8/8, Tablet: 8/8, Desktop: 4/8 (right half) */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
 						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col p-6 md:p-8">
-							<div className="space-y-6 flex flex-col h-full">
-								<p className="font-light text-foreground text-xl leading-relaxed">
-									{homepageContent.whatYouCanBuild.description}
-								</p>
+							{/* Claim */}
+							<h3 className="text-2xl md:text-3xl font-light! leading-tight mb-6">
+								Make your AI context-aware with just one line of code
+							</h3>
+							
+							{/* Code block */}
+							<div className="flex-1 relative">
+								{/* Gradient mask top */}
+								<div className="absolute top-0 left-0 right-0 h-8 bg-linear-to-b from-background to-transparent z-10 pointer-events-none" />
 								
-								<div className="flex-1 relative">
-									{/* Gradient mask top */}
-									<div className="absolute top-0 left-0 right-0 h-8 bg-linear-to-b from-background to-transparent z-10 pointer-events-none" />
-									
-									{/* Code block */}
-									<div className="relative overflow-hidden">
-										<pre className="text-xs font-mono overflow-x-auto min-h-[260px]">
-											<code className="text-muted-foreground/50">
-												{`import OpenAI from 'openai';\n\nconst client = new OpenAI({`}
-											</code>
-											<code className="text-muted-foreground">
-												{`\n  apiKey: process.env.OPENAI_API_KEY,`}
-											</code>
-											
-											{/* Highlighted line with typing animation */}
-											<code className="block my-1 bg-accent/10 border-l-4 border-accent pl-2 text-foreground font-medium"><mark>
-												{`baseURL: '`}
+								{/* Code block */}
+								<div className="relative overflow-hidden">
+									<pre className="text-xs font-mono overflow-x-auto min-h-[260px]">
+										<code className="text-muted-foreground/50">
+											{`import OpenAI from 'openai';\n\nconst client = new OpenAI({`}
+										</code>
+										<code className="text-muted-foreground">
+											{`\n  apiKey: process.env.OPENAI_API_KEY,`}
+										</code>
+										
+										{/* Highlighted line with typing animation */}
+										<code className="block my-1 bg-accent/10 border-l-4 border-accent pl-2 text-foreground font-medium"><mark>
+											{`baseURL: '`}
 
+											{/* Stage 1: https:// */}
+											{typingStage === 0 && (
 												<TypingText 
-													key={typingKey}
-													text="https://api.recurse.cc/proxy/"
+													key={`${typingKey}-stage1`}
+													text="https://"
 													speed={50}
 													delay={1000}
 													showCursor={false}
 													className="inline"
 													once={false}
+													onComplete={() => setTypingStage(1)}
 												/>
-												{`https://api.openai.com/v1/',`}
-												</mark>
-											</code>
-											
-											<code className="text-muted-foreground">
-												{`  defaultHeaders: {\n    'X-API-Key': process.env.RECURSE_API_KEY,\n    'X-Recurse-Scope': 'my_project'\n  }\n});`}
-											</code>
-											<code className="text-muted-foreground/50">
-												{`\n\n// Use the client normally\nconst completion = await client.chat...`}
-											</code>
-										</pre>
-									</div>
-									
-									{/* Gradient mask bottom */}
-									<div className="absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-background to-transparent pointer-events-none" />
+											)}
+
+											{/* Show completed stage 1 text */}
+											{typingStage > 0 && "https://"}
+
+											{/* Stage 2: api.recurse.cc/ */}
+											{typingStage === 1 && (
+												<TypingText 
+													key={`${typingKey}-stage2`}
+													text="api.recurse.cc/"
+													speed={50}
+													delay={400}
+													showCursor={false}
+													className="inline"
+													once={false}
+													onComplete={() => setTypingStage(2)}
+												/>
+											)}
+
+											{/* Show completed stage 2 text */}
+											{typingStage > 1 && "api.recurse.cc/"}
+
+											{/* Stage 3: proxy/ with cursor */}
+											{typingStage === 2 && (
+												<TypingText 
+													key={`${typingKey}-stage3`}
+													text="proxy/"
+													speed={50}
+													delay={400}
+													showCursor={true}
+													cursor="|"
+													cursorClassName="text-foreground w-auto! -ms-[0.2em]"
+													className="inline"
+													once={false}
+												/>
+											)}
+
+											{`https://api.openai.com/v1/',`}
+											</mark>
+										</code>
+										
+										<code className="text-muted-foreground">
+											{`  defaultHeaders: {\n    'X-API-Key': process.env.RECURSE_API_KEY,\n    'X-Recurse-Scope': 'my_project'\n  }\n});`}
+										</code>
+										<code className="text-muted-foreground/50">
+											{`\n\n// Use the client normally\nconst completion = await client.chat...`}
+										</code>
+									</pre>
 								</div>
-								</div>
+								
+								{/* Gradient mask bottom */}
+								<div className="absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-background to-transparent pointer-events-none" />
+							</div>
+						</GridCard>
+					</GridCell>
+
+					{/* CTA Cards - Three cards (2-4-2) */}
+					{/* Left: Headline (2 columns) */}
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
+						<GridCard enableHoverEffect enableSpotlight className="flex flex-col justify-between h-full p-6 md:p-8">
+							<h3 className="text-xl text-foreground leading-tight">
+								Automatic context injection
+							</h3>
+							<p className="font-light text-muted-foreground text-lg leading-relaxed mt-auto pt-4">
+								No need for manual context engineering. Use our proxy to get started in minutes.
+							</p>
+						</GridCard>
+					</GridCell>
+
+					{/* Center: Description text (4 columns) */}
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
+						<GridCard enableHoverEffect enableSpotlight className="flex flex-col justify-center h-full p-6 md:p-8">
+							<p className="font-light text-foreground text-base max-w-sm leading-relaxed">
+								Swap your base URL to point to the Recurse proxy. When you send a request to your AI provider, Recurse retrieves context from your knowledge graph and injects it into the request. When your model responds, Recurse extracts semantic frames and stores them back. Your code sees a standard response. Enrichment and extraction happen automatically.
+							</p>
+						</GridCard>
+					</GridCell>
+
+					{/* Right: CTA button (2 columns) */}
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
+						<GridCard enableHoverEffect enableSpotlight className="flex items-center justify-center h-full p-6 md:p-8">
+							<Link href="/docs/getting-started/using-the-proxy">
+								<Button size="lg" className="group">
+									Get started
+									<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+								</Button>
+							</Link>
 							</GridCard>
 						</GridCell>
 				</Grid8Col>
 				</div>
 			</ScrollAnimation>
 
-			{/* Who This Is For Section */}
+			{/* Who This Is For Section - Non-Developer Focus */}
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-				<Grid8Col className="">
-					{/* Header - spans all columns */}
-					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-						<HeaderCard title={homepageContent.whoThisIsFor.title} enableSpotlight />
-					</GridCell>
+				<div className="py-16 md:py-24">
+					<Grid8Col>
+						{/* Header - spans all columns */}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
+							<HeaderCard title="Chat or Code — Your Choice" enableSpotlight />
+						</GridCell>
 
-					{/* Who This Is For Cards - Mobile: 8/8, Tablet: 4/8, Desktop: 2/8 */}
-					{homepageContent.whoThisIsFor.audiences.map((audience, index) => (
-						<GridCell key={index} colSpan={8} mdColSpan={4} lgColSpan={2}>
-							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col p-4 md:p-6">
-								<div className="space-y-4">
-									{audience.icon && (
-										<div className="flex items-center justify-start">
-											<div className="rounded-md border border-accent/20 bg-accent/10 p-2">
-												<audience.icon
-													className="h-6 w-6 text-accent"
-													strokeWidth={1.5}
-												/>
-											</div>
-										</div>
-									)}
-									<div className="space-y-3">
-										<h3 className="font-semibold text-foreground text-xl">
-											{audience.title}
+						{/* Left: Big card with interface preview/image (4 cols) */}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
+							<GridCard enableHoverEffect className="flex h-full flex-col p-8 md:p-12 group overflow-hidden relative">
+								<FeatureCardUIPreview />
+							</GridCard>
+						</GridCell>
+
+						{/* Right: Use case cards in 2x2 grid (4 cols total) */}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
+							<div className="grid grid-cols-2 gap-0 h-full">
+								{/* Card 1: Chat Interface */}
+								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-6 md:p-8">
+									<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
+										Chat & Query
+									</h4>
+									<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto transition-colors duration-300 group-hover/use-case:text-foreground">
+										Ask questions naturally and get answers grounded in your sources. Chat interface works like ChatGPT but connected to your knowledge graph—no code required.
+									</p>
+								</GridCard>
+
+								{/* Card 2: Graph Visualization */}
+								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-4 md:p-6">
+									<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
+										Visual Exploration
+									</h4>
+									<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto transition-colors duration-300 group-hover/use-case:text-foreground">
+										Visualize how ideas connect. Navigate relationships between concepts, discover patterns, and see the full context around any piece of knowledge.
+									</p>
+								</GridCard>
+
+								{/* Card 3: Content Upload */}
+								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-4 md:p-6">
+									<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
+										Content Upload
+									</h4>
+									<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto transition-colors duration-300 group-hover/use-case:text-foreground">
+										Drop PDFs, text files, markdown, or paste URLs directly. Recurse extracts semantic structure and makes content queryable within seconds.
+									</p>
+								</GridCard>
+
+								{/* Card 4: Organize with Scopes */}
+								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-4 md:p-6">
+									<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
+										Organize with Scopes
+									</h4>
+									<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto transition-colors duration-300 group-hover/use-case:text-foreground">
+										Tag content with scopes like folders. Focus queries by scoping retrieval to specific collections—research papers, meeting notes, or project docs.
+									</p>
+								</GridCard>
+							</div>
+						</GridCell>
+
+						{/* CTA Card - Full width below */}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
+							<GridCard enableHoverEffect enableSpotlight className="p-8 md:p-12">
+								<div className="grid grid-cols-1 md:grid-cols-8 gap-8 items-center">
+									{/* Left: Headline (2 cols) */}
+									<div className="md:col-span-2">
+										<h3 className="text-2xl font-medium text-foreground">
+											Start exploring
 										</h3>
-										<p className="text-muted-foreground leading-relaxed">
-											{audience.description}
+									</div>
+
+									{/* Center: Description (4 cols) */}
+									<div className="md:col-span-4">
+										<p className="font-light text-muted-foreground text-base leading-relaxed">
+											Use whichever fits your workflow—or both. Chat interface for exploration and discovery. Full API access for building custom experiences on top of your knowledge substrate.
 										</p>
+									</div>
+
+									{/* Right: Button (2 cols) */}
+									<div className="md:col-span-2 flex justify-end">
+										<Button
+											asChild
+											size="lg"
+											className="group"
+										>
+											<Link href="/docs/getting-started/using-the-ui">
+												Get started
+												<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+											</Link>
+										</Button>
 									</div>
 								</div>
 							</GridCard>
 						</GridCell>
-					))}
-				</Grid8Col>
+					</Grid8Col>
+				</div>
 			</ScrollAnimation>
 
 			{/* Comparison Section */}
@@ -318,7 +457,15 @@ export default function HomePage() {
 				<Grid8Col className="py-12">
 					{/* Header - spans all columns */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-						<HeaderCard title={homepageContent.comparison.title} enableSpotlight>
+						<HeaderCard title={homepageContent.comparison.title} enableSpotlight />
+					</GridCell>
+
+					{/* Description Card - Mobile: 8/8, Tablet: 8/8, Desktop: 2/8 */}
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
+						<GridCard enableHoverEffect enableSpotlight className="flex flex-col h-full items-start p-4 md:p-6 justify-between">
+							<p className="font-light text-muted-foreground leading-relaxed">
+								{homepageContent.comparison.description}
+							</p>
 							{homepageContent.comparison.detailedComparisonHref && (
 								<Button
 									asChild
@@ -332,15 +479,6 @@ export default function HomePage() {
 									</Link>
 								</Button>
 							)}
-						</HeaderCard>
-					</GridCell>
-
-					{/* Description Card - Mobile: 8/8, Tablet: 8/8, Desktop: 2/8 */}
-					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex h-full items-center p-4 md:p-6">
-							<p className="font-light text-muted-foreground leading-relaxed">
-								{homepageContent.comparison.description}
-							</p>
 						</GridCard>
 					</GridCell>
 
@@ -382,20 +520,40 @@ export default function HomePage() {
 		</div>
 
 			{/* Signup Form Section */}
-			<div id="signup" className="relative z-10 py-16 md:py-24">
-				<ScrollAnimation enableFadeOut={true} exitBlur={2} exitScale={0.99}>
-					<AnimatedContent
-						delay={0.2}
-						direction="vertical"
-						distance={60}
-						duration={0.8}
-					>
-						<div className="mx-auto max-w-4xl px-4 sm:px-6 md:px-12 lg:px-16 xl:px-20">
+			<ScrollAnimation enableFadeOut={true} exitBlur={2} exitScale={0.99}>
+				<div className="py-16 md:py-24">
+					<Grid8Col>
+						{/* Column 1: Title and intro (2 cols) */}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
+								<h2 className="text-2xl md:text-3xl font-medium text-foreground leading-tight">
+									Start using Recurse
+								</h2>
+								<p className="font-light text-muted-foreground text-xl leading-relaxed mt-auto pt-6">
+									We are looking for teams that want to put our approach to the test
+								</p>
+							</GridCard>
+						</GridCell>
+
+						{/* Column 2: Description (2 cols) */}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
+								<p className="font-light text-foreground text-base leading-relaxed">
+									Are you building AI assistants, managing extensive knowledge bases, or streamlining research workflows?
+								</p>
+								<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto pt-6">
+									Tell us a bit about your use case and join our beta. We are currently onboarding new users on a bring your own key basis<Link href="/docs/getting-started/using-the-ui">(learn more).</Link>.
+								</p>
+							</GridCard>
+						</GridCell>
+
+						{/* Column 3: Form (4 cols) */}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
 							<SignupForm />
-						</div>
-					</AnimatedContent>
-				</ScrollAnimation>
-			</div>
+						</GridCell>
+					</Grid8Col>
+				</div>
+			</ScrollAnimation>
 
 			{/* Final CTA Section */}
 			<CTASection />
@@ -404,7 +562,7 @@ export default function HomePage() {
 }
 
 // Feature Card Component
-function FeatureCard({ capability }: { capability: { title: string; description: string; icon: React.ComponentType<{ className?: string; strokeWidth?: number }>; features: string[]; docLink?: string } }) {
+function FeatureCard({ capability }: { capability: { title: string; description: string; icon: React.ComponentType<{ className?: string; strokeWidth?: number }>; features: string[]; docLink?: string; comingSoon?: boolean } }) {
 	const IconComponent = capability.icon;
 	const [hoveredRow, setHoveredRow] = useState<number | null>(null);
 	const [isCardHovered, setIsCardHovered] = useState(false);
@@ -413,31 +571,42 @@ function FeatureCard({ capability }: { capability: { title: string; description:
 		<GridCard 
 			enableHoverEffect 
 			enableSpotlight 
-			className="flex h-full flex-col p-6 md:p-8 group/feature-card"
+			className="flex h-full flex-col p-6 md:p-8 group/feature-card relative"
 		>
-			{/* Icon */}
-			<div className="flex justify-start pb-6">
+			{/* Icon and Coming Soon Badge */}
+			<div className="flex justify-between items-center pb-6">
 				<div className="rounded-md border border-accent/20 bg-accent/10">
 					<IconComponent
-						className="size-8 text-muted-foreground dark:group-hover/feature-card:text-chart-1 group-hover/feature-card:text-foreground transition-colors duration-300"
+						className={`size-8 text-muted-foreground dark:group-hover/feature-card:text-chart-1 group-hover/feature-card:text-foreground transition-colors duration-300 ${capability.comingSoon ? 'opacity-60' : ''}`}
 						strokeWidth={1}
 					/>
 				</div>
+				{capability.comingSoon && (
+					<Badge 
+						variant="secondary" 
+						appearance="outline" 
+						size="sm"
+						className="bg-chart-3/10 dark:bg-chart-3/20 border-chart-3/40 dark:border-chart-3/20 dark:text-chart-3/60 text-chart-3"
+					>
+						Coming Soon
+					</Badge>
+				)}
 			</div>
 
 			{/* Headline - reserve 2 lines */}
-			<h3 className="text-muted-foreground! dark:group-hover/feature-card:text-chart-1! group-hover/feature-card:text-foreground! leading-relaxed line-clamp-2 min-h-14 transition-colors duration-300">
+			<h3 className={`text-muted-foreground! dark:group-hover/feature-card:text-chart-1! group-hover/feature-card:text-foreground! leading-relaxed line-clamp-2 min-h-14 transition-colors duration-300 ${capability.comingSoon ? 'opacity-60' : ''}`}>
 				{capability.title}
 			</h3>
 
 			{/* Description Text */}
-			<p className="font-light text-muted-foreground group-hover/feature-card:text-foreground text-sm hyphens-auto leading-relaxed pt-4 pb-6 transition-colors duration-300">
-				{capability.description}
-			</p>
+			<p 
+				className={`font-light text-muted-foreground group-hover/feature-card:text-foreground text-sm hyphens-auto leading-relaxed pt-4 pb-6 transition-colors duration-300 ${capability.comingSoon ? 'opacity-60' : ''}`}
+				dangerouslySetInnerHTML={{ __html: capability.description }}
+			/>
 
 			{/* Table at bottom */}
 			{capability.features && capability.features.length > 0 && (
-				<div className="mt-auto space-y-4">
+				<div className={`mt-auto space-y-4 ${capability.comingSoon ? 'opacity-60' : ''}`}>
 					<Table className="w-full">
 						<TableBody>
 							{capability.features.map((feature, idx) => (
@@ -463,7 +632,7 @@ function FeatureCard({ capability }: { capability: { title: string; description:
 					
 					{/* Button - shown on card hover */}
 					{capability.docLink && (
-						<div className={`transition-opacity duration-200 ${isCardHovered ? 'opacity-100' : 'opacity-0'}`}>
+						<div className={`transition-opacity duration-200 ${isCardHovered ? 'opacity-100' : 'opacity-0'} ${capability.comingSoon ? 'opacity-100!' : ''}`}>
 							<Button
 								asChild
 								className="group/btn w-full rounded-full px-4 py-3 font-medium text-sm"

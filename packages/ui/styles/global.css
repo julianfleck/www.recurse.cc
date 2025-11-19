@@ -314,14 +314,14 @@ body {
 /* Mark (highlight) styling - matches "subtle" button variant */
 mark {
   background-color: color-mix(in oklch, var(--chart-1) 40%, transparent);
-  color: var(--foreground);
+  color: var(--accent-foreground);
   /* padding: 0.1em 0.2em; */
   border: 1px solid var(--chart-1);
 }
 
 .dark mark {
   background-color: color-mix(in oklch, var(--primary) 30%, transparent);
-  color: var(--foreground);
+  color: var(--accent-foreground);
   border: 1px solid color-mix(in oklch, var(--primary) 40%, transparent);
 }
 
@@ -798,13 +798,13 @@ h6 {
 :root {
   /* Light mode: Uses chart-1 color (oklch(0.9380 0.1270 124.3210)) ≈ rgb(166, 200, 46) */
   --glow-color-rgb: 166, 200, 46;
-  --glow-opacity-base: 0.2;
-  --glow-opacity-fade: 0.08;
+  --glow-opacity-base: 0.12;
+  --glow-opacity-fade: 0.05;
   --glow-blend-mode: multiply;
-  /* Higher opacity multipliers for cleaner look in light mode */
-  --glow-opacity-multiplier-1: 0.9;
-  --glow-opacity-multiplier-2: 0.6;
-  --glow-opacity-multiplier-3: 0.3;
+  /* Reduced opacity multipliers for more subtle effect in light mode */
+  --glow-opacity-multiplier-1: 0.5;
+  --glow-opacity-multiplier-2: 0.3;
+  --glow-opacity-multiplier-3: 0.15;
 }
 
 .dark {
