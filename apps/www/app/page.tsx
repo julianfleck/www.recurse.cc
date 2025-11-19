@@ -188,29 +188,29 @@ export default function HomePage() {
 			{/* What You Can Build Section */}
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 				<div ref={sectionRef}>
-					<Grid8Col className="">
-						{/* Header - spans all columns */}
-						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-							<HeaderCard title={homepageContent.whatYouCanBuild.title} enableSpotlight />
-						</GridCell>
+				<Grid8Col className="">
+					{/* Header - spans all columns */}
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
+						<HeaderCard title={homepageContent.whatYouCanBuild.title} enableSpotlight />
+					</GridCell>
 
 					{/* Build Items - 2x2 nested grid - Mobile: 8/8, Tablet: 8/8, Desktop: 4/8 (left half) */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
 						<div className="grid grid-cols-2 gap-0 h-full">
-							{homepageContent.whatYouCanBuild.items.map((item, index) => (
+					{homepageContent.whatYouCanBuild.items.map((item, index) => (
 								<GridCard 
 									key={index} 
 									enableHoverEffect 
 									enableSpotlight 
 									className="group/build-card flex flex-col justify-between p-6 md:p-8 rounded-none border-r border-b last:border-r-0 nth-2:border-r-0 nth-3:border-b-0 nth-4:border-b-0"
 								>
-									<div className="space-y-3">
-										<h3 className="text-muted-foreground dark:group-hover/build-card:text-accent group-hover/build-card:text-foreground leading-relaxed text-lg">
-											{item.what}
-										</h3>
-										<p className="font-light text-muted-foreground group-hover/build-card:text-foreground text-sm leading-relaxed">
-											{item.description}
-										</p>
+								<div className="space-y-3">
+										<h3 className="text-muted-foreground! dark:group-hover/build-card:text-chart-1! group-hover/build-card:text-foreground! leading-relaxed text-lg transition-colors duration-300">
+										{item.what}
+									</h3>
+										<p className="font-light text-muted-foreground group-hover/build-card:text-foreground text-sm leading-relaxed transition-colors duration-300">
+										{item.description}
+									</p>
 									</div>
 								</GridCard>
 							))}
@@ -268,9 +268,9 @@ export default function HomePage() {
 									{/* Gradient mask bottom */}
 									<div className="absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-background to-transparent pointer-events-none" />
 								</div>
-							</div>
-						</GridCard>
-					</GridCell>
+								</div>
+							</GridCard>
+						</GridCell>
 				</Grid8Col>
 				</div>
 			</ScrollAnimation>
@@ -419,19 +419,19 @@ function FeatureCard({ capability }: { capability: { title: string; description:
 			<div className="flex justify-start pb-6">
 				<div className="rounded-md border border-accent/20 bg-accent/10">
 					<IconComponent
-						className="size-8 text-muted-foreground dark:group-hover/feature-card:text-chart-1 group-hover/feature-card:text-foreground"
+						className="size-8 text-muted-foreground dark:group-hover/feature-card:text-chart-1 group-hover/feature-card:text-foreground transition-colors duration-300"
 						strokeWidth={1}
 					/>
 				</div>
 			</div>
 
 			{/* Headline - reserve 2 lines */}
-			<h3 className="text-muted-foreground! dark:group-hover/feature-card:text-chart-1! group-hover/feature-card:text-foreground! leading-relaxed line-clamp-2 min-h-14">
+			<h3 className="text-muted-foreground! dark:group-hover/feature-card:text-chart-1! group-hover/feature-card:text-foreground! leading-relaxed line-clamp-2 min-h-14 transition-colors duration-300">
 				{capability.title}
 			</h3>
 
 			{/* Description Text */}
-			<p className="font-light text-muted-foreground group-hover/feature-card:text-foreground text-sm hyphens-auto leading-relaxed pt-4 pb-6">
+			<p className="font-light text-muted-foreground group-hover/feature-card:text-foreground text-sm hyphens-auto leading-relaxed pt-4 pb-6 transition-colors duration-300">
 				{capability.description}
 			</p>
 
