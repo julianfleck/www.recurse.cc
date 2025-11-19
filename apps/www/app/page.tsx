@@ -102,7 +102,7 @@ export default function HomePage() {
 					<Grid8Col>
 						{/* Description Card - Mobile: 8/8, Tablet: 8/8, Desktop: 2/8 */}
 						<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
-							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
 								<p className="font-medium text-foreground text-xl leading-relaxed">Recurse turns raw input into structured, actionable context
 								</p>
 								<p className="font-light text-muted-foreground text-base leading-relaxed">Add any type of content and we transform it into a living, semantically typed knowledge graph that you (and your AI agents) can act on, reason through, and build on top of. <br className="hidden md:block" /><br className="hidden md:block" /><mark>Zero config needed.</mark> Change just one line of code to make your AI context-aware.
@@ -131,7 +131,7 @@ export default function HomePage() {
 
 					{/* Card 1 - Mobile: full width (8/8), Tablet: 2/8, Desktop: 2/8 columns */}
 					<GridCell colSpan={8} mdColSpan={2} lgColSpan={2} rowSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
 							<p className="font-light text-2xl text-foreground">
 								Not quite.<br className="hidden md:block" /> We are a built a bit differently...
 							</p>
@@ -143,7 +143,7 @@ export default function HomePage() {
 
 					{/* Card 2 - Mobile: full width (8/8), Tablet: 3/8, Desktop: 3/8 columns */}
 					<GridCell colSpan={8} mdColSpan={3} lgColSpan={3} rowSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
 							<p className="font-light text-2xl text-muted-foreground pb-8 leading-relaxed">
 								Most context management systems are optimized for retrieval, not exploration.
 							</p>
@@ -155,7 +155,7 @@ export default function HomePage() {
 
 					{/* Card 3 - Mobile: full width (8/8), Tablet: 3/8, Desktop: 3/8 columns */}
 					<GridCell colSpan={8} mdColSpan={3} lgColSpan={3} rowSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6 gap-8">
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8 gap-8">
 							<p className="font-light text-lg text-foreground pb-8 leading-relaxed">
 								Standard retrieval systems don't allow you to discover connections you didn't know existed, stumble onto relevant context from unexpected sources or follow threads that diverge from your initial question.
 							</p>
@@ -364,7 +364,7 @@ export default function HomePage() {
 
 						{/* Left: Big card with interface preview/image (4 cols) */}
 						<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
-							<GridCard enableHoverEffect className="flex h-full flex-col p-8 md:p-12 group overflow-hidden relative">
+							<GridCard enableHoverEffect className="flex h-full flex-col p-8 md:p-12 group overflow-hidden relative min-h-[300px] md:min-h-[400px]">
 								<FeatureCardUIPreview />
 							</GridCard>
 						</GridCell>
@@ -383,7 +383,7 @@ export default function HomePage() {
 								</GridCard>
 
 								{/* Card 2: Graph Visualization */}
-								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-4 md:p-6">
+								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-6 md:p-8">
 									<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
 										Visual Exploration
 									</h4>
@@ -393,7 +393,7 @@ export default function HomePage() {
 								</GridCard>
 
 								{/* Card 3: Content Upload */}
-								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-4 md:p-6">
+								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-6 md:p-8">
 									<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
 										Content Upload
 									</h4>
@@ -403,7 +403,7 @@ export default function HomePage() {
 								</GridCard>
 
 								{/* Card 4: Organize with Scopes */}
-								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-4 md:p-6">
+								<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-6 md:p-8">
 									<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
 										Organize with Scopes
 									</h4>
@@ -462,7 +462,7 @@ export default function HomePage() {
 
 					{/* Description Card - Mobile: 8/8, Tablet: 8/8, Desktop: 2/8 */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex flex-col h-full items-start p-4 md:p-6 justify-between">
+						<GridCard enableHoverEffect enableSpotlight className="flex flex-col h-full items-start p-6 md:p-8 justify-between gap-8 md:gap-4">
 							<p className="font-light text-muted-foreground leading-relaxed">
 								{homepageContent.comparison.description}
 							</p>
@@ -484,7 +484,7 @@ export default function HomePage() {
 
 					{/* Comparison Table - Mobile: 8/8, Tablet: 8/8, Desktop: 6/8 */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={6}>
-						<GridCard enableHoverEffect enableSpotlight className="h-full p-4 md:p-6">
+						<GridCard enableHoverEffect enableSpotlight className="h-full p-6 md:p-8">
 							<Table className="w-full">
 								<TableHeader>
 									<TableRow>
@@ -586,9 +586,9 @@ function FeatureCard({ capability }: { capability: { title: string; description:
 						variant="secondary" 
 						appearance="outline" 
 						size="sm"
-						className="bg-chart-3/10 dark:bg-chart-3/20 border-chart-3/40 dark:border-chart-3/20 dark:text-chart-3/60 text-chart-3"
+						className="bg-chart-3/20 dark:bg-chart-3/10 border-chart-3/40 dark:border-chart-3/20 dark:text-chart-3/60 text-chart-3"
 					>
-						Coming Soon
+						Soon
 					</Badge>
 				)}
 			</div>
