@@ -15,10 +15,10 @@ export function GridOverlay() {
 						key={i}
 						className={
 							i === 0
-								? "relative border-muted border-l"
+								? "relative -ml-px border-l border-muted dark:border-border"
 								: i === 7
-									? "relative border-l border-r border-muted/60"
-									: "relative border-l border-muted/60"
+									? "relative border-l border-r border-muted/60 dark:border-l-border/40 dark:border-r-border/60"
+									: "relative border-l border-muted/60 dark:border-border/40"
 						}
 					/>
 				))}
