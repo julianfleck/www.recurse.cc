@@ -104,19 +104,19 @@ function FeatureCard({
 							</TableBody>
 						</Table>
 
-						{/* Button - shown on card hover */}
-						{capability.docLink && (
-							<div
-								className={`transition-opacity duration-200 ${isCardHovered ? "opacity-100" : "opacity-0"} ${capability.comingSoon ? "opacity-100!" : ""}`}
-							>
-								<Button asChild className="group/btn w-full rounded-full px-4 py-3 font-medium text-sm" size="default" variant="outline">
-									<span className="flex items-center justify-center">
-										Learn more
-										<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-									</span>
-								</Button>
-							</div>
-						)}
+					{/* Button - shown on card hover */}
+					{capability.docLink && (
+						<div
+							className={`transition-opacity duration-200 ${isCardHovered ? "opacity-100" : "opacity-0"}`}
+						>
+							<Button asChild className="group/btn w-full rounded-full px-4 py-3 font-medium text-sm" size="default" variant="outline">
+								<span className="flex items-center justify-center">
+									Learn more
+									<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+								</span>
+							</Button>
+						</div>
+					)}
 					</div>
 				)}
 			</GridCard>
