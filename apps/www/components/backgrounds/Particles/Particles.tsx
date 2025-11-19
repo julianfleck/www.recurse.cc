@@ -41,7 +41,7 @@ export default function Particles({
 	const animationRef = useRef<number | null>(null);
 	const particlesRef = useRef<Particle[]>([]);
 	const mouseRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-	const scrollRef = useRef<number>(0);
+	const scrollRef = useRef<number>(typeof window !== 'undefined' ? window.scrollY : 0);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;

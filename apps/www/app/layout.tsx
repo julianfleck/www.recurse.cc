@@ -4,7 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@recurse/ui/components";
 import { Analytics } from "@vercel/analytics/next";
 import Aurora from "@/components/backgrounds/Aurora/Aurora";
-import Particles from "@/components/backgrounds/Particles/Particles";
+import { ParticlesBackground } from "@/components/backgrounds/ParticlesBackground";
 import { Footer } from "@/components/common/Footer";
 import { Header } from "@/components/common/header";
 import { GridOverlay } from "@/components/layout/GridOverlay";
@@ -50,19 +50,9 @@ export default function RootLayout({
 								<Header />
 								<main className="relative z-10 pt-[120px] transition-all duration-300">{children}</main>
 								<Footer />
-							</div>
-							{/* Particles Background for Entire Site */}
-							{/* <div className="pointer-events-none fixed inset-0 z-0 opacity-80 dark:opacity-50">
-								<Particles
-									className="text-red-orange-300 dark:text-white"
-									enableMouseFollow={true}
-									parallaxStrength={0.5}
-									particleColor="currentColor"
-									particleCount={80}
-									particleSize={3}
-									speed={0.3}
-								/>
-							</div> */}
+						</div>
+						{/* Particles Background for Entire Site */}
+						<ParticlesBackground />
 
 							{/* Aurora Background at Bottom */}
 							{/* <div className="pointer-events-none fixed right-0 bottom-0 left-0 z-0 h-full scale-y-[-1] opacity-15 dark:opacity-15">
