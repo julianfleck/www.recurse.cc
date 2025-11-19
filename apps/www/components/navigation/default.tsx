@@ -155,24 +155,23 @@ export function DefaultNavigation({
 								Features
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
-								<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+								<div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
 									{(navContent as any).featureDropdown.map((component: FeatureComponent) => (
-										<li key={component.title}>
-											<GridCard
-												href={component.href}
-												enableHoverEffect={true}
-												rounded={true}
-												glowColor="chart-1"
-												className="p-3"
-											>
-												<div className="font-medium text-sm leading-none">{component.title}</div>
-												<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
-													{component.description}
-												</p>
-											</GridCard>
-										</li>
+										<GridCard
+											key={component.title}
+											href={component.href}
+											enableHoverEffect={true}
+											rounded={true}
+											glowColor="chart-1"
+											className="group/card p-3"
+										>
+											<div className="font-medium text-sm leading-none text-muted-foreground transition-colors group-hover/card:text-foreground">{component.title}</div>
+											<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
+												{component.description}
+											</p>
+										</GridCard>
 									))}
-								</ul>
+								</div>
 							</NavigationMenuContent>
 						</NavigationMenuItem>
 
@@ -187,64 +186,56 @@ export function DefaultNavigation({
 								Technology
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
-								<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-									<li>
-										<GridCard
-											href="/about#frame-semantics"
-											enableHoverEffect={true}
-											rounded={true}
-											glowColor="chart-1"
-											className="p-3"
-										>
-											<div className="font-medium text-sm leading-none">Frame Semantics</div>
-											<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
-												Structured knowledge representation using semantic frames with defined roles and relationships.
-											</p>
-										</GridCard>
-									</li>
-									<li>
-										<GridCard
-											href="/about#recursive-graphs"
-											enableHoverEffect={true}
-											rounded={true}
-											glowColor="chart-1"
-											className="p-3"
-										>
-											<div className="font-medium text-sm leading-none">Recursive Graph Construction</div>
-											<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
-												Dynamic graph building that learns from every interaction, creating self-improving knowledge structures.
-											</p>
-										</GridCard>
-									</li>
-									<li>
-										<GridCard
-											href="/about#operations-as-knowledge"
-											enableHoverEffect={true}
-											rounded={true}
-											glowColor="chart-1"
-											className="p-3"
-										>
-											<div className="font-medium text-sm leading-none">Operations as Knowledge</div>
-											<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
-												How the system stores and uses knowledge about how to work with knowledge.
-											</p>
-										</GridCard>
-									</li>
-									<li>
-										<GridCard
-											href="/about#comparison"
-											enableHoverEffect={true}
-											rounded={true}
-											glowColor="chart-1"
-											className="p-3"
-										>
-											<div className="font-medium text-sm leading-none">RAGE vs. RAG</div>
-											<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
-												Compare Recursive Agentic Graph Embeddings with traditional RAG approaches.
-											</p>
-										</GridCard>
-									</li>
-								</ul>
+								<div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+									<GridCard
+										href="/about#frame-semantics"
+										enableHoverEffect={true}
+										rounded={true}
+										glowColor="chart-1"
+										className="group/card p-3"
+									>
+										<div className="font-medium text-sm leading-none text-muted-foreground transition-colors group-hover/card:text-foreground">Frame Semantics</div>
+										<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
+											Structured knowledge representation using semantic frames with defined roles and relationships.
+										</p>
+									</GridCard>
+									<GridCard
+										href="/about#recursive-graphs"
+										enableHoverEffect={true}
+										rounded={true}
+										glowColor="chart-1"
+										className="group/card p-3"
+									>
+										<div className="font-medium text-sm leading-none text-muted-foreground transition-colors group-hover/card:text-foreground">Recursive Graph Construction</div>
+										<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
+											Dynamic graph building that learns from every interaction, creating self-improving knowledge structures.
+										</p>
+									</GridCard>
+									<GridCard
+										href="/about#operations-as-knowledge"
+										enableHoverEffect={true}
+										rounded={true}
+										glowColor="chart-1"
+										className="group/card p-3"
+									>
+										<div className="font-medium text-sm leading-none text-muted-foreground transition-colors group-hover/card:text-foreground">Operations as Knowledge</div>
+										<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
+											How the system stores and uses knowledge about how to work with knowledge.
+										</p>
+									</GridCard>
+									<GridCard
+										href="/about#comparison"
+										enableHoverEffect={true}
+										rounded={true}
+										glowColor="chart-1"
+										className="group/card p-3"
+									>
+										<div className="font-medium text-sm leading-none text-muted-foreground transition-colors group-hover/card:text-foreground">RAGE vs. RAG</div>
+										<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
+											Compare Recursive Agentic Graph Embeddings with traditional RAG approaches.
+										</p>
+									</GridCard>
+								</div>
 							</NavigationMenuContent>
 						</NavigationMenuItem>
 
