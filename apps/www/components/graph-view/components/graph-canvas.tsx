@@ -140,6 +140,8 @@ export interface GraphViewProps {
 	zoomModifier?: "" | "cmd";
 	// External trigger to re-run fit to view when value changes
 	fitSignal?: number;
+	// When true, controls are hidden by default and only show on hover
+	showControlsOnHoverOnly?: boolean;
 }
 
 export function GraphView({
@@ -151,6 +153,7 @@ export function GraphView({
 	disableFullscreenControl = false,
 	zoomModifier = "",
 	fitSignal,
+	showControlsOnHoverOnly = false,
 }: GraphViewProps) {
 	const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
 	const [hasLoadCompleted, setHasLoadCompleted] = useState(false);
@@ -1922,7 +1925,7 @@ export function GraphView({
 		<TooltipProvider>
 			<div
 				aria-hidden="true"
-				className={`${getGraphContainerClasses(showSidebar)} ${className}`}
+				className={`${getGraphContainerClasses(showSidebar)} ${className} ${showControlsOnHoverOnly ? "group" : ""}`}
 				ref={containerRef}
 				role="presentation"
 				tabIndex={-1}
@@ -2113,7 +2116,7 @@ export function GraphView({
 				)}
 
 				<div className={getGraphContentClasses(showSidebar)}>
-					<div className={getControlsContainerClasses()}>
+					<div className={`${getControlsContainerClasses()} ${showControlsOnHoverOnly ? "opacity-0 transition-opacity duration-200 group-hover:opacity-100" : ""}`}>
 						<GraphControls
 							expansionProgress={expansionProgress}
 							isCollapsing={isCollapsing}
@@ -2196,15 +2199,15 @@ export function GraphView({
 						</div>
 					)}
 
-					{/* Debug pill for current expansion level (lower-right) */}
-					<div className="pointer-events-none absolute right-4 bottom-4 z-20">
-						<output
-							aria-live="polite"
-							className="pointer-events-auto rounded-full border border-border bg-background/80 px-3 py-1 text-muted-foreground text-xs shadow backdrop-blur"
-						>
-							Level: {currentExpansionLevel}
-						</output>
-					</div>
+				{/* Debug pill for current expansion level (lower-right) */}
+				<div className={`pointer-events-none absolute right-4 bottom-4 z-20 ${showControlsOnHoverOnly ? "opacity-0 transition-opacity duration-200 group-hover:opacity-100" : ""}`}>
+					<output
+						aria-live="polite"
+						className="pointer-events-auto rounded-full border border-border bg-background/80 px-3 py-1 text-muted-foreground text-xs shadow backdrop-blur"
+					>
+						Level: {currentExpansionLevel}
+					</output>
+				</div>
 				</div>
 			</div>
 		</TooltipProvider>

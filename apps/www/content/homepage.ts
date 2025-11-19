@@ -43,8 +43,6 @@ export type ComparisonRow = {
 export const homepageContent = {
 	hero: {
 		headline: "The Memory Substrate for Sense-making, not just Similarity Search",
-		subheadline:
-			"Recurse transforms unstructured content into living knowledge graphs that you and your AI can navigate, explore, and reason through.",
 		introText:
 			"Most systems return similar chunks and call it memory—doesn't help you understand, can't discover connections, can't trace how arguments unfold. Recurse is memory infrastructure for systems that actually understand. Ingest unstructured content from anywhere, transform it into a living knowledge graph that AI (and you) can reason through and act on.",
 		learnMoreHref: "/about",
@@ -52,12 +50,26 @@ export const homepageContent = {
 		docsText: "Read the docs",
 	},
 
+	graphExample: {
+		description: {
+			top: "Recurse transforms unstructured content into living knowledge graphs...",
+			bottom: "...so that both you and your AI can navigate, explore, and reason through your knowledge base.",
+		},
+	},
+
 	intro: {
-		title: "Yet Another AI Memory System? Not quite.",
-		text: "Recurse is built on different principles: structure over similarity, relationships over rankings, evolution over static storage.",
-		content: {
-			top: "Most AI memory systems optimize for one thing: similarity. Ask a question, get the most similar chunks back. This works if you know what you're looking for. But it systematically prevents the kind of exploration that leads to genuine understanding.",
-			bottom: "You can't discover connections you didn't know existed. Can't stumble onto relevant context from unexpected sources. Can't follow threads that diverge from your initial question. The infrastructure is optimized for retrieval, not exploration.",
+		title: "Yet Another AI Memory System?",
+		leftCard: {
+			top: "Not quite...",
+			bottom: "Recurse is memory infrastructure for systems that actually understand.",
+		},
+		middleCard: {
+			top: "Most context management infrastructures are optimized for retrieval, not exploration.",
+			bottom: "Ask a question, get the most similar chunks back. This works if you know what you're looking for. But it systematically prevents the kind of exploration that leads to genuine understanding.",
+		},
+		rightCard: {
+			top: "You can't discover connections you didn't know existed. Can't stumble onto relevant context from unexpected sources. Can't follow threads that diverge from your initial question.",
+			bottom: "That is why we are building on different principles: structure over similarity, relationships over rankings, evolution over static storage.",
 		},
 	},
 

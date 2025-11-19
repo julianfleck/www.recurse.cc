@@ -38,17 +38,14 @@ export default function HomePage() {
 								enableSpotlight
 								className="px-1col py-1col lg:pl-2col lg:pr-1.5col"
 							>
-								<div className="space-y-8 text-left">
+								<div className="space-y-8 text-left pl-6">
 									<div className="space-y-8">
 										{/* TODO: place text swap component here */}
-										<div className="lg:max-w-lg">
+										<div className="lg:max-w-lg pr-2">
 											<h1 className="font-semibold text-2xl leading-[1.15]! tracking-tight md:text-4xl lg:text-5xl text-accent-foreground lg:max-w-3xl">
 												{homepageContent.hero.headline}
 											</h1>
 										</div>
-										<p className="max-w-4xl text-muted-foreground text-lg leading-normal md:text-xl lg:text-2xl">
-											{homepageContent.hero.subheadline}
-										</p>
 									</div>
 									<div className="flex flex-wrap gap-4">
 										<Button
@@ -72,14 +69,27 @@ export default function HomePage() {
 					</Grid8Col>
 				</ScrollAnimation>
 
-				{/* Example Graph Section - Full width below hero */}
+				{/* Example Graph Section - Text card (2 cols) + Graph (6 cols) */}
 				<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 					<Grid8Col>
-						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-							<GridCard enableHoverEffect enableSpotlight>
-								<AnimatedGraphExample className="rounded-none border-0" showControls={false} />
+						{/* Description Card - Mobile: 8/8, Tablet: 8/8, Desktop: 2/8 */}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+								<p className="font-medium text-foreground text-xl leading-relaxed">
+									{homepageContent.graphExample.description.top}
+								</p>
+								<p className="font-light text-muted-foreground text-lg leading-relaxed">
+									{homepageContent.graphExample.description.bottom}
+								</p>
 							</GridCard>
 						</GridCell>
+
+				{/* Graph Example - Mobile: 8/8, Tablet: 8/8, Desktop: 6/8 */}
+				<GridCell colSpan={8} mdColSpan={8} lgColSpan={6}>
+					<GridCard enableHoverEffect enableSpotlight>
+						<AnimatedGraphExample className="rounded-none border-0 bg-background" showControls={false} showControlsOnHoverOnly={true} />
+					</GridCard>
+				</GridCell>
 					</Grid8Col>
 				</ScrollAnimation>
 			</div>
@@ -87,20 +97,20 @@ export default function HomePage() {
 			{/* About Section - Simple 8 column grid */}
 			<div className="relative z-10 space-y-24 md:space-y-32">
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-				<Grid8Col className="py-12">
+				<Grid8Col className="">
 					{/* Header - spans all columns */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-						<HeaderCard title="About" enableSpotlight />
+						<HeaderCard title="Yet Another AI Memory System?" enableSpotlight />
 					</GridCell>
 
 					{/* Card 1 - Mobile: full width (8/8), Tablet: 2/8, Desktop: 2/8 columns */}
 					<GridCell colSpan={8} mdColSpan={2} lgColSpan={2} rowSpan={2}>
 						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
-							<h2 className="font-light text-xl md:text-2xl lg:text-2xl text-foreground">
-								Yet Another AI Memory System?
-							</h2>
-							<p className="font-light text-xl md:text-2xl lg:text-2xl text-muted-foreground">
-								Not quite.
+							<p className="font-light text-2xl text-foreground">
+								Not quite.<br className="hidden md:block" /> We are a built a bit differently...
+							</p>
+							<p className="font-light text-xl text-foreground">
+								Recurse is memory infrastructure for systems that actually <mark className=" underline-offset-6 text-foreground">understand</mark>.
 							</p>
 						</GridCard>
 					</GridCell>
@@ -108,23 +118,23 @@ export default function HomePage() {
 					{/* Card 2 - Mobile: full width (8/8), Tablet: 3/8, Desktop: 3/8 columns */}
 					<GridCell colSpan={8} mdColSpan={3} lgColSpan={3} rowSpan={2}>
 						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
-							<p className="font-light text-md text-foreground pb-8 leading-relaxed">
-								Most AI memory systems optimize for one thing: similarity. Ask a question, get the most similar chunks back. This works if you know what you're looking for. But it systematically prevents the kind of exploration that leads to genuine understanding.
+							<p className="font-light text-2xl text-muted-foreground pb-8 leading-relaxed">
+								Most context management systems are optimized for retrieval, not exploration.
 							</p>
-							<p className="font-light text-md text-muted-foreground leading-relaxed">
-								You can't discover connections you didn't know existed. Can't stumble onto relevant context from unexpected sources. Can't follow threads that diverge from your initial question. The infrastructure is optimized for retrieval, not exploration.
+							<p className="font-light text-lg text-muted-foreground leading-relaxed">
+								Ask a question, get the most similar chunks back. This works if you know what you're looking for. But it systematically prevents the kind of exploration that leads to genuine  understanding and novel insights.
 							</p>
 						</GridCard>
 					</GridCell>
 
 					{/* Card 3 - Mobile: full width (8/8), Tablet: 3/8, Desktop: 3/8 columns */}
 					<GridCell colSpan={8} mdColSpan={3} lgColSpan={3} rowSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
-							<p className="font-light text-xl md:text-2xl lg:text-2xl text-muted-foreground">
-								Recurse is memory infrastructure for systems that actually understand.
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6 gap-8">
+							<p className="font-light text-lg text-foreground pb-8 leading-relaxed">
+								Standard retrieval systems don't allow you to discover connections you didn't know existed, stumble onto relevant context from unexpected sources or follow threads that diverge from your initial question.
 							</p>
-							<p className="font-light text-base md:text-xl lg:text-xl text-foreground">
-								We are building on different principles: structure over similarity, relationships over rankings, evolution over static storage.
+							<p className="font-light text-xl text-foreground leading-relaxed pr-8">
+								Recurse favors <mark>structure</mark> over similarity, <mark>relationships</mark> over rankings and <mark>evolution</mark> over static storage.
 							</p>
 						</GridCard>
 					</GridCell>
@@ -133,7 +143,7 @@ export default function HomePage() {
 
 			{/* Core Capabilities Section */}
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-				<Grid8Col className="py-12">
+				<Grid8Col className="">
 					{/* Header - spans all columns */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
 						<HeaderCard title="Core Capabilities" enableSpotlight />
@@ -196,7 +206,7 @@ export default function HomePage() {
 
 			{/* What You Can Build Section */}
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-				<Grid8Col className="py-12">
+				<Grid8Col className="">
 					{/* Header - spans all columns */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
 						<HeaderCard title={homepageContent.whatYouCanBuild.title} enableSpotlight />
@@ -222,7 +232,7 @@ export default function HomePage() {
 
 			{/* Who This Is For Section */}
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-				<Grid8Col className="py-12">
+				<Grid8Col className="">
 					{/* Header - spans all columns */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
 						<HeaderCard title={homepageContent.whoThisIsFor.title} enableSpotlight />

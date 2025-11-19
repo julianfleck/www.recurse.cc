@@ -35,17 +35,17 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
 	// Create all transforms unconditionally to satisfy React hooks rules
 	const fadeInOutOpacity = useTransform(
 		scrollYProgress,
-		[0, 0.2, 0.8, 1],
+		[0, 0.2, 0.6, 0.9],
 		[0, 1, 1, 0],
 	);
 	const fadeInOutScale = useTransform(
 		scrollYProgress,
-		[0, 0.2, 0.8, 1],
+		[0, 0.2, 0.6, 0.9],
 		[exitScale, 1, 1, exitScale],
 	);
 	const fadeInOutBlur = useTransform(
 		scrollYProgress,
-		[0, 0.2, 0.8, 1],
+		[0, 0.2, 0.6, 0.9],
 		[exitBlur, 0, 0, exitBlur],
 	);
 
@@ -53,9 +53,9 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
 	const fadeInScale = useTransform(scrollYProgress, [0, 1], [exitScale, 1]);
 	const fadeInBlur = useTransform(scrollYProgress, [0, 1], [exitBlur, 0]);
 
-	const fadeOutOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
-	const fadeOutScale = useTransform(scrollYProgress, [0, 1], [1, exitScale]);
-	const fadeOutBlur = useTransform(scrollYProgress, [0, 1], [0, exitBlur]);
+	const fadeOutOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+	const fadeOutScale = useTransform(scrollYProgress, [0, 0.75], [1, exitScale]);
+	const fadeOutBlur = useTransform(scrollYProgress, [0, 0.75], [0, exitBlur]);
 
 	// Select the appropriate transforms based on props
 	let scrollOpacity, scrollScale, scrollBlur;

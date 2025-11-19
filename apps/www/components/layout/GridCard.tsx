@@ -83,6 +83,8 @@ export function GridCard({ children, className, enableHoverEffect = false, enabl
 			ref={cardRef}
 			className={cn(
 				"relative z-20",
+				// Backdrop blur with semi-transparent background
+				"backdrop-blur-3xl bg-background/50 dark:bg-background/70",
 				// Optional rounded corners
 				rounded && "rounded-lg",
 				// Standard border approach with negative margins to collapse adjacent borders

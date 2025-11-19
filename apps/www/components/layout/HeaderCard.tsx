@@ -28,7 +28,7 @@ export function HeaderCard({
 }: HeaderCardProps) {
 	const content = (
 		<div className="relative flex items-center">
-			<h2 className="font-medium text-3xl text-muted-foreground transition-colors duration-300 leading-tight tracking-tight group-hover:text-foreground md:text-4xl lg:text-5xl">
+			<h2 className="font-medium text-4xl text-muted-foreground transition-colors duration-300 leading-tight tracking-tight group-hover:text-foreground max-w-xs pl-6">
 				{title}
 			</h2>
 			<ArrowRight 

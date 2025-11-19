@@ -82,12 +82,14 @@ type AnimatedGraphExampleProps = {
 	data?: AnimationData;
 	className?: string;
 	showControls?: boolean;
+	showControlsOnHoverOnly?: boolean;
 };
 
 export function AnimatedGraphExample({
 	data,
 	className,
 	showControls = true,
+	showControlsOnHoverOnly = false,
 }: AnimatedGraphExampleProps = {}) {
 	const animationData = data ?? (defaultData as AnimationData);
 
@@ -260,6 +262,7 @@ export function AnimatedGraphExample({
 		<div
 			key={`graph-${graphDataHash.slice(0, 16)}`}
 			ref={containerRef}
+			className="group"
 		>
 			<div
 				className={cn(
@@ -273,11 +276,15 @@ export function AnimatedGraphExample({
 					fitSignal={fitTick}
 					withSidebar={false}
 					zoomModifier="cmd"
+					showControlsOnHoverOnly={showControlsOnHoverOnly}
 				/>
 			</div>
 			{/* Progress indicator with description - only show if more than one step and showControls is true */}
 			{showControls && animationSteps.length > 1 && (
-				<div className="mt-2 mb-4 flex items-center gap-3 rounded-md border border-border p-2">
+				<div className={cn(
+					"mt-2 mb-4 flex items-center gap-3 rounded-md border border-border p-2",
+					showControlsOnHoverOnly && "opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+				)}>
 					<button
 						className="shrink-0 rounded p-1 hover:bg-secondary"
 						onClick={buttonHandler}
