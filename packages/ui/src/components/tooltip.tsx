@@ -5,7 +5,7 @@ import { cn } from '@recurse/ui/lib';
 import type * as React from 'react';
 
 function TooltipProvider({
-  delayDuration = 0,
+  delayDuration = 400,
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
   return (
