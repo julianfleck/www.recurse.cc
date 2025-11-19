@@ -336,27 +336,42 @@ mark {
   );
 }
 
+/* Marks inside code blocks should always be visible (exclude from animation) */
+pre mark,
+code mark {
+  background-color: color-mix(in oklch, var(--chart-1) 40%, transparent);
+  border-color: var(--chart-1);
+  background-size: 100% 100%;
+  transition: none;
+}
+
+.dark pre mark,
+.dark code mark {
+  background-color: color-mix(in oklch, var(--primary) 30%, transparent);
+  border-color: color-mix(in oklch, var(--primary) 40%, transparent);
+}
+
 /* Show marks on group hover - using :has() selector for any group */
-:is([class*="group/"]):hover mark {
+:is([class*="group/"]):hover mark:not(pre mark, code mark) {
   background-size: 100% 100%;
   border-color: var(--chart-1);
 }
 
-.dark :is([class*="group/"]):hover mark {
+.dark :is([class*="group/"]):hover mark:not(pre mark, code mark) {
   border-color: color-mix(in oklch, var(--primary) 40%, transparent);
 }
 
 /* Auto-stagger animation based on position - supports unlimited marks */
-:is([class*="group/"]):hover mark:nth-of-type(1) { transition-delay: 0.7s; }
-:is([class*="group/"]):hover mark:nth-of-type(2) { transition-delay: 1.4s; }
-:is([class*="group/"]):hover mark:nth-of-type(3) { transition-delay: 2.1s; }
-:is([class*="group/"]):hover mark:nth-of-type(4) { transition-delay: 2.8s; }
-:is([class*="group/"]):hover mark:nth-of-type(5) { transition-delay: 3.5s; }
-:is([class*="group/"]):hover mark:nth-of-type(6) { transition-delay: 4.2s; }
-:is([class*="group/"]):hover mark:nth-of-type(7) { transition-delay: 4.9s; }
-:is([class*="group/"]):hover mark:nth-of-type(8) { transition-delay: 5.6s; }
-:is([class*="group/"]):hover mark:nth-of-type(9) { transition-delay: 6.3s; }
-:is([class*="group/"]):hover mark:nth-of-type(10) { transition-delay: 7.0s; }
+:is([class*="group/"]):hover mark:not(pre mark, code mark):nth-of-type(1) { transition-delay: 0.7s; }
+:is([class*="group/"]):hover mark:not(pre mark, code mark):nth-of-type(2) { transition-delay: 1.4s; }
+:is([class*="group/"]):hover mark:not(pre mark, code mark):nth-of-type(3) { transition-delay: 2.1s; }
+:is([class*="group/"]):hover mark:not(pre mark, code mark):nth-of-type(4) { transition-delay: 2.8s; }
+:is([class*="group/"]):hover mark:not(pre mark, code mark):nth-of-type(5) { transition-delay: 3.5s; }
+:is([class*="group/"]):hover mark:not(pre mark, code mark):nth-of-type(6) { transition-delay: 4.2s; }
+:is([class*="group/"]):hover mark:not(pre mark, code mark):nth-of-type(7) { transition-delay: 4.9s; }
+:is([class*="group/"]):hover mark:not(pre mark, code mark):nth-of-type(8) { transition-delay: 5.6s; }
+:is([class*="group/"]):hover mark:not(pre mark, code mark):nth-of-type(9) { transition-delay: 6.3s; }
+:is([class*="group/"]):hover mark:not(pre mark, code mark):nth-of-type(10) { transition-delay: 7.0s; }
 
 /* Global styles (apply outside prose as well) */
 html:not(.prose) {
