@@ -359,16 +359,6 @@ code mark {
   ) !important;
 }
 
-/* Show marks on group hover - using :has() selector for any group */
-:is([class*="group/"]):hover mark:not(pre *, code *) {
-  background-size: 100% 100%;
-  border-color: var(--chart-1);
-}
-
-.dark :is([class*="group/"]):hover mark:not(pre *, code *) {
-  border-color: color-mix(in oklch, var(--primary) 40%, transparent);
-}
-
 /* Auto-stagger animation based on position - supports unlimited marks */
 /* Use animation instead of transition for better control */
 @keyframes mark-highlight {
