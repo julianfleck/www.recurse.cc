@@ -13,7 +13,7 @@ import { homepageContent } from "@/content/homepage";
 
 export function Hero() {
 	return (
-		<div className="relative z-10">
+		<div className="relative z-10 group/hero">
 			{/* Hero Card */}
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 				<Grid8Col className="pt-12">
@@ -73,7 +73,7 @@ export function Hero() {
 
 export function About() {
 	return (
-		<div className="relative z-10 space-y-24 md:space-y-32">
+		<div className="relative z-10 space-y-24 md:space-y-32 group/about">
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 				<Grid8Col className="">
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>

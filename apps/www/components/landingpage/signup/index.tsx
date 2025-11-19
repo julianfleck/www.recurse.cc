@@ -9,13 +9,13 @@ import { GridCard } from "@/components/layout/GridCard";
 export function SignupSection() {
 	return (
 		<ScrollAnimation enableFadeOut={true} exitBlur={2} exitScale={0.99}>
-			<div className="py-16 md:py-24">
+			<div className="py-16 md:py-24 group/signup">
 				<Grid8Col>
 					{/* Column 1: Title and intro (2 cols) */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
 						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
 							<h2 className="text-2xl md:text-3xl font-medium text-foreground leading-tight">
-								Start using Recurse
+								Join our beta
 							</h2>
 							<p className="font-light text-muted-foreground text-xl leading-relaxed mt-auto pt-6">
 								We are looking for teams that want to put our approach to the test

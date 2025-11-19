@@ -12,7 +12,7 @@ import { FeatureCardUIPreview } from "@/components/layout/FeatureCardUIPreview";
 export function ChatOrCodeSection() {
 	return (
 		<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-			<div className="py-16 md:py-24">
+			<div className="py-16 md:py-24 group/chat-or-code">
 				<Grid8Col>
 					{/* Header - spans all columns */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>

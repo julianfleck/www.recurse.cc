@@ -13,6 +13,7 @@ import { homepageContent } from "@/content/homepage";
 export function ComparisonSection() {
 	return (
 		<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
+			<div className="group/comparison">
 			<Grid8Col className="py-12">
 				{/* Header - spans all columns */}
 				<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
@@ -66,6 +67,7 @@ export function ComparisonSection() {
 					</GridCard>
 				</GridCell>
 			</Grid8Col>
+			</div>
 		</ScrollAnimation>
 	);
 }
