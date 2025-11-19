@@ -366,7 +366,7 @@ mark {
 .group\/build-with-recurse:hover mark:nth-of-type(1),
 .group\/comparison:hover mark:nth-of-type(1),
 .group\/signup:hover mark:nth-of-type(1) {
-  transition-delay: 0.15s;
+  transition-delay: 0.7s;
 }
 
 .group\/hero:hover mark:nth-of-type(2),
@@ -376,7 +376,7 @@ mark {
 .group\/build-with-recurse:hover mark:nth-of-type(2),
 .group\/comparison:hover mark:nth-of-type(2),
 .group\/signup:hover mark:nth-of-type(2) {
-  transition-delay: 0.45s;
+  transition-delay: 1.4s;
 }
 
 .group\/hero:hover mark:nth-of-type(3),
@@ -386,7 +386,7 @@ mark {
 .group\/build-with-recurse:hover mark:nth-of-type(3),
 .group\/comparison:hover mark:nth-of-type(3),
 .group\/signup:hover mark:nth-of-type(3) {
-  transition-delay: 0.75s;
+  transition-delay: 2.1s;
 }
 
 .group\/hero:hover mark:nth-of-type(4),
@@ -396,7 +396,7 @@ mark {
 .group\/build-with-recurse:hover mark:nth-of-type(4),
 .group\/comparison:hover mark:nth-of-type(4),
 .group\/signup:hover mark:nth-of-type(4) {
-  transition-delay: 1.05s;
+  transition-delay: 2.8s;
 }
 
 /* Global styles (apply outside prose as well) */
