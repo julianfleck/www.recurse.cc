@@ -336,68 +336,27 @@ mark {
   );
 }
 
-/* Show marks on group hover with staggered animation */
-.group\/hero:hover mark,
-.group\/about:hover mark,
-.group\/features:hover mark,
-.group\/chat-or-code:hover mark,
-.group\/build-with-recurse:hover mark,
-.group\/comparison:hover mark,
-.group\/signup:hover mark {
+/* Show marks on group hover - using :has() selector for any group */
+:is([class*="group/"]):hover mark {
   background-size: 100% 100%;
   border-color: var(--chart-1);
 }
 
-.dark .group\/hero:hover mark,
-.dark .group\/about:hover mark,
-.dark .group\/features:hover mark,
-.dark .group\/chat-or-code:hover mark,
-.dark .group\/build-with-recurse:hover mark,
-.dark .group\/comparison:hover mark,
-.dark .group\/signup:hover mark {
+.dark :is([class*="group/"]):hover mark {
   border-color: color-mix(in oklch, var(--primary) 40%, transparent);
 }
 
-/* Stagger animation for multiple marks - animate one after another */
-.group\/hero:hover mark:nth-of-type(1),
-.group\/about:hover mark:nth-of-type(1),
-.group\/features:hover mark:nth-of-type(1),
-.group\/chat-or-code:hover mark:nth-of-type(1),
-.group\/build-with-recurse:hover mark:nth-of-type(1),
-.group\/comparison:hover mark:nth-of-type(1),
-.group\/signup:hover mark:nth-of-type(1) {
-  transition-delay: 0.7s;
-}
-
-.group\/hero:hover mark:nth-of-type(2),
-.group\/about:hover mark:nth-of-type(2),
-.group\/features:hover mark:nth-of-type(2),
-.group\/chat-or-code:hover mark:nth-of-type(2),
-.group\/build-with-recurse:hover mark:nth-of-type(2),
-.group\/comparison:hover mark:nth-of-type(2),
-.group\/signup:hover mark:nth-of-type(2) {
-  transition-delay: 1.4s;
-}
-
-.group\/hero:hover mark:nth-of-type(3),
-.group\/about:hover mark:nth-of-type(3),
-.group\/features:hover mark:nth-of-type(3),
-.group\/chat-or-code:hover mark:nth-of-type(3),
-.group\/build-with-recurse:hover mark:nth-of-type(3),
-.group\/comparison:hover mark:nth-of-type(3),
-.group\/signup:hover mark:nth-of-type(3) {
-  transition-delay: 2.1s;
-}
-
-.group\/hero:hover mark:nth-of-type(4),
-.group\/about:hover mark:nth-of-type(4),
-.group\/features:hover mark:nth-of-type(4),
-.group\/chat-or-code:hover mark:nth-of-type(4),
-.group\/build-with-recurse:hover mark:nth-of-type(4),
-.group\/comparison:hover mark:nth-of-type(4),
-.group\/signup:hover mark:nth-of-type(4) {
-  transition-delay: 2.8s;
-}
+/* Auto-stagger animation based on position - supports unlimited marks */
+:is([class*="group/"]):hover mark:nth-of-type(1) { transition-delay: 0.7s; }
+:is([class*="group/"]):hover mark:nth-of-type(2) { transition-delay: 1.4s; }
+:is([class*="group/"]):hover mark:nth-of-type(3) { transition-delay: 2.1s; }
+:is([class*="group/"]):hover mark:nth-of-type(4) { transition-delay: 2.8s; }
+:is([class*="group/"]):hover mark:nth-of-type(5) { transition-delay: 3.5s; }
+:is([class*="group/"]):hover mark:nth-of-type(6) { transition-delay: 4.2s; }
+:is([class*="group/"]):hover mark:nth-of-type(7) { transition-delay: 4.9s; }
+:is([class*="group/"]):hover mark:nth-of-type(8) { transition-delay: 5.6s; }
+:is([class*="group/"]):hover mark:nth-of-type(9) { transition-delay: 6.3s; }
+:is([class*="group/"]):hover mark:nth-of-type(10) { transition-delay: 7.0s; }
 
 /* Global styles (apply outside prose as well) */
 html:not(.prose) {
