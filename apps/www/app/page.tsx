@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@recurse/ui/components";
 import {
 	ArrowRight,
@@ -11,6 +11,7 @@ import {
 	Search,
 	Clock,
 } from "lucide-react";
+import { IconCircleCheck, IconCircleCheckFilled } from "@tabler/icons-react";
 import Link from "next/link";
 import AnimatedContent from "@/components/animations/AnimatedContent/AnimatedContent";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
@@ -41,9 +42,8 @@ export default function HomePage() {
 								<div className="space-y-8 text-left pl-6">
 									<div className="space-y-8">
 										{/* TODO: place text swap component here */}
-										<div className="lg:max-w-lg pr-2">
-											<h1 className="font-semibold text-2xl leading-[1.15]! tracking-tight md:text-4xl lg:text-5xl text-accent-foreground lg:max-w-3xl">
-												{homepageContent.hero.headline}
+										<div className="lg:max-w-lg">
+											<h1 className="font-semibold text-2xl leading-[1.15]! tracking-tight md:text-4xl lg:text-5xl text-accent-foreground lg:max-w-3xl">The Memory Substrate for Sense-making, not just Similarity Search
 											</h1>
 										</div>
 									</div>
@@ -75,11 +75,9 @@ export default function HomePage() {
 						{/* Description Card - Mobile: 8/8, Tablet: 8/8, Desktop: 2/8 */}
 						<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
 							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
-								<p className="font-medium text-foreground text-xl leading-relaxed">
-									{homepageContent.graphExample.description.top}
+								<p className="font-medium text-foreground text-xl leading-relaxed">Recurse turns raw input into structured, actionable context
 								</p>
-								<p className="font-light text-muted-foreground text-lg leading-relaxed">
-									{homepageContent.graphExample.description.bottom}
+								<p className="font-light text-muted-foreground text-base leading-relaxed">Add any type of content and we transform it into a living, semantically typed knowledge graph that you (and your AI agents) can act on, reason through, and build on top of. Plug and play, no configuration needed, <mark>change just one line of code</mark> to get started.
 								</p>
 							</GridCard>
 						</GridCell>
@@ -122,7 +120,7 @@ export default function HomePage() {
 								Most context management systems are optimized for retrieval, not exploration.
 							</p>
 							<p className="font-light text-lg text-muted-foreground leading-relaxed">
-								Ask a question, get the most similar chunks back. This works if you know what you're looking for. But it systematically prevents the kind of exploration that leads to genuine  understanding and novel insights.
+								Ask a question, get back what looks most similar to your query. This works if you know what you're looking for. But it systematically prevents the kind of exploration that leads to genuine  understanding and novel insights.
 							</p>
 						</GridCard>
 					</GridCell>
@@ -134,7 +132,7 @@ export default function HomePage() {
 								Standard retrieval systems don't allow you to discover connections you didn't know existed, stumble onto relevant context from unexpected sources or follow threads that diverge from your initial question.
 							</p>
 							<p className="font-light text-xl text-foreground leading-relaxed pr-8">
-								Recurse favors <mark>structure</mark> over similarity, <mark>relationships</mark> over rankings and <mark>evolution</mark> over static storage.
+								Recurse favors <mark>depth</mark> over similarity, <mark>relationships</mark> over rankings and <mark>evolution</mark> over static storage.
 							</p>
 						</GridCard>
 					</GridCell>
@@ -146,59 +144,18 @@ export default function HomePage() {
 				<Grid8Col className="">
 					{/* Header - spans all columns */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-						<HeaderCard title="Core Capabilities" enableSpotlight />
+						<HeaderCard title="What Recurse does" enableSpotlight />
 					</GridCell>
+				</Grid8Col>
 
+				{/* Feature cards in separate grid to control row heights */}
+				<Grid8Col className="grid-rows-[repeat(auto-fill,minmax(0,1fr))]">
+					{/* Four feature cards, each 2 columns wide */}
 					{homepageContent.coreCapabilities.capabilities.map(
 						(capability, index) => (
-							<React.Fragment key={index}>
-								{/* Icon Card - Mobile: 8/8, Tablet: 2/8, Desktop: 2/8 */}
-								<GridCell colSpan={8} mdColSpan={2} lgColSpan={2}>
-									<GridCard enableHoverEffect enableSpotlight className="flex h-full items-center justify-center p-6 md:p-8">
-										{capability.icon && (
-											<div className="rounded-md border border-accent/20 bg-accent/10 p-6">
-												<capability.icon
-													className="h-12 w-12 text-accent md:h-16 md:w-16 lg:h-20 lg:w-20"
-													strokeWidth={1.5}
-												/>
-											</div>
-										)}
-									</GridCard>
+							<GridCell key={index} colSpan={8} mdColSpan={4} lgColSpan={2} className="flex">
+								<FeatureCard capability={capability} />
 								</GridCell>
-
-								{/* Text Card - Mobile: 8/8, Tablet: 4/8, Desktop: 4/8 */}
-								<GridCell colSpan={8} mdColSpan={4} lgColSpan={4}>
-									<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-center p-4 md:p-6">
-										<div className="space-y-3">
-											<h3 className="font-medium text-lg md:text-xl">
-												{capability.title}
-											</h3>
-											<p className="font-light text-muted-foreground text-sm leading-relaxed md:text-base">
-												{capability.description}
-											</p>
-										</div>
-									</GridCard>
-								</GridCell>
-
-								{/* Feature Table Card - Mobile: 8/8, Tablet: 2/8, Desktop: 2/8 */}
-								<GridCell colSpan={8} mdColSpan={2} lgColSpan={2}>
-									<GridCard enableHoverEffect enableSpotlight className="h-full p-4 md:p-6">
-										{capability.features && capability.features.length > 0 && (
-											<Table className="w-full">
-												<TableBody>
-													{capability.features.map((feature, idx) => (
-														<TableRow key={idx}>
-															<TableCell className="font-light text-muted-foreground text-xs leading-relaxed md:text-sm">
-																{feature}
-															</TableCell>
-														</TableRow>
-													))}
-												</TableBody>
-											</Table>
-										)}
-									</GridCard>
-								</GridCell>
-							</React.Fragment>
 						),
 					)}
 				</Grid8Col>
@@ -355,5 +312,101 @@ export default function HomePage() {
 			{/* Final CTA Section */}
 			<CTASection />
 		</>
+	);
+}
+
+// Feature Card Component
+function FeatureCard({ capability }: { capability: { title: string; description: string; icon: React.ComponentType<{ className?: string; strokeWidth?: number }>; features: string[]; docLink?: string } }) {
+	const IconComponent = capability.icon;
+	const [hoveredRow, setHoveredRow] = useState<number | null>(null);
+	const [isCardHovered, setIsCardHovered] = useState(false);
+
+	const cardContent = (
+		<GridCard 
+			enableHoverEffect 
+			enableSpotlight 
+			className="flex h-full flex-col p-6 md:p-8 group/feature-card"
+		>
+			{/* Icon */}
+			<div className="flex justify-start pb-6">
+				<div className="rounded-md border border-accent/20 bg-accent/10">
+					<IconComponent
+						className="size-8 text-muted-foreground dark:group-hover/feature-card:text-chart-1 group-hover/feature-card:text-foreground"
+						strokeWidth={1}
+					/>
+				</div>
+			</div>
+
+			{/* Headline - reserve 2 lines */}
+			<h3 className="font-light! text-muted-foreground! dark:group-hover/feature-card:text-chart-1! group-hover/feature-card:text-foreground! leading-relaxed line-clamp-2 min-h-14">
+				{capability.title}
+			</h3>
+
+			{/* Description Text */}
+			<p className="font-light text-muted-foreground group-hover/feature-card:text-foreground text-sm hyphens-auto leading-relaxed pt-4 pb-6">
+				{capability.description}
+			</p>
+
+			{/* Table at bottom */}
+			{capability.features && capability.features.length > 0 && (
+				<div className="mt-auto space-y-4">
+					<Table className="w-full">
+						<TableBody>
+							{capability.features.map((feature, idx) => (
+								<TableRow 
+									key={idx}
+									onMouseEnter={() => setHoveredRow(idx)}
+									onMouseLeave={() => setHoveredRow(null)}
+								>
+									{/* <TableCell className="w-6 py-2">
+										{hoveredRow === idx ? (
+											<IconCircleCheckFilled className="size-4 text-foreground" />
+										) : (
+											<IconCircleCheck className="size-4 text-muted-foreground" />
+										)}
+									</TableCell> */}
+									<TableCell className="font-light text-muted-foreground text-xs leading-relaxed py-2 whitespace-normal wrap-break-word">
+										{feature}
+									</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+					
+					{/* Button - shown on card hover */}
+					{capability.docLink && (
+						<div className={`transition-opacity duration-200 ${isCardHovered ? 'opacity-100' : 'opacity-0'}`}>
+							<Button
+								asChild
+								className="group/btn w-full rounded-full px-4 py-3 font-medium text-sm"
+								size="default"
+								variant="outline"
+							>
+								<span className="flex items-center justify-center">
+									Learn more
+									<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+								</span>
+							</Button>
+						</div>
+					)}
+				</div>
+			)}
+		</GridCard>
+	);
+
+	return (
+		<div 
+			className="h-full"
+			onMouseEnter={() => setIsCardHovered(true)}
+			onMouseLeave={() => setIsCardHovered(false)}
+		>
+			{capability.docLink ? (
+				<Link href={capability.docLink} className="block h-full">
+					{cardContent}
+				</Link>
+			) : (
+				cardContent
+			)}
+		</div>
 	);
 }

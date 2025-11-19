@@ -9,6 +9,7 @@ import {
 	SendToBack,
 	Clock,
 } from "lucide-react";
+import { IconSparkles, IconGitBranch } from "@tabler/icons-react";
 
 // Type definitions for homepage content
 export type Capability = {
@@ -16,6 +17,7 @@ export type Capability = {
 	description: string;
 	icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
 	features: string[];
+	docLink?: string;
 };
 
 export type BuildItem = {
@@ -79,48 +81,52 @@ export const homepageContent = {
 			"",
 		capabilities: [
 			{
-				title: "Structure Over Similarity",
+				title: "Let's You Navigate Semantic Structure",
 				description:
-					"Extract semantic structure—arguments, evidence, decisions—and map how they connect. Your knowledge becomes navigable relationships, not isolated chunks.",
+					"Recurse creates typed relationships between semantic units—arguments link to evidence, decisions connect to discussions. Navigate meaning through actual reasoning chains, not keyword similarity.",
 				icon: Network,
 				features: [
-					"Trace reasoning chains, not just similar text",
-					"Surface connections across sources",
-					"Navigate by meaning, not keywords",
+					"Follow typed relationships",
+					"Trace reasoning chains",
+					"Multi-hop traversal",
 				],
+				docLink: "/docs/concepts/frames",
 			},
 			{
-				title: "Exploration + Retrieval",
+				title: "Discovers Schemas Automatically",
 				description:
-					'Ask "what\'s related but different?" not just "what\'s most similar?" Follow weak connections to discover adjacent ideas. Surface contradictions automatically.',
+					"Recurse learns patterns from any content you add to it, be it research papers, bug reports, meeting notes, etc, and created relationships between them without needing any predefined ontologies. Source-agnostic schema discovery adapts to your domain.",
+				icon: IconSparkles,
+				features: [
+					"Works with any content",
+					"Zero configuration needed",
+					"Adapts to your domain",
+				],
+				docLink: "/docs/concepts/adaptive-schemas",
+			},
+			{
+				title: "Evolves Knowledge Graphs Over Time",
+				description:
+					"Recurse updates knowledge while preserving complete history with timestamps, diffs, and explanations of what changed. This turns your Recurse graphs into a living memory that maintains both current understanding and historical context.",
 				icon: GitGraph,
 				features: [
-					"Discovery through divergence",
-					"Contradiction surfacing",
-					"Evolution tracking",
+					"Preserve historical context",
+					"Track knowledge evolution",
+					"Query temporal changes",
 				],
+				docLink: "/docs/concepts/temporal-versioning",
 			},
 			{
-				title: "Living Memory",
+				title: "Let's You Tap into Expert Knowledge",
 				description:
-					"Knowledge that evolves without losing history. Updates preserve timestamps, diffs, and explanations. See how understanding changed over time.",
-				icon: Clock,
-				features: [
-					"Current + historical context",
-					"Temporal queries",
-					"Evidence trails",
-				],
-			},
-			{
-				title: "Tap Into Expert Brains",
-				description:
-					"Subscribe to Context Streams and instantly access years of expert curation. Their sources, their synthesis, their connections—all queryable.",
+					"Subscribe to domain experts' knowledge bases—their sources, synthesis, and connections become queryable. You and your AI agents can draw from their expertise with one click.",
 				icon: Brain,
 				features: [
-					"Expertise without the work",
-					"Team knowledge infrastructure",
-					"Curator economy",
+					"Access expert knowledge",
+					"Share curated subgraphs",
+					"Automatic updates",
 				],
+				docLink: "/docs/concepts/streams",
 			},
 		] as Capability[],
 	},
