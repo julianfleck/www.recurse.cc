@@ -16,5 +16,8 @@
   "devDependencies": {
     "shadcn": "^3.5.0",
     "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "fumadocs-ui": "15.7.10"
   }
 }

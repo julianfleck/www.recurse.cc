@@ -134,7 +134,62 @@ export const homepageContent = {
 	whatYouCanBuild: {
 		title: "What You Can Build",
 		description:
-			"From AI assistants to knowledge workspaces, build applications that understand context and adapt to how people actually think and work.",
+			"Simply swap your API base URL to point to the Recurse proxy. Recurse automatically builds your knowledge graph and injects context into every request you make through it.",
+		codeExamples: [
+			{
+				label: "JavaScript",
+				language: "javascript",
+				code: `import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: 'https://api.recurse.cc/proxy/https://api.openai.com/v1/',
+  defaultHeaders: {
+    'X-API-Key': process.env.RECURSE_API_KEY,
+    'X-Recurse-Scope': 'my_project'
+  }
+});
+
+// Use normally—context gets injected automatically
+const completion = await client.chat.completions.create({
+  model: 'gpt-4o-mini',
+  messages: [{ role: 'user', content: 'What did we decide?' }]
+});`,
+			},
+			{
+				label: "Python",
+				language: "python",
+				code: `from openai import OpenAI
+import os
+
+client = OpenAI(
+    api_key=os.environ["OPENAI_API_KEY"],
+    base_url="https://api.recurse.cc/proxy/https://api.openai.com/v1/",
+    default_headers={
+        "X-API-Key": os.environ["RECURSE_API_KEY"],
+        "X-Recurse-Scope": "my_project"
+    }
+)
+
+# Use normally—context gets injected automatically
+completion = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "What did we decide?"}]
+)`,
+			},
+			{
+				label: "cURL",
+				language: "bash",
+				code: `curl https://api.recurse.cc/proxy/https://api.openai.com/v1/chat/completions \\
+  -H "X-API-Key: $RECURSE_API_KEY" \\
+  -H "X-Recurse-Scope: my_project" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "model": "gpt-4o-mini",
+    "messages": [{"role": "user", "content": "What did we decide?"}]
+  }'`,
+			},
+		],
 		items: [
 			{
 				what: "AI Assistants",

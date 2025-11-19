@@ -35,6 +35,7 @@ export * from './theme-provider';
 export * from './theme-toggle';
 export * from './tooltip';
 export * from './tree';
+export * from './typing-text';
 
 // Component variants (directories without top-level .tsx)
 export * from './backgrounds/Particles';

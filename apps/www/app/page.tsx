@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@recurse/ui/components";
 import {
 	ArrowRight,
@@ -22,10 +22,34 @@ import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";
 import { HeaderCard } from "@/components/layout/HeaderCard";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TypingText } from "@recurse/ui/components";
 import { homepageContent } from "@/content/homepage";
 import { AnimatedGraphExample } from "@/components/examples/graphs/AnimatedGraphExample";
 
 export default function HomePage() {
+	const [typingKey, setTypingKey] = useState(0);
+	const sectionRef = useRef<HTMLDivElement>(null);
+
+	// Reset typing animation when section comes into view
+	useEffect(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						setTypingKey((prev) => prev + 1);
+					}
+				});
+			},
+			{ threshold: 0.3 }
+		);
+
+		if (sectionRef.current) {
+			observer.observe(sectionRef.current);
+		}
+
+		return () => observer.disconnect();
+	}, []);
+
 	return (
 		<>
 			{/* Hero Section - Combined Content */}
@@ -163,28 +187,92 @@ export default function HomePage() {
 
 			{/* What You Can Build Section */}
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-				<Grid8Col className="">
-					{/* Header - spans all columns */}
-					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-						<HeaderCard title={homepageContent.whatYouCanBuild.title} enableSpotlight />
+				<div ref={sectionRef}>
+					<Grid8Col className="">
+						{/* Header - spans all columns */}
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
+							<HeaderCard title={homepageContent.whatYouCanBuild.title} enableSpotlight />
+						</GridCell>
+
+					{/* Build Items - 2x2 nested grid - Mobile: 8/8, Tablet: 8/8, Desktop: 4/8 (left half) */}
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
+						<div className="grid grid-cols-2 gap-0 h-full">
+							{homepageContent.whatYouCanBuild.items.map((item, index) => (
+								<GridCard 
+									key={index} 
+									enableHoverEffect 
+									enableSpotlight 
+									className="group/build-card flex flex-col justify-between p-6 md:p-8 rounded-none border-r border-b last:border-r-0 nth-2:border-r-0 nth-3:border-b-0 nth-4:border-b-0"
+								>
+									<div className="space-y-3">
+										<h3 className="text-muted-foreground dark:group-hover/build-card:text-accent group-hover/build-card:text-foreground leading-relaxed text-lg">
+											{item.what}
+										</h3>
+										<p className="font-light text-muted-foreground group-hover/build-card:text-foreground text-sm leading-relaxed">
+											{item.description}
+										</p>
+									</div>
+								</GridCard>
+							))}
+						</div>
 					</GridCell>
 
-					{/* Build Items as Individual Cards - Mobile: 8/8, Tablet: 4/8, Desktop: 2/8 */}
-					{homepageContent.whatYouCanBuild.items.map((item, index) => (
-						<GridCell key={index} colSpan={8} mdColSpan={4} lgColSpan={2}>
-							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
-								<div className="space-y-3">
-									<h3 className="font-medium text-lg">
-										{item.what}
-									</h3>
-									<p className="font-light text-muted-foreground text-sm leading-relaxed">
-										{item.description}
-									</p>
+					{/* Code Example Card - Mobile: 8/8, Tablet: 8/8, Desktop: 4/8 (right half) */}
+					<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col p-6 md:p-8">
+							<div className="space-y-6 flex flex-col h-full">
+								<p className="font-light text-foreground text-xl leading-relaxed">
+									{homepageContent.whatYouCanBuild.description}
+								</p>
+								
+								<div className="flex-1 relative">
+									{/* Gradient mask top */}
+									<div className="absolute top-0 left-0 right-0 h-8 bg-linear-to-b from-background to-transparent z-10 pointer-events-none" />
+									
+									{/* Code block */}
+									<div className="relative overflow-hidden">
+										<pre className="text-xs font-mono overflow-x-auto min-h-[260px]">
+											<code className="text-muted-foreground/50">
+												{`import OpenAI from 'openai';\n\nconst client = new OpenAI({`}
+											</code>
+											<code className="text-muted-foreground">
+												{`\n  apiKey: process.env.OPENAI_API_KEY,`}
+											</code>
+											
+											{/* Highlighted line with typing animation */}
+											<code className="block my-1 bg-accent/10 border-l-4 border-accent pl-2 text-foreground font-medium"><mark>
+												{`baseURL: '`}
+
+												<TypingText 
+													key={typingKey}
+													text="https://api.recurse.cc/proxy/"
+													speed={50}
+													delay={1000}
+													showCursor={false}
+													className="inline"
+													once={false}
+												/>
+												{`https://api.openai.com/v1/',`}
+												</mark>
+											</code>
+											
+											<code className="text-muted-foreground">
+												{`  defaultHeaders: {\n    'X-API-Key': process.env.RECURSE_API_KEY,\n    'X-Recurse-Scope': 'my_project'\n  }\n});`}
+											</code>
+											<code className="text-muted-foreground/50">
+												{`\n\n// Use the client normally\nconst completion = await client.chat...`}
+											</code>
+										</pre>
+									</div>
+									
+									{/* Gradient mask bottom */}
+									<div className="absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-background to-transparent pointer-events-none" />
 								</div>
-							</GridCard>
-						</GridCell>
-					))}
+							</div>
+						</GridCard>
+					</GridCell>
 				</Grid8Col>
+				</div>
 			</ScrollAnimation>
 
 			{/* Who This Is For Section */}
@@ -338,7 +426,7 @@ function FeatureCard({ capability }: { capability: { title: string; description:
 			</div>
 
 			{/* Headline - reserve 2 lines */}
-			<h3 className="font-light! text-muted-foreground! dark:group-hover/feature-card:text-chart-1! group-hover/feature-card:text-foreground! leading-relaxed line-clamp-2 min-h-14">
+			<h3 className="text-muted-foreground! dark:group-hover/feature-card:text-chart-1! group-hover/feature-card:text-foreground! leading-relaxed line-clamp-2 min-h-14">
 				{capability.title}
 			</h3>
 
