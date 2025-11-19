@@ -162,6 +162,7 @@ export function DefaultNavigation({
 												href={component.href}
 												enableHoverEffect={true}
 												rounded={true}
+												glowColor="chart-1"
 												className="p-3"
 											>
 												<div className="font-medium text-sm leading-none">{component.title}</div>
@@ -192,6 +193,7 @@ export function DefaultNavigation({
 											href="/about#frame-semantics"
 											enableHoverEffect={true}
 											rounded={true}
+											glowColor="chart-1"
 											className="p-3"
 										>
 											<div className="font-medium text-sm leading-none">Frame Semantics</div>
@@ -205,6 +207,7 @@ export function DefaultNavigation({
 											href="/about#recursive-graphs"
 											enableHoverEffect={true}
 											rounded={true}
+											glowColor="chart-1"
 											className="p-3"
 										>
 											<div className="font-medium text-sm leading-none">Recursive Graph Construction</div>
@@ -218,6 +221,7 @@ export function DefaultNavigation({
 											href="/about#operations-as-knowledge"
 											enableHoverEffect={true}
 											rounded={true}
+											glowColor="chart-1"
 											className="p-3"
 										>
 											<div className="font-medium text-sm leading-none">Operations as Knowledge</div>
@@ -231,6 +235,7 @@ export function DefaultNavigation({
 											href="/about#comparison"
 											enableHoverEffect={true}
 											rounded={true}
+											glowColor="chart-1"
 											className="p-3"
 										>
 											<div className="font-medium text-sm leading-none">RAGE vs. RAG</div>

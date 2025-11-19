@@ -28,12 +28,12 @@ body.header-compact main {
   z-index: 1;
   opacity: 0;
   transition: opacity 0.3s ease;
-  /* Use radial gradient for the glow effect */
+  /* Use radial gradient for the glow effect with custom color */
   background: radial-gradient(
     var(--glow-radius, 400px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    rgba(var(--glow-color-rgb, 132, 0, 255), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-1, 0.6))) 0%,
-    rgba(var(--glow-color-rgb, 132, 0, 255), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-2, 0.4))) 20%,
-    rgba(var(--glow-color-rgb, 132, 0, 255), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-3, 0.2))) 40%,
+    color-mix(in oklch, var(--glow-color) calc(var(--glow-intensity, 0) * 60%), transparent) 0%,
+    color-mix(in oklch, var(--glow-color) calc(var(--glow-intensity, 0) * 40%), transparent) 20%,
+    color-mix(in oklch, var(--glow-color) calc(var(--glow-intensity, 0) * 20%), transparent) 40%,
     transparent 70%
   );
   /* Create border effect using mask - 1px padding creates border that aligns with regular border */
@@ -71,9 +71,9 @@ body.header-compact main {
 .grid-card-glow--linked::after {
   background: radial-gradient(
     var(--glow-radius, 400px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    rgba(var(--glow-color-rgb, 132, 0, 255), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-1, 0.6) * 1.5)) 0%,
-    rgba(var(--glow-color-rgb, 132, 0, 255), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-2, 0.4) * 1.5)) 20%,
-    rgba(var(--glow-color-rgb, 132, 0, 255), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-3, 0.2) * 1.5)) 40%,
+    color-mix(in oklch, var(--glow-color) calc(var(--glow-intensity, 0) * 90%), transparent) 0%,
+    color-mix(in oklch, var(--glow-color) calc(var(--glow-intensity, 0) * 60%), transparent) 20%,
+    color-mix(in oklch, var(--glow-color) calc(var(--glow-intensity, 0) * 30%), transparent) 40%,
     transparent 70%
   );
 }

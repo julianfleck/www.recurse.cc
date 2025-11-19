@@ -836,26 +836,23 @@ h6 {
   color: var(--foreground);
 }
 
-/* Dark mode: green/violet border, no background, keep text color */
+/* Dark mode: subtle card background with border */
 .dark [data-slot="navigation-menu-trigger"]:hover,
 .dark [data-slot="navigation-menu-link"]:hover {
-  background-color: transparent;
-  border-color: var(--chart-2);
-  /* Keep default text color, don't change typography */
+  background-color: var(--card);
+  border-color: var(--border);
 }
 
 .dark [data-slot="navigation-menu-trigger"]:focus,
 .dark [data-slot="navigation-menu-link"]:focus {
-  background-color: transparent;
-  border-color: var(--chart-2);
-  /* Keep default text color, don't change typography */
+  background-color: var(--card);
+  border-color: var(--border);
 }
 
 .dark [data-slot="navigation-menu-trigger"][data-active="true"],
 .dark [data-slot="navigation-menu-link"][data-active="true"],
 .dark [data-slot="navigation-menu-trigger"][data-state="open"],
 .dark [data-slot="navigation-menu-link"][data-state="open"] {
-  background-color: transparent;
-  border-color: var(--chart-2);
-  /* Keep default text color, don't change typography */
+  background-color: var(--card);
+  border-color: var(--border);
 }
