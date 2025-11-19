@@ -34,6 +34,7 @@ import {
   HelpCircle,
   Home,
   Info,
+  Key,
   Lightbulb,
   Network,
   Package,
@@ -141,6 +142,8 @@ export function resolveIcon(icon?: string) {
       return createElement(Package, { className: 'size-4' });
     case 'cpu':
       return createElement(Cpu, { className: 'size-4' });
+    case 'key':
+      return createElement(Key, { className: 'size-4' });
 
     // Tabler icons
     case 'api':

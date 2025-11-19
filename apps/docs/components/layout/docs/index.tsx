@@ -31,6 +31,7 @@ import {
 	HeaderLLMCopyButton,
 	HeaderViewOptions,
 } from "@/components/page-actions";
+import { SidebarItemWithBadge } from "@/components/sidebar-item-with-badge";
 import { UserProfile } from "@/components/user-profile";
 import { cn } from "../../../lib/cn";
 import { LanguageToggle } from "../../language-toggle";
@@ -193,7 +194,12 @@ export function DocsLayout(props: DocsLayoutProps) {
 						/>
 					))}
 
-				<SidebarPageTree components={components} />
+				<SidebarPageTree
+					components={{
+						...components,
+						Item: SidebarItemWithBadge,
+					}}
+				/>
 			</SidebarViewport>
 		);
 

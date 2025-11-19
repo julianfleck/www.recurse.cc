@@ -8,9 +8,9 @@ export const docsSource = loader({
 	source: docs.toFumadocsSource(),
 	pageTree: {
 		transformers: [
-			// Custom transformer to support sidebar_label
+			// Custom transformer to support sidebar_label and badge
 			{
-				name: "sidebar-label",
+				name: "sidebar-label-and-badge",
 				file(node, filePath) {
 					if (filePath?.endsWith(".mdx")) {
 						try {
@@ -23,17 +23,30 @@ export const docsSource = loader({
 
 							if (fs.existsSync(fullPath)) {
 								const content = fs.readFileSync(fullPath, "utf-8");
+								const updatedNode = { ...node };
+								
+								// Handle sidebar_label
 								const sidebarMatch = content.match(/sidebar_label:\s*(.+)/);
 								if (sidebarMatch) {
 									const sidebarLabel = sidebarMatch[1].replace(
 										/^["']|["']$/g,
 										"",
 									);
-									return {
-										...node,
-										name: sidebarLabel,
+									updatedNode.name = sidebarLabel;
+								}
+								
+								// Handle badge (new, beta, etc.)
+								const badgeMatch = content.match(/badge:\s*(.+)/);
+								if (badgeMatch) {
+									const badge = badgeMatch[1].replace(/^["']|["']$/g, "").trim();
+									// Store badge in the node's data
+									updatedNode.data = {
+										...updatedNode.data,
+										badge,
 									};
 								}
+								
+								return updatedNode;
 							}
 						} catch (_error) {}
 					}

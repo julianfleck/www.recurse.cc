@@ -1,0 +1,120 @@
+---
+title: Beta Access
+sidebar_label: Beta Access
+description: Understanding Recurse's closed beta, access levels, and why we're taking our time to scale thoughtfully
+icon: key
+badge: new
+---
+
+We're a tiny, self-bootstrapping team building infrastructure for knowledge that matters. No venture capital, no pressure to scale before we're ready, no shortcuts on quality. Just a small group who believes deeply in user-owned knowledge and wants to build this right.
+
+That means during beta, we're being careful. We can't afford to scale recklessly—both financially and architecturally. Instead, we're inviting people in batches, learning from each cohort, and making sure the infrastructure can handle growth before opening the floodgates.
+
+---
+
+## How Beta Access Works
+
+Recurse is currently in closed beta with a waitlist. We're inviting projects and individuals in batches as we validate capacity and refine the system. The waiting period isn't artificial scarcity—it's genuine constraint. We're building infrastructure that needs to work reliably before hundreds or thousands of people depend on it.
+
+When you apply through the [homepage](https://recurse.cc), you'll choose between two access levels: **full developer access** (API + UI) or **UI-only access**. This distinction matters because API usage puts more load on our infrastructure than dashboard interactions. If you primarily want to use the chat interface and dashboard, we can expedite your request. If you need programmatic access for building integrations or automations, there's typically more of a wait.
+
+We process applications in batches. Sometimes weekly, sometimes bi-weekly, depending on current capacity and what we're learning from existing users. Priority goes to people with specific projects, interesting use cases, or who are willing to provide thoughtful feedback. We're especially interested in researchers, writers, developers building AI applications, and anyone exploring ideas that could push the system in unexpected directions.
+
+---
+
+## Bring Your Own Key
+
+Here's the other honest part: we can't pay for millions of AI processing requests. When you process documents in Recurse, we use *your* AI provider key to extract semantic structure and create the knowledge graph. The embeddings—which power search and basic retrieval—we handle ourselves. This means core RAG functionality always works, even if you run out of AI provider credits.
+
+This keeps Recurse free during beta while we figure out sustainable pricing. You only pay for the semantic extraction (frames, relationships, summaries), and your knowledge graph lives in our infrastructure with full search, navigation, and retrieval capabilities at no additional cost. Most users spend less than $10 per month on AI processing, but it scales with your usage—process more documents, pay more to your AI provider.
+
+Recurse works with any OpenAI-compatible provider. Get an API key from OpenAI, Anthropic, DeepSeek, or OpenRouter, add it to your [settings](https://dashboard.recurse.cc/settings), and start processing. Your keys are encrypted at rest and only used to make AI requests on your behalf.
+
+---
+
+## Access Levels Explained
+
+**UI-Only Access** means you can use the dashboard, upload documents through the interface, chat with your knowledge, and explore the graph view. You won't have API keys or programmatic access, but you get full functionality for personal knowledge management and exploration. We can typically expedite these requests because dashboard usage doesn't put as much load on our infrastructure.
+
+**Full Developer Access** includes everything in UI access plus API credentials for programmatic integration. This lets you build applications, automate uploads, integrate with existing tools, and use Recurse as infrastructure for your own projects. API access requires more careful capacity planning on our end, so there's usually a longer wait—but it unlocks the full power of what Recurse can do.
+
+You can always upgrade from UI-only to full developer access later. Just let us know what you're building and we'll work with you.
+
+---
+
+## Getting Started After Approval
+
+Once you're approved, you'll receive an email with your dashboard access (and API credentials if applicable). From there:
+
+<div className='fd-steps [&_h4]:fd-step'>
+
+#### Get an AI provider key
+
+Sign up with [OpenAI](https://platform.openai.com/api-keys), [Anthropic](https://console.anthropic.com/), [DeepSeek](https://platform.deepseek.com/), or [OpenRouter](https://openrouter.ai/). Most providers offer free credits to start.
+
+#### Add your key to settings
+
+Navigate to [Settings](https://dashboard.recurse.cc/settings) and add your AI provider key. This enables document processing and knowledge graph building.
+
+#### Start exploring
+
+Upload documents via the dashboard, query your knowledge through chat, explore the graph view, or (if you have API access) start integrating programmatically. See the [Quickstart](/docs/getting-started/quickstart) for detailed guidance.
+
+</div>
+
+---
+
+## Why We're Doing It This Way
+
+We could raise venture capital, scale aggressively, and figure out sustainability later. But that path leads to compromises we don't want to make. Selling user data to cover costs. Optimizing for engagement metrics instead of utility. Building features investors want instead of what users need.
+
+Instead, we're building slowly with user ownership as the foundation. Your knowledge stays yours. Your data isn't training material for our models. Your usage doesn't subsidize free tiers for others. This approach requires careful scaling—hence the waitlist—but it keeps incentives aligned.
+
+Bring-your-own-key means users who process more pay more, which feels fair. It also means we're not incentivized to push unnecessary AI usage just to justify our infrastructure costs. The system only processes what you explicitly ask it to process.
+
+The waitlist ensures we can maintain quality as we grow. Each batch of new users teaches us something: how people actually use the system, what breaks under load, where documentation needs improvement, which features matter most. We iterate between batches instead of trying to support exponential growth before the foundation is solid.
+
+---
+
+## The Future
+
+We're exploring sustainable funding models that don't compromise on ownership or privacy. Options include paid team plans for organizations, compute credits for power users, research/education partnerships, and possibly grant funding for public infrastructure. If you're interested in sponsoring compute costs or have ideas about sustainable funding, reach out at [hello@recurse.cc](mailto:hello@recurse.cc).
+
+Until then, the waitlist and bring-your-own-key approach lets us keep building without venture capital pressure. We answer to users, not investors. The code will eventually be open source. The knowledge you build is yours to export anytime.
+
+We're grateful you're here during the early days. Let's build something that lasts.
+
+---
+
+## Common Questions
+
+<Accordions type="single">
+  <Accordion title="How long is the wait?">
+    It varies. UI-only access is typically faster (days to a week). Full developer access can take 1–3 weeks depending on current capacity. We process applications in batches and send updates as you move through the queue.
+  </Accordion>
+  
+  <Accordion title="Can I upgrade from UI-only to API access later?">
+    Yes. Just email us at [hello@recurse.cc](mailto:hello@recurse.cc) with what you're building. We prioritize upgrades for users with specific projects or interesting use cases.
+  </Accordion>
+  
+  <Accordion title="How much will AI processing cost me?">
+    Most users spend less than $10/month. Processing a typical document (5–10 pages) costs $0.01–$0.30 depending on your provider and model choice. You control costs by choosing which provider and model to use.
+  </Accordion>
+  
+  <Accordion title="What happens if I run out of AI credits?">
+    New document processing pauses until you add credits to your provider account. However, your existing knowledge graph remains fully accessible for search and retrieval since we handle embeddings ourselves. Basic RAG functionality continues to work—you just can't extract new semantic structure until you add more credits.
+  </Accordion>
+  
+  <Accordion title="Can I switch AI providers later?">
+    Yes. Your knowledge graph lives in Recurse's infrastructure, independent of which AI provider you use. Change providers anytime in settings without losing any data.
+  </Accordion>
+  
+  <Accordion title="Is my data used to train your models?">
+    No. We don't train models on user data. Your knowledge graph is yours. The AI providers (OpenAI, Anthropic, etc.) have their own data policies—check their terms for training usage.
+  </Accordion>
+  
+  <Accordion title="What if I want to help fund development?">
+    We'd love to hear from you. Reach out at [hello@recurse.cc](mailto:hello@recurse.cc) if you're interested in sponsoring compute costs, funding development, or exploring partnership opportunities.
+  </Accordion>
+</Accordions>
+

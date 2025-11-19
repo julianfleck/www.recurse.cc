@@ -12,9 +12,10 @@ import minimalAccentLight from "./styles/minimal-accent-light.json" with {
   type: "json",
 };
 
-// Extend the frontmatter schema to include sidebar_label
+// Extend the frontmatter schema to include sidebar_label and badge
 const extendedFrontmatterSchema = frontmatterSchema.extend({
   sidebar_label: z.string().optional(),
+  badge: z.string().optional(),
 });
 
 // You can customise Zod schemas for frontmatter and `meta.json` here
