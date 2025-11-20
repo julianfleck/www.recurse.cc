@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Search, X, ExternalLink } from "lucide-react";
+import { Search, X, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
 import { CTASection } from "@/components/common/CTASection";
@@ -453,8 +453,8 @@ export default function FAQPage() {
 									</div>
 
 									{/* Filter Tags */}
-									<div className="space-y-3">
-										<div className="flex items-center justify-between min-h-8">
+									<div className="space-y-3 mt-4">
+										<div className="flex items-center justify-end min-h-8">
 											<Button
 												variant="ghost"
 												size="sm"
@@ -475,11 +475,11 @@ export default function FAQPage() {
 													<Badge
 														key={tag}
 														variant={isSelected ? "primary" : "secondary"}
-														appearance={isSelected ? "default" : "light"}
+														appearance={isSelected ? "outline" : "light"}
 														size="sm"
 														className={cn(
 															"cursor-pointer select-none transition-all",
-															!isSelected && "hover:border-primary/30 hover:bg-primary/20 hover:text-primary"
+															!isSelected && "hover:border-primary/30 hover:bg-primary/20 hover:text-accent-foreground text-foreground"
 														)}
 														onClick={() => toggleTag(tag)}
 													>
@@ -493,7 +493,7 @@ export default function FAQPage() {
 
 								{/* Results count */}
 								<div className="text-xs text-muted-foreground select-none">
-									Showing {filteredCount}/{totalQuestions} answers
+									{filteredCount}/{totalQuestions} results
 								</div>
 							</GridCard>
 						</div>
@@ -563,19 +563,19 @@ export default function FAQPage() {
 																	{faq.question}
 																</AccordionTrigger>
 																<AccordionContent className="space-y-4">
-																	<p className="font-light text-muted-foreground text-xs leading-relaxed md:text-sm">
+																	<p className="font-light text-foreground text-sm leading-relaxed md:text-lg">
 																		{faq.answer}
 																	</p>
 																	{faq.docLink && (
 																		<Button
 																			asChild
-																			variant="outline"
+																			variant="ghost"
 																			size="sm"
-																			className="rounded-full"
+																			className="group rounded-full"
 																		>
 																			<Link href={`${getDocsUrl()}${faq.docLink.href}`}>
 																				{faq.docLink.label}
-																				<ExternalLink className="h-3 w-3" />
+																				<ArrowRight className="ml-2 h-3 w-3 transition-transform group-hover:translate-x-1" />
 																			</Link>
 																		</Button>
 																	)}
