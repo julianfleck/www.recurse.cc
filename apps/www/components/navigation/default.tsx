@@ -13,22 +13,13 @@ import {
 import { IconQuestionMark } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-	type MouseEvent,
-} from "react";
+import { type MouseEvent } from "react";
 import { SearchToggle } from "@/components/search/toggle";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import navContent from "@/content/en/navigation.json" with { type: "json" };
 import { useScroll } from "@/contexts/ScrollContext";
 import { cn } from "@/lib/utils";
-import { GridCard } from "@/components/layout/GridCard";
-
-interface FeatureComponent {
-	title: string;
-	href: string;
-	description: string;
-}
+import { DropdownGrid, HeroCard, ItemCard } from "./DropdownGrid";
 
 interface DefaultNavigationProps {
 	isCompact: boolean;
@@ -46,9 +37,28 @@ export function DefaultNavigation({
 	const handleBetaClick = (e: MouseEvent) => {
 		e.preventDefault();
 		if (pathname === "/") {
-			scrollToElement("beta");
+			// Calculate header height for proper offset
+			const header = document.querySelector("header");
+			const headerHeight = header ? header.getBoundingClientRect().height : 0;
+			scrollToElement("signup", headerHeight);
 		} else {
-			window.location.href = "/#beta";
+			window.location.href = "/#signup";
+		}
+	};
+
+	const handleAnchorClick = (e: MouseEvent, anchor: string) => {
+		e.preventDefault();
+		if (pathname === "/") {
+			// Calculate header height for proper offset
+			const header = document.querySelector("header");
+			const headerHeight = header ? header.getBoundingClientRect().height : 0;
+			
+			// For "about" anchor, use header height to account for fixed header
+			// This ensures content appears just below the header, not hidden behind it
+			const offset = anchor === "about" ? headerHeight : undefined;
+			scrollToElement(anchor, offset);
+		} else {
+			window.location.href = `/#${anchor}`;
 		}
 	};
 
@@ -110,38 +120,60 @@ export function DefaultNavigation({
 					)}
 				>
 					<NavigationMenuList className="flex gap-1">
-						{/* Home - only show when not on home page */}
-						{pathname !== "/" && (
-							<NavigationMenuItem>
-								<NavigationMenuLink asChild>
-									<Link
-										className={cn(
-											navigationMenuTriggerStyle(),
-											"transition-none",
-											isCompact ? "h-9 px-2 text-sm" : ""
-										)}
-										href="/"
-									>
-										Home
-									</Link>
-								</NavigationMenuLink>
-							</NavigationMenuItem>
-						)}
-
-						{/* About */}
+						{/* About Dropdown */}
 						<NavigationMenuItem>
-							<NavigationMenuLink asChild>
-								<Link
-									className={cn(
-										navigationMenuTriggerStyle(),
-										"transition-none",
-										isCompact ? "h-9 px-2 text-sm" : ""
-									)}
-									href="/about"
-								>
-									About
-								</Link>
-							</NavigationMenuLink>
+							<NavigationMenuTrigger
+								className={cn(
+									"transition-none",
+									isCompact ? "h-9 px-2 text-sm" : ""
+								)}
+							>
+								About
+							</NavigationMenuTrigger>
+							<NavigationMenuContent>
+								<DropdownGrid rows={2} hasHero={true}>
+									<HeroCard
+										href="/#about"
+										onClick={(e) => handleAnchorClick(e, "about")}
+										icon={
+											<svg
+												className="h-12 w-12"
+												viewBox="0 0 100 100"
+												xmlns="http://www.w3.org/2000/svg"
+												aria-hidden="true"
+											>
+												<path d="M27.3,50c0-7.5-6.1-13.6-13.6-13.6,5.1,0,9.8-1.7,13.6-4.5,1.7-1.3,3.3-2.8,4.5-4.5,2.9-3.8,4.5-8.5,4.5-13.6,0-7.5,6.1-13.6,13.6-13.6,7.5,0,13.6,6.1,13.6,13.6s-6.1,13.6-13.6,13.6c-5.1,0-9.8,1.7-13.6,4.5-1.7,1.3-3.3,2.8-4.5,4.5-2.9,3.8-4.5,8.5-4.5,13.6Z" fill="currentColor"/>
+												<circle cx="86.9" cy="86.9" r="13.1" fill="currentColor"/>
+												<path d="M50,64.6c-7.5,0-13.6-6.1-13.6-13.6,0-7.5,6.1-13.6,13.6-13.6,5.1,0,9.8-1.7,13.6-4.5,1.7-1.3,3.3,2.8,4.5-4.5,2.9-3.8,4.5-8.5,4.5-13.6,0-7.5,6.1-13.6,13.6-13.6,7.5,0,13.6,6.1,13.6,13.6s-6.1,13.6-13.6,13.6c-5.1,0-9.8,1.7-13.6,4.5-1.7,1.3-3.3,2.8-4.5,4.5-2.9,3.8-4.5,8.5-4.5,13.6,0,7.5-6.1,13.6-13.6,13.6Z" fill="currentColor"/>
+												<path d="M50,100c-7.5,0-13.6-6.1-13.6-13.6,0-5.1-1.7-9.8-4.5-13.6-1.3-1.7-2.8-3.3-4.5-4.5-3.8-2.9-8.5-4.5-13.6-4.5-7.5,0-13.6-6.1-13.6-13.6,0-7.5,6.1-13.6,13.6-13.6,7.5,0,13.6,6.1,13.6,13.6,0,5.1,1.7,9.8,4.5,13.6,1.3,1.7,2.8,3.3,4.5,4.5,3.8,2.9,8.5,4.5,13.6,4.5s9.8-1.7,13.6-4.5c1.7-1.3,3.3-2.8,4.5-4.5,2.9-3.8,4.5-8.5,4.5-13.6,0-7.5,6.1-13.6,13.6-13.6,7.5,0,13.6,6.1,13.6,13.6,0,7.5-6.1,13.6-13.6,13.6-5.1,0-9.8,1.7-13.6,4.5-1.7,1.3-3.3,2.8-4.5,4.5-2.9,3.8-4.5,8.5-4.5,13.6,0,7.5-6.1,13.6-13.6,13.6Z" fill="currentColor"/>
+											</svg>
+										}
+										title="Context Infrastructure"
+										description="Memory substrate for AI systems that understand"
+									/>
+									<ItemCard
+										href="/faq"
+										title="FAQ"
+										description="Common questions"
+									/>
+									<ItemCard
+										href="https://docs.recurse.cc/getting-started/beta"
+										title="Beta Access"
+										description="Join the beta"
+									/>
+									<ItemCard
+										href="/#comparison"
+										onClick={(e) => handleAnchorClick(e, "comparison")}
+										title="RAGE vs. RAG"
+										description="How we're different"
+									/>
+									<ItemCard
+										href="/about"
+										title="Technology"
+										description="How it works"
+									/>
+								</DropdownGrid>
+							</NavigationMenuContent>
 						</NavigationMenuItem>
 
 						{/* Features Dropdown */}
@@ -155,27 +187,36 @@ export function DefaultNavigation({
 								Features
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
-								<div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-									{(navContent as any).featureDropdown.map((component: FeatureComponent) => (
-										<GridCard
-											key={component.title}
-											href={component.href}
-											enableHoverEffect={true}
-											rounded={true}
-											glowColor="chart-1"
-											className="group/card p-3"
-										>
-											<div className="font-medium text-sm leading-none text-muted-foreground transition-colors group-hover/card:text-foreground">{component.title}</div>
-											<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
-												{component.description}
-											</p>
-										</GridCard>
-									))}
-								</div>
+								<DropdownGrid rows={2} hasHero={false}>
+									<ItemCard
+										href="/#features"
+										onClick={(e) => handleAnchorClick(e, "features")}
+										title="Semantic Navigation"
+										description="Navigate meaning through typed relationships"
+									/>
+									<ItemCard
+										href="/#features"
+										onClick={(e) => handleAnchorClick(e, "features")}
+										title="Adaptive Schemas"
+										description="Automatic pattern discovery, zero config"
+									/>
+									<ItemCard
+										href="/#features"
+										onClick={(e) => handleAnchorClick(e, "features")}
+										title="Temporal Versioning"
+										description="Living memory with complete history"
+									/>
+									<ItemCard
+										href="/#build"
+										onClick={(e) => handleAnchorClick(e, "build")}
+										title="Proxy Integration"
+										description="Change one line—your base URL—for automatic context injection"
+									/>
+								</DropdownGrid>
 							</NavigationMenuContent>
 						</NavigationMenuItem>
 
-						{/* Technology Dropdown */}
+						{/* Blog Dropdown */}
 						<NavigationMenuItem>
 							<NavigationMenuTrigger
 								className={cn(
@@ -183,59 +224,41 @@ export function DefaultNavigation({
 									isCompact ? "h-9 px-2 text-sm" : ""
 								)}
 							>
-								Technology
+								Blog
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
-								<div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-									<GridCard
-										href="/about#frame-semantics"
-										enableHoverEffect={true}
-										rounded={true}
-										glowColor="chart-1"
-										className="group/card p-3"
-									>
-										<div className="font-medium text-sm leading-none text-muted-foreground transition-colors group-hover/card:text-foreground">Frame Semantics</div>
-										<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
-											Structured knowledge representation using semantic frames with defined roles and relationships.
-										</p>
-									</GridCard>
-									<GridCard
-										href="/about#recursive-graphs"
-										enableHoverEffect={true}
-										rounded={true}
-										glowColor="chart-1"
-										className="group/card p-3"
-									>
-										<div className="font-medium text-sm leading-none text-muted-foreground transition-colors group-hover/card:text-foreground">Recursive Graph Construction</div>
-										<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
-											Dynamic graph building that learns from every interaction, creating self-improving knowledge structures.
-										</p>
-									</GridCard>
-									<GridCard
-										href="/about#operations-as-knowledge"
-										enableHoverEffect={true}
-										rounded={true}
-										glowColor="chart-1"
-										className="group/card p-3"
-									>
-										<div className="font-medium text-sm leading-none text-muted-foreground transition-colors group-hover/card:text-foreground">Operations as Knowledge</div>
-										<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
-											How the system stores and uses knowledge about how to work with knowledge.
-										</p>
-									</GridCard>
-									<GridCard
-										href="/about#comparison"
-										enableHoverEffect={true}
-										rounded={true}
-										glowColor="chart-1"
-										className="group/card p-3"
-									>
-										<div className="font-medium text-sm leading-none text-muted-foreground transition-colors group-hover/card:text-foreground">RAGE vs. RAG</div>
-										<p className="line-clamp-4 pt-2 text-muted-foreground text-sm leading-snug">
-											Compare Recursive Agentic Graph Embeddings with traditional RAG approaches.
-										</p>
-									</GridCard>
-								</div>
+								<DropdownGrid rows={2} hasHero={true}>
+									<HeroCard
+										href="/blog"
+										title="Blog"
+										description="Updates, insights, and deep dives into context infrastructure"
+										footer={
+											<div className="text-accent-foreground text-sm font-medium">
+												Read articles →
+											</div>
+										}
+									/>
+									<ItemCard
+										href="https://docs.recurse.cc/concepts/rage"
+										title="Understanding RAGE"
+										description="Core technology"
+									/>
+									<ItemCard
+										href="https://docs.recurse.cc/concepts/frames"
+										title="Frame Semantics"
+										description="Structured knowledge"
+									/>
+									<ItemCard
+										href="https://docs.recurse.cc/guides/using-the-api"
+										title="API Guide"
+										description="Build with Recurse"
+									/>
+									<ItemCard
+										href="https://docs.recurse.cc/guides/api-vs-proxy"
+										title="API vs Proxy"
+										description="Choose your approach"
+									/>
+								</DropdownGrid>
 							</NavigationMenuContent>
 						</NavigationMenuItem>
 

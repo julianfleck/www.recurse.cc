@@ -14,6 +14,7 @@ interface GridCardProps {
 	href?: string;
 	rounded?: boolean;
 	glowColor?: "chart-1" | "chart-2";
+	onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
 /**
@@ -22,7 +23,7 @@ interface GridCardProps {
  * Optional border glow hover effect and global spotlight cursor effect
  * Optional href for clickable cards
  */
-export function GridCard({ children, className, enableHoverEffect = false, enableSpotlight = false, href, rounded = false, glowColor }: GridCardProps) {
+export function GridCard({ children, className, enableHoverEffect = false, enableSpotlight = false, href, rounded = false, glowColor, onClick }: GridCardProps) {
 	const cardRef = useRef<HTMLDivElement>(null);
 	const setSpotlightActive = useUIStore((state) => state.setSpotlightActive);
 	const isLinked = Boolean(href);
@@ -115,7 +116,7 @@ export function GridCard({ children, className, enableHoverEffect = false, enabl
 
 	if (href) {
 		return (
-			<Link href={href} className="block">
+			<Link href={href} className="block" onClick={onClick}>
 				{cardContent}
 			</Link>
 		);
