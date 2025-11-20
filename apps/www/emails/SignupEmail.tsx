@@ -13,6 +13,7 @@ interface SignupEmailProps {
 	name: string;
 	email: string;
 	projectDescription: string;
+	accessLevel: string[];
 	isConfirmation?: boolean;
 }
 
@@ -20,6 +21,7 @@ export const SignupEmail = ({
 	name,
 	email,
 	projectDescription,
+	accessLevel,
 	isConfirmation = false,
 }: SignupEmailProps) => {
 	if (isConfirmation) {
@@ -65,6 +67,9 @@ export const SignupEmail = ({
 						</Text>
 						<Text style={text}>
 							<strong>Email:</strong> {email}
+						</Text>
+						<Text style={text}>
+							<strong>Access Level:</strong> {accessLevel.join(", ")}
 						</Text>
 						<Hr style={hr} />
 						<Text style={text}>

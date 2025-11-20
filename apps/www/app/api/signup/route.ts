@@ -6,10 +6,10 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
 	try {
-		const { name, email, projectDescription } = await request.json();
+		const { name, email, projectDescription, accessLevel } = await request.json();
 
 		// Validate required fields
-		if (!(name && email && projectDescription)) {
+		if (!(name && email && projectDescription && accessLevel)) {
 			return NextResponse.json(
 				{ error: "Missing required fields" },
 				{ status: 400 },
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
 			from: "Recurse Signup <noreply@updates.recurse.cc>",
 			to: ["mail@julianfleck.net"],
 			subject: `New Beta Signup: ${name}`,
-			react: SignupEmail({ name, email, projectDescription }),
+			react: SignupEmail({ name, email, projectDescription, accessLevel }),
 		});
 
 		if (error) {
@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
 				name,
 				email,
 				projectDescription,
+				accessLevel,
 				isConfirmation: true,
 			}),
 		});

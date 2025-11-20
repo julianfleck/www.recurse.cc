@@ -1,8 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@recurse/ui/components";
-import { ArrowRight, Check, Loader2 } from "lucide-react";
+import { Button, Combobox, type ComboboxOption } from "@recurse/ui/components";
+import { ArrowRight, Check, HelpCircle, Loader2 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -12,12 +13,34 @@ import {
 	FormDescription,
 	FormField,
 	FormItem,
-	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { GridCard } from "@/components/layout/GridCard";
+
+const ACCESS_LEVELS = [
+	{
+		value: "ui",
+		label: "UI-Only Access",
+		description: "Dashboard, uploads, and graph view",
+	},
+	{
+		value: "api",
+		label: "API Access",
+		description: "Programmatic integration only",
+	},
+	{
+		value: "proxy",
+		label: "Proxy Access",
+		description: "OpenAI-compatible proxy",
+	},
+	{
+		value: "full",
+		label: "Full Access",
+		description: "Complete UI and API access",
+	},
+] as const;
 
 const formSchema = z.object({
 	email: z.string().email({
@@ -25,6 +48,9 @@ const formSchema = z.object({
 	}),
 	name: z.string().min(2, {
 		message: "Name must be at least 2 characters.",
+	}),
+	accessLevel: z.array(z.enum(["ui", "api", "proxy", "full"])).min(1, {
+		message: "Please select at least one access level.",
 	}),
 	project: z.string().min(10, {
 		message: "Please describe your project in at least 10 characters.",
@@ -49,6 +75,7 @@ export function SignupForm({ onSubmit, className = "" }: SignupFormProps) {
 		defaultValues: {
 			email: "",
 			name: "",
+			accessLevel: ["ui"],
 			project: "",
 		},
 	});
@@ -71,6 +98,7 @@ export function SignupForm({ onSubmit, className = "" }: SignupFormProps) {
 				body: JSON.stringify({
 					name: data.name,
 					email: data.email,
+					accessLevel: data.accessLevel,
 					projectDescription: data.project,
 				}),
 			});
@@ -120,7 +148,6 @@ export function SignupForm({ onSubmit, className = "" }: SignupFormProps) {
 									name="name"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Name</FormLabel>
 											<FormControl>
 												<Input
 													placeholder="Your name"
@@ -138,7 +165,6 @@ export function SignupForm({ onSubmit, className = "" }: SignupFormProps) {
 									name="email"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Email</FormLabel>
 											<FormControl>
 												<Input
 													placeholder="your@email.com"
@@ -154,10 +180,52 @@ export function SignupForm({ onSubmit, className = "" }: SignupFormProps) {
 
 								<FormField
 									control={form.control}
+									name="accessLevel"
+									render={({ field }) => (
+										<FormItem>
+											<FormDescription className="flex items-center gap-1 my-2 text-sm">
+												Choose the level of access you need.
+												<Link
+													href="/docs/getting-started/beta#access-levels-explained"
+													target="_blank"
+													rel="noopener noreferrer"
+													className="inline-flex items-center text-primary hover:underline"
+												>
+													<HelpCircle className="h-3 w-3" />
+												</Link>
+											</FormDescription>
+											<FormControl>
+												<Combobox
+													options={ACCESS_LEVELS}
+													value={field.value}
+													onValueChange={(newValue) => {
+														const values = Array.isArray(newValue) ? newValue : [newValue];
+														// If "full" is selected, select all options
+														if (values.includes("full")) {
+															field.onChange(["ui", "api", "proxy", "full"]);
+														} else {
+															field.onChange(values);
+														}
+													}}
+													placeholder="Select access level..."
+													disabled={isSubmitting}
+													multiple
+													showSearch={false}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<FormField
+									control={form.control}
 									name="project"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Describe your project</FormLabel>
+											<FormDescription className="my-2 text-sm">
+												Help us understand your use case better.
+											</FormDescription>
 											<FormControl>
 												<Textarea
 													className="min-h-32"
@@ -166,9 +234,6 @@ export function SignupForm({ onSubmit, className = "" }: SignupFormProps) {
 													disabled={isSubmitting}
 												/>
 											</FormControl>
-											<FormDescription>
-												Help us understand your use case better.
-											</FormDescription>
 											<FormMessage />
 										</FormItem>
 									)}

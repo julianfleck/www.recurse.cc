@@ -11,6 +11,7 @@ export * from './calendar';
 export * from './card';
 export * from './checkbox';
 export * from './collapsible';
+export * from './combobox';
 export * from './command';
 export * from './content-tree';
 export * from './copy-button';
