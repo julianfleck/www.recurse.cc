@@ -9,7 +9,7 @@ import { GridCard } from "@/components/layout/GridCard";
 export function SignupSection() {
 	return (
 		<ScrollAnimation enableFadeOut={true} exitBlur={2} exitScale={0.99}>
-			<div className="py-16 md:py-24 group/signup">
+			<div className="pb-1col group/signup">
 				<Grid8Col>
 					{/* Column 1: Title and intro (2 cols) */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>

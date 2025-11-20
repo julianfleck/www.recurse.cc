@@ -13,8 +13,8 @@ import { homepageContent } from "@/content/homepage";
 export function ComparisonSection() {
 	return (
 		<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-			<div className="group/comparison">
-			<Grid8Col className="py-12">
+			<div className="pb-1col group/comparison">
+			<Grid8Col className="">
 				{/* Header - spans all columns */}
 				<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
 					<HeaderCard title={homepageContent.comparison.title} enableSpotlight />
@@ -33,7 +33,7 @@ export function ComparisonSection() {
 						{homepageContent.comparison.detailedComparisonHref && (
 							<Button asChild className="group rounded-full px-4 py-3 font-medium text-sm" size="default" variant="outline">
 								<Link href={homepageContent.comparison.detailedComparisonHref}>
-									Detailed comparison
+									Full comparison
 									<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
 								</Link>
 							</Button>
