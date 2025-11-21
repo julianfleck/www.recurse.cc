@@ -239,7 +239,7 @@ export function TextTransitionPair({
               className="inline-block"
               initial={{ width: 0 }}
               animate={{ width: s.targetWidth }}
-              transition={{ duration, ease: "easeInOut", delay: sIndex * 0.1 }}
+              transition={{ duration: duration * 0.5, ease: "easeInOut", delay: sIndex * 0.1 }}
               style={overflowStyle}
             >
               <motion.span
@@ -253,7 +253,7 @@ export function TextTransitionPair({
                     animate={{ opacity: 1, filter: "blur(0px)" }}
                     transition={{
                       duration: duration * 0.5,
-                      delay: (sIndex * 0.1) + (charIndex * 0.05),
+                      delay: (sIndex * 0.1) + (charIndex * 0.05) + 0.2,
                       ease: "easeInOut"
                     }}
                     className="inline-block"
@@ -282,7 +282,7 @@ export function TextTransitionPair({
                     className="inline-block"
                     initial={{ width: 0 }}
                     animate={{ width: regionWidth }}
-                    transition={{ duration, ease: "easeInOut", delay: currentDelay }}
+                    transition={{ duration: duration * 0.5, ease: "easeInOut", delay: currentDelay }}
                     style={overflowStyle}
                   >
                     <motion.span
@@ -311,7 +311,7 @@ export function TextTransitionPair({
                   className="inline-flex items-baseline justify-center"
                   animate={{ opacity: 0, filter: "blur(4px)", width: 0 }}
                   transition={{
-                    width: { duration, ease: "easeInOut", delay: currentDelay },
+                    width: { duration: duration * 0.5, ease: "easeInOut", delay: currentDelay },
                     opacity: { duration: duration * 0.4, delay: currentDelay },
                     filter: { duration: duration * 0.4, delay: currentDelay }
                   }}
@@ -345,7 +345,7 @@ export function TextTransitionPair({
                     className="inline-block"
                     initial={{ width: 0 }}
                     animate={{ width: s.targetWidth }}
-                    transition={{ duration, ease: "easeInOut", delay: currentDelay + (sIndex * 0.1) }}
+                    transition={{ duration: duration * 0.5, ease: "easeInOut", delay: currentDelay + (sIndex * 0.1) }}
                     style={overflowStyle}
                   >
                     <motion.span
@@ -359,7 +359,7 @@ export function TextTransitionPair({
                           animate={{ opacity: 1, filter: "blur(0px)" }}
                           transition={{
                             duration: duration * 0.5,
-                            delay: currentDelay + (sIndex * 0.1) + (charIndex * 0.05),
+                            delay: currentDelay + (sIndex * 0.1) + (charIndex * 0.05) + 0.2,
                             ease: "easeInOut"
                           }}
                           className="inline-block"
