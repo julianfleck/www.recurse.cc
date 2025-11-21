@@ -1,8 +1,8 @@
 "use client";
 
+import { GlowCard } from "@recurse/ui/components/glow-card";
 import { Logo } from "@recurse/ui/components/logo";
 import Particles from "@/components/backgrounds/Particles";
-import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 type AuthShellProps = {
@@ -22,21 +22,16 @@ export function AuthShell({
 }: AuthShellProps) {
 	return (
 		<div className={cn("flex h-[600px] flex-col gap-6", className)}>
-			<Card className="z-10 flex flex-1 gap-0 overflow-hidden p-0 py-0">
-				<CardContent className="flex h-full p-0 md:grid md:grid-cols-2">
-					<div className="flex h-full w-full flex-col p-6 md:p-8">
-						{/* Header Section */}
+			<GlowCard className="z-10 flex flex-1 gap-0 overflow-hidden p-0">
+				<div className="flex h-full w-full flex-col p-6 md:grid md:grid-cols-2 md:p-0">
+					<div className="flex h-full w-full flex-col p-0 md:p-8">
 						<div className="flex-shrink-0">{header}</div>
-
-						{/* Content Section - grows to fill space */}
-						<div className="flex min-h-0 flex-1 flex-col py-6">{children}</div>
-
-						{/* Footer Section */}
-						<div className="flex-shrink-0">{footer}</div>
+						<div className="flex min-h-0 flex-1 flex-col py-6 px-6 md:px-0">{children}</div>
+						<div className="flex-shrink-0 px-6 md:px-0">{footer}</div>
 					</div>
 					<AuthSideVisual />
-				</CardContent>
-			</Card>
+				</div>
+			</GlowCard>
 			{subline ? (
 				<div className="text-balance text-center text-muted-foreground text-xs *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-primary">
 					{subline}

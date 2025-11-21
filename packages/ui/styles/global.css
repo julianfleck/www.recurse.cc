@@ -961,3 +961,171 @@ h6 {
   background-color: var(--card);
   border-color: var(--border);
 }
+
+/* ============================================================================
+ * Shared Layout + Glow Utilities (migrated from app-level globals)
+ * ============================================================================ */
+
+/* Header state-based content displacement */
+body.header-expanded main {
+  padding-top: calc(var(--spacing-halfcol-abs) * 1.5);
+}
+
+body.header-compact main {
+  padding-top: calc(var(--spacing-halfcol-abs) * 1);
+}
+
+main {
+  padding-top: calc(var(--spacing-halfcol-abs) * 0.5 + 2rem);
+}
+
+.header-compact main {
+  padding-top: calc(var(--spacing-halfcol-abs) * 0.2 + 1.5rem);
+}
+
+/* Grid Card Hover Effect */
+.grid-card-glow::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    var(--glow-radius, 400px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(var(--glow-color-rgb, 166, 200, 46), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-1, 0.6))) 0%,
+    rgba(var(--glow-color-rgb, 166, 200, 46), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-2, 0.4))) 20%,
+    rgba(var(--glow-color-rgb, 166, 200, 46), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-3, 0.2))) 40%,
+    transparent 70%
+  );
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: subtract;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  padding: 1px;
+  box-sizing: border-box;
+}
+
+.grid-card-glow:hover {
+  z-index: 30;
+}
+
+.grid-card-glow:hover::after {
+  opacity: calc(var(--glow-intensity, 0) * 0.5 + 0.2);
+}
+
+.grid-card-glow[style*="--glow-intensity: 1"] {
+  z-index: 30;
+}
+
+.grid-card-glow[style*="--glow-intensity: 1"]::after {
+  opacity: calc(var(--glow-intensity, 0) * 0.5 + 0.2);
+}
+
+.grid-card-glow--linked::after {
+  background: radial-gradient(
+    var(--glow-radius, 400px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(var(--glow-color-rgb, 166, 200, 46), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-1, 0.6) * 1.5)) 0%,
+    rgba(var(--glow-color-rgb, 166, 200, 46), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-2, 0.4) * 1.5)) 20%,
+    rgba(var(--glow-color-rgb, 166, 200, 46), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-3, 0.2) * 1.5)) 40%,
+    transparent 70%
+  );
+}
+
+.grid-card-glow--linked:hover::after,
+.grid-card-glow--linked[style*="--glow-intensity"]::after {
+  opacity: calc(var(--glow-intensity, 0) * 0.8 + 0.4);
+}
+
+/* Navigation Card Glow Effect */
+.nav-card-glow {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.nav-card-glow > * {
+  position: relative;
+  z-index: 2;
+}
+
+.nav-card-glow[data-slot="navigation-menu-link"],
+.nav-card-glow[data-slot="navigation-menu-link"]:hover,
+.nav-card-glow[data-slot="navigation-menu-link"]:focus,
+.dark .nav-card-glow[data-slot="navigation-menu-link"],
+.dark .nav-card-glow[data-slot="navigation-menu-link"]:hover,
+.dark .nav-card-glow[data-slot="navigation-menu-link"]:focus {
+  background-color: transparent !important;
+}
+
+.nav-card-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  filter: blur(40px);
+  background: radial-gradient(
+    var(--glow-radius, 500px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(var(--glow-color-rgb), calc(var(--glow-intensity, 0) * 0.3)) 0%,
+    rgba(var(--glow-color-rgb), calc(var(--glow-intensity, 0) * 0.15)) 30%,
+    transparent 60%
+  );
+}
+
+.nav-card-glow::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(
+    var(--glow-radius, 500px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(var(--glow-color-rgb), calc(var(--glow-intensity, 0) * 0.6)) 0%,
+    rgba(var(--glow-color-rgb), calc(var(--glow-intensity, 0) * 0.4)) 20%,
+    rgba(var(--glow-color-rgb), calc(var(--glow-intensity, 0) * 0.2)) 40%,
+    transparent 70%
+  );
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: subtract;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  padding: 1px;
+  box-sizing: border-box;
+}
+
+.nav-card-glow:hover {
+  z-index: 5;
+}
+
+.nav-card-glow:hover::before {
+  opacity: calc(var(--glow-intensity, 0) * 0.8);
+}
+
+.nav-card-glow:hover::after {
+  opacity: calc(var(--glow-intensity, 0) * 0.5 + 0.2);
+}
+
+.nav-card-glow[style*="--glow-intensity: 1"]::before {
+  opacity: calc(var(--glow-intensity, 0) * 0.8);
+}
+
+.nav-card-glow[style*="--glow-intensity: 1"]::after {
+  opacity: calc(var(--glow-intensity, 0) * 0.5 + 0.2);
+}

@@ -1,6 +1,7 @@
+import { GlowCard } from "@recurse/ui/components/glow-card";
 import { NavigationMenuLink } from "@recurse/ui/components/navigation-menu";
 import Link from "next/link";
-import { type MouseEvent, type ReactNode, useEffect, useRef } from "react";
+import { type MouseEvent, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface NavigationCardProps {
@@ -12,65 +13,25 @@ interface NavigationCardProps {
 }
 
 function NavigationCard({ href, onClick, className = "", children, enableGlow = true }: NavigationCardProps) {
-	const cardRef = useRef<HTMLAnchorElement>(null);
-
-	useEffect(() => {
-		if (!enableGlow || !cardRef.current) return;
-
-		const card = cardRef.current;
-
-		const handleMouseMove = (e: globalThis.MouseEvent) => {
-			const rect = card.getBoundingClientRect();
-			const relativeX = ((e.clientX - rect.left) / rect.width) * 100;
-			const relativeY = ((e.clientY - rect.top) / rect.height) * 100;
-
-			card.style.setProperty('--glow-x', `${relativeX}%`);
-			card.style.setProperty('--glow-y', `${relativeY}%`);
-			card.style.setProperty('--glow-intensity', '1');
-		};
-
-		const handleMouseLeave = () => {
-			card.style.setProperty('--glow-intensity', '0');
-		};
-
-		card.addEventListener('mousemove', handleMouseMove);
-		card.addEventListener('mouseleave', handleMouseLeave);
-
-		return () => {
-			card.removeEventListener('mousemove', handleMouseMove);
-			card.removeEventListener('mouseleave', handleMouseLeave);
-		};
-	}, [enableGlow]);
-
 	return (
 		<NavigationMenuLink asChild>
-			<Link
-				ref={cardRef}
-				href={href}
-				onClick={onClick}
+			<GlowCard
+				asChild
+				enableGlow={enableGlow}
+				glowRadius="300px"
 				className={cn(
-					"block select-none rounded-md p-3 leading-none no-underline outline-none transition-all",
-					// "backdrop-blur-3xl bg-background/50 dark:bg-background/70",
+					"block h-full select-none rounded-md p-3 leading-none no-underline outline-none transition-all",
 					"border! border-border!",
 					"hover:border-chart-1! focus:border-chart-1!",
 					"dark:hover:border-chart-1/20! dark:focus:border-chart-1/40!",
 					"hover:bg-transparent focus:bg-transparent",
-					enableGlow && "nav-card-glow",
 					className
 				)}
-				style={
-					enableGlow
-						? ({
-								'--glow-x': '20%',
-								'--glow-y': '20%',
-								'--glow-intensity': '0',
-								'--glow-radius': '300px',
-							} as React.CSSProperties)
-						: undefined
-				}
 			>
-				{children}
-			</Link>
+				<Link className="contents" href={href} onClick={onClick}>
+					{children}
+				</Link>
+			</GlowCard>
 		</NavigationMenuLink>
 	);
 }

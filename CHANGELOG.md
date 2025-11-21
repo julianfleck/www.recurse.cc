@@ -1,5 +1,30 @@
 # Changelog
 
+## [2025-11-21T04:47:28Z] — Refactor: Centralize navigation glow styles
+
+**Context:** Need shared hero/nav card styling across apps.
+
+**Changes:**
+- Moved header spacing + glow utility CSS into `packages/ui/styles/global.css`
+- Trimmed `apps/www/app/globals.css` to only import base + third-party styles
+
+**Impact:** Docs and dashboard inherit the same hover effects without duplicating CSS.
+
+**Files touched:** `packages/ui/styles/global.css`, `apps/www/app/globals.css`
+
+## [2025-11-21T05:02:27Z] — Feature: Shared glow cards for docs & dashboard
+
+**Context:** Align docs/dashboard cards with navigation card visuals and centralize implementation.
+
+**Changes:**
+- Added `GlowCard` to `packages/ui` and updated navigation cards to consume it
+- Swapped docs/dashboard context/auth cards and MDX `<Card>` overrides to use `GlowCard`
+- Wired Fumadocs MDX cards through the shared component for consistent hover/glow effects
+
+**Impact:** All apps now share the same glow-interactive card experience via a single UI primitive.
+
+**Files touched:** `packages/ui/src/components/glow-card.tsx`, `packages/ui/src/components/index.ts`, `.cursor/rules/overview.mdc`, `apps/www/components/navigation/NavigationCard.tsx`, `apps/docs/mdx-components.tsx`, `apps/docs/components/context/context-card.tsx`, `apps/dashboard/components/context/context-card.tsx`, `apps/dashboard/components/auth/auth-shell.tsx`
+
 ## [2025-10-28T05:00:00Z] — Fix: Environment Variables and Dashboard Setup
 
 **Context:** Fixed dashboard app environment variable issues and updated monorepo documentation

@@ -18,6 +18,7 @@ export * from './copy-button';
 export * from './dialog';
 export * from './dropdown-menu';
 export * from './filters';
+export * from './glow-card';
 export * from './icon-toggle-button';
 export * from './input';
 export * from './kbd';

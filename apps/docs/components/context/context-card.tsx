@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge } from "@recurse/ui/components/badge";
-import { Card, CardContent } from "@recurse/ui/components/card";
+import { GlowCard } from "@recurse/ui/components/glow-card";
 import { motion } from "framer-motion";
 import { GenericTooltipLayout } from "@/components/graph-view";
 
@@ -42,32 +42,30 @@ export function ContextCard({
 				ease: "easeOut",
 			}}
 		>
-			<Card className="h-full">
-				<CardContent className="p-0">
-					<div className="flex h-full flex-col">
-						<div className="p-4">
-							<GenericTooltipLayout
-								metadata={metadata}
-								showIcon={true}
-								summary={summary}
-								title={title || id}
-								type={type}
-							/>
-						</div>
-
-						{similarity_score ? (
-							<div className="border-border border-t px-4 pt-2 pb-4">
-								<div className="flex items-center justify-between text-muted-foreground text-xs">
-									<span>Similarity</span>
-									<Badge className="text-xs" variant="secondary">
-										{(similarity_score * SCORE_MULTIPLIER).toFixed(1)}%
-									</Badge>
-								</div>
-							</div>
-						) : null}
+			<GlowCard className="h-full p-0">
+				<div className="flex h-full flex-col">
+					<div className="p-4">
+						<GenericTooltipLayout
+							metadata={metadata}
+							showIcon={true}
+							summary={summary}
+							title={title || id}
+							type={type}
+						/>
 					</div>
-				</CardContent>
-			</Card>
+
+					{similarity_score ? (
+						<div className="border-border border-t px-4 pt-2 pb-4">
+							<div className="flex items-center justify-between text-muted-foreground text-xs">
+								<span>Similarity</span>
+								<Badge className="text-xs" variant="secondary">
+									{(similarity_score * SCORE_MULTIPLIER).toFixed(1)}%
+								</Badge>
+							</div>
+						</div>
+					) : null}
+				</div>
+			</GlowCard>
 		</motion.div>
 	);
 }

@@ -1,3 +1,5 @@
+import { GlowCard } from "@recurse/ui/components/glow-card";
+import { cn } from "@recurse/ui/lib/utils";
 import { resolveIcon } from "@recurse/fumadocs/icons";
 import { APIPage } from "fumadocs-openapi/ui";
 import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
@@ -21,10 +23,14 @@ import { GraphView } from "@/components/graph-view";
 import { ThemeImage } from "@/components/theme-image";
 import { openapi } from "@/lib/openapi";
 
-// Custom Card component that resolves icon strings
-function Card({ icon, ...props }: any) {
+// Custom Card component that resolves icon strings and applies shared glow styles
+function Card({ icon, className, ...props }: any) {
 	const resolvedIcon = typeof icon === "string" ? resolveIcon(icon) : icon;
-	return <FumadocsCard icon={resolvedIcon} {...props} />;
+	return (
+		<GlowCard className="border-transparent bg-transparent p-0">
+			<FumadocsCard className={cn("block h-full", className)} icon={resolvedIcon} {...props} />
+		</GlowCard>
+	);
 }
 
 // Custom Cards component
