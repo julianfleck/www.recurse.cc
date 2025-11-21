@@ -40,7 +40,10 @@ export function TextTransitionPair({
   const [tokens, setTokens] = useState<Token[]>(() => tokenize(fromText))
   const [spacers, setSpacers] = useState<Spacer[]>([])
 
-  const duration = durationMs / 1000
+  // Top-level speed multiplier
+  const baseSpeed = 0.4
+  
+  const duration = (durationMs / 1000) * baseSpeed
 
   useEffect(() => {
     setTokens(tokenize(fromText))
@@ -252,7 +255,7 @@ export function TextTransitionPair({
                     initial={{ opacity: 0, filter: "blur(4px)" }}
                     animate={{ opacity: 1, filter: "blur(0px)" }}
                     transition={{
-                      duration: duration * 0.5,
+                      duration: duration * 0.3,
                       delay: (sIndex * 0.1) + (charIndex * 0.05) + 0.2,
                       ease: "easeInOut"
                     }}
@@ -295,8 +298,8 @@ export function TextTransitionPair({
                           initial={{ opacity: 0, filter: "blur(4px)" }}
                           animate={{ opacity: 1, filter: "blur(0px)" }}
                           transition={{
-                            duration: duration * 0.5,
-                            delay: currentDelay + (charIndex * 0.05) + 0.2,
+                            duration: duration * 0.2,
+                            delay: currentDelay + (charIndex * 0.05) + 0.05,
                             ease: "easeInOut"
                           }}
                           className="inline-block"
@@ -330,7 +333,7 @@ export function TextTransitionPair({
           return (
             <span key={`wrap-${t.id}`} className="inline-flex items-baseline">
               {t.state === "shared" ? (
-                <motion.span className="inline-block whitespace-pre" style={{ color: "#ef4444" }}>
+                <motion.span className="inline-block whitespace-pre">
                   {t.content}
                 </motion.span>
               ) : (
@@ -358,8 +361,8 @@ export function TextTransitionPair({
                           initial={{ opacity: 0, filter: "blur(4px)" }}
                           animate={{ opacity: 1, filter: "blur(0px)" }}
                           transition={{
-                            duration: duration * 0.5,
-                            delay: currentDelay + (sIndex * 0.1) + (charIndex * 0.05) + 0.2,
+                            duration: duration * 0.1,
+                            delay: currentDelay + (sIndex * 0.1) + (charIndex * 0.05) + 0.05,
                             ease: "easeInOut"
                           }}
                           className="inline-block"
