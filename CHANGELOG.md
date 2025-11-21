@@ -1,5 +1,33 @@
 # Changelog
 
+## [2025-11-21T07:08:03Z] — Feature: TextTransitionNew + FAQ hero variations
+
+**Context:** Needed a richer token-aware text transition that measures actual widths, staggers animations per line, and reveals edits with a typed blur-in effect for reuse across marketing pages—starting with the FAQ hero copy.
+
+**Changes:**
+- Added `TextTransitionNew` to `packages/ui` with LCS-based diffing, hidden measurement spans, line-aware delays, and per-character typing animations driven by Framer Motion
+- Regenerated UI exports so apps can import the new component via `@recurse/ui/components`
+- Swapped the FAQ hero paragraph for a cycling set of statements powered by `TextTransitionNew`, rotating through multiple descriptions automatically
+- Logged research notes plus updated the project overview ledger to reflect the new component
+
+**Impact:** The FAQ hero now highlights exactly which words change (and how much the spacing shifts), while the UI package gains a reusable, typography-accurate transition that can power future marketing narratives.
+
+**Files touched:** `packages/ui/src/components/text-transition-new.tsx`, `packages/ui/src/components/index.ts`, `apps/www/app/faq/page.tsx`, `docs/research/2025-11-21/01-text-transition-new.md`, `.cursor/rules/overview.mdc`
+
+## [2025-11-21T05:30:17Z] — Feature: Reusable text transition + hero copy
+
+**Context:** Needed to bring the legacy TextTransition animation (with blur + spacing tweaks) into the shared UI kit, document how it works, and power the homepage hero headline cycle from the marketing copy draft.
+
+**Changes:**
+- Added a Framer Motion-powered `TextTransition` to `packages/ui` that mirrors the original token-aware animation from `docs/context/TextTransition.jsx`
+- Regenerated shared exports so apps can import the component via `@recurse/ui/components`
+- Updated the www hero to cycle through the “Reasoning substrate…” lines with slight offsets between segments
+- Captured animation behavior notes in `docs/context/text-transition-animation.md` and recorded artifacts in the overview ledger
+
+**Impact:** Any app can now reuse the polished text animation, and the homepage hero reflects the desired cycling messaging without bespoke logic.
+
+**Files touched:** `packages/ui/src/components/text-transition.tsx`, `packages/ui/src/components/index.ts`, `apps/www/components/landingpage/hero/index.tsx`, `.cursor/rules/overview.mdc`, `docs/context/text-transition-animation.md`
+
 ## [2025-11-21T04:47:28Z] — Refactor: Centralize navigation glow styles
 
 **Context:** Need shared hero/nav card styling across apps.

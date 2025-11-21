@@ -55,7 +55,7 @@ export function Footer() {
 
 	return (
 		<footer className="border-border border-t bg-background px-0.5col py-12">
-			<Grid8Col className="gap-y-4">
+			<Grid8Col className="gap-y-4 pb-4">
 				{/* Sitemap Section - 4 columns, each taking 2 grid columns */}
 				{footerSections.map((section) => (
 					<GridCell key={section.title} colSpan={4} mdColSpan={4} lgColSpan={2}>

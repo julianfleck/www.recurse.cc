@@ -15,7 +15,7 @@ export function CTASection() {
 					{/* Main CTA Card - Full Width */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
 						<GridCard enableHoverEffect enableSpotlight className="px-1col py-1col lg:px-2col">
-							<div className="space-y-8">
+							<div className="space-y-8 pl-8">
 								<h2 className="font-medium text-2xl leading-[1.1] tracking-tight md:text-3xl lg:text-4xl text-foreground">
 									Context isn’t optional anymore
 								</h2>

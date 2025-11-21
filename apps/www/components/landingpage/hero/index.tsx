@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@recurse/ui/components";
+import { Button, TextTransition } from "@recurse/ui/components";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
@@ -11,6 +11,13 @@ import { GridCard } from "@/components/layout/GridCard";
 import { HeaderCard } from "@/components/layout/HeaderCard";
 import { homepageContent } from "@/content/homepage";
 
+const HERO_HEADLINES: string[] = [
+	"Infrastructure for Sense-making, not just Retrieval",
+	"Memory Infrastructure for Understanding, not just Similarity Search",
+	"Memory Substrate for Exploration, not just Question-Answering",
+	"Knowledge Graph for Discovery, not just Fact-Finding",
+];
+
 export function Hero() {
 	return (
 		<div id="hero" className="relative z-10 group/hero pt-halfcol pb-1col">
@@ -20,13 +27,18 @@ export function Hero() {
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
 						<GridCard enableHoverEffect enableSpotlight className="px-1col py-1col lg:pl-2col lg:pr-1.5col">
 							<div className="space-y-8 text-left pl-6">
-								<div className="space-y-8">
-									{/* TODO: place text swap component here */}
-									<div className="lg:max-w-lg">
-										<h1 className="font-semibold text-2xl leading-[1.15]! tracking-tight md:text-4xl lg:text-5xl text-accent-foreground lg:max-w-3xl">
-											The Memory Substrate for Sense-making, not just Similarity Search
-										</h1>
-									</div>
+								<div className="space-y-6 lg:max-w-3xl">
+									<p className="font-semibold text-2xl leading-[1.15] tracking-tight text-foreground md:text-4xl lg:text-5xl">
+										<TextTransition
+											texts={HERO_HEADLINES as unknown as string[]}
+											interval={5200}
+											className="inline-flex flex-wrap items-baseline gap-x-2 gap-y-2 pr-12"
+										/>
+									</p>
+									<p className="text-base font-light text-muted-foreground md:text-lg">
+										Recurse turns raw input into a living, semantically typed knowledge graph so you and your AI systems can
+										explore, connect, and reason — not just retrieve.
+									</p>
 								</div>
 								<div className="flex flex-wrap gap-4">
 									<Button asChild className="group rounded-full px-4 py-3 font-medium text-base" size="default" variant="default">
