@@ -243,8 +243,8 @@ export function TextTransitionPair({
               style={overflowStyle}
             >
               <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+                initial={{ opacity: 0, filter: "blur(4px)", x: -12 }}
+                animate={{ opacity: 1, filter: "blur(0px)", x: 0 }}
                 transition={{ duration: duration * 0.7, delay: duration * 0.6 }}
                 className="inline whitespace-pre"
               >
@@ -282,8 +282,8 @@ export function TextTransitionPair({
                     style={overflowStyle}
                   >
                     <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
+                      initial={{ opacity: 0, filter: "blur(4px)", x: -12 }}
+                      animate={{ opacity: 1, filter: "blur(0px)", x: 0 }}
                       transition={{ duration: duration * 0.7, delay: duration * 0.6 }}
                       className="inline whitespace-pre"
                     >
@@ -319,8 +319,8 @@ export function TextTransitionPair({
                     style={overflowStyle}
                   >
                     <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
+                      initial={{ opacity: 0, filter: "blur(4px)", x: -12 }}
+                      animate={{ opacity: 1, filter: "blur(0px)", x: 0 }}
                       transition={{ duration: duration * 0.7, delay: duration * 0.6 }}
                       className="inline whitespace-pre"
                     >
