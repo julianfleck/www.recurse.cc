@@ -220,7 +220,7 @@ export function TextTransitionPair({
     return nodes
   }, [tokens])
 
-  const overflowStyle = { display: "inline-block", overflowX: "hidden" as const, overflowY: "visible" as const, paddingBottom: "0.08em" }
+  const overflowStyle = { display: "inline-block", overflowX: "hidden" as const, overflowY: "visible" as const, paddingBottom: "0.08em", verticalAlign: "baseline" as const }
 
   return (
     <span
@@ -243,10 +243,11 @@ export function TextTransitionPair({
               style={overflowStyle}
             >
               <motion.span
-                initial={{ opacity: 0, filter: "blur(4px)", x: -12 }}
-                animate={{ opacity: 1, filter: "blur(0px)", x: 0 }}
-                transition={{ duration: duration * 0.7, delay: duration * 0.6 }}
-                className="inline whitespace-pre"
+                initial={{ opacity: 0, filter: "blur(4px)", clipPath: "inset(0 100% 0 0)" }}
+                animate={{ opacity: 1, filter: "blur(0px)", clipPath: "inset(0 0% 0 0)" }}
+                transition={{ duration: duration * 0.6, delay: 0 }}
+                className="inline-block whitespace-pre"
+                style={{ lineHeight: "inherit" }}
               >
                 {text}
               </motion.span>
@@ -262,16 +263,6 @@ export function TextTransitionPair({
             const regionWidth = regionText ? measureTextWidth(regionText + " ") : 0
             return (
               <span key={node.key} className="inline-flex items-baseline">
-                <motion.span
-                  className="inline-flex items-baseline"
-                  animate={{ opacity: 0, filter: "blur(4px)", width: 0 }}
-                  transition={{ duration }}
-                  style={{ display: "inline-flex", overflowX: "hidden", overflowY: "visible", paddingBottom: "0.08em" }}
-                >
-                  {groupTokens.map((gt) => (
-                    <span key={gt.id} className="inline-block whitespace-pre">{gt.content}</span>
-                  ))}
-                </motion.span>
                 {regionWidth > 0 && (
                   <motion.span
                     key={`spacer-region-${node.key}`}
@@ -282,15 +273,26 @@ export function TextTransitionPair({
                     style={overflowStyle}
                   >
                     <motion.span
-                      initial={{ opacity: 0, filter: "blur(4px)", x: -12 }}
-                      animate={{ opacity: 1, filter: "blur(0px)", x: 0 }}
-                      transition={{ duration: duration * 0.7, delay: duration * 0.6 }}
-                      className="inline whitespace-pre"
+                      initial={{ opacity: 0, filter: "blur(4px)", clipPath: "inset(0 100% 0 0)" }}
+                      animate={{ opacity: 1, filter: "blur(0px)", clipPath: "inset(0 0% 0 0)" }}
+                      transition={{ duration: duration * 0.6, delay: 0 }}
+                      className="inline-block whitespace-pre"
+                      style={{ lineHeight: "inherit" }}
                     >
                       {regionText}
                     </motion.span>
                   </motion.span>
                 )}
+                <motion.span
+                  className="inline-flex items-baseline"
+                  animate={{ opacity: 0, filter: "blur(4px)", width: 0 }}
+                  transition={{ duration }}
+                  style={{ display: "inline-flex", overflowX: "hidden", overflowY: "visible", paddingBottom: "0.08em" }}
+                >
+                  {groupTokens.map((gt) => (
+                    <span key={gt.id} className="inline-block whitespace-pre">{gt.content}</span>
+                  ))}
+                </motion.span>
               </span>
             )
           }
@@ -319,10 +321,11 @@ export function TextTransitionPair({
                     style={overflowStyle}
                   >
                     <motion.span
-                      initial={{ opacity: 0, filter: "blur(4px)", x: -12 }}
-                      animate={{ opacity: 1, filter: "blur(0px)", x: 0 }}
-                      transition={{ duration: duration * 0.7, delay: duration * 0.6 }}
-                      className="inline whitespace-pre"
+                      initial={{ opacity: 0, filter: "blur(4px)", clipPath: "inset(0 100% 0 0)" }}
+                      animate={{ opacity: 1, filter: "blur(0px)", clipPath: "inset(0 0% 0 0)" }}
+                      transition={{ duration: duration * 0.6, delay: 0 }}
+                      className="inline-block whitespace-pre"
+                      style={{ lineHeight: "inherit" }}
                     >
                       {text}
                     </motion.span>
