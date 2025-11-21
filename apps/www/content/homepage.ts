@@ -55,6 +55,7 @@ export type NavigationItem = {
 	title: string;
 	description: string;
 	href: string;
+	icon?: React.ComponentType<{ className?: string; strokeWidth?: number }>;
 };
 
 export type NavigationSection = {
@@ -78,7 +79,7 @@ export const navigationContent = {
 			},
 			{
 				title: "Beta Access",
-				description: "Join the beta program",
+				description: "How to join our beta program",
 				href: "https://docs.recurse.cc/getting-started/beta",
 			},
 			{
@@ -105,21 +106,25 @@ export const navigationContent = {
 				title: "Semantic Navigation",
 				description: "Follow typed relationships through reasoning chains",
 				href: "/#features",
+				icon: Network,
 			},
 			{
 				title: "Adaptive Schemas",
 				description: "Works with any content, zero configuration needed",
 				href: "/#features",
+				icon: IconSparkles,
 			},
 			{
 				title: "Temporal Versioning",
 				description: "Preserve historical context while tracking changes",
 				href: "/#features",
+				icon: GitGraph,
 			},
 			{
 				title: "Expert Knowledge",
 				description: "Subscribe to expert knowledge bases directly",
 				href: "/#features",
+				icon: Brain,
 			},
 		],
 	} as NavigationSection,

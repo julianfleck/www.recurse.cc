@@ -5,7 +5,6 @@ import {
 	NavigationMenu,
 	NavigationMenuContent,
 	NavigationMenuItem,
-	NavigationMenuLink,
 	NavigationMenuList,
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
@@ -15,6 +14,7 @@ import { IconQuestionMark } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type MouseEvent } from "react";
+import { NavigationHeroCard, NavigationListCard, NavigationFeatureCard } from "@/components/navigation/NavigationCard";
 import { SearchToggle } from "@/components/search/toggle";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -145,37 +145,24 @@ export function DefaultNavigation({
 							<NavigationMenuContent>
 								<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]">
 									<li className="row-span-4">
-										<NavigationMenuLink asChild>
-											<Link
-												href={NAVIGATION.about.hero.href}
-												onClick={(e) => handleAnchorClick(e, "about")}
-												className="flex h-full w-full select-none flex-col justify-end rounded-md bg-linear-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md border! border-muted!"
-											>
-												<div className="mb-2 mt-4 text-lg font-medium">
-													{NAVIGATION.about.hero.title}
-												</div>
-												<p className="text-sm leading-tight text-muted-foreground">
-													{NAVIGATION.about.hero.description}
-												</p>
-											</Link>
-										</NavigationMenuLink>
+										<NavigationHeroCard
+											href={NAVIGATION.about.hero.href}
+											onClick={(e) => handleAnchorClick(e, "about")}
+											title={NAVIGATION.about.hero.title}
+											description={NAVIGATION.about.hero.description}
+										/>
 									</li>
 									<li className="row-span-4">
 										<ScrollArea className="h-[280px]">
 											<div className="space-y-2 pr-4">
 												{NAVIGATION.about.items.map((item) => (
-													<NavigationMenuLink key={item.title} asChild>
-														<Link
-															href={item.href}
-															onClick={item.href.startsWith("/#") ? (e: MouseEvent<HTMLAnchorElement>) => handleAnchorClick(e, item.href.substring(2)) : undefined}
-															className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all border! border-muted! bg-card hover:bg-accent hover:text-accent-foreground hover:border-accent! focus:bg-accent focus:text-accent-foreground focus:border-accent!"
-														>
-															<div className="text-sm font-medium leading-none">{item.title}</div>
-															<p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-																{item.description}
-															</p>
-														</Link>
-													</NavigationMenuLink>
+													<NavigationListCard
+														key={item.title}
+														href={item.href}
+														onClick={item.href.startsWith("/#") ? (e: MouseEvent<HTMLAnchorElement>) => handleAnchorClick(e, item.href.substring(2)) : undefined}
+														title={item.title}
+														description={item.description}
+													/>
 												))}
 											</div>
 										</ScrollArea>
@@ -197,35 +184,22 @@ export function DefaultNavigation({
 							<NavigationMenuContent>
 								<ul className="grid w-[400px] gap-3 p-4 md:w-[600px] lg:w-[700px] lg:grid-cols-[.75fr_repeat(2,1fr)] lg:grid-rows-2">
 									<li className="row-span-2">
-										<NavigationMenuLink asChild>
-											<Link
-												href={NAVIGATION.features.hero.href}
-												onClick={(e) => handleAnchorClick(e, "features")}
-												className="flex h-full w-full select-none flex-col justify-end rounded-md bg-linear-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md border! border-muted!"
-											>
-												<div className="mb-2 mt-4 text-lg font-medium">
-													{NAVIGATION.features.hero.title}
-												</div>
-												<p className="text-sm leading-tight text-muted-foreground">
-													{NAVIGATION.features.hero.description}
-												</p>
-											</Link>
-										</NavigationMenuLink>
+										<NavigationHeroCard
+											href={NAVIGATION.features.hero.href}
+											onClick={(e) => handleAnchorClick(e, "features")}
+											title={NAVIGATION.features.hero.title}
+											description={NAVIGATION.features.hero.description}
+										/>
 									</li>
 									{NAVIGATION.features.items.map((item) => (
 										<li key={item.title}>
-											<NavigationMenuLink asChild>
-												<Link
-													href={item.href}
-													onClick={item.href.startsWith("/#") ? (e: MouseEvent<HTMLAnchorElement>) => handleAnchorClick(e, item.href.substring(2)) : undefined}
-													className="flex h-full w-full select-none flex-col justify-center rounded-md p-4 no-underline outline-none transition-all border! border-muted! bg-card hover:bg-accent hover:text-accent-foreground hover:border-accent! focus:bg-accent focus:text-accent-foreground focus:border-accent!"
-												>
-													<div className="text-sm font-medium leading-none mb-2">{item.title}</div>
-													<p className="line-clamp-3 text-xs leading-snug text-muted-foreground">
-														{item.description}
-													</p>
-												</Link>
-											</NavigationMenuLink>
+											<NavigationFeatureCard
+												href={item.href}
+												onClick={item.href.startsWith("/#") ? (e: MouseEvent<HTMLAnchorElement>) => handleAnchorClick(e, item.href.substring(2)) : undefined}
+												title={item.title}
+												description={item.description}
+												icon={item.icon}
+											/>
 										</li>
 									))}
 								</ul>
@@ -245,40 +219,23 @@ export function DefaultNavigation({
 							<NavigationMenuContent>
 								<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]">
 									<li className="row-span-4">
-										<NavigationMenuLink asChild>
-											<Link
-												href={NAVIGATION.blog.hero.href}
-												className="flex h-full w-full select-none flex-col justify-end rounded-md bg-linear-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md border! border-muted!"
-											>
-												<div className="mb-2 mt-4 text-lg font-medium">
-													{NAVIGATION.blog.hero.title}
-												</div>
-												<p className="text-sm leading-tight text-muted-foreground">
-													{NAVIGATION.blog.hero.description}
-												</p>
-												{NAVIGATION.blog.hero.footer && (
-													<div className="mt-4 text-accent-foreground text-sm font-medium">
-														{NAVIGATION.blog.hero.footer}
-													</div>
-												)}
-											</Link>
-										</NavigationMenuLink>
+										<NavigationHeroCard
+											href={NAVIGATION.blog.hero.href}
+											title={NAVIGATION.blog.hero.title}
+											description={NAVIGATION.blog.hero.description}
+											footer={NAVIGATION.blog.hero.footer}
+										/>
 									</li>
 									<li className="row-span-4">
 										<ScrollArea className="h-[280px]">
 											<div className="space-y-2 pr-4">
 												{NAVIGATION.blog.articles.map((article) => (
-													<NavigationMenuLink key={article.title} asChild>
-														<Link
-															href={article.href}
-															className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all border! border-muted! bg-card hover:bg-accent hover:text-accent-foreground hover:border-accent! focus:bg-accent focus:text-accent-foreground focus:border-accent!"
-														>
-															<div className="text-sm font-medium leading-none">{article.title}</div>
-															<p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-																{article.description}
-															</p>
-														</Link>
-													</NavigationMenuLink>
+													<NavigationListCard
+														key={article.title}
+														href={article.href}
+														title={article.title}
+														description={article.description}
+													/>
 												))}
 											</div>
 										</ScrollArea>
@@ -300,35 +257,22 @@ export function DefaultNavigation({
 							<NavigationMenuContent>
 								<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]">
 									<li className="row-span-4">
-										<NavigationMenuLink asChild>
-											<Link
-												href={NAVIGATION.docs.hero.href}
-												className="flex h-full w-full select-none flex-col justify-end rounded-md bg-linear-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md border! border-muted!"
-											>
-												<div className="mb-2 mt-4 text-lg font-medium">
-													{NAVIGATION.docs.hero.title}
-												</div>
-												<p className="text-sm leading-tight text-muted-foreground">
-													{NAVIGATION.docs.hero.description}
-												</p>
-											</Link>
-										</NavigationMenuLink>
+										<NavigationHeroCard
+											href={NAVIGATION.docs.hero.href}
+											title={NAVIGATION.docs.hero.title}
+											description={NAVIGATION.docs.hero.description}
+										/>
 									</li>
 									<li className="row-span-4">
 										<ScrollArea className="h-[280px]">
 											<div className="space-y-2 pr-4">
 												{NAVIGATION.docs.items.map((item) => (
-													<NavigationMenuLink key={item.title} asChild>
-														<Link
-															href={item.href}
-															className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all border! border-muted! bg-card hover:bg-accent hover:text-accent-foreground hover:border-accent! focus:bg-accent focus:text-accent-foreground focus:border-accent!"
-														>
-															<div className="text-sm font-medium leading-none">{item.title}</div>
-															<p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-																{item.description}
-															</p>
-														</Link>
-													</NavigationMenuLink>
+													<NavigationListCard
+														key={item.title}
+														href={item.href}
+														title={item.title}
+														description={item.description}
+													/>
 												))}
 											</div>
 										</ScrollArea>
