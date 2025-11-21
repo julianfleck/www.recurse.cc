@@ -9,12 +9,11 @@ import {
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
 } from "@recurse/ui/components/navigation-menu";
-import { ScrollArea } from "@recurse/ui/components/scroll-area";
 import { IconQuestionMark } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type MouseEvent } from "react";
-import { NavigationHeroCard, NavigationListCard, NavigationFeatureCard } from "@/components/navigation/NavigationCard";
+import { NavigationSection } from "@/components/navigation/NavigationSection";
 import { SearchToggle } from "@/components/search/toggle";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,16 +21,13 @@ import { navigationContent } from "@/content/homepage";
 import { useScroll } from "@/contexts/ScrollContext";
 import { cn } from "@/lib/utils";
 
-// Transform navigation content for easier use
-const NAVIGATION = {
+// Navigation sections configuration
+const NAVIGATION_SECTIONS = {
 	about: navigationContent.about,
 	features: navigationContent.features,
-	blog: {
-		hero: navigationContent.blog.hero,
-		articles: navigationContent.blog.items,
-	},
+	blog: navigationContent.blog,
 	docs: navigationContent.docs,
-};
+} as const;
 
 interface DefaultNavigationProps {
 	isCompact: boolean;
@@ -143,31 +139,11 @@ export function DefaultNavigation({
 								About
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
-								<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]">
-									<li className="row-span-4">
-										<NavigationHeroCard
-											href={NAVIGATION.about.hero.href}
-											onClick={(e) => handleAnchorClick(e, "about")}
-											title={NAVIGATION.about.hero.title}
-											description={NAVIGATION.about.hero.description}
-										/>
-									</li>
-									<li className="row-span-4">
-										<ScrollArea className="h-[280px]">
-											<div className="space-y-2 pr-4">
-												{NAVIGATION.about.items.map((item) => (
-													<NavigationListCard
-														key={item.title}
-														href={item.href}
-														onClick={item.href.startsWith("/#") ? (e: MouseEvent<HTMLAnchorElement>) => handleAnchorClick(e, item.href.substring(2)) : undefined}
-														title={item.title}
-														description={item.description}
-													/>
-												))}
-											</div>
-										</ScrollArea>
-									</li>
-								</ul>
+								<NavigationSection 
+									section={NAVIGATION_SECTIONS.about}
+									sectionKey="about"
+									handleAnchorClick={handleAnchorClick}
+								/>
 							</NavigationMenuContent>
 						</NavigationMenuItem>
 
@@ -182,27 +158,11 @@ export function DefaultNavigation({
 								Features
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
-								<ul className="grid w-[400px] gap-3 p-4 md:w-[600px] lg:w-[700px] lg:grid-cols-[.75fr_repeat(2,1fr)] lg:grid-rows-2">
-									<li className="row-span-2">
-										<NavigationHeroCard
-											href={NAVIGATION.features.hero.href}
-											onClick={(e) => handleAnchorClick(e, "features")}
-											title={NAVIGATION.features.hero.title}
-											description={NAVIGATION.features.hero.description}
-										/>
-									</li>
-									{NAVIGATION.features.items.map((item) => (
-										<li key={item.title}>
-											<NavigationFeatureCard
-												href={item.href}
-												onClick={item.href.startsWith("/#") ? (e: MouseEvent<HTMLAnchorElement>) => handleAnchorClick(e, item.href.substring(2)) : undefined}
-												title={item.title}
-												description={item.description}
-												icon={item.icon}
-											/>
-										</li>
-									))}
-								</ul>
+								<NavigationSection 
+									section={NAVIGATION_SECTIONS.features}
+									sectionKey="features"
+									handleAnchorClick={handleAnchorClick}
+								/>
 							</NavigationMenuContent>
 						</NavigationMenuItem>
 
@@ -217,30 +177,11 @@ export function DefaultNavigation({
 								Blog
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
-								<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]">
-									<li className="row-span-4">
-										<NavigationHeroCard
-											href={NAVIGATION.blog.hero.href}
-											title={NAVIGATION.blog.hero.title}
-											description={NAVIGATION.blog.hero.description}
-											footer={NAVIGATION.blog.hero.footer}
-										/>
-									</li>
-									<li className="row-span-4">
-										<ScrollArea className="h-[280px]">
-											<div className="space-y-2 pr-4">
-												{NAVIGATION.blog.articles.map((article) => (
-													<NavigationListCard
-														key={article.title}
-														href={article.href}
-														title={article.title}
-														description={article.description}
-													/>
-												))}
-											</div>
-										</ScrollArea>
-									</li>
-								</ul>
+								<NavigationSection 
+									section={NAVIGATION_SECTIONS.blog}
+									sectionKey="blog"
+									handleAnchorClick={handleAnchorClick}
+								/>
 							</NavigationMenuContent>
 						</NavigationMenuItem>
 
@@ -255,29 +196,11 @@ export function DefaultNavigation({
 								Docs
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
-								<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]">
-									<li className="row-span-4">
-										<NavigationHeroCard
-											href={NAVIGATION.docs.hero.href}
-											title={NAVIGATION.docs.hero.title}
-											description={NAVIGATION.docs.hero.description}
-										/>
-									</li>
-									<li className="row-span-4">
-										<ScrollArea className="h-[280px]">
-											<div className="space-y-2 pr-4">
-												{NAVIGATION.docs.items.map((item) => (
-													<NavigationListCard
-														key={item.title}
-														href={item.href}
-														title={item.title}
-														description={item.description}
-													/>
-												))}
-											</div>
-										</ScrollArea>
-									</li>
-								</ul>
+								<NavigationSection 
+									section={NAVIGATION_SECTIONS.docs}
+									sectionKey="docs"
+									handleAnchorClick={handleAnchorClick}
+								/>
 							</NavigationMenuContent>
 						</NavigationMenuItem>
 					</NavigationMenuList>

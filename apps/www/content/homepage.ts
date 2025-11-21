@@ -58,9 +58,13 @@ export type NavigationItem = {
 	icon?: React.ComponentType<{ className?: string; strokeWidth?: number }>;
 };
 
+export type NavigationLayout = "list" | "grid";
+
 export type NavigationSection = {
 	hero: NavigationHero;
 	items: NavigationItem[];
+	layout: NavigationLayout;
+	scrollable: boolean;
 };
 
 // Navigation menu data
@@ -93,6 +97,8 @@ export const navigationContent = {
 				href: "/faq",
 			},
 		],
+		layout: "list" as NavigationLayout,
+		scrollable: true,
 	} as NavigationSection,
 
 	features: {
@@ -127,6 +133,8 @@ export const navigationContent = {
 				icon: Brain,
 			},
 		],
+		layout: "grid" as NavigationLayout,
+		scrollable: false,
 	} as NavigationSection,
 
 	blog: {
@@ -168,6 +176,8 @@ export const navigationContent = {
 				href: "/blog",
 			},
 		],
+		layout: "list" as NavigationLayout,
+		scrollable: true,
 	} as NavigationSection,
 
 	docs: {
@@ -208,6 +218,8 @@ export const navigationContent = {
 				href: "https://docs.recurse.cc/concepts/temporal-versioning",
 			},
 		],
+		layout: "list" as NavigationLayout,
+		scrollable: true,
 	} as NavigationSection,
 };
 
