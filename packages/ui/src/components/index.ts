@@ -41,3 +41,4 @@ export * from './typing-text';
 
 // Component variants (directories without top-level .tsx)
 export * from './backgrounds/Particles';
+export * from './ui/dotted-glow-background';

@@ -2,7 +2,6 @@ import { NavigationMenuLink } from "@recurse/ui/components/navigation-menu";
 import Link from "next/link";
 import { type MouseEvent, type ReactNode, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { DottedGlowBackground } from "@recurse/ui/components/dotted-glow-background";
 
 interface NavigationCardProps {
 	href: string;
@@ -86,7 +85,7 @@ interface NavigationHeroCardProps {
 
 export function NavigationHeroCard({ title, description, footer, href, onClick }: NavigationHeroCardProps) {
 	return (
-		<NavigationCard href={href} onClick={onClick} className="flex h-full w-full select-none flex-col justify-between focus:shadow-md gap-y-8 min-h-72 bg-linear-to-b! to-accent/20 from-chart-1/10">
+		<NavigationCard href={href} onClick={onClick} className="flex h-full w-52 select-none flex-col justify-between focus:shadow-md gap-y-8 min-h-72 bg-linear-to-b! to-accent/20 from-chart-1/10 shrink-0">
 			<div className="text-2xl font-light max-w-xs leading-tight">
 				{title}
 			</div>
@@ -99,22 +98,6 @@ export function NavigationHeroCard({ title, description, footer, href, onClick }
 						{footer}
 					</div>
 				)}
-			</div>
-			<div className="pointer-events-none absolute right-0 bottom-0 left-0 z-0 h-full opacity-15 dark:opacity-15">
-				<DottedGlowBackground
-					className="pointer-events-none mask-radial-to-90% mask-radial-at-center opacity-20 dark:opacity-100"
-					opacity={1}
-					gap={10}
-					radius={1.6}
-					colorLightVar="--color-neutral-500"
-					glowColorLightVar="--color-neutral-600"
-					colorDarkVar="--color-neutral-500"
-					glowColorDarkVar="--color-sky-800"
-					backgroundOpacity={0}
-					speedMin={0.3}
-					speedMax={1.6}
-					speedScale={1}
-				/>
 			</div>
 		</NavigationCard>
 	);

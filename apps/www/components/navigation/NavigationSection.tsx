@@ -19,8 +19,8 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 	const needsScroll = isGrid && gridRows > 3; // Scroll if more than 3 rows (6 items)
 	
 	const gridConfig = isGrid
-		? `w-[400px] md:w-[600px] lg:w-[700px] lg:grid-cols-[.75fr_repeat(2,1fr)] lg:grid-rows-${gridRows}`
-		: "w-[400px] md:w-[500px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]";
+		? `w-[400px] md:w-[600px] lg:w-[700px] lg:grid-cols-[13rem_repeat(2,1fr)] lg:grid-rows-${gridRows}`
+		: "w-[400px] md:w-[500px] lg:w-[600px] lg:grid-cols-[13rem_1fr]";
 
 	const renderItems = () => {
 		if (isGrid) {
