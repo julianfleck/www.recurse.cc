@@ -220,7 +220,7 @@ export function TextTransitionPair({
     return nodes
   }, [tokens])
 
-  const overflowStyle = { display: "inline-block", overflowX: "hidden" as const, overflowY: "visible" as const, paddingBottom: "0.08em", verticalAlign: "baseline" as const }
+  const overflowStyle = { display: "inline-block", overflowX: "visible" as const, overflowY: "visible" as const, paddingBottom: "0.08em", verticalAlign: "baseline" as const }
 
   return (
     <span
@@ -243,13 +243,24 @@ export function TextTransitionPair({
               style={overflowStyle}
             >
               <motion.span
-                initial={{ opacity: 0, filter: "blur(4px)" }}
-                animate={{ opacity: 1, filter: "blur(0px)" }}
-                transition={{ duration: duration * 1.1, delay: 0, ease: "easeInOut" }}
                 className="inline-block whitespace-pre"
                 style={{ lineHeight: "inherit" }}
               >
-                {text}
+                {text.split("").map((char, charIndex) => (
+                  <motion.span
+                    key={`char-${charIndex}`}
+                    initial={{ opacity: 0, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, filter: "blur(0px)" }}
+                    transition={{
+                      duration: duration * 0.5,
+                      delay: charIndex * 0.05,
+                      ease: "easeInOut"
+                    }}
+                    className="inline-block"
+                  >
+                    {char}
+                  </motion.span>
+                ))}
               </motion.span>
             </motion.span>
           )
@@ -273,13 +284,24 @@ export function TextTransitionPair({
                     style={overflowStyle}
                   >
                     <motion.span
-                      initial={{ opacity: 0, filter: "blur(4px)" }}
-                      animate={{ opacity: 1, filter: "blur(0px)" }}
-                      transition={{ duration: duration * 1.1, delay: 0, ease: "easeInOut" }}
                       className="inline-block whitespace-pre"
                       style={{ lineHeight: "inherit" }}
                     >
-                      {regionText}
+                      {regionText.split("").map((char, charIndex) => (
+                        <motion.span
+                          key={`char-${charIndex}`}
+                          initial={{ opacity: 0, filter: "blur(4px)" }}
+                          animate={{ opacity: 1, filter: "blur(0px)" }}
+                          transition={{
+                            duration: duration * 0.5,
+                            delay: (charIndex * 0.05) + (node.kind === "group-removed" ? 0.2 : 0),
+                            ease: "easeInOut"
+                          }}
+                          className="inline-block"
+                        >
+                          {char}
+                        </motion.span>
+                      ))}
                     </motion.span>
                   </motion.span>
                 )}
