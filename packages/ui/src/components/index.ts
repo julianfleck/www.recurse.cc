@@ -17,6 +17,7 @@ export * from './content-tree';
 export * from './copy-button';
 export * from './dialog';
 export * from './dropdown-menu';
+export * from './filters';
 export * from './icon-toggle-button';
 export * from './input';
 export * from './kbd';

@@ -15,7 +15,7 @@ interface Grid8ColProps {
  */
 export function Grid8Col({ children, className }: Grid8ColProps) {
 	return (
-		<div className={cn("mx-auto grid max-w-7xl grid-cols-8 md:px-32 lg:px-40", className)}>
+		<div className={cn("mx-auto grid max-w-7xl grid-cols-8 md:px-32 lg:px-40 auto-rows-min", className)}>
 			{children}
 		</div>
 	);
@@ -27,14 +27,25 @@ interface GridCellProps {
 	colSpan?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 	mdColSpan?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 	lgColSpan?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-	rowSpan?: 1 | 2 | 3 | 4;
+	rowSpan?: 1 | 2 | 3 | 4 | "full";
+	mdRowSpan?: 1 | 2 | 3 | 4 | "full";
+	lgRowSpan?: 1 | 2 | 3 | 4 | "full";
 }
 
 /**
  * Grid cell with responsive column and row span
  * Grid is always 8 columns, use colSpan/mdColSpan/lgColSpan for responsive layouts
  */
-export function GridCell({ children, className, colSpan = 1, mdColSpan, lgColSpan, rowSpan = 1 }: GridCellProps) {
+export function GridCell({ 
+	children, 
+	className, 
+	colSpan = 1, 
+	mdColSpan, 
+	lgColSpan, 
+	rowSpan = 1,
+	mdRowSpan,
+	lgRowSpan
+}: GridCellProps) {
 	return (
 		<div
 			className={cn(
@@ -65,11 +76,24 @@ export function GridCell({ children, className, colSpan = 1, mdColSpan, lgColSpa
 				lgColSpan === 6 && "lg:col-span-6",
 				lgColSpan === 7 && "lg:col-span-7",
 				lgColSpan === 8 && "lg:col-span-8",
-				// Row spans
+				// Mobile row spans
 				rowSpan === 1 && "row-span-1",
 				rowSpan === 2 && "row-span-2",
 				rowSpan === 3 && "row-span-3",
 				rowSpan === 4 && "row-span-4",
+				rowSpan === "full" && "row-span-full",
+				// Tablet row spans
+				mdRowSpan === 1 && "md:row-span-1",
+				mdRowSpan === 2 && "md:row-span-2",
+				mdRowSpan === 3 && "md:row-span-3",
+				mdRowSpan === 4 && "md:row-span-4",
+				mdRowSpan === "full" && "md:row-span-full",
+				// Desktop row spans
+				lgRowSpan === 1 && "lg:row-span-1",
+				lgRowSpan === 2 && "lg:row-span-2",
+				lgRowSpan === 3 && "lg:row-span-3",
+				lgRowSpan === 4 && "lg:row-span-4",
+				lgRowSpan === "full" && "lg:row-span-full",
 				className
 			)}
 		>

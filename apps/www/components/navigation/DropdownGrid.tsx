@@ -7,6 +7,8 @@ interface DropdownGridProps {
 	rows?: 2 | 3 | 4;
 	/** Whether to include a hero card (affects column layout) */
 	hasHero?: boolean;
+	/** Number of content columns (excluding hero) - defaults to 2 */
+	contentColumns?: 2 | 3;
 }
 
 /**
@@ -14,15 +16,16 @@ interface DropdownGridProps {
  * Creates a consistent grid for navigation dropdowns with optional hero card
  * 
  * Layout:
- * - If hasHero=true: 3 columns (hero spans column 1, items fill columns 2-3)
- * - If hasHero=false: 2 columns (items fill all columns)
+ * - If hasHero=true: hero column + contentColumns (default 2) = 3 or 4 total columns
+ * - If hasHero=false: contentColumns only
  */
-export function DropdownGrid({ children, rows = 2, hasHero = true }: DropdownGridProps) {
-	const columns = hasHero ? 3 : 2;
+export function DropdownGrid({ children, rows = 2, hasHero = true, contentColumns = 2 }: DropdownGridProps) {
+	const columns = hasHero ? contentColumns + 1 : contentColumns;
+	const width = contentColumns === 3 ? "w-[500px] md:w-[700px] lg:w-[850px]" : "w-[400px] md:w-[500px] lg:w-[600px]";
 	
 	return (
 		<div 
-			className="w-[400px] gap-3 p-4 md:w-[500px] lg:w-[600px]"
+			className={`${width} gap-3 p-4`}
 			style={{ 
 				display: 'grid',
 				gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
@@ -55,12 +58,12 @@ export function HeroCard({ href, onClick, icon, title, description, footer }: He
 				enableHoverEffect={true}
 				rounded={true}
 				glowColor="chart-1"
-				className="flex flex-col justify-between p-6 h-full"
+				className="flex flex-col justify-between p-4 h-full"
 				onClick={onClick}
 			>
 				{icon && <div className="mb-4">{icon}</div>}
 				<div>
-					<div className="mb-2 font-medium text-lg text-muted-foreground transition-colors group-hover/card:text-foreground">
+					<div className="mb-2 text-lg leading-tight text-muted-foreground transition-colors group-hover/card:text-foreground">
 						{title}
 					</div>
 					<p className="text-muted-foreground text-sm leading-tight">

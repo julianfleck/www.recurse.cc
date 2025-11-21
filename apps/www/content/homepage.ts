@@ -43,6 +43,169 @@ export type ComparisonRow = {
  * Homepage content data
  * Structured data matching homepage.md content
  */
+// Navigation menu types
+export type NavigationHero = {
+	title: string;
+	description: string;
+	href: string;
+	footer?: string;
+};
+
+export type NavigationItem = {
+	title: string;
+	description: string;
+	href: string;
+};
+
+export type NavigationSection = {
+	hero: NavigationHero;
+	items: NavigationItem[];
+};
+
+// Navigation menu data
+export const navigationContent = {
+	about: {
+		hero: {
+			title: "Substrate for Sense-making",
+			description: "Recurse is memory infrastructure for systems that actually understand.",
+			href: "/#about",
+		},
+		items: [
+			{
+				title: "Technology",
+				description: "What Recurse does",
+				href: "/about",
+			},
+			{
+				title: "Beta Access",
+				description: "Join the beta program",
+				href: "https://docs.recurse.cc/getting-started/beta",
+			},
+			{
+				title: "How Recurse Compares",
+				description: "RAGE vs. RAG and other approaches",
+				href: "/#comparison",
+			},
+			{
+				title: "FAQ",
+				description: "Common questions and answers",
+				href: "/faq",
+			},
+		],
+	} as NavigationSection,
+
+	features: {
+		hero: {
+			title: "Transform Your Raw Data",
+			description: "Turn raw input into structured, actionable context for you and your AI agents.",
+			href: "/#features",
+		},
+		items: [
+			{
+				title: "Semantic Navigation",
+				description: "Follow typed relationships through reasoning chains",
+				href: "/#features",
+			},
+			{
+				title: "Adaptive Schemas",
+				description: "Works with any content, zero configuration needed",
+				href: "/#features",
+			},
+			{
+				title: "Temporal Versioning",
+				description: "Preserve historical context while tracking changes",
+				href: "/#features",
+			},
+			{
+				title: "Expert Knowledge",
+				description: "Subscribe to expert knowledge bases directly",
+				href: "/#features",
+			},
+		],
+	} as NavigationSection,
+
+	blog: {
+		hero: {
+			title: "Blog",
+			description: "Updates, insights, and deep dives into context infrastructure",
+			href: "/blog",
+			footer: "Read articles →",
+		},
+		items: [
+			{
+				title: "Placeholder Article 1",
+				description: "Coming soon",
+				href: "/blog",
+			},
+			{
+				title: "Placeholder Article 2",
+				description: "Coming soon",
+				href: "/blog",
+			},
+			{
+				title: "Placeholder Article 3",
+				description: "Coming soon",
+				href: "/blog",
+			},
+			{
+				title: "Placeholder Article 4",
+				description: "Coming soon",
+				href: "/blog",
+			},
+			{
+				title: "Placeholder Article 5",
+				description: "Coming soon",
+				href: "/blog",
+			},
+			{
+				title: "Placeholder Article 6",
+				description: "Coming soon",
+				href: "/blog",
+			},
+		],
+	} as NavigationSection,
+
+	docs: {
+		hero: {
+			title: "Learn More",
+			description: "Comprehensive guides, API references, and technical documentation",
+			href: "https://docs.recurse.cc",
+		},
+		items: [
+			{
+				title: "Understanding RAGE",
+				description: "Core technology and how it works",
+				href: "https://docs.recurse.cc/concepts/rage",
+			},
+			{
+				title: "Frame Semantics",
+				description: "Structured patterns for knowledge representation",
+				href: "https://docs.recurse.cc/concepts/frames",
+			},
+			{
+				title: "Using the API",
+				description: "Upload documents and query your knowledge",
+				href: "https://docs.recurse.cc/guides/using-the-api",
+			},
+			{
+				title: "API vs Proxy",
+				description: "Choose the right integration approach",
+				href: "https://docs.recurse.cc/getting-started/api-vs-proxy",
+			},
+			{
+				title: "Adaptive Schemas",
+				description: "Automatic pattern discovery from your content",
+				href: "https://docs.recurse.cc/concepts/adaptive-schemas",
+			},
+			{
+				title: "Temporal Versioning",
+				description: "Track knowledge evolution over time",
+				href: "https://docs.recurse.cc/concepts/temporal-versioning",
+			},
+		],
+	} as NavigationSection,
+};
+
 export const homepageContent = {
 	hero: {
 		headline: "The Memory Substrate for Sense-making, not just Similarity Search",

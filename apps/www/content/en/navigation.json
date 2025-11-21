@@ -8,24 +8,24 @@
 	"beta": "Join Beta",
 	"featureDropdown": [
 		{
-			"title": "Semantic Frame Parsing",
-			"href": "/features/frame-parsing",
-			"description": "Automatically extract structured semantic frames from unstructured text, preserving meaning and relationships."
+			"title": "Navigate Semantic Structure",
+			"href": "#features",
+			"description": "Follow typed relationships, trace reasoning chains, and navigate meaning through actual reasoning chains, not keyword similarity."
 		},
 		{
-			"title": "Recursive Memory",
-			"href": "/features/recursive-memory",
-			"description": "Build knowledge graphs that learn from every interaction, creating self-improving memory systems."
+			"title": "Discover Schemas Automatically",
+			"href": "#features",
+			"description": "Recurse learns patterns from any content you add, creating relationships without predefined ontologies. Zero configuration needed."
 		},
 		{
-			"title": "Context-Aware Operations",
-			"href": "/features/operations",
-			"description": "Smart operation suggestions that adapt to content type and context, with self-instructing capabilities."
+			"title": "Evolve Knowledge Graphs",
+			"href": "#features",
+			"description": "Updates knowledge while preserving complete history with timestamps, diffs, and explanations. Living memory that maintains current understanding and historical context."
 		},
 		{
 			"title": "Multi-Source Ingestion",
-			"href": "/features/ingestion",
-			"description": "Ingest from any source—Slack, email, docs, audio—and transform into structured, queryable knowledge."
+			"href": "#explore",
+			"description": "Upload PDFs, text files, markdown, or paste URLs directly. Recurse extracts semantic structure and makes content queryable within minutes."
 		}
 	]
 }

@@ -6,7 +6,7 @@ import {
 } from "@radix-ui/react-switch";
 import type { ComponentProps } from "react";
 
-import { cn } from "@recurse/ui/lib";
+import { cn } from "@recurse/ui/lib/index";
 
 function Switch({ className, ...props }: ComponentProps<typeof SwitchRoot>) {
   return (

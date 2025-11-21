@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect } from "react";
 import { Brain, GitGraph, Layers } from "lucide-react";
 import React from "react";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
@@ -6,7 +9,21 @@ import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";
 import { HeaderCard } from "@/components/layout/HeaderCard";
 
+/**
+ * About page - redirects to homepage anchor
+ * Content preserved below but not displayed (returns early)
+ */
 export default function AboutPage() {
+	useEffect(() => {
+		// Redirect to homepage with anchor
+		window.location.href = "/#about";
+	}, []);
+
+	// Return early - content preserved below but not rendered
+	return null;
+
+	// Original content preserved but not displayed:
+	/* eslint-disable */
 	return (
 		<>
 			{/* Hero Section */}
@@ -292,4 +309,5 @@ export default function AboutPage() {
 			<CTASection />
 		</>
 	);
+	/* eslint-enable */
 }

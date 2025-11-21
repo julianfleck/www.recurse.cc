@@ -13,7 +13,7 @@ import { homepageContent } from "@/content/homepage";
 
 export function Hero() {
 	return (
-		<div className="relative z-10 group/hero pt-halfcol pb-1col">
+		<div id="hero" className="relative z-10 group/hero pt-halfcol pb-1col">
 			{/* Hero Card */}
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 				<Grid8Col >
@@ -73,7 +73,7 @@ export function Hero() {
 
 export function About() {
 	return (
-		<div className="relative z-10 pb-1col group/about">
+		<div id="about" className="relative z-10 pb-1col group/about scroll-mt-[80px]">
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 				<Grid8Col className="">
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
@@ -84,7 +84,7 @@ export function About() {
 						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
 							<p className="font-light text-2xl text-foreground">
 								Not quite.
-								<br className="hidden md:block" /> We are a built a bit differently...
+								<br className="hidden md:block" /> It’s built a bit differently...
 							</p>
 							<p className="font-light text-xl text-foreground">
 								Recurse is memory infrastructure for systems that actually <mark className=" underline-offset-6 text-foreground">understand</mark>.

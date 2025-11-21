@@ -28,7 +28,7 @@ export function HeaderCard({
 }: HeaderCardProps) {
 	const content = (
 		<div className="relative flex items-center">
-			<h2 className="font-medium text-4xl text-muted-foreground transition-colors duration-300 leading-tight tracking-tight group-hover:text-foreground max-w-xs pl-8">
+			<h2 className="font-medium text-4xl text-muted-foreground transition-colors duration-300 leading-tight tracking-tight group-hover:text-foreground max-w-lg pl-8">
 				{title}
 			</h2>
 			<ArrowRight 
@@ -48,7 +48,7 @@ export function HeaderCard({
 				<GridCard 
 					enableHoverEffect
 					enableSpotlight={enableSpotlight}
-					className={cn("group cursor-pointer pl-1col pr-0.5col py-1col lg:px-2col lg:py-halfcol", className)}
+					className={cn("group cursor-pointer pl-1col pr-0.5col py-1col lg:pl-2col lg:py-halfcol", className)}
 				>
 					{content}
 				</GridCard>
@@ -60,7 +60,7 @@ export function HeaderCard({
 		<GridCard 
 			enableHoverEffect
 			enableSpotlight={enableSpotlight}
-			className={cn("group px-1col py-1col lg:px-2col lg:py-halfcol", className)}
+			className={cn("group px-1col py-1col lg:pl-2col lg:py-halfcol", className)}
 		>
 			{content}
 		</GridCard>

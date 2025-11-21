@@ -10,6 +10,7 @@ import {
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
 } from "@recurse/ui/components/navigation-menu";
+import { ScrollArea } from "@recurse/ui/components/scroll-area";
 import { IconQuestionMark } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -17,9 +18,20 @@ import { type MouseEvent } from "react";
 import { SearchToggle } from "@/components/search/toggle";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { navigationContent } from "@/content/homepage";
 import { useScroll } from "@/contexts/ScrollContext";
 import { cn } from "@/lib/utils";
-import { DropdownGrid, HeroCard, ItemCard } from "./DropdownGrid";
+
+// Transform navigation content for easier use
+const NAVIGATION = {
+	about: navigationContent.about,
+	features: navigationContent.features,
+	blog: {
+		hero: navigationContent.blog.hero,
+		articles: navigationContent.blog.items,
+	},
+	docs: navigationContent.docs,
+};
 
 interface DefaultNavigationProps {
 	isCompact: boolean;
@@ -131,48 +143,44 @@ export function DefaultNavigation({
 								About
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
-								<DropdownGrid rows={2} hasHero={true}>
-									<HeroCard
-										href="/#about"
-										onClick={(e) => handleAnchorClick(e, "about")}
-										icon={
-											<svg
-												className="h-12 w-12"
-												viewBox="0 0 100 100"
-												xmlns="http://www.w3.org/2000/svg"
-												aria-hidden="true"
+								<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]">
+									<li className="row-span-4">
+										<NavigationMenuLink asChild>
+											<Link
+												href={NAVIGATION.about.hero.href}
+												onClick={(e) => handleAnchorClick(e, "about")}
+												className="flex h-full w-full select-none flex-col justify-end rounded-md bg-linear-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md border! border-muted!"
 											>
-												<path d="M27.3,50c0-7.5-6.1-13.6-13.6-13.6,5.1,0,9.8-1.7,13.6-4.5,1.7-1.3,3.3-2.8,4.5-4.5,2.9-3.8,4.5-8.5,4.5-13.6,0-7.5,6.1-13.6,13.6-13.6,7.5,0,13.6,6.1,13.6,13.6s-6.1,13.6-13.6,13.6c-5.1,0-9.8,1.7-13.6,4.5-1.7,1.3-3.3,2.8-4.5,4.5-2.9,3.8-4.5,8.5-4.5,13.6Z" fill="currentColor"/>
-												<circle cx="86.9" cy="86.9" r="13.1" fill="currentColor"/>
-												<path d="M50,64.6c-7.5,0-13.6-6.1-13.6-13.6,0-7.5,6.1-13.6,13.6-13.6,5.1,0,9.8-1.7,13.6-4.5,1.7-1.3,3.3,2.8,4.5-4.5,2.9-3.8,4.5-8.5,4.5-13.6,0-7.5,6.1-13.6,13.6-13.6,7.5,0,13.6,6.1,13.6,13.6s-6.1,13.6-13.6,13.6c-5.1,0-9.8,1.7-13.6,4.5-1.7,1.3-3.3,2.8-4.5,4.5-2.9,3.8-4.5,8.5-4.5,13.6,0,7.5-6.1,13.6-13.6,13.6Z" fill="currentColor"/>
-												<path d="M50,100c-7.5,0-13.6-6.1-13.6-13.6,0-5.1-1.7-9.8-4.5-13.6-1.3-1.7-2.8-3.3-4.5-4.5-3.8-2.9-8.5-4.5-13.6-4.5-7.5,0-13.6-6.1-13.6-13.6,0-7.5,6.1-13.6,13.6-13.6,7.5,0,13.6,6.1,13.6,13.6,0,5.1,1.7,9.8,4.5,13.6,1.3,1.7,2.8,3.3,4.5,4.5,3.8,2.9,8.5,4.5,13.6,4.5s9.8-1.7,13.6-4.5c1.7-1.3,3.3-2.8,4.5-4.5,2.9-3.8,4.5-8.5,4.5-13.6,0-7.5,6.1-13.6,13.6-13.6,7.5,0,13.6,6.1,13.6,13.6,0,7.5-6.1,13.6-13.6,13.6-5.1,0-9.8,1.7-13.6,4.5-1.7,1.3-3.3,2.8-4.5,4.5-2.9,3.8-4.5,8.5-4.5,13.6,0,7.5-6.1,13.6-13.6,13.6Z" fill="currentColor"/>
-											</svg>
-										}
-										title="Context Infrastructure"
-										description="Memory substrate for AI systems that understand"
-									/>
-									<ItemCard
-										href="/faq"
-										title="FAQ"
-										description="Common questions"
-									/>
-									<ItemCard
-										href="https://docs.recurse.cc/getting-started/beta"
-										title="Beta Access"
-										description="Join the beta"
-									/>
-									<ItemCard
-										href="/#comparison"
-										onClick={(e) => handleAnchorClick(e, "comparison")}
-										title="RAGE vs. RAG"
-										description="How we're different"
-									/>
-									<ItemCard
-										href="/about"
-										title="Technology"
-										description="How it works"
-									/>
-								</DropdownGrid>
+												<div className="mb-2 mt-4 text-lg font-medium">
+													{NAVIGATION.about.hero.title}
+												</div>
+												<p className="text-sm leading-tight text-muted-foreground">
+													{NAVIGATION.about.hero.description}
+												</p>
+											</Link>
+										</NavigationMenuLink>
+									</li>
+									<li className="row-span-4">
+										<ScrollArea className="h-[280px]">
+											<div className="space-y-2 pr-4">
+												{NAVIGATION.about.items.map((item) => (
+													<NavigationMenuLink key={item.title} asChild>
+														<Link
+															href={item.href}
+															onClick={item.href.startsWith("/#") ? (e: MouseEvent<HTMLAnchorElement>) => handleAnchorClick(e, item.href.substring(2)) : undefined}
+															className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all border! border-muted! bg-card hover:bg-accent hover:text-accent-foreground hover:border-accent! focus:bg-accent focus:text-accent-foreground focus:border-accent!"
+														>
+															<div className="text-sm font-medium leading-none">{item.title}</div>
+															<p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+																{item.description}
+															</p>
+														</Link>
+													</NavigationMenuLink>
+												))}
+											</div>
+										</ScrollArea>
+									</li>
+								</ul>
 							</NavigationMenuContent>
 						</NavigationMenuItem>
 
@@ -187,32 +195,40 @@ export function DefaultNavigation({
 								Features
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
-								<DropdownGrid rows={2} hasHero={false}>
-									<ItemCard
-										href="/#features"
-										onClick={(e) => handleAnchorClick(e, "features")}
-										title="Semantic Navigation"
-										description="Navigate meaning through typed relationships"
-									/>
-									<ItemCard
-										href="/#features"
-										onClick={(e) => handleAnchorClick(e, "features")}
-										title="Adaptive Schemas"
-										description="Automatic pattern discovery, zero config"
-									/>
-									<ItemCard
-										href="/#features"
-										onClick={(e) => handleAnchorClick(e, "features")}
-										title="Temporal Versioning"
-										description="Living memory with complete history"
-									/>
-									<ItemCard
-										href="/#build"
-										onClick={(e) => handleAnchorClick(e, "build")}
-										title="Proxy Integration"
-										description="Change one line—your base URL—for automatic context injection"
-									/>
-								</DropdownGrid>
+								<ul className="grid w-[400px] gap-3 p-4 md:w-[600px] lg:w-[700px] lg:grid-cols-[.75fr_repeat(2,1fr)] lg:grid-rows-2">
+									<li className="row-span-2">
+										<NavigationMenuLink asChild>
+											<Link
+												href={NAVIGATION.features.hero.href}
+												onClick={(e) => handleAnchorClick(e, "features")}
+												className="flex h-full w-full select-none flex-col justify-end rounded-md bg-linear-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md border! border-muted!"
+											>
+												<div className="mb-2 mt-4 text-lg font-medium">
+													{NAVIGATION.features.hero.title}
+												</div>
+												<p className="text-sm leading-tight text-muted-foreground">
+													{NAVIGATION.features.hero.description}
+												</p>
+											</Link>
+										</NavigationMenuLink>
+									</li>
+									{NAVIGATION.features.items.map((item) => (
+										<li key={item.title}>
+											<NavigationMenuLink asChild>
+												<Link
+													href={item.href}
+													onClick={item.href.startsWith("/#") ? (e: MouseEvent<HTMLAnchorElement>) => handleAnchorClick(e, item.href.substring(2)) : undefined}
+													className="flex h-full w-full select-none flex-col justify-center rounded-md p-4 no-underline outline-none transition-all border! border-muted! bg-card hover:bg-accent hover:text-accent-foreground hover:border-accent! focus:bg-accent focus:text-accent-foreground focus:border-accent!"
+												>
+													<div className="text-sm font-medium leading-none mb-2">{item.title}</div>
+													<p className="line-clamp-3 text-xs leading-snug text-muted-foreground">
+														{item.description}
+													</p>
+												</Link>
+											</NavigationMenuLink>
+										</li>
+									))}
+								</ul>
 							</NavigationMenuContent>
 						</NavigationMenuItem>
 
@@ -227,55 +243,98 @@ export function DefaultNavigation({
 								Blog
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
-								<DropdownGrid rows={2} hasHero={true}>
-									<HeroCard
-										href="/blog"
-										title="Blog"
-										description="Updates, insights, and deep dives into context infrastructure"
-										footer={
-											<div className="text-accent-foreground text-sm font-medium">
-												Read articles →
+								<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]">
+									<li className="row-span-4">
+										<NavigationMenuLink asChild>
+											<Link
+												href={NAVIGATION.blog.hero.href}
+												className="flex h-full w-full select-none flex-col justify-end rounded-md bg-linear-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md border! border-muted!"
+											>
+												<div className="mb-2 mt-4 text-lg font-medium">
+													{NAVIGATION.blog.hero.title}
+												</div>
+												<p className="text-sm leading-tight text-muted-foreground">
+													{NAVIGATION.blog.hero.description}
+												</p>
+												{NAVIGATION.blog.hero.footer && (
+													<div className="mt-4 text-accent-foreground text-sm font-medium">
+														{NAVIGATION.blog.hero.footer}
+													</div>
+												)}
+											</Link>
+										</NavigationMenuLink>
+									</li>
+									<li className="row-span-4">
+										<ScrollArea className="h-[280px]">
+											<div className="space-y-2 pr-4">
+												{NAVIGATION.blog.articles.map((article) => (
+													<NavigationMenuLink key={article.title} asChild>
+														<Link
+															href={article.href}
+															className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all border! border-muted! bg-card hover:bg-accent hover:text-accent-foreground hover:border-accent! focus:bg-accent focus:text-accent-foreground focus:border-accent!"
+														>
+															<div className="text-sm font-medium leading-none">{article.title}</div>
+															<p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+																{article.description}
+															</p>
+														</Link>
+													</NavigationMenuLink>
+												))}
 											</div>
-										}
-									/>
-									<ItemCard
-										href="https://docs.recurse.cc/concepts/rage"
-										title="Understanding RAGE"
-										description="Core technology"
-									/>
-									<ItemCard
-										href="https://docs.recurse.cc/concepts/frames"
-										title="Frame Semantics"
-										description="Structured knowledge"
-									/>
-									<ItemCard
-										href="https://docs.recurse.cc/guides/using-the-api"
-										title="API Guide"
-										description="Build with Recurse"
-									/>
-									<ItemCard
-										href="https://docs.recurse.cc/guides/api-vs-proxy"
-										title="API vs Proxy"
-										description="Choose your approach"
-									/>
-								</DropdownGrid>
+										</ScrollArea>
+									</li>
+								</ul>
 							</NavigationMenuContent>
 						</NavigationMenuItem>
 
-						{/* Docs */}
+						{/* Docs Dropdown */}
 						<NavigationMenuItem>
-							<NavigationMenuLink asChild>
-								<Link
-									className={cn(
-										navigationMenuTriggerStyle(),
-										"transition-none",
-										isCompact ? "h-9 px-2 text-sm" : ""
-									)}
-									href="/docs"
-								>
-									Docs
-								</Link>
-							</NavigationMenuLink>
+							<NavigationMenuTrigger
+								className={cn(
+									"transition-none",
+									isCompact ? "h-9 px-2 text-sm" : ""
+								)}
+							>
+								Docs
+							</NavigationMenuTrigger>
+							<NavigationMenuContent>
+								<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]">
+									<li className="row-span-4">
+										<NavigationMenuLink asChild>
+											<Link
+												href={NAVIGATION.docs.hero.href}
+												className="flex h-full w-full select-none flex-col justify-end rounded-md bg-linear-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md border! border-muted!"
+											>
+												<div className="mb-2 mt-4 text-lg font-medium">
+													{NAVIGATION.docs.hero.title}
+												</div>
+												<p className="text-sm leading-tight text-muted-foreground">
+													{NAVIGATION.docs.hero.description}
+												</p>
+											</Link>
+										</NavigationMenuLink>
+									</li>
+									<li className="row-span-4">
+										<ScrollArea className="h-[280px]">
+											<div className="space-y-2 pr-4">
+												{NAVIGATION.docs.items.map((item) => (
+													<NavigationMenuLink key={item.title} asChild>
+														<Link
+															href={item.href}
+															className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all border! border-muted! bg-card hover:bg-accent hover:text-accent-foreground hover:border-accent! focus:bg-accent focus:text-accent-foreground focus:border-accent!"
+														>
+															<div className="text-sm font-medium leading-none">{item.title}</div>
+															<p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+																{item.description}
+															</p>
+														</Link>
+													</NavigationMenuLink>
+												))}
+											</div>
+										</ScrollArea>
+									</li>
+								</ul>
+							</NavigationMenuContent>
 						</NavigationMenuItem>
 					</NavigationMenuList>
 				</NavigationMenu>

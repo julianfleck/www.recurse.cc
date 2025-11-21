@@ -14,7 +14,7 @@ import type {
 } from "react";
 import { forwardRef } from "react";
 
-import { cn } from "@recurse/ui/lib";
+import { cn } from "@recurse/ui/lib/index";
 
 function ScrollArea({
   className,

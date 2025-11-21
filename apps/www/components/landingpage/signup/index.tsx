@@ -9,7 +9,7 @@ import { GridCard } from "@/components/layout/GridCard";
 export function SignupSection() {
 	return (
 		<ScrollAnimation enableFadeOut={true} exitBlur={2} exitScale={0.99}>
-			<div className="pb-1col group/signup">
+			<div id="signup" className="pb-1col group/signup scroll-mt-[80px]">
 				<Grid8Col>
 					{/* Column 1: Title and intro (2 cols) */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
@@ -31,9 +31,8 @@ export function SignupSection() {
 								workflows?
 							</p>
 							<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto pt-6">
-								Tell us a bit about your use case and join our beta. We are currently onboarding new users on a
-								bring your own key basis
-								<Link href="/docs/getting-started/using-the-ui">(learn more).</Link>.
+								Tell us a bit about your use case and join our beta. We are currently onboarding new users on a bring your own key basis{" "}
+								<Link href="/docs/getting-started/using-the-ui">(learn more).</Link>
 							</p>
 						</GridCard>
 					</GridCell>
