@@ -239,13 +239,13 @@ export function TextTransitionPair({
               className="inline-block"
               initial={{ width: 0 }}
               animate={{ width: s.targetWidth }}
-              transition={{ duration }}
+              transition={{ duration, ease: "easeInOut" }}
               style={overflowStyle}
             >
               <motion.span
-                initial={{ opacity: 0, filter: "blur(4px)", clipPath: "inset(0 100% 0 0)" }}
-                animate={{ opacity: 1, filter: "blur(0px)", clipPath: "inset(0 0% 0 0)" }}
-                transition={{ duration: duration * 0.6, delay: 0 }}
+                initial={{ opacity: 0, filter: "blur(4px)" }}
+                animate={{ opacity: 1, filter: "blur(0px)" }}
+                transition={{ duration: duration * 1.1, delay: 0, ease: "easeInOut" }}
                 className="inline-block whitespace-pre"
                 style={{ lineHeight: "inherit" }}
               >
@@ -269,13 +269,13 @@ export function TextTransitionPair({
                     className="inline-block"
                     initial={{ width: 0 }}
                     animate={{ width: regionWidth }}
-                    transition={{ duration }}
+                    transition={{ duration, ease: "easeInOut" }}
                     style={overflowStyle}
                   >
                     <motion.span
-                      initial={{ opacity: 0, filter: "blur(4px)", clipPath: "inset(0 100% 0 0)" }}
-                      animate={{ opacity: 1, filter: "blur(0px)", clipPath: "inset(0 0% 0 0)" }}
-                      transition={{ duration: duration * 0.6, delay: 0 }}
+                      initial={{ opacity: 0, filter: "blur(4px)" }}
+                      animate={{ opacity: 1, filter: "blur(0px)" }}
+                      transition={{ duration: duration * 1.1, delay: 0, ease: "easeInOut" }}
                       className="inline-block whitespace-pre"
                       style={{ lineHeight: "inherit" }}
                     >
@@ -284,9 +284,13 @@ export function TextTransitionPair({
                   </motion.span>
                 )}
                 <motion.span
-                  className="inline-flex items-baseline"
+                  className="inline-flex items-baseline justify-center"
                   animate={{ opacity: 0, filter: "blur(4px)", width: 0 }}
-                  transition={{ duration }}
+                  transition={{
+                    width: { duration, ease: "easeInOut" },
+                    opacity: { duration: duration * 0.4 },
+                    filter: { duration: duration * 0.4 }
+                  }}
                   style={{ display: "inline-flex", overflowX: "hidden", overflowY: "visible", paddingBottom: "0.08em" }}
                 >
                   {groupTokens.map((gt) => (
