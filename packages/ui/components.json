@@ -14,11 +14,12 @@
   "aliases": {
     "components": "@recurse/ui/components",
     "utils": "@recurse/ui/lib",
-    "hooks": "@recurse/ui/hooks",
+    "ui": "@recurse/ui/components",
     "lib": "@recurse/ui/lib",
-    "ui": "@recurse/ui/components"
+    "hooks": "@recurse/ui/hooks"
   },
   "registries": {
-    "@reui": "https://reui.io/r/{name}.json"
+    "@reui": "https://reui.io/r/{name}.json",
+    "@aceternity": "https://ui.aceternity.com/registry/{name}.json"
   }
 }
