@@ -132,6 +132,18 @@ export const navigationContent = {
 				href: "/#features",
 				icon: Brain,
 			},
+			{
+				title: "lplplp",
+				description: "Preserve historical context while tracking changes",
+				href: "/#features",
+				icon: GitGraph,
+			},
+			{
+				title: "lalala",
+				description: "Subscribe to expert knowledge bases directly",
+				href: "/",
+				icon: Brain,
+			},
 		],
 		layout: "grid" as NavigationLayout,
 		scrollable: false,

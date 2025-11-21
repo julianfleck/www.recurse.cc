@@ -85,6 +85,78 @@ body.header-compact main {
   opacity: calc(var(--glow-intensity, 0) * 0.8 + 0.4);
 }
 
+/* Navigation Card Glow Effect - matches GridCard style */
+.nav-card-glow {
+  position: relative;
+}
+
+/* Override global navigation-menu-link hover styles for nav cards */
+.nav-card-glow[data-slot="navigation-menu-link"],
+.nav-card-glow[data-slot="navigation-menu-link"]:hover,
+.nav-card-glow[data-slot="navigation-menu-link"]:focus {
+  background-color: transparent !important;
+}
+
+.dark .nav-card-glow[data-slot="navigation-menu-link"],
+.dark .nav-card-glow[data-slot="navigation-menu-link"]:hover,
+.dark .nav-card-glow[data-slot="navigation-menu-link"]:focus {
+  background-color: transparent !important;
+}
+
+.nav-card-glow::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  /* Same radial gradient as GridCard */
+  /* Light mode: green (166, 200, 46), Dark mode: violet (132, 0, 255) */
+  background: radial-gradient(
+    var(--glow-radius, 500px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(166, 200, 46, calc(var(--glow-intensity, 0) * 0.6)) 0%,
+    rgba(166, 200, 46, calc(var(--glow-intensity, 0) * 0.4)) 20%,
+    rgba(166, 200, 46, calc(var(--glow-intensity, 0) * 0.2)) 40%,
+    transparent 70%
+  );
+  /* Create glowing border effect using mask - same as GridCard */
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: subtract;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  padding: 1px;
+  box-sizing: border-box;
+}
+
+/* Dark mode - switch to violet */
+.dark .nav-card-glow::after {
+  background: radial-gradient(
+    var(--glow-radius, 500px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(132, 0, 255, calc(var(--glow-intensity, 0) * 0.6)) 0%,
+    rgba(132, 0, 255, calc(var(--glow-intensity, 0) * 0.4)) 20%,
+    rgba(132, 0, 255, calc(var(--glow-intensity, 0) * 0.2)) 40%,
+    transparent 70%
+  );
+}
+
+.nav-card-glow:hover {
+  z-index: 30;
+}
+
+.nav-card-glow:hover::after {
+  opacity: calc(var(--glow-intensity, 0) * 0.5 + 0.2);
+}
+
+.nav-card-glow[style*="--glow-intensity: 1"]::after {
+  opacity: calc(var(--glow-intensity, 0) * 0.5 + 0.2);
+}
+
 main {
   padding-top: calc(var(--spacing-halfcol-abs) * 0.5 + 2rem); /* Expanded padding + buffer */
 }

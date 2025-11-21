@@ -1,21 +1,71 @@
 import { NavigationMenuLink } from "@recurse/ui/components/navigation-menu";
 import Link from "next/link";
-import type { MouseEvent, ReactNode } from "react";
+import { type MouseEvent, type ReactNode, useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
 
 interface NavigationCardProps {
 	href: string;
 	onClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
 	className?: string;
 	children: ReactNode;
+	enableGlow?: boolean;
 }
 
-function NavigationCard({ href, onClick, className = "", children }: NavigationCardProps) {
+function NavigationCard({ href, onClick, className = "", children, enableGlow = true }: NavigationCardProps) {
+	const cardRef = useRef<HTMLAnchorElement>(null);
+
+	useEffect(() => {
+		if (!enableGlow || !cardRef.current) return;
+
+		const card = cardRef.current;
+
+		const handleMouseMove = (e: globalThis.MouseEvent) => {
+			const rect = card.getBoundingClientRect();
+			const relativeX = ((e.clientX - rect.left) / rect.width) * 100;
+			const relativeY = ((e.clientY - rect.top) / rect.height) * 100;
+
+			card.style.setProperty('--glow-x', `${relativeX}%`);
+			card.style.setProperty('--glow-y', `${relativeY}%`);
+			card.style.setProperty('--glow-intensity', '1');
+		};
+
+		const handleMouseLeave = () => {
+			card.style.setProperty('--glow-intensity', '0');
+		};
+
+		card.addEventListener('mousemove', handleMouseMove);
+		card.addEventListener('mouseleave', handleMouseLeave);
+
+		return () => {
+			card.removeEventListener('mousemove', handleMouseMove);
+			card.removeEventListener('mouseleave', handleMouseLeave);
+		};
+	}, [enableGlow]);
+
 	return (
 		<NavigationMenuLink asChild>
 			<Link
+				ref={cardRef}
 				href={href}
 				onClick={onClick}
-				className={`block select-none rounded-md p-3 leading-none no-underline outline-none transition-all border! border-muted! bg-card hover:bg-accent hover:text-accent-foreground hover:border-accent! focus:bg-accent focus:text-accent-foreground focus:border-accent! ${className}`}
+				className={cn(
+					"block select-none rounded-md p-3 leading-none no-underline outline-none transition-all",
+					// "backdrop-blur-3xl bg-background/50 dark:bg-background/70",
+					"border! border-border!",
+					"hover:bg-transparent focus:bg-transparent",
+					enableGlow && "nav-card-glow",
+					className
+				)}
+				style={
+					enableGlow
+						? ({
+								'--glow-x': '20%',
+								'--glow-y': '20%',
+								'--glow-intensity': '0',
+								'--glow-radius': '500px',
+							} as React.CSSProperties)
+						: undefined
+				}
 			>
 				{children}
 			</Link>
@@ -33,12 +83,12 @@ interface NavigationHeroCardProps {
 
 export function NavigationHeroCard({ title, description, footer, href, onClick }: NavigationHeroCardProps) {
 	return (
-		<NavigationCard href={href} onClick={onClick} className="flex h-full w-full select-none flex-col justify-between bg-linear-to-b from-muted/50 to-muted focus:shadow-md">
-			<div className="text-lg font-medium">
+		<NavigationCard href={href} onClick={onClick} className="flex h-full w-full select-none flex-col justify-between focus:shadow-md gap-y-8 min-h-72">
+			<div className="text-2xl font-light max-w-xs leading-tight">
 				{title}
 			</div>
 			<div>
-				<p className="text-sm leading-tight text-muted-foreground">
+				<p className="text-sm leading-normal text-muted-foreground pr-8 hyphens-auto">
 					{description}
 				</p>
 				{footer && (
@@ -60,16 +110,16 @@ interface NavigationListCardProps {
 
 export function NavigationListCard({ title, description, href, onClick }: NavigationListCardProps) {
 	return (
-		<NavigationCard href={href} onClick={onClick} className="flex flex-col justify-between space-y-1">
+		<NavigationCard href={href} onClick={onClick} className="flex flex-col justify-between space-y-1 h-full">
 			<div className="text-sm font-medium leading-none">{title}</div>
-			<p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+			<p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
 				{description}
 			</p>
 		</NavigationCard>
 	);
 }
 
-interface NavigationFeatureCardProps {
+interface NavigationGridCardProps {
 	href: string;
 	onClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
 	title: string;
@@ -77,10 +127,10 @@ interface NavigationFeatureCardProps {
 	icon?: React.ComponentType<{ className?: string; strokeWidth?: number }>;
 }
 
-export function NavigationFeatureCard({ title, description, icon: Icon, href, onClick }: NavigationFeatureCardProps) {
+export function NavigationGridCard({ title, description, icon: Icon, href, onClick }: NavigationGridCardProps) {
 	return (
 		<NavigationCard href={href} onClick={onClick} className="group flex h-full w-full select-none">
-			<div className="grid grid-cols-6 gap-3 w-full">
+			<div className="grid grid-cols-6 gap-3 w-full h-full">
 				<div className="col-span-5 flex flex-col justify-between">
 					<div className="text-sm font-medium leading-none">{title}</div>
 					<p className="line-clamp-3 text-xs leading-snug text-muted-foreground">

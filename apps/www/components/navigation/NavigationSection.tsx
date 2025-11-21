@@ -1,7 +1,7 @@
 import { ScrollArea } from "@recurse/ui/components/scroll-area";
 import type { MouseEvent } from "react";
 import type { NavigationSection as NavigationSectionType } from "@/content/homepage";
-import { NavigationHeroCard, NavigationListCard, NavigationFeatureCard } from "./NavigationCard";
+import { NavigationHeroCard, NavigationListCard, NavigationGridCard } from "./NavigationCard";
 
 interface NavigationSectionProps {
 	section: NavigationSectionType;
@@ -12,19 +12,22 @@ interface NavigationSectionProps {
 export function NavigationSection({ section, sectionKey, handleAnchorClick }: NavigationSectionProps) {
 	const { hero, items, layout, scrollable } = section;
 
-	// Determine grid configuration based on layout
-	const gridConfig = layout === "grid" 
-		? "w-[400px] md:w-[600px] lg:w-[700px] lg:grid-cols-[.75fr_repeat(2,1fr)] lg:grid-rows-2"
+	// Calculate grid configuration based on layout and number of items
+	const isGrid = layout === "grid";
+	const gridRows = isGrid ? Math.ceil(items.length / 2) : 0; // 2 items per row for grid
+	const heroRowSpan = isGrid ? `row-span-${gridRows}` : "row-span-4";
+	const needsScroll = isGrid && gridRows > 3; // Scroll if more than 3 rows (6 items)
+	
+	const gridConfig = isGrid
+		? `w-[400px] md:w-[600px] lg:w-[700px] lg:grid-cols-[.75fr_repeat(2,1fr)] lg:grid-rows-${gridRows}`
 		: "w-[400px] md:w-[500px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]";
 
-	const heroRowSpan = layout === "grid" ? "row-span-2" : "row-span-4";
-
 	const renderItems = () => {
-		if (layout === "grid") {
+		if (isGrid) {
 			// Grid layout for features
-			return items.map((item) => (
+			const gridItems = items.map((item) => (
 				<li key={item.title}>
-					<NavigationFeatureCard
+					<NavigationGridCard
 						href={item.href}
 						onClick={item.href.startsWith("/#") ? (e: MouseEvent<HTMLAnchorElement>) => handleAnchorClick(e, item.href.substring(2)) : undefined}
 						title={item.title}
@@ -33,6 +36,21 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 					/>
 				</li>
 			));
+
+			// Wrap in ScrollArea if more than 3 rows
+			if (needsScroll) {
+				return (
+					<div className="col-span-2 row-span-3 overflow-hidden">
+						<ScrollArea className="h-[420px]">
+							<div className="grid grid-cols-2 gap-3 pr-4">
+								{gridItems}
+							</div>
+						</ScrollArea>
+					</div>
+				);
+			}
+
+			return gridItems;
 		}
 
 		// List layout
@@ -61,7 +79,7 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 
 	return (
 		<ul className={`grid gap-3 p-4 ${gridConfig}`}>
-			<li className={heroRowSpan}>
+			<li className={needsScroll ? "row-span-3" : heroRowSpan}>
 				<NavigationHeroCard
 					href={hero.href}
 					onClick={hero.href.startsWith("/#") ? (e) => handleAnchorClick(e, sectionKey) : undefined}
@@ -70,8 +88,8 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 					footer={hero.footer}
 				/>
 			</li>
-			{layout === "grid" ? (
-				// Grid layout - items are direct children of ul
+			{isGrid ? (
+				// Grid layout - items are direct children of ul (or wrapped in ScrollArea div)
 				renderItems()
 			) : scrollable ? (
 				// Scrollable list layout - items wrapped in ScrollArea

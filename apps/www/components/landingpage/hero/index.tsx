@@ -48,7 +48,7 @@ export function Hero() {
 				<Grid8Col>
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
 						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
-							<p className="font-medium text-foreground text-xl leading-relaxed">
+							<p className="font-medium text-foreground text-xl leading-relaxed hyphens-auto">
 								Recurse turns raw input into structured, actionable context
 							</p>
 							<p className="font-light text-muted-foreground text-base leading-relaxed">
