@@ -55,7 +55,7 @@ export function NavigationHeroCard({ title, description, footer, href, onClick }
 					{description}
 				</p>
 				{footer && (
-					<div className="mt-4 text-accent-foreground text-sm font-medium">
+					<div className="mt-4 text-accent-foreground text-base font-medium">
 						{footer}
 					</div>
 				)}

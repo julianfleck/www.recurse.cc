@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, TextTransition } from "@recurse/ui/components";
+import { Button, TextTransition, TextTransition2 } from "@recurse/ui/components";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
@@ -29,10 +29,9 @@ export function Hero() {
 							<div className="space-y-8 text-left pl-6">
 								<div className="space-y-6 lg:max-w-3xl">
 									<p className="font-semibold text-2xl leading-[1.15] tracking-tight text-foreground md:text-4xl lg:text-5xl">
-										<TextTransition
+										<TextTransition2
 											texts={HERO_HEADLINES as unknown as string[]}
 											interval={5200}
-											className="inline-flex flex-wrap items-baseline gap-x-2 gap-y-2 pr-12"
 										/>
 									</p>
 									<p className="text-base font-light text-muted-foreground md:text-lg">

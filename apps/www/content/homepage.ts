@@ -194,7 +194,7 @@ export const navigationContent = {
 
 	docs: {
 		hero: {
-			title: "Learn More",
+			title: "Read the fine manual",
 			description: "Comprehensive guides, API references, and technical documentation",
 			href: "https://docs.recurse.cc",
 		},

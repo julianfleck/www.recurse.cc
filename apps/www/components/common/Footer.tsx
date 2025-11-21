@@ -67,7 +67,7 @@ export function Footer() {
 								{section.links.map((link) => (
 									<li key={link.name}>
 										<Link
-											className="text-muted-foreground text-sm transition-colors duration-200 hover:text-foreground"
+											className="text-muted-foreground text-sm transition-colors duration-200 hover:text-foreground hover:bg-card"
 											href={link.href}
 										>
 											{link.name}
