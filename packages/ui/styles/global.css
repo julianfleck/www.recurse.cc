@@ -83,7 +83,7 @@
   --border: oklch(0.2500 0 0);
   --input: oklch(0.2800 0 0);
   --ring: oklch(0.4000 0 0);
-  --chart-1: oklch(0.5837 0.1754 294.2610);
+  --chart-1: oklch(0.5412 0.2719 287.8001);
   --chart-2: oklch(0.9380 0.1270 124.3210);
   --chart-3: oklch(0.7500 0.1830 55.9340);
   --chart-4: oklch(0.5590 0 0);
@@ -898,10 +898,11 @@ h6 {
 }
 
 .dark {
-  /* Dark mode: Uses primary color (oklch(0.5412 0.2719 287.8001)) ≈ rgb(132, 0, 255) */
-  --glow-color-rgb: 132, 0, 255;
-  --glow-opacity-base: 0.15;
-  --glow-opacity-fade: 0.06;
+  /* Dark mode: Uses primary color (oklch(0.5412 0.2719 287.8001)) ≈ rgb(115, 50, 255) */
+  --glow-color-rgb: 91, 0, 219;
+  /* --glow-color-rgb: 91, 0, 219; */
+  --glow-opacity-base: 0.1;
+  --glow-opacity-fade: 0.05;
   --glow-blend-mode: screen;
   /* Standard opacity multipliers for dark mode */
   --glow-opacity-multiplier-1: 0.6;

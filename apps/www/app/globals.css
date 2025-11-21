@@ -103,22 +103,41 @@ body.header-compact main {
   background-color: transparent !important;
 }
 
+/* Background glow effect (behind the card) */
+.nav-card-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  filter: blur(40px);
+  background: radial-gradient(
+    var(--glow-radius, 500px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(var(--glow-color-rgb), calc(var(--glow-intensity, 0) * 0.3)) 0%,
+    rgba(var(--glow-color-rgb), calc(var(--glow-intensity, 0) * 0.15)) 30%,
+    transparent 60%
+  );
+}
+
+/* Border glow effect (on the border) */
 .nav-card-glow::after {
   content: '';
   position: absolute;
   inset: -1px;
   border-radius: inherit;
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
   opacity: 0;
   transition: opacity 0.3s ease;
-  /* Same radial gradient as GridCard */
-  /* Light mode: green (166, 200, 46), Dark mode: violet (132, 0, 255) */
+  /* Same radial gradient as GridCard using shared CSS variable */
   background: radial-gradient(
     var(--glow-radius, 500px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    rgba(166, 200, 46, calc(var(--glow-intensity, 0) * 0.6)) 0%,
-    rgba(166, 200, 46, calc(var(--glow-intensity, 0) * 0.4)) 20%,
-    rgba(166, 200, 46, calc(var(--glow-intensity, 0) * 0.2)) 40%,
+    rgba(var(--glow-color-rgb), calc(var(--glow-intensity, 0) * 0.6)) 0%,
+    rgba(var(--glow-color-rgb), calc(var(--glow-intensity, 0) * 0.4)) 20%,
+    rgba(var(--glow-color-rgb), calc(var(--glow-intensity, 0) * 0.2)) 40%,
     transparent 70%
   );
   /* Create glowing border effect using mask - same as GridCard */
@@ -134,23 +153,20 @@ body.header-compact main {
   box-sizing: border-box;
 }
 
-/* Dark mode - switch to violet */
-.dark .nav-card-glow::after {
-  background: radial-gradient(
-    var(--glow-radius, 500px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    rgba(132, 0, 255, calc(var(--glow-intensity, 0) * 0.6)) 0%,
-    rgba(132, 0, 255, calc(var(--glow-intensity, 0) * 0.4)) 20%,
-    rgba(132, 0, 255, calc(var(--glow-intensity, 0) * 0.2)) 40%,
-    transparent 70%
-  );
-}
-
 .nav-card-glow:hover {
   z-index: 30;
 }
 
+.nav-card-glow:hover::before {
+  opacity: calc(var(--glow-intensity, 0) * 0.8);
+}
+
 .nav-card-glow:hover::after {
   opacity: calc(var(--glow-intensity, 0) * 0.5 + 0.2);
+}
+
+.nav-card-glow[style*="--glow-intensity: 1"]::before {
+  opacity: calc(var(--glow-intensity, 0) * 0.8);
 }
 
 .nav-card-glow[style*="--glow-intensity: 1"]::after {

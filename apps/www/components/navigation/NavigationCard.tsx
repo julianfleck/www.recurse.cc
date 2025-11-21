@@ -62,7 +62,7 @@ function NavigationCard({ href, onClick, className = "", children, enableGlow = 
 								'--glow-x': '20%',
 								'--glow-y': '20%',
 								'--glow-intensity': '0',
-								'--glow-radius': '500px',
+								'--glow-radius': '300px',
 							} as React.CSSProperties)
 						: undefined
 				}
@@ -83,7 +83,7 @@ interface NavigationHeroCardProps {
 
 export function NavigationHeroCard({ title, description, footer, href, onClick }: NavigationHeroCardProps) {
 	return (
-		<NavigationCard href={href} onClick={onClick} className="flex h-full w-full select-none flex-col justify-between focus:shadow-md gap-y-8 min-h-72">
+		<NavigationCard href={href} onClick={onClick} className="flex h-full w-full select-none flex-col justify-between focus:shadow-md gap-y-8 min-h-72 bg-linear-to-b! to-accent/20 from-chart-1/10">
 			<div className="text-2xl font-light max-w-xs leading-tight">
 				{title}
 			</div>
@@ -110,7 +110,7 @@ interface NavigationListCardProps {
 
 export function NavigationListCard({ title, description, href, onClick }: NavigationListCardProps) {
 	return (
-		<NavigationCard href={href} onClick={onClick} className="flex flex-col justify-between space-y-1 h-full">
+		<NavigationCard href={href} onClick={onClick} className="flex flex-col justify-between space-y-1 h-full hover:bg-chart-1/20! dark:hover:bg-chart-1/10! focus:bg-chart-1/20!">
 			<div className="text-sm font-medium leading-none">{title}</div>
 			<p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
 				{description}
@@ -129,7 +129,7 @@ interface NavigationGridCardProps {
 
 export function NavigationGridCard({ title, description, icon: Icon, href, onClick }: NavigationGridCardProps) {
 	return (
-		<NavigationCard href={href} onClick={onClick} className="group flex h-full w-full select-none">
+		<NavigationCard href={href} onClick={onClick} className="group flex h-full w-full select-none hover:bg-chart-1/20! dark:hover:bg-chart-1/10! focus:bg-chart-1/20!">
 			<div className="grid grid-cols-6 gap-3 w-full h-full">
 				<div className="col-span-5 flex flex-col justify-between">
 					<div className="text-sm font-medium leading-none">{title}</div>
