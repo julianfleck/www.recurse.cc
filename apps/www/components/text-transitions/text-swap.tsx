@@ -93,7 +93,7 @@ const SpacerToken = ({ s, widthDelay, charDelay, duration, stagger, overflowStyl
                 delay: charDelay + (charIndex * stagger),
                 ease: "easeInOut"
               }}
-              className={char === " " ? "inline" : "inline-block"}
+              className="inline-block"
               style={{ opacity: 0, filter: "blur(4px)" }}
             >
               {char}
