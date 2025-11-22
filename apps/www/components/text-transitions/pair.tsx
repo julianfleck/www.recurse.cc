@@ -160,11 +160,24 @@ export function TextTransitionPair({
     const nextSet = new Set(
       nextParts.filter(p => !/^\s+$/.test(p)).map(p => p.toLowerCase())
     )
-    setTokens(tokenize(from).map(t => {
+    const initialTokens = tokenize(from).map((t) => {
       if (t.isSpace) return t
-      if (nextSet.has(t.normalized)) return { ...t, state: "shared" }
-      return { ...t, state: "removed" }
-    }))
+      if (nextSet.has(t.normalized)) return { ...t, state: "shared" as const }
+      return { ...t, state: "removed" as const }
+    })
+
+    // If a word is removed, also remove the immediately following space
+    const refinedTokens = initialTokens.map((t, i) => {
+      if (t.isSpace && i > 0) {
+        const prev = initialTokens[i - 1]
+        if (prev.state === "removed") {
+          return { ...t, state: "removed" as const }
+        }
+      }
+      return t
+    })
+
+    setTokens(refinedTokens)
 
     const oldParts = from.split(/(\s+)/)
     const ops = lcsDiff(oldParts, nextParts)
@@ -177,7 +190,7 @@ export function TextTransitionPair({
         const afterIndex = op.startOld - 1
         const existing = byBoundary.get(afterIndex)
         const plain = renderItemsToText(op.items)
-        const segWidth = measureTextWidth(plain + " ")
+        const segWidth = measureTextWidth(plain + (/\s$/.test(plain) ? "" : " "))
         if (existing) {
           existing.targetWidth += segWidth
           existing.items.push(...op.items)
@@ -276,7 +289,7 @@ export function TextTransitionPair({
             const groupTokens = tokens.slice(node.start, node.end + 1)
             const regionSpacers = spacers.filter(s => s.afterIndex >= node.start && s.afterIndex <= node.end)
             const regionText = renderItemsToText(regionSpacers.flatMap(s => s.items))
-            const regionWidth = regionText ? measureTextWidth(regionText + " ") : 0
+            const regionWidth = regionText ? measureTextWidth(regionText + (/\s$/.test(regionText) ? "" : " ")) : 0
             return (
               <span key={node.key} className="inline-flex items-baseline">
                 {regionWidth > 0 && (
