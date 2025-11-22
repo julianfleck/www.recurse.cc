@@ -74,9 +74,9 @@ const SpacerToken = ({ s, widthDelay, charDelay, duration, overflowStyle }: { s:
     <motion.span
       className="inline-block"
       initial={{ width: 0 }}
-      animate={{ width: s.targetWidth }}
+      animate={{ width: isAnimating ? s.targetWidth : "auto" }}
       transition={{ duration: duration * 0.8, ease: "easeInOut", delay: widthDelay }}
-      style={{ ...overflowStyle, width: 0 }}
+      style={{ ...overflowStyle, width: isAnimating ? 0 : "auto" }}
     >
       <motion.span
         className="inline-block whitespace-pre hyphens-none"
@@ -312,7 +312,7 @@ export function TextSwap({
                 currentItems.push(item)
                 // Commit this chunk
                 const plain = renderItemsToText(currentItems)
-                const segWidth = measureTextWidth(plain + (/\s$/.test(plain) ? "" : " "))
+                const segWidth = measureTextWidth(plain)
                 allSpacers.push({
                   id: spacerIdCounter.current++,
                   afterIndex,
@@ -342,7 +342,7 @@ export function TextSwap({
         // Flush remaining
         if (currentItems.length > 0) {
             const plain = renderItemsToText(currentItems)
-            const segWidth = measureTextWidth(plain + (/\s$/.test(plain) ? "" : " "))
+            const segWidth = measureTextWidth(plain)
             allSpacers.push({
               id: spacerIdCounter.current++,
               afterIndex,
