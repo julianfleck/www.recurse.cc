@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, TextTransition, TextTransition2 } from "@recurse/ui/components";
+import { Button } from "@recurse/ui/components";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
@@ -10,6 +10,7 @@ import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";
 import { HeaderCard } from "@/components/layout/HeaderCard";
 import { homepageContent } from "@/content/homepage";
+import { TextSwap } from "@/components/text-transitions/text-swap";
 
 const HERO_HEADLINES: string[] = [
 	"Infrastructure for Sense-making, not just Retrieval",
@@ -29,8 +30,8 @@ export function Hero() {
 							<div className="space-y-8 text-left pl-6">
 								<div className="space-y-6 lg:max-w-3xl">
 									<p className="font-semibold text-2xl leading-[1.15] tracking-tight text-foreground md:text-4xl lg:text-5xl">
-										<TextTransition2
-											texts={HERO_HEADLINES as unknown as string[]}
+										<TextSwap
+											texts={HERO_HEADLINES}
 											interval={5200}
 										/>
 									</p>

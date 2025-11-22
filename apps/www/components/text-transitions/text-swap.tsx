@@ -4,9 +4,9 @@ import { motion } from "motion/react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { cn } from "@recurse/ui/lib/utils"
 
-interface TextTransitionPairProps extends React.HTMLAttributes<HTMLSpanElement> {
-  fromText: string
-  toText: string
+interface TextSwapProps extends React.HTMLAttributes<HTMLSpanElement> {
+  texts: string[]
+  interval?: number
   durationMs?: number
 }
 
@@ -27,17 +27,22 @@ interface Spacer {
   items: string[]
 }
 
-export function TextTransitionPair({
-  fromText,
-  toText,
+export function TextSwap({
+  texts,
   className,
+  interval = 3000,
   durationMs = 1200,
   ...props
-}: TextTransitionPairProps) {
+}: TextSwapProps) {
   const containerRef = useRef<HTMLSpanElement | null>(null)
   const idCounter = useRef(0)
 
-  const [tokens, setTokens] = useState<Token[]>(() => tokenize(fromText))
+  const [currentTextObj, setCurrentTextObj] = useState({
+    from: texts[0] || "",
+    to: texts[0] || ""
+  })
+
+  const [tokens, setTokens] = useState<Token[]>(() => tokenize(texts[0] || ""))
   const [spacers, setSpacers] = useState<Spacer[]>([])
 
   // Top-level speed multiplier
@@ -46,10 +51,26 @@ export function TextTransitionPair({
   const duration = (durationMs / 1000) * baseSpeed
 
   useEffect(() => {
-    setTokens(tokenize(fromText))
+    if (!texts.length) return
+    let currentIndex = 0
+    
+    const timer = setInterval(() => {
+      const prevIndex = currentIndex
+      currentIndex = (currentIndex + 1) % texts.length
+      setCurrentTextObj({
+        from: texts[prevIndex],
+        to: texts[currentIndex]
+      })
+    }, interval)
+    
+    return () => clearInterval(timer)
+  }, [texts, interval])
+
+  useEffect(() => {
+    setTokens(tokenize(currentTextObj.from))
     setSpacers([])
-    runDiffAnimation(fromText, toText)
-  }, [fromText, toText, durationMs])
+    runDiffAnimation(currentTextObj.from, currentTextObj.to)
+  }, [currentTextObj, durationMs])
 
   function tokenize(input: string): Token[] {
     const parts = input.split(/(\s+)/)
@@ -190,6 +211,7 @@ export function TextTransitionPair({
         const afterIndex = op.startOld - 1
         const existing = byBoundary.get(afterIndex)
         const plain = renderItemsToText(op.items)
+        // Only add a measuring space if the text doesn't already have one
         const segWidth = measureTextWidth(plain + (/\s$/.test(plain) ? "" : " "))
         if (existing) {
           existing.targetWidth += segWidth
@@ -289,6 +311,7 @@ export function TextTransitionPair({
             const groupTokens = tokens.slice(node.start, node.end + 1)
             const regionSpacers = spacers.filter(s => s.afterIndex >= node.start && s.afterIndex <= node.end)
             const regionText = renderItemsToText(regionSpacers.flatMap(s => s.items))
+            // Only add a measuring space if the text doesn't already have one
             const regionWidth = regionText ? measureTextWidth(regionText + (/\s$/.test(regionText) ? "" : " ")) : 0
             return (
               <span key={node.key} className="inline-flex items-baseline">
@@ -395,4 +418,4 @@ export function TextTransitionPair({
   )
 }
 
-TextTransitionPair.displayName = "TextTransitionPair"
+TextSwap.displayName = "TextSwap"

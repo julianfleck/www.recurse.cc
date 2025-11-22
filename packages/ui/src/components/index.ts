@@ -35,8 +35,6 @@ export * from './spinner';
 export * from './switch';
 export * from './table';
 export * from './text-animate';
-export * from './text-transition';
-export * from './text-transition-2';
 export * from './theme-provider';
 export * from './theme-toggle';
 export * from './tooltip';
