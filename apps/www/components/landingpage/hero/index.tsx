@@ -19,15 +19,16 @@ export function Hero() {
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 				<Grid8Col >
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-						<GridCard enableHoverEffect enableSpotlight className="px-1col py-1col lg:pl-2col lg:pr-1.5col">
-							<div className="space-y-8 text-left pl-6 pr-2">
-								<div className="space-y-6 lg:max-w-3xl">
-									<p className="font-semibold text-2xl leading-[1.15] tracking-tight text-foreground md:text-4xl lg:text-5xl">
+						<GridCard enableHoverEffect enableSpotlight className="px-1col py-1col lg:pl-2col lg:pr-2col">
+							<div className="space-y-8 text-left">
+								<div className="space-y-6">
+									<div className="font-semibold text-2xl leading-[1.15] tracking-tight text-foreground md:text-4xl lg:text-[2.5rem] lg:max-w-xl h-40 overflow-hidden">
 										<TextSwap
 											texts={homepageContent.hero.headlines}
-											interval={5200}
+											interval={6000}
+											durationMs={800}
 										/>
-									</p>
+									</div>
 									<p className="text-base font-light text-muted-foreground md:text-lg">
 										Recurse turns raw input into a living, semantically typed knowledge graph so you and your AI systems can
 										explore, connect, and reason — not just retrieve.

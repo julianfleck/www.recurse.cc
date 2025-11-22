@@ -31,7 +31,6 @@ interface Spacer {
 function renderItemsToText(items: string[]): string {
   let out = ""
   let prevWasWord = false
-  console.log("[renderItemsToText] input:", JSON.stringify(items))
   for (const part of items) {
     const isSpace = /^\s+$/.test(part)
     if (isSpace) {
@@ -39,14 +38,12 @@ function renderItemsToText(items: string[]): string {
       prevWasWord = false
     } else {
       if (prevWasWord && !out.endsWith(" ")) {
-        console.log("[renderItemsToText] Inserting space before", part)
         out += " "
       }
       out += part
       prevWasWord = true
     }
   }
-  console.log("[renderItemsToText] output:", JSON.stringify(out))
   return out
 }
 
@@ -130,10 +127,10 @@ export function TextSwap({
   const duration = (durationMs / 1000) * baseSpeed
 
   // Top-level animation timing factors
-  const GAP_DURATION_FACTOR = 0.8
-  const FADE_IN_DURATION_FACTOR = 0.3
-  const FADE_OUT_DURATION_FACTOR = 0.4
-  const CHAR_STAGGER_FACTOR = 0.12
+  const GAP_DURATION_FACTOR = 1.4
+  const FADE_IN_DURATION_FACTOR = 0.6
+  const FADE_OUT_DURATION_FACTOR = 0.8
+  const CHAR_STAGGER_FACTOR = 0.05
   const GROUP_STAGGER_FACTOR = 0.05
 
   // Derived timings to scale with duration
@@ -279,9 +276,6 @@ export function TextSwap({
   }
 
   function runDiffAnimation(from: string, to: string) {
-    console.log("--- runDiffAnimation START ---")
-    console.log("From:", JSON.stringify(from))
-    console.log("To:", JSON.stringify(to))
 
     const nextParts = to.split(/(\s+)/)
 
@@ -290,7 +284,6 @@ export function TextSwap({
     const initialTokens = tokenize(from).map(t => ({ ...t, state: "removed" as Token["state"] }))
     
     const ops = lcsDiff(oldParts, nextParts)
-    console.log("Ops:", JSON.stringify(ops, null, 2))
     
     // Mark shared tokens based on LCS 'equal' ops
     ops.forEach(op => {
@@ -441,15 +434,10 @@ export function TextSwap({
     // Determine group type
     const thisGroup = (thisSpecificType === 'removed' || thisSpecificType === 'spacer') ? 'change' : 'shared'
 
-    console.log(`[Item ${idx}] Content: "${item.type === 'spacer' ? renderItemsToText(item.s.items) : item.t.content}" Specific: ${thisSpecificType} Group: ${thisGroup} LastGroup: ${lastGroup} Delay: ${currentDelay}`)
-
     if (thisGroup !== lastGroup) {
         if (lastGroup !== 'none') {
-             console.log(`   -> New Group! Incrementing delay.`)
              currentDelay += groupStagger // Quicker stagger between groups
         }
-    } else {
-        console.log(`   -> Same Group. Accumulating duration.`)
     }
     
     const startDelay = currentDelay;
