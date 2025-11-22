@@ -31,11 +31,12 @@ export function TextSwap({
   texts,
   className,
   interval = 3000,
-  durationMs = 1200,
+  durationMs = 8200,
   ...props
 }: TextSwapProps) {
   const containerRef = useRef<HTMLSpanElement | null>(null)
   const idCounter = useRef(0)
+  const spacerIdCounter = useRef(0)
 
   const [currentTextObj, setCurrentTextObj] = useState({
     from: texts[0] || "",
@@ -188,35 +189,29 @@ export function TextSwap({
   function runDiffAnimation(from: string, to: string) {
     const nextParts = to.split(/(\s+)/)
 
-    const nextSet = new Set(
-      nextParts.filter(p => !/^\s+$/.test(p)).map(p => p.toLowerCase())
-    )
-    const initialTokens = tokenize(from).map((t) => {
-      if (t.isSpace) return t
-      if (nextSet.has(t.normalized)) return { ...t, state: "shared" as const }
-      return { ...t, state: "removed" as const }
-    })
-
-    // If a word is removed, also remove the immediately following space
-    const refinedTokens = initialTokens.map((t, i) => {
-      if (t.isSpace && i > 0) {
-        const prev = initialTokens[i - 1]
-        if (prev.state === "removed") {
-          return { ...t, state: "removed" as const }
+    const oldParts = from.split(/(\s+)/)
+    // Map to initial tokens, default to 'removed'
+    const initialTokens = tokenize(from).map(t => ({ ...t, state: "removed" as Token["state"] }))
+    
+    const ops = lcsDiff(oldParts, nextParts)
+    
+    // Mark shared tokens based on LCS 'equal' ops
+    ops.forEach(op => {
+      if (op.type === "equal") {
+        for (let k = 0; k < op.items.length; k++) {
+          const idx = op.startOld + k
+          if (initialTokens[idx]) {
+            initialTokens[idx].state = "shared"
+          }
         }
       }
-      return t
     })
 
-    setTokens(refinedTokens)
-
-    const oldParts = from.split(/(\s+)/)
-    const ops = lcsDiff(oldParts, nextParts)
+    setTokens(initialTokens)
 
     // Instead of merging spacers by boundary, we simply collect all of them.
     // We break long insertions into smaller chunks (Word + optional Space) to allow wrapping.
     const allSpacers: Spacer[] = []
-    let spacerSeq = 0
 
     ops.forEach((op) => {
       if (op.type === "insert") {
@@ -234,7 +229,7 @@ export function TextSwap({
                 const plain = renderItemsToText(currentItems)
                 const segWidth = measureTextWidth(plain + (/\s$/.test(plain) ? "" : " "))
                 allSpacers.push({
-                  id: spacerSeq++,
+                  id: spacerIdCounter.current++,
                   afterIndex,
                   targetWidth: segWidth,
                   startNew: op.startNew,
@@ -248,7 +243,7 @@ export function TextSwap({
                     const plain = renderItemsToText(currentItems)
                     const segWidth = measureTextWidth(plain + (/\s$/.test(plain) ? "" : " "))
                     allSpacers.push({
-                      id: spacerSeq++,
+                      id: spacerIdCounter.current++,
                       afterIndex,
                       targetWidth: segWidth,
                       startNew: op.startNew,
@@ -264,7 +259,7 @@ export function TextSwap({
             const plain = renderItemsToText(currentItems)
             const segWidth = measureTextWidth(plain + (/\s$/.test(plain) ? "" : " "))
             allSpacers.push({
-              id: spacerSeq++,
+              id: spacerIdCounter.current++,
               afterIndex,
               targetWidth: segWidth,
               startNew: op.startNew,
@@ -277,46 +272,92 @@ export function TextSwap({
     setSpacers(allSpacers)
   }
 
-  // Group consecutive removed tokens (with following spaces) until next non-removed token
-  type RenderNode =
-    | { kind: "group-removed"; start: number; end: number; key: string }
-    | { kind: "single"; index: number; hasTrailingSpace?: boolean; spaceIndex?: number }
-
-  const renderNodes: RenderNode[] = useMemo(() => {
-    const nodes: RenderNode[] = []
-    let i = 0
-    while (i < tokens.length) {
-      const t = tokens[i]
-      if (t.state === "removed") {
-        let j = i
-        while (j + 1 < tokens.length) {
-          const next = tokens[j + 1]
-          if (next.state === "removed" || next.isSpace) { j++; continue }
-          break
-        }
-        nodes.push({ kind: "group-removed", start: i, end: j, key: `grp-${tokens[i].id}-${tokens[j].id}` })
-        i = j + 1
-      } else {
-        // Check for trailing shared space to group
-        let hasTrailingSpace = false
-        let spaceIndex = -1
-        if (i + 1 < tokens.length) {
-           const next = tokens[i + 1]
-           if (next.isSpace && next.state !== "removed") {
-              hasTrailingSpace = true
-              spaceIndex = i + 1
-           }
-        }
-        
-        nodes.push({ kind: "single", index: i, hasTrailingSpace, spaceIndex })
-        i++
-        if (hasTrailingSpace) i++ // Skip the space as it's attached to this node
-      }
-    }
-    return nodes
-  }, [tokens])
-
   const overflowStyle = { display: "inline-block", overflowX: "visible" as const, overflowY: "visible" as const, paddingBottom: "0.08em", verticalAlign: "baseline" as const }
+
+  const renderSpacer = (s: Spacer, baseDelay: number) => {
+    const text = renderItemsToText(s.items)
+    return (
+      <motion.span
+        key={`spacer-${s.id}`}
+        className="inline-block"
+        initial={{ width: 0 }}
+        animate={{ width: s.targetWidth }}
+        transition={{ duration: duration * 0.5, ease: "easeInOut", delay: baseDelay }}
+        style={{ ...overflowStyle, width: 0 }}
+      >
+        <motion.span
+          className="inline-block whitespace-pre hyphens-none"
+          style={{ lineHeight: "inherit" }}
+        >
+          {text.split("").map((char, charIndex) => (
+            <motion.span
+              key={`char-${charIndex}`}
+              initial={{ opacity: 0, filter: "blur(4px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              transition={{
+                duration: duration * 0.3,
+                delay: baseDelay + (charIndex * 0.05) + 0.2,
+                ease: "easeInOut"
+              }}
+              className="inline-block"
+              style={{ opacity: 0, filter: "blur(4px)" }}
+            >
+              {char}
+            </motion.span>
+          ))}
+        </motion.span>
+      </motion.span>
+    )
+  }
+
+  // Flatten the render loop to allow wrapping
+  const renderedElements: React.ReactNode[] = []
+  let delayCounter = 0
+
+  // 1. Initial Spacers (before any token)
+  spacers.filter(s => s.afterIndex === -1).forEach((s) => {
+    renderedElements.push(renderSpacer(s, delayCounter * 0.1))
+    delayCounter++
+  })
+
+  // 2. Tokens and their following spacers
+  tokens.forEach((t, i) => {
+    const currentDelay = delayCounter * 0.1
+
+    if (t.state === "removed") {
+      renderedElements.push(
+        <motion.span
+          key={`token-rem-${t.id}`}
+          className="inline-block whitespace-pre"
+          initial={{ width: "auto" }}
+          animate={{ opacity: 0, filter: "blur(4px)", width: 0 }}
+          transition={{
+            width: { duration: duration * 0.5, ease: "easeInOut", delay: currentDelay },
+            opacity: { duration: duration * 0.4, delay: currentDelay },
+            filter: { duration: duration * 0.4, delay: currentDelay }
+          }}
+          style={{ overflowX: "hidden", overflowY: "visible", paddingBottom: "0.08em" }}
+        >
+          {t.content}
+        </motion.span>
+      )
+    } else {
+      // Shared
+      renderedElements.push(
+        <motion.span key={`token-shared-${t.id}`} className="inline-block whitespace-pre">
+          {t.content}
+        </motion.span>
+      )
+    }
+    
+    delayCounter++
+
+    // Spacers after this token
+    spacers.filter(s => s.afterIndex === i).forEach((s) => {
+      renderedElements.push(renderSpacer(s, delayCounter * 0.1))
+      delayCounter++
+    })
+  })
 
   return (
     <span
@@ -327,224 +368,7 @@ export function TextSwap({
       {...props}
     >
       <span className="inline-flex flex-wrap items-baseline" aria-hidden="true">
-        {spacers.filter(s => s.afterIndex === -1).map((s, sIndex) => {
-          const text = renderItemsToText(s.items)
-          return (
-            <motion.span
-              key={`spacer-open-${s.id}`}
-              className="inline-block"
-              initial={{ width: 0 }}
-              animate={{ width: s.targetWidth }}
-              transition={{ duration: duration * 0.5, ease: "easeInOut", delay: sIndex * 0.1 }}
-              style={overflowStyle}
-            >
-              <motion.span
-                className="inline-block whitespace-pre"
-                style={{ lineHeight: "inherit" }}
-              >
-                {text.split("").map((char, charIndex) => (
-                  <motion.span
-                    key={`char-${charIndex}`}
-                    initial={{ opacity: 0, filter: "blur(4px)" }}
-                    animate={{ opacity: 1, filter: "blur(0px)" }}
-                    transition={{
-                      duration: duration * 0.3,
-                      delay: (sIndex * 0.1) + (charIndex * 0.05) + 0.2,
-                      ease: "easeInOut"
-                    }}
-                    className="inline-block"
-                  >
-                    {char}
-                  </motion.span>
-                ))}
-              </motion.span>
-            </motion.span>
-          )
-        })}
-
-        {renderNodes.map((node, nodeIndex) => {
-          const currentDelay = (spacers.filter(s => s.afterIndex === -1).length + nodeIndex) * 0.1
-
-          if (node.kind === "group-removed") {
-            const groupTokens = tokens.slice(node.start, node.end + 1)
-            const regionSpacers = spacers.filter(s => s.afterIndex >= node.start && s.afterIndex <= node.end)
-            
-            // We render the whole group inside one flex container.
-            // To allow line breaks inside this group (e.g. if it's a long removed sentence),
-            // we can't treat it as a single block. But removed text just fades out, it doesn't need to re-flow.
-            // However, if the REPLACEMENT text (spacers) is very long, it needs to flow.
-            
-            const regionText = renderItemsToText(regionSpacers.flatMap(s => s.items))
-            const regionWidth = regionText ? measureTextWidth(regionText + (/\s$/.test(regionText) ? "" : " ")) : 0
-
-            return (
-              <span key={node.key} className="inline-flex items-baseline flex-wrap">
-                {/* The spacers (incoming text) need to be rendered individually if we want them to wrap 
-                    BUT here they are aggregated into one regionWidth because they replace a contiguous block 
-                    of removed text. If this block is long, we have a problem: the width expands without wrapping. 
-                    
-                    To fix: we should NOT aggregate spacers here if we want wrapping. 
-                    The current logic 'regionWidth' forces a single block.
-                    
-                    Instead of one big motion.span for the region, let's render the spacers individually 
-                    inside this container, just like we do for the 'shared' tokens.
-                */}
-                
-                {/* Render spacers that belong to this region */}
-                {regionSpacers.map((s, sIndex) => {
-                    const text = renderItemsToText(s.items)
-                     return (
-                      <motion.span
-                        key={`spacer-region-${s.id}`}
-                        className="inline-block"
-                        initial={{ width: 0 }}
-                        animate={{ width: s.targetWidth }}
-                        transition={{ duration: duration * 0.5, ease: "easeInOut", delay: currentDelay + (sIndex * 0.1) }}
-                        style={overflowStyle}
-                      >
-                        <motion.span
-                          className="inline-block whitespace-pre hyphens-none"
-                          style={{ lineHeight: "inherit" }}
-                        >
-                          {text.split("").map((char, charIndex) => (
-                            <motion.span
-                              key={`char-${charIndex}`}
-                              initial={{ opacity: 0, filter: "blur(4px)" }}
-                              animate={{ opacity: 1, filter: "blur(0px)" }}
-                              transition={{
-                                duration: duration * 0.2,
-                                delay: currentDelay + (sIndex * 0.1) + (charIndex * 0.05) + 0.05,
-                                ease: "easeInOut"
-                              }}
-                              className="inline-block"
-                            >
-                              {char}
-                            </motion.span>
-                          ))}
-                        </motion.span>
-                      </motion.span>
-                    )
-                })}
-
-                {/* Render removed tokens individually so they can wrap/flow during removal */}
-                <span 
-                  className="inline-flex items-baseline flex-wrap"
-                >
-                  {groupTokens.map((gt) => (
-                    <motion.span 
-                      key={gt.id} 
-                      className="inline-block whitespace-pre"
-                      initial={{ width: "auto" }}
-                      animate={{ opacity: 0, filter: "blur(4px)", width: 0 }}
-                      transition={{
-                        width: { duration: duration * 0.5, ease: "easeInOut", delay: currentDelay },
-                        opacity: { duration: duration * 0.4, delay: currentDelay },
-                        filter: { duration: duration * 0.4, delay: currentDelay }
-                      }}
-                      style={{ overflowX: "hidden", overflowY: "visible", paddingBottom: "0.08em" }}
-                    >
-                      {gt.content}
-                    </motion.span>
-                  ))}
-                </span>
-              </span>
-            )
-          }
-
-          const idx = node.index
-          const t = tokens[idx]
-          return (
-            <span key={`wrap-${t.id}`} className="inline-flex items-baseline">
-              {t.state === "shared" ? (
-                <motion.span className="inline-block whitespace-pre">
-                  {t.content}
-                </motion.span>
-              ) : (
-                <motion.span className="inline-block whitespace-pre">{t.content}</motion.span>
-              )}
-
-              {spacers.filter(s => s.afterIndex === idx).map((s, sIndex) => {
-                const text = renderItemsToText(s.items)
-                return (
-                  <motion.span
-                    key={`spacer-open-${s.id}`}
-                    className="inline-block"
-                    initial={{ width: 0 }}
-                    animate={{ width: s.targetWidth }}
-                    transition={{ duration: duration * 0.5, ease: "easeInOut", delay: currentDelay + (sIndex * 0.1) }}
-                    style={overflowStyle}
-                  >
-                    <motion.span
-                      className="inline-block whitespace-pre"
-                      style={{ lineHeight: "inherit" }}
-                    >
-                      {text.split("").map((char, charIndex) => (
-                        <motion.span
-                          key={`char-${charIndex}`}
-                          initial={{ opacity: 0, filter: "blur(4px)" }}
-                          animate={{ opacity: 1, filter: "blur(0px)" }}
-                          transition={{
-                            duration: duration * 0.1,
-                            delay: currentDelay + (sIndex * 0.1) + (charIndex * 0.05) + 0.05,
-                            ease: "easeInOut"
-                          }}
-                          className="inline-block"
-                        >
-                          {char}
-                        </motion.span>
-                      ))}
-                    </motion.span>
-                  </motion.span>
-                )
-              })}
-
-              {node.hasTrailingSpace && node.spaceIndex !== undefined && (
-                <>
-                  <motion.span className="inline-block whitespace-pre">
-                    {tokens[node.spaceIndex].content}
-                  </motion.span>
-
-                  {spacers.filter(s => s.afterIndex === node.spaceIndex).map((s, sIndex) => {
-                    const text = renderItemsToText(s.items)
-                    // Add a small offset to delay so these spacers animate slightly after the word's spacers
-                    const baseDelay = currentDelay + 0.1
-                    return (
-                      <motion.span
-                        key={`spacer-open-${s.id}`}
-                        className="inline-block"
-                        initial={{ width: 0 }}
-                        animate={{ width: s.targetWidth }}
-                        transition={{ duration: duration * 0.5, ease: "easeInOut", delay: baseDelay + (sIndex * 0.1) }}
-                        style={overflowStyle}
-                      >
-                        <motion.span
-                          className="inline-block whitespace-pre hyphens-none"
-                          style={{ lineHeight: "inherit" }}
-                        >
-                          {text.split("").map((char, charIndex) => (
-                            <motion.span
-                              key={`char-${charIndex}`}
-                              initial={{ opacity: 0, filter: "blur(4px)" }}
-                              animate={{ opacity: 1, filter: "blur(0px)" }}
-                              transition={{
-                                duration: duration * 0.1,
-                                delay: baseDelay + (sIndex * 0.1) + (charIndex * 0.05) + 0.05,
-                                ease: "easeInOut"
-                              }}
-                              className="inline-block"
-                            >
-                              {char}
-                            </motion.span>
-                          ))}
-                        </motion.span>
-                      </motion.span>
-                    )
-                  })}
-                </>
-              )}
-            </span>
-          )
-        })}
+        {renderedElements}
       </span>
     </span>
   )
