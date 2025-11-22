@@ -50,16 +50,16 @@ function renderItemsToText(items: string[]): string {
   return out
 }
 
-const SpacerToken = ({ s, widthDelay, charDelay, duration, overflowStyle }: { s: Spacer, widthDelay: number, charDelay: number, duration: number, overflowStyle: any }) => {
+const SpacerToken = ({ s, widthDelay, charDelay, duration, stagger, overflowStyle }: { s: Spacer, widthDelay: number, charDelay: number, duration: number, stagger: number, overflowStyle: any }) => {
   const text = renderItemsToText(s.items)
   const [isAnimating, setIsAnimating] = useState(true)
 
   // Calculate total animation time to switch to static text for correct kerning
   useEffect(() => {
     const charCount = text.length
-    // last char starts at charDelay + (count-1)*0.05
+    // last char starts at charDelay + (count-1)*stagger
     // fade takes duration*0.3
-    const lastCharDelay = charDelay + (charCount * 0.05) + 0.2
+    const lastCharDelay = charDelay + (charCount * stagger) + 0.2
     const fadeDuration = duration * 0.3
     const totalTime = (lastCharDelay + fadeDuration) * 1000
 
@@ -68,7 +68,7 @@ const SpacerToken = ({ s, widthDelay, charDelay, duration, overflowStyle }: { s:
     }, totalTime + 100) // buffer
 
     return () => clearTimeout(timer)
-  }, [charDelay, text.length, duration])
+  }, [charDelay, text.length, duration, stagger])
 
   return (
     <motion.span
@@ -90,10 +90,10 @@ const SpacerToken = ({ s, widthDelay, charDelay, duration, overflowStyle }: { s:
               animate={{ opacity: 1, filter: "blur(0px)" }}
               transition={{
                 duration: duration * 0.3,
-                delay: charDelay + (charIndex * 0.05),
+                delay: charDelay + (charIndex * stagger),
                 ease: "easeInOut"
               }}
-              className="inline-block"
+              className={char === " " ? "inline" : "inline-block"}
               style={{ opacity: 0, filter: "blur(4px)" }}
             >
               {char}
@@ -111,7 +111,7 @@ export function TextSwap({
   texts,
   className,
   interval = 3000,
-  durationMs = 1200,
+  durationMs = 1000,
   ...props
 }: TextSwapProps) {
   const containerRef = useRef<HTMLSpanElement | null>(null)
@@ -130,6 +130,10 @@ export function TextSwap({
   const baseSpeed = 0.4
   
   const duration = (durationMs / 1000) * baseSpeed
+
+  // Derived timings to scale with duration
+  const charStagger = duration * 0.12
+  const groupStagger = duration * 0.12
 
   useEffect(() => {
     if (!texts.length) return
@@ -434,7 +438,7 @@ export function TextSwap({
     if (thisGroup !== lastGroup) {
         if (lastGroup !== 'none') {
              console.log(`   -> New Group! Incrementing delay.`)
-             currentDelay += 0.1
+             currentDelay += groupStagger // Quicker stagger between groups
         }
     } else {
         console.log(`   -> Same Group. Accumulating duration.`)
@@ -462,7 +466,7 @@ export function TextSwap({
     let durationToAdd = 0
     if (item.type === 'spacer') {
          const text = renderItemsToText(item.s.items)
-         durationToAdd = text.length * 0.05
+         durationToAdd = text.length * charStagger
     } else if (item.type === 'token' && item.t.state === 'removed') {
          durationToAdd = 0.1 
     } else {
@@ -485,6 +489,7 @@ export function TextSwap({
                 widthDelay={widthDelay}
                 charDelay={charDelay}
                 duration={duration}
+                stagger={charStagger}
                 overflowStyle={overflowStyle}
             />
         )
