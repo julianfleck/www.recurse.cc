@@ -50,37 +50,35 @@ function renderItemsToText(items: string[]): string {
   return out
 }
 
-const SpacerToken = ({ s, widthDelay, charDelay, duration, stagger, overflowStyle }: { s: Spacer, widthDelay: number, charDelay: number, duration: number, stagger: number, overflowStyle: any }) => {
+const SpacerToken = ({ s, widthDelay, charDelay, gapDuration, fadeDuration, stagger, overflowStyle }: { s: Spacer, widthDelay: number, charDelay: number, gapDuration: number, fadeDuration: number, stagger: number, overflowStyle: any }) => {
   const text = renderItemsToText(s.items)
+  const isWhitespace = /^\s+$/.test(text)
   const [isAnimating, setIsAnimating] = useState(true)
 
   // Calculate total animation time to switch to static text for correct kerning
   useEffect(() => {
     const charCount = text.length
-    // last char starts at charDelay + (count-1)*stagger
-    // fade takes duration*0.3
-    const lastCharDelay = charDelay + (charCount * stagger) + 0.2
-    const fadeDuration = duration * 0.3
-    const totalTime = (lastCharDelay + fadeDuration) * 1000
+    // Calculate total time based on last character's delay
+    const totalTime = (charDelay + (charCount * stagger) + fadeDuration) * 1000
 
     const timer = setTimeout(() => {
       setIsAnimating(false)
     }, totalTime + 100) // buffer
 
     return () => clearTimeout(timer)
-  }, [charDelay, text.length, duration, stagger])
+  }, [charDelay, fadeDuration, text.length, stagger])
 
   return (
     <motion.span
-      className="inline-block"
+      className={isWhitespace ? "inline" : "inline-block"}
       initial={{ width: 0 }}
-      animate={{ width: isAnimating ? s.targetWidth : "auto" }}
-      transition={{ duration: duration * 0.8, ease: "easeInOut", delay: widthDelay }}
-      style={{ ...overflowStyle, width: isAnimating ? 0 : "auto" }}
+      animate={{ width: isAnimating && !isWhitespace ? s.targetWidth : "auto" }}
+      transition={{ duration: gapDuration, ease: "easeInOut", delay: widthDelay }}
+      style={isWhitespace ? { opacity: 1 } : { ...overflowStyle, width: isAnimating ? 0 : "auto" }}
     >
       <motion.span
-        className="inline-block whitespace-pre hyphens-none"
-        style={{ lineHeight: "inherit" }}
+        className={isWhitespace ? "inline" : "inline-block whitespace-pre hyphens-none"}
+        style={isWhitespace ? {} : { lineHeight: "inherit" }}
       >
         {isAnimating ? (
           text.split("").map((char, charIndex) => (
@@ -89,7 +87,7 @@ const SpacerToken = ({ s, widthDelay, charDelay, duration, stagger, overflowStyl
               initial={{ opacity: 0, filter: "blur(4px)" }}
               animate={{ opacity: 1, filter: "blur(0px)" }}
               transition={{
-                duration: duration * 0.3,
+                duration: fadeDuration,
                 delay: charDelay + (charIndex * stagger),
                 ease: "easeInOut"
               }}
@@ -131,9 +129,19 @@ export function TextSwap({
   
   const duration = (durationMs / 1000) * baseSpeed
 
+  // Top-level animation timing factors
+  const GAP_DURATION_FACTOR = 0.8
+  const FADE_IN_DURATION_FACTOR = 0.3
+  const FADE_OUT_DURATION_FACTOR = 0.4
+  const CHAR_STAGGER_FACTOR = 0.12
+  const GROUP_STAGGER_FACTOR = 0.05
+
   // Derived timings to scale with duration
-  const charStagger = duration * 0.12
-  const groupStagger = duration * 0.12
+  const charStagger = duration * CHAR_STAGGER_FACTOR
+  const groupStagger = duration * GROUP_STAGGER_FACTOR
+  const fadeDuration = duration * FADE_IN_DURATION_FACTOR
+  const gapDuration = duration * GAP_DURATION_FACTOR
+  const fadeOutDuration = duration * FADE_OUT_DURATION_FACTOR
 
   useEffect(() => {
     if (!texts.length) return
@@ -361,7 +369,7 @@ export function TextSwap({
     setSpacers(allSpacers)
   }
 
-  const overflowStyle = { display: "inline-block", overflowX: "visible" as const, overflowY: "visible" as const, paddingBottom: "0.08em", verticalAlign: "baseline" as const }
+  const overflowStyle = { display: "inline-block", overflowX: "visible" as const, overflowY: "visible" as const, paddingBottom: "0.15em", verticalAlign: "baseline" as const }
 
   const renderSpacer = (s: Spacer, baseDelay: number) => {
     const text = renderItemsToText(s.items)
@@ -488,7 +496,8 @@ export function TextSwap({
                 s={item.s}
                 widthDelay={widthDelay}
                 charDelay={charDelay}
-                duration={duration}
+                gapDuration={gapDuration}
+                fadeDuration={fadeDuration}
                 stagger={charStagger}
                 overflowStyle={overflowStyle}
             />
@@ -507,9 +516,9 @@ export function TextSwap({
                   initial={{ width: "auto" }}
                   animate={{ opacity: 0, filter: "blur(4px)", width: 0 }}
                   transition={{
-                    width: { duration: duration * 0.8, ease: "easeInOut", delay: startDelay },
-                    opacity: { duration: duration * 0.4, delay: startDelay },
-                    filter: { duration: duration * 0.4, delay: startDelay }
+                    width: { duration: gapDuration, ease: "easeInOut", delay: startDelay },
+                    opacity: { duration: fadeOutDuration, delay: startDelay },
+                    filter: { duration: fadeOutDuration, delay: startDelay }
                   }}
                   style={{ ...overflowStyle, width: 0 }}
                 >
@@ -518,11 +527,12 @@ export function TextSwap({
             )
         } else {
             // Shared
+            const isSpace = t.isSpace
             renderedElements.push(
                 <motion.span 
                   key={`token-shared-${t.id}`} 
-                  className="inline-block whitespace-pre"
-                  style={{ paddingBottom: "0.08em" }}
+                  className={isSpace ? "inline whitespace-normal" : "inline-block whitespace-pre"}
+                  style={{ paddingBottom: "0.15em" }}
                 >
                   {t.content}
                 </motion.span>
@@ -534,12 +544,12 @@ export function TextSwap({
   return (
     <span
       ref={containerRef}
-      className={cn("inline-flex flex-wrap text-current", className)}
+      className={cn("inline-block text-current", className)}
       aria-live="polite"
-      style={{ wordSpacing: "normal" }}
+      style={{ wordSpacing: "normal", paddingBottom: "0.2em", overflowY: "visible" }}
       {...props}
     >
-      <span className="inline-flex flex-wrap items-baseline" aria-hidden="true">
+      <span className="inline" aria-hidden="true">
         {renderedElements}
       </span>
     </span>
