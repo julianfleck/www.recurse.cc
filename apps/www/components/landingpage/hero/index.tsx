@@ -12,13 +12,6 @@ import { HeaderCard } from "@/components/layout/HeaderCard";
 import { homepageContent } from "@/content/homepage";
 import { TextSwap } from "@/components/text-transitions/text-swap";
 
-const HERO_HEADLINES: string[] = [
-	"Infrastructure for Sense-making, not just Retrieval",
-	"Memory Infrastructure for Understanding, not just Similarity Search",
-	"Memory Substrate for Exploration, not just Question-Answering",
-	"Knowledge Graph for Discovery, not just Fact-Finding",
-];
-
 export function Hero() {
 	return (
 		<div id="hero" className="relative z-10 group/hero pt-halfcol pb-1col">
@@ -27,11 +20,11 @@ export function Hero() {
 				<Grid8Col >
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
 						<GridCard enableHoverEffect enableSpotlight className="px-1col py-1col lg:pl-2col lg:pr-1.5col">
-							<div className="space-y-8 text-left pl-6">
+							<div className="space-y-8 text-left pl-6 pr-2">
 								<div className="space-y-6 lg:max-w-3xl">
 									<p className="font-semibold text-2xl leading-[1.15] tracking-tight text-foreground md:text-4xl lg:text-5xl">
 										<TextSwap
-											texts={HERO_HEADLINES}
+											texts={homepageContent.hero.headlines}
 											interval={5200}
 										/>
 									</p>

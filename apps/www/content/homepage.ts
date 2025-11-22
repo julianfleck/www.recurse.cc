@@ -243,6 +243,15 @@ export const homepageContent = {
 		learnMoreHref: "/about",
 		learnMoreText: "Learn More",
 		docsText: "Read the docs",
+		headlines: [
+			"Infrastructure for sense-making, instead of similarity search",
+			"Context Infrastructure that explores, instead of blindly retrieving",
+			"Knowledge Graph for Discovery, instead of Bias-Confirmation",
+			"Memory Infrastructure for Understanding, instead of Similarity Search",
+			"Memory Substrate for Exploration, instead of Question-Answering",
+			"Reasoning Substrate for Understanding, instead of Fact-Finding",
+			"Context Management for Humans, instead of Parrots",
+		],
 	},
 
 	graphExample: {
