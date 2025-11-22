@@ -18,6 +18,14 @@ const extendedFrontmatterSchema = frontmatterSchema.extend({
   badge: z.string().optional(),
 });
 
+const blogFrontmatterSchema = frontmatterSchema.extend({
+  sidebar_label: z.string().optional(),
+  publishedAt: z.string(),
+  tags: z.array(z.string()).default([]),
+  substackUrl: z.string().url(),
+  heroImage: z.string().optional(),
+});
+
 // You can customise Zod schemas for frontmatter and `meta.json` here
 // see https://fumadocs.dev/docs/mdx/collections#define-docs
 export const docs = defineDocs({
@@ -35,6 +43,16 @@ export const dashboard = defineDocs({
   dir: "content/dashboard",
   docs: {
     schema: extendedFrontmatterSchema,
+  },
+  meta: {
+    schema: metaSchema,
+  },
+});
+
+export const blog = defineDocs({
+  dir: "content/blog",
+  docs: {
+    schema: blogFrontmatterSchema,
   },
   meta: {
     schema: metaSchema,

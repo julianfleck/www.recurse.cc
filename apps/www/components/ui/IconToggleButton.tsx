@@ -1,13 +1,17 @@
 import { Button } from "@recurse/ui/components";
-import type { LucideIcon } from "lucide-react";
+import type { ComponentType } from "react";
 import { cn } from "@/lib/utils";
 
+type IconComponent = ComponentType<{ className?: string }>;
+
 interface IconToggleButtonProps {
-	icon1: LucideIcon;
-	icon2: LucideIcon;
+	icon1: IconComponent;
+	icon2: IconComponent;
 	isIcon2Showing?: boolean;
 	onClick?: () => void;
 	className?: string;
+	icon1ClassName?: string;
+	icon2ClassName?: string;
 	tooltip?: React.ReactNode;
 	tooltipSide?: "top" | "right" | "bottom" | "left";
 	buttonProps?: React.ComponentProps<typeof Button>;
@@ -19,6 +23,8 @@ export function IconToggleButton({
 	isIcon2Showing = false,
 	onClick,
 	className,
+	icon1ClassName,
+	icon2ClassName,
 	tooltip,
 	tooltipSide = "bottom",
 	buttonProps,
@@ -44,6 +50,7 @@ export function IconToggleButton({
 						isIcon2Showing
 							? "group-hover/toggle:-translate-y-6 translate-y-0 opacity-100 group-hover/toggle:opacity-0"
 							: "-translate-y-6 opacity-0 group-hover/toggle:translate-y-0 group-hover/toggle:opacity-100",
+						icon1ClassName,
 					)}
 				/>
 				<Icon2
@@ -52,6 +59,7 @@ export function IconToggleButton({
 						isIcon2Showing
 							? "translate-y-6 opacity-0 group-hover/toggle:translate-y-0 group-hover/toggle:opacity-100"
 							: "translate-y-0 opacity-100 group-hover/toggle:translate-y-6 group-hover/toggle:opacity-0",
+						icon2ClassName,
 					)}
 				/>
 			</div>

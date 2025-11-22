@@ -34,7 +34,7 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
 
       const card = internalRef.current;
 
-      const handleMouseMove = (event: globalThis.MouseEvent) => {
+      const handleMouseMove = (event: MouseEvent) => {
         const rect = card.getBoundingClientRect();
         const relativeX = ((event.clientX - rect.left) / rect.width) * 100;
         const relativeY = ((event.clientY - rect.top) / rect.height) * 100;
@@ -48,11 +48,11 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
         card.style.setProperty('--glow-intensity', '0');
       };
 
-      card.addEventListener('mousemove', handleMouseMove);
+      card.addEventListener('mousemove', handleMouseMove as EventListener);
       card.addEventListener('mouseleave', handleMouseLeave);
 
       return () => {
-        card.removeEventListener('mousemove', handleMouseMove);
+        card.removeEventListener('mousemove', handleMouseMove as EventListener);
         card.removeEventListener('mouseleave', handleMouseLeave);
       };
     }, [enableGlow]);
@@ -63,7 +63,7 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
           '--glow-y': '20%',
           '--glow-intensity': '0',
           '--glow-radius': glowRadius,
-        } satisfies React.CSSProperties)
+        } as React.CSSProperties)
       : undefined;
 
     return (

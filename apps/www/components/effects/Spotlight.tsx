@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import { useUIStore } from "@recurse/ui";
 
 /**
@@ -11,6 +11,7 @@ import { useUIStore } from "@recurse/ui";
 export function Spotlight() {
 	const spotlightRef = useRef<HTMLDivElement>(null);
 	const spotlightActive = useUIStore((state) => state.spotlightActive);
+	const blendMode = "var(--glow-blend-mode, multiply)" as CSSProperties["mixBlendMode"];
 
 	useEffect(() => {
 		const spotlight = spotlightRef.current;
@@ -40,7 +41,7 @@ export function Spotlight() {
 				opacity: spotlightActive ? 1 : 0,
 				background:
 					`radial-gradient(circle, rgba(var(--glow-color-rgb), var(--glow-opacity-base, 0.4)) 0%, rgba(var(--glow-color-rgb), var(--glow-opacity-fade, 0.25)) 30%, transparent 60%)`,
-				mixBlendMode: "var(--glow-blend-mode, multiply)",
+				mixBlendMode: blendMode,
 			}}
 		/>
 	);

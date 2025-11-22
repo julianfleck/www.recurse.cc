@@ -9,38 +9,76 @@ import {
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
 } from "@recurse/ui/components/navigation-menu";
-import { IconQuestionMark } from "@tabler/icons-react";
+import { IconQuestionMark, IconSparkles, IconGitBranch } from "@tabler/icons-react";
+import {
+	Brain,
+	GitGraph,
+	InfinityIcon,
+	Layers,
+	Network,
+	Search,
+	SendToBack,
+	Clock,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type MouseEvent } from "react";
-import { NavigationSection } from "@/components/navigation/NavigationSection";
+import { type ComponentType, type MouseEvent, useMemo } from "react";
+import { NavigationSection, type ResolvedNavigationSection } from "@/components/navigation/NavigationSection";
 import { SearchToggle } from "@/components/search/toggle";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { navigationContent } from "@/content/homepage";
+import type { NavigationContent, NavigationIconKey } from "@/content/navigation";
 import { useScroll } from "@/contexts/ScrollContext";
 import { cn } from "@/lib/utils";
 
-// Navigation sections configuration
-const NAVIGATION_SECTIONS = {
-	about: navigationContent.about,
-	features: navigationContent.features,
-	blog: navigationContent.blog,
-	docs: navigationContent.docs,
-} as const;
+type NavigationSections = Pick<NavigationContent, "about" | "features" | "blog" | "docs">;
 
 interface DefaultNavigationProps {
 	isCompact: boolean;
 	isHovered: boolean;
+	sections: NavigationSections;
+}
+
+const iconRegistry: Record<NavigationIconKey, ComponentType<{ className?: string; strokeWidth?: number }>> = {
+	network: Network,
+	sparkles: IconSparkles,
+	gitGraph: GitGraph,
+	brain: Brain,
+	sendToBack: SendToBack,
+	layers: Layers,
+	search: Search,
+	gitBranch: IconGitBranch,
+	infinity: InfinityIcon,
+	clock: Clock,
+};
+
+function resolveSection(section: NavigationSections[keyof NavigationSections]): ResolvedNavigationSection {
+	return {
+		...section,
+		items: section.items.map((item) => ({
+			...item,
+			icon: item.icon ? iconRegistry[item.icon] : undefined,
+		})),
+	};
 }
 
 // Accept isCompact and isHovered props
 export function DefaultNavigation({
 	isCompact,
 	isHovered,
+	sections,
 }: DefaultNavigationProps) {
 	const pathname = usePathname();
 	const { scrollToElement } = useScroll();
+	const resolvedSections = useMemo(
+		() => ({
+			about: resolveSection(sections.about),
+			features: resolveSection(sections.features),
+			blog: resolveSection(sections.blog),
+			docs: resolveSection(sections.docs),
+		}),
+		[sections],
+	);
 
 	const handleBetaClick = (e: MouseEvent) => {
 		e.preventDefault();
@@ -140,7 +178,7 @@ export function DefaultNavigation({
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
 								<NavigationSection 
-									section={NAVIGATION_SECTIONS.about}
+									section={resolvedSections.about}
 									sectionKey="about"
 									handleAnchorClick={handleAnchorClick}
 								/>
@@ -159,7 +197,7 @@ export function DefaultNavigation({
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
 								<NavigationSection 
-									section={NAVIGATION_SECTIONS.features}
+									section={resolvedSections.features}
 									sectionKey="features"
 									handleAnchorClick={handleAnchorClick}
 								/>
@@ -178,7 +216,7 @@ export function DefaultNavigation({
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
 								<NavigationSection 
-									section={NAVIGATION_SECTIONS.blog}
+									section={resolvedSections.blog}
 									sectionKey="blog"
 									handleAnchorClick={handleAnchorClick}
 								/>
@@ -197,7 +235,7 @@ export function DefaultNavigation({
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
 								<NavigationSection 
-									section={NAVIGATION_SECTIONS.docs}
+									section={resolvedSections.docs}
 									sectionKey="docs"
 									handleAnchorClick={handleAnchorClick}
 								/>

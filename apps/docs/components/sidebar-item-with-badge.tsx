@@ -4,9 +4,15 @@ import { Badge } from "@recurse/ui/components/badge";
 import type { PageTree } from "fumadocs-core/server";
 import { SidebarItem } from "./sidebar";
 
+type ItemWithBadge = PageTree.Item & {
+	data?: {
+		badge?: string;
+	};
+};
+
 export function SidebarItemWithBadge({ item }: { item: PageTree.Item }) {
-	// Extract badge from item data
-	const badge = item.data?.badge as string | undefined;
+	// Extract badge from frontmatter metadata if present
+	const badge = (item as ItemWithBadge).data?.badge as string | undefined;
 
 	return (
 		<SidebarItem

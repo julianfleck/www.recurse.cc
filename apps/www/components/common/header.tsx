@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { DefaultNavigation } from "@/components/navigation/default";
 import { Grid8Col } from "@/components/layout/Grid8Col";
 import { cn } from "@/lib/utils";
+import type { NavigationContent } from "@/content/navigation";
 
 // Simple debounce function
 function debounce<T extends (...args: unknown[]) => void>(
@@ -24,7 +25,11 @@ function debounce<T extends (...args: unknown[]) => void>(
 	};
 }
 
-export function Header() {
+interface HeaderProps {
+	navigationContent: NavigationContent;
+}
+
+export function Header({ navigationContent }: HeaderProps) {
 	const pathname = usePathname();
 	const isSpecialPage =
 		pathname.startsWith("/api-test") || pathname === "/split-text-demo";
@@ -84,7 +89,16 @@ export function Header() {
 			/>
 			{/* Content */}
 			<Grid8Col className="relative z-[1] h-full flex items-center">
-				<DefaultNavigation isCompact={isCompact} isHovered={isHovered} />
+				<DefaultNavigation
+					isCompact={isCompact}
+					isHovered={isHovered}
+					sections={{
+						about: navigationContent.about,
+						features: navigationContent.features,
+						blog: navigationContent.blog,
+						docs: navigationContent.docs,
+					}}
+				/>
 			</Grid8Col>
 		</header>
 	);

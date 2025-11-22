@@ -1,9 +1,24 @@
+import path from "node:path";
 import type { NextConfig } from "next";
+import { createMDX } from "fumadocs-mdx/next";
+
+const rootSourcePath = path.resolve(__dirname, "./.source/index.ts");
 
 const nextConfig: NextConfig = {
-	// Turbopack configuration for monorepo
-	// Note: turbopack.root was causing issues, removed it
-	// Next.js should auto-detect the workspace root
+	turbopack: {
+		resolveAlias: {
+			"@/.source": rootSourcePath,
+		},
+	},
+	webpack(config) {
+		config.resolve.alias = {
+			...(config.resolve.alias ?? {}),
+			"@/.source": rootSourcePath,
+		};
+		return config;
+	},
 };
 
-export default nextConfig;
+const withMDX = createMDX();
+
+export default withMDX(nextConfig);

@@ -1,0 +1,327 @@
+---
+title: The Agent Delusion
+description: 'How AI Research Agents Gave Us More Content, Not Better Cognition'
+publishedAt: '2025-04-29T09:13:30.000Z'
+tags: []
+substackUrl: 'https://j0lian.substack.com/p/the-agent-delusion'
+heroImage: >-
+  https://substackcdn.com/image/fetch/$s_!6VYK!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F33cd0bde-0528-4bc8-966c-ef8d5cc5bd78_1536x1024.png
+sidebar_label: The Agent Delusion
+---
+_Most “autonomous research agents” promise to lighten your cognitive load, but usually just hand you more to read. This piece explores why today's agent tools increase information overload instead of helping you make sense of it—and why the real challenge is building systems that support actual thinking, not just prettier outputs._
+
+[
+
+![](https://substackcdn.com/image/fetch/$s_!6VYK!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F33cd0bde-0528-4bc8-966c-ef8d5cc5bd78_1536x1024.png)
+
+
+
+](https://substackcdn.com/image/fetch/$s_!6VYK!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F33cd0bde-0528-4bc8-966c-ef8d5cc5bd78_1536x1024.png)
+
+# A Revolution in Output, A Collapse in Sense-Making
+
+If you opened Twitter, Substack, Hacker News, Product Hunt or even slow adopter platforms like LinkedIn (or whatever your personal choice of bubble pushing “new developments in technology” might be) anytime in the last few months, you’ve probably seen it: a gold rush of “autonomous research agent” startups.
+
+Everywhere you look, someone is pitching their newest Agent startup for either code generation or writing — services that promise to do the heavy cognitive lifting for you: research, synthesize, summarize, plan, execute. All very Deep™, very Research™.
+
+At first, it sounds like magic. You give the agent a complex task — _“compare climate risk models”_ or _“summarize the latest AI safety debates”_ — it goes to work for a bit... and a few moments later it hands you back a polished report. Mission accomplished. Work compressed into minutes. Email to your higher-up ready to be sent. Future unlocked.
+
+Except... not really.
+
+Because after the initial dopamine rush of seeing the agent “at work” comes a quieter, slower and more bitter realization: These agents aren’t actually solving the problem of cognitive load. They’re just shifting resposibility downstream — by quietly handing the actual burden of knowledge work back to the user.
+
+You asked for a synthesis. You got a firehose — lightly formatted into headings, paragraphs and some tables, dumped into your lap like it’s still 2003.
+
+**Instead of a revolution in cognition, what we got was a revolution in output** — and the gap between those two things is starting to show.
+
+* * *
+
+# Stage One:  
+Text Walls and Delegated Burden
+
+To understand the mess, it helps to be precise about what most “AI research agents” today actually do.
+
+When you launch one — whether it’s an agent in a startup demo, some “agentic framework” from a Github repo, or one of the DeepResearchers built into one of the bigger AI platforms — the pattern is mostly a variation of this:
+
+*   Take your query (_“analyze X,” “compare Y,” “summarize Z”_).
+    
+*   (Maybe) have some logic that plans the agents run and selects tools to call.
+    
+*   Spawn a dozen subprocesses.
+    
+*   Scrape whatever data is accessible (web, docs, APIs).
+    
+*   (Maybe) rank those “sources” in accordance with the initial user task.
+    
+*   Summarize the data.
+    
+*   Synthesize the results into a report, but please make it real loooong.
+    
+*   Hand you a markdown rendering, a PDF, or a chat thread stuffed with bullet points.
+    
+
+The surface looks polished — headings, subheadings, some tables, maybe some “key takeaways” for good measure. But underneath, it’s all the same: **linear, brittle, passive:**
+
+*   No serious cross-validation of sources.
+    
+*   No semantic compression of redundant ideas.
+    
+*   No integration and resolution of opposing viewpoints.
+    
+*   No meaningful organization beyond “chronological order” or “whatever the agent scraped first.”
+    
+*   No real sense-making — just aggregation.
+    
+
+You’re left holding a big static artifact that is **intentionally inflated** because it looks like you got more for the few cents that you potentially paid (or the minute that you had to wait): 20 pages of semi-structured findings. It for sure _looks_ like work was done. But now the real work — stitching together coherence, spotting contradictions, building synthesis — falls squarely back onto _you_.
+
+Most agents don’t _research_. They _**search**_**.** And then aggregate over the first handful of “sources” they find. They **compress** _**search costs**_, but **inflate** _**interpretation costs**_ — and disguise that inflation behind a nicely formatted wall of text.
+
+You don’t have an agent helping you think. You have an agent creating cognitive debt faster than you can pay it off.
+
+And because every startup demo “looks clean,” and every founder is quick to call their markdown output an “insight engine,” we pretend the bottleneck has been solved — when really, it’s just been pushed deeper into the stack, harder to see and even harder to dig out of.
+
+* * *
+
+# Information Overload as  
+The New Default
+
+Meanwhile, the reports pile up: Half-read summaries. “Executive briefs” that demand your attention and you keep telling yourself you’ll get to. Bullet-pointed data dumps that feel too dense to even skim.
+
+Once you start interacting with agents at any serious scale, a strange pattern emerges. You don’t feel like you’re getting _more done_. You feel like giving up.
+
+Every task you delegate spawns more sprawling artifacts: 30 pages of climate policy summaries. 10,000 words on comparative database performance. 400 bullet points on “emerging trends in user interface design.”
+
+At first, you think: “_Wow, look how thorough this is_.” By the fifth report, you think: “_Maybe I should build an agent to summarize all my agent summaries_.” (And people are doing exactly that — a grim recursion: agents summarizing agent output summarizing agent output.)
+
+But the problem isn’t really just volume. It’s **structurelessness**. These artifacts are built to _look_ finished — paragraphs, citations, clean headers — but they _don't help you move._
+
+*   No prioritization of what matters most.
+    
+*   No signaling of ambiguity or confidence.
+    
+*   No pathways through the material depending on your goals.
+    
+*   No sense of "where you might want to zoom in, zoom out, or branch sideways."
+    
+
+Just a giant wall of “knowledge” mulch, delivered with a certain authoritative finality to it.
+
+This is the real cognitive bottleneck: not just the _amount_ of information, but the _absence of structure_ that could help you navigate, prioritize, and make sense of it. Volume without structure doesn’t just create backlog — it creates a kind of cognitive quicksand, where every new report adds to the weight but offers no handholds for movement or understanding.
+
+This drags us back to an earlier era — one that’s also aesthetically echoed in the current zeitgeist: it feels like the late 90s/early 2000s internet: static pages, hyperlinks everywhere. No semantic architecture, no flow, no graceful degradation from overview to detail. Similar spirit, similar short-sightedness (hi, Ted, still not there…). Only this time it’s on steroids: auto-generated, endless, and relentlessly polite. I get the aesthetic nostalgia, but ... please.
+
+Each new agent workflow promises to compress labor. Instead, it _explodes cognitive backlog_ — offloading the real interpretive work onto human shoulders, but shrouding it behind a sheen of “done-ness.”
+
+This isn’t just inefficient. It’s regressive.  
+We didn’t solve cognitive overload. We industrialized it.
+
+* * *
+
+# Stage Two:  
+The Shallow ”Evolution“ That’s Coming
+
+If today’s agent products are already clogging our cognitive inboxes with walls of markdown, the next phase is easy to predict.
+
+You can almost hear the demo day pitches already:
+
+> _“We don’t just generate static reports anymore! We generate **multimodal** outputs! Interactive dashboards! Summarizing videos! Dynamic charts! Data-driven storyboards!”_
+
+The “innovation,” if you want to call it that, is simple:  
+_Add an_ `x` _to the_ `.md`_._
+
+Slap some graphs into the text. Auto-generate a video. Maybe synthesize a voice-over if you're feeling fancy. Voilà: Next-Gen Agentic Experiences™.
+
+It’ll feel fresher, for a moment. The endless walls of text will be broken up with color, motion, voice, different media types. Founders will get to update their landing pages with phrases like “AI-native multimedia intelligence” and “semantic visual storytelling.”
+
+**But the structure will remain exactly the same.** Big blocks of information. Delivered statically. Designed for consumption, not for movement. Just shinier bricks on the same crumbling foundation.
+
+* * *
+
+_… But it has visuals!  
+… Yeah, cool. So did 14th-century illuminated manuscripts.  
+… But they were gorgeous.  
+… They didn’t exactly make it easier to think through trade logistics across medieval Europe._
+
+* * *
+
+And that’s the deeper issue: The hard part was never _make it prettier._ The hard part was always _make it explorable_ — make it navigable when you don’t yet know what you’re looking for.
+
+A dashboard doesn’t solve that. A pie chart doesn’t solve that. An AI-narrated TikTok summarizing a 40-page “deep dive” doesn’t solve that. They just _**redecorate the bottleneck**_: moving from unreadable text walls to unclickable animations.
+
+More production isn’t the answer.  
+Better _presentation_ isn’t the answer either.
+
+Because the real problem isn’t just what media the system generates — it’s that sense-making demands a different kind of movement altogether: **dynamic reconfiguration, branching exploration, evolving scaffolds that match the user’s unfolding understanding.** Passive outputs, no matter how pretty or multimodal, can’t solve the challenge of dynamic cognition.
+
+The real bottleneck is _cognitive navigation_ — the system’s ability to help users move through alternatives, ambiguity, association, contradiction, and evolving understanding.
+
+Without that, every “innovation” in agent outputs is just a slight-of-hand: different fonts on the same unsolved homework.
+
+* * *
+
+# Navigation, Not Presentation:  
+The Real Bottleneck
+
+The reason these “enhanced” agent outputs still feel so dead — even when they’re sprinkled with charts and AI-generated voice-overs — is simple: **They’re still built for** _**reading,**_ **not for** _**thinking**_**.**
+
+And there’s a fundamental difference.
+
+Reading is a _linear act_. You move forward through pre-laid paths: a chapter, a section, a sequence. It’s a passive structure. It works towards a _**known**_ destination.
+
+Thinking is _nonlinear, contextual, and emergent_:
+
+You don’t just absorb what’s handed to you.  
+You bounce between concepts.  
+You dig into contradictions.  
+You collapse, expand, recombine.
+
+You need surfaces that _**yield, adapt, and reorganize**_ — not just more output, but output that can be _moved through, restructured, and explored_ as your understanding evolves.
+
+But most agent-generated outputs today are still static slabs. No matter how you dress them up, they lock you into the system’s frame — or worse, into the agent’s hallucinated structure.
+
+You can’t tug on a thread and watch a conceptual network unfold. You can’t zoom into a contradiction and watch new branches appear. You can’t reorganize the structure itself based on how your understanding is evolving.
+
+You can only scroll — or give up. It’s the 1997 web all over again. Static pages. A few hyperlinks. Maybe a Java applet if someone got ambitious.
+
+The cultural artifacts of “autonomous research agents” today feel eerily similar to the first static websites: impressive at first glance, but suffocating when you try to actually move inside them.
+
+Meanwhile, the real transformation of the web didn’t happen until it became an _**environment**_: searchable, dynamic, reconfigurable, navigable across scales and modalities. Both visually and structurally distinct with every page you visit.
+
+In 2025, most AI agent startups are still stuck mentally in Geocities.
+
+We’re cranking out content faster than ever — but we’re moving slower through it, because the structure isn’t keeping up with the scale.
+
+Without true navigation, without surfaces that can reorganize themselves based on intent, **AI agents are not solving information overload. They’re manufacturing it, faster.**
+
+> More text won’t help.  
+> Prettier charts won’t help.  
+> Summarizing videos won’t help.  
+> **Only movement will.**
+
+And movement needs structure. Not fixed scaffolds, but structures that can grow on a shared substrate, bend, and adapt — like thought itself.
+
+* * *
+
+# Cultural Inertia:  
+Why Early Defaults Harden
+
+If you zoom out for a second, it’s not surprising that most AI agents today simply hand you a glorified markdown file and call it a day. It’s not just a technical bottleneck — it’s **cultural inertia paired with risk aversion** and companies lazily milking the hype.
+
+For centuries, the dominant way we externalized complex thought was static text. Books, essays, reports, PDFs, blogs. We spent generations refining techniques for _linearizing_ messy, interconnected knowledge into clean, bounded artifacts. I’m doing the exact same at this very moment. We built deep social rituals around them: publishing, citing, summarizing, concluding — rituals that create a comforting sense of closure, even when the underlying reality is sprawling and ambiguous.
+
+AI agents, despite all their supposed novelty, haven’t escaped this gravity well. They still operate under the quiet assumption that the endpoint of inquiry is a _consumable artifact_ — a static report, a markdown file, something passive that the user reads from start to finish.
+
+And honestly, from a strategic perspective, you can also see why. Static artifacts are cheap. They’re cognitively low-risk. A big markdown file doesn’t crash, doesn’t misrender, doesn’t behave unpredictably halfway through your exploration. It doesn’t demand live orchestration of evolving knowledge. It just sits there — dead, stable, inert.
+
+Low risk for builders. Low confusion for users. Easy to demo. Easy to fund.
+
+But the tragedy runs deeper: **the hype machine is rewarding the wrong things** — and punishing the right ones.
+
+Because if you can spin up a 20-page “deep” research report in a minute, and your early users clap enthusiastically and post screenshots, why would you bother tackling the invisible, harder problems? Why sweat over context-preserving navigation, dynamic retrieval orchestration, and scaffolding human sense-making when a slightly fancier markdown export wins you a Series A?
+
+The early “autonomous agents” feel magical not because they deliver structured understanding, but because the bar for what impresses us has quietly sunk to the floor. It _feels_ good when a bot scrapes ten papers and stitches them into a report (just as it once felt magical when AltaVista let you search the web at all). It _feels_ “efficient” to get a long ass document in minutes — even if that document leaves you just as overwhelmed and lost as before.
+
+The danger isn’t just that we’re building systems that fail to meet the real needs of human cognition. It’s that we're _getting used to them_. Celebrating them. Institutionalizing them.
+
+We are normalizing the idea that the solution to overwhelming complexity is... more text, more summaries, more static exports, more pamphlets disguised as progress. We are congratulating ourselves for inventing airplanes — and then refusing to lift off the runway because, oh no, might crash.
+
+And the incentives are clear: When even the strongest players in the space — OpenAI, Anthropic, Perplexity, DeepSeek — are all racing to produce slightly different flavors of “AI summarized search that outputs markdown,” you know the ecosystem is misaligned. (Hint: calling it “semantic retrieval” doesn't fix much if the final output still looks like a glorified Word doc. I’m just waiting for an animated Mr. Clippy to pop up and comment on its findings in natural voice...)
+
+Without realizing it, we are slowly building a generation of tools optimized not for **helping us move through complexity**, but for **disguising complexity behind prettier formatting**.
+
+And the longer this cycle runs, the deeper the assumptions harden — until what once looked like a crude first step quietly cements itself into the default architecture of thought.
+
+* * *
+
+# Fossilization Risk:  
+What Happens If We Stay Here
+
+The real danger isn’t just that today’s agents are simplistic. It’s that their limitations, if left unchallenged, will quietly **solidify into the permanent mental models** for how we interact with knowledge systems.
+
+Today’s static reports and deterministic workflows feel like early experiments. But tomorrow, they could become invisible assumptions — baked into architectures, protocols, interfaces, funding models.
+
+What starts as “just a first step” — a markdown report here, a dashboard there — risks becoming a structural ceiling.
+
+*   **Path Dependency:** Early interaction patterns harden. Future systems are expected to output reports, not build living cognitive environments. Funding, design tooling, and roadmaps all bend around the same dead assumptions.
+    
+*   **Architectural Fossilization:** We lock ourselves into workflows optimized for static text dumps, not dynamic thought spaces. Infrastructure (databases, APIs, compliance models) gets designed around exporting _completed artifacts_, not orchestrating live, evolving states.
+    
+*   **Cognitive Drift:** Users internalize bad habits — scanning walls of text, passively consuming surface findings, losing agency over the act of exploration itself.
+    
+*   **Institutional Lock-in:** Enterprises codify these defaults even deeper. “Compliance requires a final report”, “Risk management prefers frozen artifacts.” Suddenly the entire cognitive ecosystem orbits around auditability, not adaptability.
+    
+
+If this trajectory continues, we’ll end up with AI systems beautifully optimized for _artifact production_ — but catastrophically bad at _cognitive augmentation_. We’ll build faster, prettier, denser reports... and still leave users drowning and disconnected.
+
+And here’s the most dangerous part:
+
+It will no longer feel wrong.  
+It will feel normal. Natural. Inevitable.
+
+The longer these defaults persist, the more invisible they become — until challenging them feels not just impractical, but _irrational_. Until the assumptions have hardened so completely that _unlearning_ them becomes harder than building better systems would have been in the first place.
+
+We won’t just have to build new interfaces. We’ll have to dismantle entire conceptual ecosystems: how tools are evaluated, how knowledge is organized, how cognition is scaffolded.
+
+And the window to do that while the clay is still wet — while it’s still flexible — is already narrowing.
+
+Not because today’s agents are failures. But because they are **beginnings** — and beginnings shape everything that follows.
+
+* * *
+
+# Beyond Agents-As-They-Are
+
+This isn’t (just) a rant against research agents (even though it felt good to write this out). It’s a critique of the narrow, _chat-bubbles-inevitably-lead-to-content-dump_ paradigm that’s become the default — and a call to recognize a much deeper™ possibility.
+
+Today’s agents are better thought of as _automated scribes_ — impressive at transcribing, summarizing, reassembling knowledge. **They aren’t thinking partners**. They don’t shape environments that adapt as we explore. **But they absolutely could be**.
+
+If we want agents to actually extend our ability to navigate complexity — not just manufacture more of it — we have to move beyond the idea that the final artifact is the goal.
+
+The real potential lies somewhere else entirely.
+
+Here’s the thing: **the primitives are already here**. Every day, we’re glimpsing what could be possible — in ways that the agent hype machine rarely acknowledges.
+
+I’ve gotten _plenty_ of value out of my interactions with LLMs. But almost never when I asked them to “_write a report_” or “_generate a finished piece_.” But always when I used them differently:
+
+*   To open new angles on a question.
+    
+*   To bounce ideas across perspectives.
+    
+*   To surface contradictions I hadn’t yet noticed.
+    
+*   To keep moving, twisting, and refining a line of thought — long past the point where a human conversation partner might’ve gotten tired.
+    
+
+The real power of the large language models we converse with isn’t their ability to produce polished artifacts. It’s their **relentlessness to keep going**. The fact that at 4AM, after twenty iterations, they’re still there — still offering reframings, still suggesting new paths, still helping me interrogate my own assumptions.
+
+The real _worth_ is in the _interactions_ themselves: in the turns our conversations take. The detours. The recombinations. The slow emergence of clarity through movement, not closure.
+
+And that’s the fundamental shift we need to embrace:
+
+> **Artifacts shouldn’t be the endpoint of a** _**task**_**.  
+> They should be openings into deeper** _**inquiries**_**.**
+
+Not static products to admire, but provisional surfaces to move through — reconfigurable, dissolvable, alive to context and intent.
+
+We need agents that don’t just produce more text, more charts, more exports. We need agents that can _**materialize environments of thought**_: spaces that adapt to the friction points, tensions, curiosities, and evolving goals of the humans moving inside them.
+
+That won’t happen by polishing markdown exports a little more. It requires a new architecture. A new interaction model. A new respect for the messy, associative, dynamic nature of real thinking.
+
+It’s harder. It’s riskier. It doesn’t demo as cleanly at startup pitch day.  
+It’s opening more questions than delivering answers.
+
+But it’s the difference between building a tool that feels ”productive“ — and building one that actually _amplifies thought_.
+
+The next part of this series explores what that shift could look like:
+
+**Ephemeral Interfaces** — temporary, adaptive interaction spaces that materialize around intent, dissolve after use, and preserve the trails of cognition rather than just some shareable artifact.
+
+Because if we’re serious about building systems that extend thought rather than exhaust it, this is where the real frontier begins.
+
+* * *
+
+Now that you’ve survived this gloriously long wall of text (ironically delivered in most parts by nothing other than AI agents), stay tuned for Part 3: Ephemeral Interfaces. I will publish it in the next couple of days…
+
+* * *
+
+Thanks for reading. I write about the evolution of knowledge work, tools for thought, and the interconnection of human and synthetic intelligence. I’d be happy if you subscribed or left a comment ( • ‿ • ) \*

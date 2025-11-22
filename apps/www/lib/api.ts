@@ -92,6 +92,73 @@ export class ApiService {
 			);
 		}
 	}
+
+	/**
+	 * Makes a POST request to the API
+	 * @param endpoint - The API endpoint (without base URL)
+	 * @param body - JSON-serializable payload
+	 * @param params - Optional query params
+	 * @returns Promise with the API response
+	 */
+	async post<T = unknown>(
+		endpoint: string,
+		body?: unknown,
+		params?: Record<string, string | number | boolean>,
+	): Promise<ApiResponse<T>> {
+		try {
+			const queryString = params
+				? `?${new URLSearchParams(
+						Object.entries(params).reduce(
+							(acc, [key, value]) => {
+								acc[key] = String(value);
+								return acc;
+							},
+							{} as Record<string, string>,
+						),
+					).toString()}`
+				: "";
+
+			const url = `${this.baseUrl}${endpoint}${queryString}`;
+
+			const headers: Record<string, string> = {
+				"Content-Type": "application/json",
+			};
+
+			const response = await fetch(url, {
+				method: "POST",
+				headers,
+				body: body ? JSON.stringify(body) : undefined,
+				credentials: "include",
+				mode: "cors",
+			});
+
+			const data = await response.json();
+
+			if (!response.ok) {
+				throw new ApiError(
+					`API request failed: ${response.statusText}`,
+					response.status,
+					data,
+				);
+			}
+
+			return {
+				data,
+				status: response.status,
+				statusText: response.statusText,
+			};
+		} catch (error) {
+			if (error instanceof ApiError) {
+				throw error;
+			}
+
+			throw new ApiError(
+				`Network error: ${error instanceof Error ? error.message : "Unknown error"}`,
+				undefined,
+				error,
+			);
+		}
+	}
 }
 
 // Create and export a default instance

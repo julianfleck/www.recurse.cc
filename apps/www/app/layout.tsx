@@ -10,6 +10,7 @@ import { Header } from "@/components/common/header";
 import { GridOverlay } from "@/components/layout/GridOverlay";
 import { Spotlight } from "@/components/effects/Spotlight";
 import { ScrollProvider } from "@/contexts/ScrollContext";
+import { navigationContent } from "@/content/navigation";
 import { Providers } from "./providers";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -47,7 +48,7 @@ export default function RootLayout({
 							<Spotlight />
 							
 							<div className="relative min-h-screen bg-background">
-								<Header />
+								<Header navigationContent={navigationContent} />
 								<main className="relative z-10 pt-[120px] transition-all duration-300">{children}</main>
 								<Footer />
 						</div>

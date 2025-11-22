@@ -1,10 +1,28 @@
 import { ScrollArea } from "@recurse/ui/components/scroll-area";
-import type { MouseEvent } from "react";
-import type { NavigationSection as NavigationSectionType } from "@/content/homepage";
+import type { ComponentType, MouseEvent } from "react";
 import { NavigationHeroCard, NavigationListCard, NavigationGridCard } from "./NavigationCard";
 
+export type ResolvedNavigationItem = {
+	title: string;
+	description: string;
+	href: string;
+	icon?: ComponentType<{ className?: string; strokeWidth?: number }>;
+};
+
+export type ResolvedNavigationSection = {
+	hero: {
+		title: string;
+		description: string;
+		href: string;
+		footer?: string;
+	};
+	items: ResolvedNavigationItem[];
+	layout: "list" | "grid";
+	scrollable: boolean;
+};
+
 interface NavigationSectionProps {
-	section: NavigationSectionType;
+	section: ResolvedNavigationSection;
 	sectionKey: string;
 	handleAnchorClick: (e: MouseEvent<HTMLAnchorElement>, hash: string) => void;
 }

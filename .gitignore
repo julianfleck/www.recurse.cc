@@ -16,6 +16,7 @@ dist/
 .contentlayer
 .content-collections
 .source
+scripts/.substack-sync.json
 
 # Production
 *.log

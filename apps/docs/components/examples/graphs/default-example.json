@@ -272,8 +272,8 @@
 				{
 					"id": "rage-reference-minsky",
 					"type": "reference",
-					"title": "Minsky's frames-with-slots",
-					"summary": "The concept builds on Marvin Minsky's frames-with-slots theory, but extends it by making frames executable. Each frame carries both semantic structure (what it represents) and behavioral instructions (how agents should work with it).",
+					"title": "Minsky's Frame Theory",
+					"summary": "The concept builds on Marvin Minsky's Frame Theory, but extends it by making frames executable. Each frame carries both semantic structure (what it represents) and behavioral instructions (how agents should work with it).",
 					"children": [],
 					"metadata": {
 						"highlighted": true
