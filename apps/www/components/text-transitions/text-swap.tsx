@@ -203,32 +203,68 @@ export function TextSwap({
     const oldParts = from.split(/(\s+)/)
     const ops = lcsDiff(oldParts, nextParts)
 
-    const byBoundary = new Map<number, Spacer>()
+    // Instead of merging spacers by boundary, we simply collect all of them.
+    // We break long insertions into smaller chunks (Word + optional Space) to allow wrapping.
+    const allSpacers: Spacer[] = []
     let spacerSeq = 0
 
     ops.forEach((op) => {
       if (op.type === "insert") {
         const afterIndex = op.startOld - 1
-        const existing = byBoundary.get(afterIndex)
-        const plain = renderItemsToText(op.items)
-        // Only add a measuring space if the text doesn't already have one
-        const segWidth = measureTextWidth(plain + (/\s$/.test(plain) ? "" : " "))
-        if (existing) {
-          existing.targetWidth += segWidth
-          existing.items.push(...op.items)
-        } else {
-          byBoundary.set(afterIndex, {
-            id: spacerSeq++,
-            afterIndex,
-            targetWidth: segWidth,
-            startNew: op.startNew,
-            items: [...op.items],
-          })
+        
+        // Process items to create smaller spacers
+        let currentItems: string[] = []
+        
+        for (const item of op.items) {
+            const isSpace = /^\s+$/.test(item)
+            if (isSpace) {
+                // Append space to current word if exists, or treat as standalone if no word
+                currentItems.push(item)
+                // Commit this chunk
+                const plain = renderItemsToText(currentItems)
+                const segWidth = measureTextWidth(plain + (/\s$/.test(plain) ? "" : " "))
+                allSpacers.push({
+                  id: spacerSeq++,
+                  afterIndex,
+                  targetWidth: segWidth,
+                  startNew: op.startNew,
+                  items: [...currentItems],
+                })
+                currentItems = []
+            } else {
+                // It is a word
+                if (currentItems.length > 0) {
+                    // We had a word before without space? Commit previous chunk
+                    const plain = renderItemsToText(currentItems)
+                    const segWidth = measureTextWidth(plain + (/\s$/.test(plain) ? "" : " "))
+                    allSpacers.push({
+                      id: spacerSeq++,
+                      afterIndex,
+                      targetWidth: segWidth,
+                      startNew: op.startNew,
+                      items: [...currentItems],
+                    })
+                    currentItems = []
+                }
+                currentItems.push(item)
+            }
+        }
+        // Flush remaining
+        if (currentItems.length > 0) {
+            const plain = renderItemsToText(currentItems)
+            const segWidth = measureTextWidth(plain + (/\s$/.test(plain) ? "" : " "))
+            allSpacers.push({
+              id: spacerSeq++,
+              afterIndex,
+              targetWidth: segWidth,
+              startNew: op.startNew,
+              items: [...currentItems],
+            })
         }
       }
     })
 
-    setSpacers(Array.from(byBoundary.values()))
+    setSpacers(allSpacers)
   }
 
   // Group consecutive removed tokens (with following spaces) until next non-removed token
@@ -322,56 +358,84 @@ export function TextSwap({
           if (node.kind === "group-removed") {
             const groupTokens = tokens.slice(node.start, node.end + 1)
             const regionSpacers = spacers.filter(s => s.afterIndex >= node.start && s.afterIndex <= node.end)
+            
+            // We render the whole group inside one flex container.
+            // To allow line breaks inside this group (e.g. if it's a long removed sentence),
+            // we can't treat it as a single block. But removed text just fades out, it doesn't need to re-flow.
+            // However, if the REPLACEMENT text (spacers) is very long, it needs to flow.
+            
             const regionText = renderItemsToText(regionSpacers.flatMap(s => s.items))
-            // Only add a measuring space if the text doesn't already have one
             const regionWidth = regionText ? measureTextWidth(regionText + (/\s$/.test(regionText) ? "" : " ")) : 0
+
             return (
-              <span key={node.key} className="inline-flex items-baseline">
-                {regionWidth > 0 && (
-                  <motion.span
-                    key={`spacer-region-${node.key}`}
-                    className="inline-block"
-                    initial={{ width: 0 }}
-                    animate={{ width: regionWidth }}
-                    transition={{ duration: duration * 0.5, ease: "easeInOut", delay: currentDelay }}
-                    style={overflowStyle}
-                  >
-                    <motion.span
-                      className="inline-block whitespace-pre"
-                      style={{ lineHeight: "inherit" }}
-                    >
-                      {regionText.split("").map((char, charIndex) => (
+              <span key={node.key} className="inline-flex items-baseline flex-wrap">
+                {/* The spacers (incoming text) need to be rendered individually if we want them to wrap 
+                    BUT here they are aggregated into one regionWidth because they replace a contiguous block 
+                    of removed text. If this block is long, we have a problem: the width expands without wrapping. 
+                    
+                    To fix: we should NOT aggregate spacers here if we want wrapping. 
+                    The current logic 'regionWidth' forces a single block.
+                    
+                    Instead of one big motion.span for the region, let's render the spacers individually 
+                    inside this container, just like we do for the 'shared' tokens.
+                */}
+                
+                {/* Render spacers that belong to this region */}
+                {regionSpacers.map((s, sIndex) => {
+                    const text = renderItemsToText(s.items)
+                     return (
+                      <motion.span
+                        key={`spacer-region-${s.id}`}
+                        className="inline-block"
+                        initial={{ width: 0 }}
+                        animate={{ width: s.targetWidth }}
+                        transition={{ duration: duration * 0.5, ease: "easeInOut", delay: currentDelay + (sIndex * 0.1) }}
+                        style={overflowStyle}
+                      >
                         <motion.span
-                          key={`char-${charIndex}`}
-                          initial={{ opacity: 0, filter: "blur(4px)" }}
-                          animate={{ opacity: 1, filter: "blur(0px)" }}
-                          transition={{
-                            duration: duration * 0.2,
-                            delay: currentDelay + (charIndex * 0.05) + 0.05,
-                            ease: "easeInOut"
-                          }}
-                          className="inline-block"
+                          className="inline-block whitespace-pre hyphens-none"
+                          style={{ lineHeight: "inherit" }}
                         >
-                          {char}
+                          {text.split("").map((char, charIndex) => (
+                            <motion.span
+                              key={`char-${charIndex}`}
+                              initial={{ opacity: 0, filter: "blur(4px)" }}
+                              animate={{ opacity: 1, filter: "blur(0px)" }}
+                              transition={{
+                                duration: duration * 0.2,
+                                delay: currentDelay + (sIndex * 0.1) + (charIndex * 0.05) + 0.05,
+                                ease: "easeInOut"
+                              }}
+                              className="inline-block"
+                            >
+                              {char}
+                            </motion.span>
+                          ))}
                         </motion.span>
-                      ))}
-                    </motion.span>
-                  </motion.span>
-                )}
-                <motion.span
-                  className="inline-flex items-baseline justify-center"
-                  animate={{ opacity: 0, filter: "blur(4px)", width: 0 }}
-                  transition={{
-                    width: { duration: duration * 0.5, ease: "easeInOut", delay: currentDelay },
-                    opacity: { duration: duration * 0.4, delay: currentDelay },
-                    filter: { duration: duration * 0.4, delay: currentDelay }
-                  }}
-                  style={{ display: "inline-flex", overflowX: "hidden", overflowY: "visible", paddingBottom: "0.08em" }}
+                      </motion.span>
+                    )
+                })}
+
+                {/* Render removed tokens individually so they can wrap/flow during removal */}
+                <span 
+                  className="inline-flex items-baseline flex-wrap"
                 >
                   {groupTokens.map((gt) => (
-                    <span key={gt.id} className="inline-block whitespace-pre">{gt.content}</span>
+                    <motion.span 
+                      key={gt.id} 
+                      className="inline-block whitespace-pre"
+                      animate={{ opacity: 0, filter: "blur(4px)", width: 0 }}
+                      transition={{
+                        width: { duration: duration * 0.5, ease: "easeInOut", delay: currentDelay },
+                        opacity: { duration: duration * 0.4, delay: currentDelay },
+                        filter: { duration: duration * 0.4, delay: currentDelay }
+                      }}
+                      style={{ overflowX: "hidden", overflowY: "visible", paddingBottom: "0.08em" }}
+                    >
+                      {gt.content}
+                    </motion.span>
                   ))}
-                </motion.span>
+                </span>
               </span>
             )
           }
