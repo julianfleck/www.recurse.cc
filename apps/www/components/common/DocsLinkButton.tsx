@@ -4,17 +4,17 @@ import { Button } from "@recurse/ui/components";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-interface DocsLinkButtonProps {
+interface ExternalLinkButtonProps {
 	variant?: "default" | "subtle" | "outline" | "ghost";
 	showArrow?: boolean;
 	children: React.ReactNode;
 }
 
-export function DocsLinkButton({
+export function ExternalLinkButton({
 	variant = "subtle",
 	showArrow = false,
 	children,
-}: DocsLinkButtonProps) {
+}: ExternalLinkButtonProps) {
 	// Simply use /docs path - the redirect page will handle forwarding to the correct app
 	const content = (
 		<>

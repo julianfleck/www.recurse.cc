@@ -17,7 +17,7 @@ All button imports in the www app have been successfully migrated to use the con
 7. `apps/www/components/navigation/default.tsx`
 8. `apps/www/components/forms/SignupForm.tsx`
 9. `apps/www/components/common/mode-toggle.tsx`
-10. `apps/www/components/common/DocsLinkButton.tsx`
+10. `apps/www/components/common/ExternalLinkButton.tsx`
 11. `apps/www/components/common/CTASection.tsx`
 12. `apps/www/app/page.tsx`
 13. `apps/www/app/api-test/page.tsx`
