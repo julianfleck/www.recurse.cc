@@ -72,6 +72,16 @@ export function TextSwap({
     runDiffAnimation(currentTextObj.from, currentTextObj.to)
   }, [currentTextObj, durationMs])
 
+  useEffect(() => {
+    const handleResize = () => {
+      // Force re-calculation of widths by re-running the diff animation with current state
+      runDiffAnimation(currentTextObj.from, currentTextObj.to)
+    }
+
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [currentTextObj])
+
   function tokenize(input: string): Token[] {
     const parts = input.split(/(\s+)/)
     return parts.map((part) => {
@@ -424,6 +434,7 @@ export function TextSwap({
                     <motion.span 
                       key={gt.id} 
                       className="inline-block whitespace-pre"
+                      initial={{ width: "auto" }}
                       animate={{ opacity: 0, filter: "blur(4px)", width: 0 }}
                       transition={{
                         width: { duration: duration * 0.5, ease: "easeInOut", delay: currentDelay },
