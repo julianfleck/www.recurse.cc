@@ -1,4 +1,10 @@
 import Link from "next/link";
+import { IconStack, IconBrandTwitter } from "@tabler/icons-react";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@recurse/ui/components";
 import { ApiStatus } from "./ApiStatus";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 
@@ -54,20 +60,20 @@ export function Footer() {
 	];
 
 	return (
-		<footer className="border-border border-t bg-background px-0.5col py-12">
-			<Grid8Col className="gap-y-4 pb-4">
+		<footer className="border-border border-t bg-background py-12">
+			<Grid8Col className="gap-y-4">
 				{/* Sitemap Section - 4 columns, each taking 2 grid columns */}
 				{footerSections.map((section) => (
-					<GridCell key={section.title} colSpan={4} mdColSpan={4} lgColSpan={2}>
-						<div>
-							<h3 className="mb-3 font-medium text-foreground">
+					<GridCell key={section.title} colSpan={4} mdColSpan={4} lgColSpan={2} className="pb-8">
+						<div className="pl-6 border-l border-border">
+							<h3 className="pl-2 mb-4 font-medium text-foreground text-base">
 								{section.title}
 							</h3>
-							<ul className="space-y-2">
+							<ul className="space-y-2.5">
 								{section.links.map((link) => (
 									<li key={link.name}>
 										<Link
-											className="text-muted-foreground text-sm transition-colors duration-200 hover:text-foreground hover:bg-card"
+											className="text-muted-foreground text-sm transition-colors duration-200 hover:text-foreground hover:bg-muted/40 border border-transparent hover:border-muted px-1.5 py-1 rounded-sm"
 											href={link.href}
 										>
 											{link.name}
@@ -81,35 +87,51 @@ export function Footer() {
 
 				{/* Bottom Section - Full width with border */}
 				<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-					<div className="flex flex-col items-start justify-between gap-4 border-border border-t pt-8 sm:flex-row sm:items-center">
-						<ApiStatus />
+					<div className="flex flex-col items-start justify-between px-6 gap-4 border-border border-t pt-8 sm:flex-row sm:items-center">
 
-						<div className="flex items-center gap-6">
+						<div className="flex items-center gap-2">
 							{/* <Link
 								className="text-muted-foreground text-sm transition-colors duration-200 hover:text-foreground"
 								href="https://github.com/recurse-cc"
 								rel="noopener noreferrer"
 								target="_blank"
-							>
+								>
 								GitHub
-							</Link> */}
-							<Link
-								className="text-muted-foreground text-sm transition-colors duration-200 hover:text-foreground"
-								href="https://j0lian.substack.com/"
-								rel="noopener noreferrer"
-								target="_blank"
-							>
-								Substack
-							</Link>
-							<Link
-								className="text-muted-foreground text-sm transition-colors duration-200 hover:text-foreground"
-								href="https://twitter.com/recurse_cc"
-								rel="noopener noreferrer"
-								target="_blank"
-							>
-								Twitter
-							</Link>
+								</Link> */}
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Link
+										className="text-muted-foreground transition-colors duration-200 hover:text-foreground hover:bg-muted/40 border border-muted/80 hover:border-muted p-1.5 rounded-sm"
+										href="https://j0lian.substack.com/"
+										rel="noopener noreferrer"
+										target="_blank"
+										aria-label="Substack"
+									>
+										<IconStack className="size-5" />
+									</Link>
+								</TooltipTrigger>
+								<TooltipContent side="top">
+									Substack
+								</TooltipContent>
+							</Tooltip>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Link
+										className="text-muted-foreground transition-colors duration-200 hover:text-foreground hover:bg-muted/40 border border-muted/80 hover:border-muted p-1.5 rounded-sm"
+										href="https://twitter.com/recurse_cc"
+										rel="noopener noreferrer"
+										target="_blank"
+										aria-label="Twitter"
+									>
+										<IconBrandTwitter className="size-5" />
+									</Link>
+								</TooltipTrigger>
+								<TooltipContent side="top">
+									Twitter
+								</TooltipContent>
+							</Tooltip>
 						</div>
+						<ApiStatus />
 					</div>
 				</GridCell>
 			</Grid8Col>

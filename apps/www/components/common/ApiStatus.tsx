@@ -34,7 +34,7 @@ export function ApiStatus() {
 			case "normal":
 				return "bg-green-500";
 			case "error":
-				return "bg-red-500";
+				return "bg-orange-500";
 			default:
 				return "bg-yellow-500";
 		}
@@ -52,7 +52,7 @@ export function ApiStatus() {
 	};
 
 	return (
-		<div className="flex items-center gap-2 text-muted-foreground text-sm">
+		<div className="flex items-center gap-2 text-muted-foreground text-sm px-1.5 py-1 rounded-sm bg-muted/20 border border-muted/80">
 			<div className={`h-2 w-2 rounded-full ${getStatusColor()}`} />
 			<span>{getStatusText()}</span>
 		</div>

@@ -1,10 +1,9 @@
 "use client";
 
-import { Button } from "@recurse/ui/components";
+import { Button, ExternalLinkButton } from "@recurse/ui/components";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
-import { ExternalLinkButton } from "@/components/common/ExternalLinkButton";
 import { AnimatedGraphExample } from "@/components/examples/graphs/AnimatedGraphExample";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";

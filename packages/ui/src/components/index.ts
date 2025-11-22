@@ -2,6 +2,7 @@
 // Run `pnpm generate-exports` to regenerate this file
 
 // UI Components
+export * from './ExternalLinkButton';
 export * from './accordion-menu';
 export * from './alert';
 export * from './avatar';
