@@ -27,11 +27,91 @@ interface Spacer {
   items: string[]
 }
 
+// Ensure at least one space between adjacent non-space tokens if missing
+function renderItemsToText(items: string[]): string {
+  let out = ""
+  let prevWasWord = false
+  console.log("[renderItemsToText] input:", JSON.stringify(items))
+  for (const part of items) {
+    const isSpace = /^\s+$/.test(part)
+    if (isSpace) {
+      out += part
+      prevWasWord = false
+    } else {
+      if (prevWasWord && !out.endsWith(" ")) {
+        console.log("[renderItemsToText] Inserting space before", part)
+        out += " "
+      }
+      out += part
+      prevWasWord = true
+    }
+  }
+  console.log("[renderItemsToText] output:", JSON.stringify(out))
+  return out
+}
+
+const SpacerToken = ({ s, widthDelay, charDelay, duration, overflowStyle }: { s: Spacer, widthDelay: number, charDelay: number, duration: number, overflowStyle: any }) => {
+  const text = renderItemsToText(s.items)
+  const [isAnimating, setIsAnimating] = useState(true)
+
+  // Calculate total animation time to switch to static text for correct kerning
+  useEffect(() => {
+    const charCount = text.length
+    // last char starts at charDelay + (count-1)*0.05
+    // fade takes duration*0.3
+    const lastCharDelay = charDelay + (charCount * 0.05) + 0.2
+    const fadeDuration = duration * 0.3
+    const totalTime = (lastCharDelay + fadeDuration) * 1000
+
+    const timer = setTimeout(() => {
+      setIsAnimating(false)
+    }, totalTime + 100) // buffer
+
+    return () => clearTimeout(timer)
+  }, [charDelay, text.length, duration])
+
+  return (
+    <motion.span
+      className="inline-block"
+      initial={{ width: 0 }}
+      animate={{ width: s.targetWidth }}
+      transition={{ duration: duration * 0.8, ease: "easeInOut", delay: widthDelay }}
+      style={{ ...overflowStyle, width: 0 }}
+    >
+      <motion.span
+        className="inline-block whitespace-pre hyphens-none"
+        style={{ lineHeight: "inherit" }}
+      >
+        {isAnimating ? (
+          text.split("").map((char, charIndex) => (
+            <motion.span
+              key={`char-${charIndex}`}
+              initial={{ opacity: 0, filter: "blur(4px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              transition={{
+                duration: duration * 0.3,
+                delay: charDelay + (charIndex * 0.05),
+                ease: "easeInOut"
+              }}
+              className="inline-block"
+              style={{ opacity: 0, filter: "blur(4px)" }}
+            >
+              {char}
+            </motion.span>
+          ))
+        ) : (
+          text
+        )}
+      </motion.span>
+    </motion.span>
+  )
+}
+
 export function TextSwap({
   texts,
   className,
   interval = 3000,
-  durationMs = 8200,
+  durationMs = 1200,
   ...props
 }: TextSwapProps) {
   const containerRef = useRef<HTMLSpanElement | null>(null)
@@ -84,7 +164,7 @@ export function TextSwap({
   }, [currentTextObj])
 
   function tokenize(input: string): Token[] {
-    const parts = input.split(/(\s+)/)
+    const parts = input.split(/(\s+)/).filter(p => p.length > 0)
     return parts.map((part) => {
       const isSpace = /^\s+$/.test(part)
       const normalized = isSpace ? part : part.toLowerCase()
@@ -187,6 +267,10 @@ export function TextSwap({
   }
 
   function runDiffAnimation(from: string, to: string) {
+    console.log("--- runDiffAnimation START ---")
+    console.log("From:", JSON.stringify(from))
+    console.log("To:", JSON.stringify(to))
+
     const nextParts = to.split(/(\s+)/)
 
     const oldParts = from.split(/(\s+)/)
@@ -194,6 +278,7 @@ export function TextSwap({
     const initialTokens = tokenize(from).map(t => ({ ...t, state: "removed" as Token["state"] }))
     
     const ops = lcsDiff(oldParts, nextParts)
+    console.log("Ops:", JSON.stringify(ops, null, 2))
     
     // Mark shared tokens based on LCS 'equal' ops
     ops.forEach(op => {
@@ -310,53 +395,135 @@ export function TextSwap({
     )
   }
 
-  // Flatten the render loop to allow wrapping
-  const renderedElements: React.ReactNode[] = []
-  let delayCounter = 0
+  // Flatten everything into a single list for processing
+  type RenderItem = 
+    | { type: 'spacer', s: Spacer, id: string }
+    | { type: 'token', t: Token, id: string }
 
-  // 1. Initial Spacers (before any token)
-  spacers.filter(s => s.afterIndex === -1).forEach((s) => {
-    renderedElements.push(renderSpacer(s, delayCounter * 0.1))
-    delayCounter++
+  const items: RenderItem[] = []
+  
+  // 1. Initial Spacers
+  spacers.filter(s => s.afterIndex === -1).forEach(s => items.push({ type: 'spacer', s, id: `spacer-${s.id}` }))
+  
+  // 2. Tokens and following spacers
+  tokens.forEach((t, i) => {
+    items.push({ type: 'token', t, id: `token-${t.id}` })
+    spacers.filter(s => s.afterIndex === i).forEach(s => items.push({ type: 'spacer', s, id: `spacer-${s.id}` }))
   })
 
-  // 2. Tokens and their following spacers
-  tokens.forEach((t, i) => {
-    const currentDelay = delayCounter * 0.1
+  const renderedElements: React.ReactNode[] = []
+  
+  let currentDelay = 0
+  let lastType: 'shared' | 'change' | 'none' = 'none'
+  
+  let lastGroup: 'shared' | 'change' | 'none' = 'none'
+  let removedStartTime = -1
 
-    if (t.state === "removed") {
-      renderedElements.push(
-        <motion.span
-          key={`token-rem-${t.id}`}
-          className="inline-block whitespace-pre"
-          initial={{ width: "auto" }}
-          animate={{ opacity: 0, filter: "blur(4px)", width: 0 }}
-          transition={{
-            width: { duration: duration * 0.5, ease: "easeInOut", delay: currentDelay },
-            opacity: { duration: duration * 0.4, delay: currentDelay },
-            filter: { duration: duration * 0.4, delay: currentDelay }
-          }}
-          style={{ overflowX: "hidden", overflowY: "visible", paddingBottom: "0.08em" }}
-        >
-          {t.content}
-        </motion.span>
-      )
+  items.forEach((item, idx) => {
+    // Determine specific type for this item
+    let thisSpecificType: 'shared' | 'removed' | 'spacer' = 'shared'
+    if (item.type === 'spacer') thisSpecificType = 'spacer'
+    else if (item.t.state === 'removed') thisSpecificType = 'removed'
+    else thisSpecificType = 'shared'
+
+    // Determine group type
+    const thisGroup = (thisSpecificType === 'removed' || thisSpecificType === 'spacer') ? 'change' : 'shared'
+
+    console.log(`[Item ${idx}] Content: "${item.type === 'spacer' ? renderItemsToText(item.s.items) : item.t.content}" Specific: ${thisSpecificType} Group: ${thisGroup} LastGroup: ${lastGroup} Delay: ${currentDelay}`)
+
+    if (thisGroup !== lastGroup) {
+        if (lastGroup !== 'none') {
+             console.log(`   -> New Group! Incrementing delay.`)
+             currentDelay += 0.1
+        }
     } else {
-      // Shared
-      renderedElements.push(
-        <motion.span key={`token-shared-${t.id}`} className="inline-block whitespace-pre">
-          {t.content}
-        </motion.span>
-      )
+        console.log(`   -> Same Group. Accumulating duration.`)
     }
     
-    delayCounter++
+    const startDelay = currentDelay;
+    
+    // Track start time of a removal sequence to sync subsequent spacer width
+    if (thisSpecificType === 'removed') {
+        // If we just started a removal block (or continued one), ensure we have a start time?
+        // Actually, every Removed token has its own start time (startDelay).
+        // But if we have Removed -> Spacer, we want Spacer width to start at Removed's start time.
+        // BUT: if we have Removed -> Removed -> Spacer?
+        // Spacer width should sync with the LAST removed token? Or the FIRST?
+        // Usually Removed -> Removed happens sequentially.
+        // Spacer should probably fill the gap of the LAST removed token?
+        // Or fill the accumulated gap?
+        // Let's assume we sync with the *immediately preceding* removed token.
+        removedStartTime = startDelay
+    } else if (thisSpecificType === 'shared') {
+        removedStartTime = -1
+    }
 
-    // Spacers after this token
-    spacers.filter(s => s.afterIndex === i).forEach((s) => {
-      renderedElements.push(renderSpacer(s, delayCounter * 0.1))
-      delayCounter++
-    })
+    // Calculate duration to add for the NEXT item
+    let durationToAdd = 0
+    if (item.type === 'spacer') {
+         const text = renderItemsToText(item.s.items)
+         durationToAdd = text.length * 0.05
+    } else if (item.type === 'token' && item.t.state === 'removed') {
+         durationToAdd = 0.1 
+    } else {
+        durationToAdd = 0
+    }
+    
+    currentDelay += durationToAdd
+    lastGroup = thisGroup
+
+    // Render
+    if (item.type === 'spacer') {
+        // Sync width with removal if we are in a replacement sequence
+        const widthDelay = (removedStartTime !== -1) ? removedStartTime : startDelay
+        const charDelay = startDelay + 0.2
+
+        renderedElements.push(
+            <SpacerToken 
+                key={item.id}
+                s={item.s}
+                widthDelay={widthDelay}
+                charDelay={charDelay}
+                duration={duration}
+                overflowStyle={overflowStyle}
+            />
+        )
+        // Reset removedStartTime after consuming it? 
+        // If we have Removed -> Spacer -> Spacer? 
+        // Second spacer shouldn't sync with Removed (it's a new word).
+        removedStartTime = -1
+    } else {
+        const t = item.t
+        if (t.state === 'removed') {
+            renderedElements.push(
+                <motion.span
+                  key={`token-rem-${t.id}`}
+                  className="inline-block whitespace-pre"
+                  initial={{ width: "auto" }}
+                  animate={{ opacity: 0, filter: "blur(4px)", width: 0 }}
+                  transition={{
+                    width: { duration: duration * 0.8, ease: "easeInOut", delay: startDelay },
+                    opacity: { duration: duration * 0.4, delay: startDelay },
+                    filter: { duration: duration * 0.4, delay: startDelay }
+                  }}
+                  style={{ ...overflowStyle, width: 0 }}
+                >
+                  {t.content}
+                </motion.span>
+            )
+        } else {
+            // Shared
+            renderedElements.push(
+                <motion.span 
+                  key={`token-shared-${t.id}`} 
+                  className="inline-block whitespace-pre"
+                  style={{ paddingBottom: "0.08em" }}
+                >
+                  {t.content}
+                </motion.span>
+            )
+        }
+    }
   })
 
   return (
