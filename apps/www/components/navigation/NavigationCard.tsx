@@ -88,20 +88,30 @@ interface NavigationGridCardProps {
 	title: string;
 	description: string;
 	icon?: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+	image?: string;
 }
 
-export function NavigationGridCard({ title, description, icon: Icon, href, onClick }: NavigationGridCardProps) {
+export function NavigationGridCard({ title, description, icon: Icon, image, href, onClick }: NavigationGridCardProps) {
 	return (
 		<NavigationCard href={href} onClick={onClick} className="group flex h-full w-full select-none hover:bg-chart-1/20! dark:hover:bg-chart-1/10! focus:bg-chart-1/20!">
-			<div className="grid grid-cols-6 gap-3 w-full h-full">
-				<div className="col-span-5 flex flex-col justify-between">
+			<div className="flex gap-3 w-full h-full">
+				{image && (
+					<div className="flex-shrink-0 w-20 rounded-md overflow-hidden border border-border/60">
+						<img
+							src={image}
+							alt={title}
+							className="w-full h-full object-cover"
+						/>
+					</div>
+				)}
+				<div className="flex flex-col justify-between flex-1">
 					<div className="text-sm font-medium leading-none">{title}</div>
 					<p className="line-clamp-3 text-xs leading-snug text-muted-foreground">
 						{description}
 					</p>
 				</div>
-				{Icon && (
-					<div className="col-span-1 flex items-start justify-start">
+				{Icon && !image && (
+					<div className="flex-shrink-0 flex items-start justify-start">
 						<Icon className="size-8 text-muted-foreground/40 transition-colors group-hover:text-accent-foreground/60" strokeWidth={1.2} />
 					</div>
 				)}

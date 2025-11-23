@@ -9,76 +9,39 @@ import {
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle,
 } from "@recurse/ui/components/navigation-menu";
-import { IconQuestionMark, IconSparkles, IconGitBranch } from "@tabler/icons-react";
-import {
-	Brain,
-	GitGraph,
-	InfinityIcon,
-	Layers,
-	Network,
-	Search,
-	SendToBack,
-	Clock,
-} from "lucide-react";
+import { IconQuestionMark } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type ComponentType, type MouseEvent, useMemo } from "react";
-import { NavigationSection, type ResolvedNavigationSection } from "@/components/navigation/NavigationSection";
+import { type MouseEvent } from "react";
+import { NavigationSection } from "@/components/navigation/NavigationSection";
 import { SearchToggle } from "@/components/search/toggle";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import type { NavigationContent, NavigationIconKey } from "@/content/navigation";
+import { navigationContent, type NavigationItem } from "@/content/navigation";
 import { useScroll } from "@/contexts/ScrollContext";
 import { cn } from "@/lib/utils";
-
-type NavigationSections = Pick<NavigationContent, "about" | "features" | "blog" | "docs">;
 
 interface DefaultNavigationProps {
 	isCompact: boolean;
 	isHovered: boolean;
-	sections: NavigationSections;
+	blogItems: NavigationItem[];
 }
 
-const iconRegistry: Record<NavigationIconKey, ComponentType<{ className?: string; strokeWidth?: number }>> = {
-	network: Network,
-	sparkles: IconSparkles,
-	gitGraph: GitGraph,
-	brain: Brain,
-	sendToBack: SendToBack,
-	layers: Layers,
-	search: Search,
-	gitBranch: IconGitBranch,
-	infinity: InfinityIcon,
-	clock: Clock,
-};
-
-function resolveSection(section: NavigationSections[keyof NavigationSections]): ResolvedNavigationSection {
-	return {
-		...section,
-		items: section.items.map((item) => ({
-			...item,
-			icon: item.icon ? iconRegistry[item.icon] : undefined,
-		})),
-	};
-}
+// Navigation sections configuration
+const NAVIGATION_SECTIONS = {
+	about: navigationContent.about,
+	features: navigationContent.features,
+	docs: navigationContent.docs,
+} as const;
 
 // Accept isCompact and isHovered props
 export function DefaultNavigation({
 	isCompact,
 	isHovered,
-	sections,
+	blogItems,
 }: DefaultNavigationProps) {
 	const pathname = usePathname();
 	const { scrollToElement } = useScroll();
-	const resolvedSections = useMemo(
-		() => ({
-			about: resolveSection(sections.about),
-			features: resolveSection(sections.features),
-			blog: resolveSection(sections.blog),
-			docs: resolveSection(sections.docs),
-		}),
-		[sections],
-	);
 
 	const handleBetaClick = (e: MouseEvent) => {
 		e.preventDefault();
@@ -178,7 +141,7 @@ export function DefaultNavigation({
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
 								<NavigationSection 
-									section={resolvedSections.about}
+									section={NAVIGATION_SECTIONS.about}
 									sectionKey="about"
 									handleAnchorClick={handleAnchorClick}
 								/>
@@ -197,7 +160,7 @@ export function DefaultNavigation({
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
 								<NavigationSection 
-									section={resolvedSections.features}
+									section={NAVIGATION_SECTIONS.features}
 									sectionKey="features"
 									handleAnchorClick={handleAnchorClick}
 								/>
@@ -216,7 +179,7 @@ export function DefaultNavigation({
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
 								<NavigationSection 
-									section={resolvedSections.blog}
+									section={{ ...navigationContent.blog, items: blogItems }}
 									sectionKey="blog"
 									handleAnchorClick={handleAnchorClick}
 								/>
@@ -235,7 +198,7 @@ export function DefaultNavigation({
 							</NavigationMenuTrigger>
 							<NavigationMenuContent>
 								<NavigationSection 
-									section={resolvedSections.docs}
+									section={NAVIGATION_SECTIONS.docs}
 									sectionKey="docs"
 									handleAnchorClick={handleAnchorClick}
 								/>

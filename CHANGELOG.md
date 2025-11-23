@@ -1,5 +1,20 @@
 # Changelog
 
+## [2025-11-23T01:00:31Z] — Fix: Restore navigation styling + server-side blog data
+
+**Context:** Navigation cards were accidentally restyled during blog feature work, and client components were trying to import server-side Fumadocs code causing build errors.
+
+**Changes:**
+- Completely restored original navigation styling from main branch
+- Deleted new component files (NavigationCard.tsx, NavigationSection.tsx, DropdownGrid.tsx)
+- Made minimal changes to ListItem component to support optional blog thumbnails
+- Moved blog data fetching to server-side (layout.tsx) to fix "Module not found: fs" error
+- Blog items now populated server-side and passed down as props through Header component
+
+**Impact:** Navigation dropdowns match main styling exactly, blog entries show thumbnails on the left, and build succeeds without client/server boundary violations.
+
+**Files touched:** `apps/www/components/navigation/default.tsx`, `apps/www/content/navigation.ts`, `apps/www/app/layout.tsx`, `CHANGELOG.md`
+
 ## [2025-11-21T07:08:03Z] — Feature: TextTransitionNew + FAQ hero variations
 
 **Context:** Needed a richer token-aware text transition that measures actual widths, staggers animations per line, and reveals edits with a typed blur-in effect for reuse across marketing pages—starting with the FAQ hero copy.

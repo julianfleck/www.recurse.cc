@@ -23,7 +23,9 @@ export const docsSource = loader({
 
 							if (fs.existsSync(fullPath)) {
 								const content = fs.readFileSync(fullPath, "utf-8");
-								const updatedNode = { ...node };
+								const updatedNode = { ...node } as typeof node & {
+									data?: Record<string, unknown>;
+								};
 								
 								// Handle sidebar_label
 								const sidebarMatch = content.match(/sidebar_label:\s*(.+)/);

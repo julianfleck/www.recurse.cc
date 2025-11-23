@@ -6,6 +6,7 @@ export type BlogFrontmatter = {
 	substackUrl: string;
 	heroImage?: string;
 	sidebar_label?: string;
+	author?: string;
 };
 
 export type BlogSummary = BlogFrontmatter & {

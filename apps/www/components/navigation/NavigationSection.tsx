@@ -1,28 +1,10 @@
 import { ScrollArea } from "@recurse/ui/components/scroll-area";
-import type { ComponentType, MouseEvent } from "react";
+import type { MouseEvent } from "react";
+import type { NavigationSection as NavigationSectionType } from "@/content/navigation";
 import { NavigationHeroCard, NavigationListCard, NavigationGridCard } from "./NavigationCard";
 
-export type ResolvedNavigationItem = {
-	title: string;
-	description: string;
-	href: string;
-	icon?: ComponentType<{ className?: string; strokeWidth?: number }>;
-};
-
-export type ResolvedNavigationSection = {
-	hero: {
-		title: string;
-		description: string;
-		href: string;
-		footer?: string;
-	};
-	items: ResolvedNavigationItem[];
-	layout: "list" | "grid";
-	scrollable: boolean;
-};
-
 interface NavigationSectionProps {
-	section: ResolvedNavigationSection;
+	section: NavigationSectionType;
 	sectionKey: string;
 	handleAnchorClick: (e: MouseEvent<HTMLAnchorElement>, hash: string) => void;
 }
@@ -42,18 +24,19 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 
 	const renderItems = () => {
 		if (isGrid) {
-			// Grid layout for features
-			const gridItems = items.map((item) => (
-				<li key={item.title}>
-					<NavigationGridCard
-						href={item.href}
-						onClick={item.href.startsWith("/#") ? (e: MouseEvent<HTMLAnchorElement>) => handleAnchorClick(e, item.href.substring(2)) : undefined}
-						title={item.title}
-						description={item.description}
-						icon={item.icon}
-					/>
-				</li>
-			));
+		// Grid layout for features
+		const gridItems = items.map((item) => (
+			<li key={item.title}>
+				<NavigationGridCard
+					href={item.href}
+					onClick={item.href.startsWith("/#") ? (e: MouseEvent<HTMLAnchorElement>) => handleAnchorClick(e, item.href.substring(2)) : undefined}
+					title={item.title}
+					description={item.description}
+					icon={item.icon}
+					image={item.image}
+				/>
+			</li>
+		));
 
 			// Wrap in ScrollArea if more than 3 rows
 			if (needsScroll) {
@@ -71,16 +54,16 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 			return gridItems;
 		}
 
-		// List layout
-		const listItems = items.map((item) => (
-			<NavigationListCard
-				key={item.title}
-				href={item.href}
-				onClick={item.href.startsWith("/#") ? (e: MouseEvent<HTMLAnchorElement>) => handleAnchorClick(e, item.href.substring(2)) : undefined}
-				title={item.title}
-				description={item.description}
-			/>
-		));
+	// List layout
+	const listItems = items.map((item) => (
+		<NavigationListCard
+			key={item.title}
+			href={item.href}
+			onClick={item.href.startsWith("/#") ? (e: MouseEvent<HTMLAnchorElement>) => handleAnchorClick(e, item.href.substring(2)) : undefined}
+			title={item.title}
+			description={item.description}
+		/>
+	));
 
 		if (scrollable) {
 			return (

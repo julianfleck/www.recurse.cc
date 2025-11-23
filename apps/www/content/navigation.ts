@@ -1,16 +1,15 @@
-import { getAllBlogPosts } from "@/lib/blog";
-
-export type NavigationIconKey =
-	| "network"
-	| "sparkles"
-	| "gitGraph"
-	| "brain"
-	| "sendToBack"
-	| "layers"
-	| "search"
-	| "gitBranch"
-	| "infinity"
-	| "clock";
+import type React from "react";
+import {
+	Brain,
+	GitGraph,
+	InfinityIcon,
+	Layers,
+	Network,
+	Search,
+	SendToBack,
+	Clock,
+} from "lucide-react";
+import { IconSparkles, IconGitBranch } from "@tabler/icons-react";
 
 export type NavigationHero = {
 	title: string;
@@ -23,7 +22,8 @@ export type NavigationItem = {
 	title: string;
 	description: string;
 	href: string;
-	icon?: NavigationIconKey;
+	icon?: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+	image?: string;
 };
 
 export type NavigationLayout = "list" | "grid";
@@ -42,25 +42,26 @@ export type NavigationContent = {
 	docs: NavigationSection;
 };
 
-const BLOG_NAV_ITEMS: NavigationItem[] = getAllBlogPosts()
-	.slice(0, 6)
-	.map((post) => ({
+// Blog items will be populated server-side
+export function createBlogNavItems(blogPosts: Array<{ title: string; description?: string; url: string; heroImage?: string }>): NavigationItem[] {
+	if (blogPosts.length === 0) {
+		return [
+			{ title: "Placeholder Article 1", description: "Coming soon", href: "/blog" },
+			{ title: "Placeholder Article 2", description: "Coming soon", href: "/blog" },
+			{ title: "Placeholder Article 3", description: "Coming soon", href: "/blog" },
+			{ title: "Placeholder Article 4", description: "Coming soon", href: "/blog" },
+			{ title: "Placeholder Article 5", description: "Coming soon", href: "/blog" },
+			{ title: "Placeholder Article 6", description: "Coming soon", href: "/blog" },
+		];
+	}
+	
+	return blogPosts.slice(0, 6).map((post) => ({
 		title: post.title,
 		description: post.description ?? "",
 		href: post.url,
+		image: post.heroImage,
 	}));
-
-const DEFAULT_BLOG_NAV_ITEMS: NavigationItem[] = [
-	{ title: "Placeholder Article 1", description: "Coming soon", href: "/blog" },
-	{ title: "Placeholder Article 2", description: "Coming soon", href: "/blog" },
-	{ title: "Placeholder Article 3", description: "Coming soon", href: "/blog" },
-	{ title: "Placeholder Article 4", description: "Coming soon", href: "/blog" },
-	{ title: "Placeholder Article 5", description: "Coming soon", href: "/blog" },
-	{ title: "Placeholder Article 6", description: "Coming soon", href: "/blog" },
-];
-
-const RESOLVED_BLOG_NAV_ITEMS =
-	BLOG_NAV_ITEMS.length > 0 ? BLOG_NAV_ITEMS : DEFAULT_BLOG_NAV_ITEMS;
+}
 
 export const navigationContent: NavigationContent = {
 	about: {
@@ -105,61 +106,61 @@ export const navigationContent: NavigationContent = {
 				title: "Semantic Navigation",
 				description: "Follow typed relationships through reasoning chains",
 				href: "/#features",
-				icon: "network",
+				icon: Network,
 			},
 			{
 				title: "Adaptive Schemas",
 				description: "Works with any content, zero configuration needed",
 				href: "/#features",
-				icon: "sparkles",
+				icon: IconSparkles,
 			},
 			{
 				title: "Temporal Versioning",
 				description: "Preserve historical context while tracking changes",
 				href: "/#features",
-				icon: "gitGraph",
+				icon: GitGraph,
 			},
 			{
 				title: "Expert Knowledge",
 				description: "Subscribe to expert knowledge bases directly",
 				href: "/#features",
-				icon: "brain",
+				icon: Brain,
 			},
 			{
 				title: "Knowledge Substrate",
 				description: "Tie agent memories together in one living fabric",
 				href: "/#features",
-				icon: "sendToBack",
+				icon: SendToBack,
 			},
 			{
 				title: "Living Context",
 				description: "Query fact tables or reasoning chains from one interface",
 				href: "/#features",
-				icon: "layers",
+				icon: Layers,
 			},
 			{
 				title: "Intent Modeling",
-				description: "Every query carries the questioner’s frame and desired outcome",
+				description: "Every query carries the questioner's frame and desired outcome",
 				href: "/#features",
-				icon: "search",
+				icon: Search,
 			},
 			{
 				title: "Actionable Outputs",
 				description: "Generate multi-step plans, not just single responses",
 				href: "/#features",
-				icon: "gitBranch",
+				icon: IconGitBranch,
 			},
 			{
 				title: "Divergent Recall",
 				description: "Surface contradictions and weak signals automatically",
 				href: "/#features",
-				icon: "infinity",
+				icon: InfinityIcon,
 			},
 			{
 				title: "Realtime Synchronization",
 				description: "Keep your graph alive with streaming updates",
 				href: "/#features",
-				icon: "clock",
+				icon: Clock,
 			},
 		],
 		layout: "grid",
@@ -172,8 +173,8 @@ export const navigationContent: NavigationContent = {
 			href: "/blog",
 			footer: "Read articles →",
 		},
-		items: RESOLVED_BLOG_NAV_ITEMS,
-		layout: "list",
+		items: [],
+		layout: "grid",
 		scrollable: true,
 	},
 	docs: {

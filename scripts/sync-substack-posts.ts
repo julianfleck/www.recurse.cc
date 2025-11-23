@@ -17,6 +17,7 @@ type FeedItem = {
 	enclosure?: {
 		"@_url"?: string;
 	};
+	"dc:creator"?: string;
 };
 
 type SyncCache = {
@@ -184,6 +185,7 @@ async function processItem(
 		tags: toArray(item.category),
 		substackUrl: item.link,
 		heroImage: item.enclosure?.["@_url"],
+		author: item["dc:creator"] ?? "Recurse Team",
 		sidebar_label: title,
 	};
 
