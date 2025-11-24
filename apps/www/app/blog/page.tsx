@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
 import { GlowCard } from "@recurse/ui/components/glow-card";
 import { ScrollArea } from "@recurse/ui/components/scroll-area";
+import { Badge } from "@recurse/ui/components/badge";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";
 import { getAllBlogPosts } from "@/lib/blog";
@@ -150,38 +151,37 @@ export default function BlogIndexPage() {
 									<div className="col-span-8 lg:col-span-5">
 										<GlowCard
 											glowRadius="420px"
-											className="border border-border/70 bg-background/80 p-0 rounded-none"
+											className="border border-border/70 bg-background/80 p-0 rounded-none overflow-hidden h-[200px]"
 										>
-											<Link href={post.url} className="flex flex-col gap-4 p-6">
-												<div className="grid gap-4 md:grid-cols-[180px_1fr]">
-													{post.heroImage ? (
-														<div className="overflow-hidden border border-border/70">
-															<img
-																src={post.heroImage}
-																alt={post.title}
-																loading="lazy"
-																className="h-40 w-full object-cover transition duration-500"
-															/>
-														</div>
-													) : (
-														<div className="flex h-40 items-center justify-center border border-border/70 text-sm text-muted-foreground">
-															&nbsp;
-														</div>
-													)}
-													<div className="space-y-3">
-														<p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+											<Link href={post.url} className="group flex flex-col md:flex-row h-full">
+												{post.heroImage ? (
+													<div className="md:w-[180px] shrink-0 h-full">
+														<img
+															src={post.heroImage}
+															alt={post.title}
+															loading="lazy"
+															className="h-full w-full object-cover transition-opacity duration-300 opacity-60 group-hover:opacity-100"
+														/>
+													</div>
+												) : (
+													<div className="md:w-[180px] shrink-0 flex h-full items-center justify-center border-r border-border/70 text-sm text-muted-foreground">
+														&nbsp;
+													</div>
+												)}
+												<div className="p-6 flex flex-col justify-between flex-1">
+													<div className="grid grid-cols-[1fr_auto] gap-4 items-start">
+														<h2 className="text-2xl font-semibold tracking-tight">{post.title}</h2>
+														<Badge variant="secondary" className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
 															{new Date(post.publishedAt).toLocaleDateString(undefined, {
 																year: "numeric",
 																month: "short",
 																day: "numeric",
 															})}
-														</p>
-														<h2 className="text-2xl font-semibold tracking-tight">{post.title}</h2>
-														{post.description ? (
-															<p className="text-sm text-muted-foreground line-clamp-3">{post.description}</p>
-														) : null}
-														<div className="text-sm font-medium text-primary">Read article →</div>
+														</Badge>
 													</div>
+													{post.description ? (
+														<p className="text-sm text-muted-foreground line-clamp-3 mt-4">{post.description}</p>
+													) : null}
 												</div>
 											</Link>
 										</GlowCard>
