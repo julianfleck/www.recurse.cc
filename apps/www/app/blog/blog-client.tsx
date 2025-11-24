@@ -39,9 +39,14 @@ export function BlogClient({ posts }: BlogClientProps) {
 	const allTags = useMemo(() => {
 		const tags = new Set<string>();
 		posts.forEach((post) => {
-			if (post.tags) {
-				const tagArray = Array.isArray(post.tags) ? post.tags : [post.tags];
-				tagArray.forEach((tag) => tags.add(tag));
+			if (post.tags && Array.isArray(post.tags) && post.tags.length > 0) {
+				post.tags.forEach((tag) => {
+					if (tag && typeof tag === "string" && tag.trim()) {
+						tags.add(tag.trim());
+					}
+				});
+			} else if (post.tags && typeof post.tags === "string" && post.tags.trim()) {
+				tags.add(post.tags.trim());
 			}
 		});
 		return Array.from(tags).sort();
@@ -120,13 +125,14 @@ export function BlogClient({ posts }: BlogClientProps) {
 				<Grid8Col>
 					{/* Sidebar - 3 columns, spans all rows */}
 					<GridCell colSpan={8} lgColSpan={3} lgRowSpan="full">
-						<div className="sticky top-16 z-20">
+						<div className="sticky top-16 z-20 space-y-px">
+							{/* Search and Filter Card */}
 							<GridCard
 								enableHoverEffect
 								enableSpotlight
-								className="p-6 space-y-6 min-h-[calc(100vh-64px)] flex flex-col justify-between rounded-none pr-12"
+								className="p-6 space-y-6 rounded-none pr-12"
 							>
-								<div className="space-y-6 mb-8">
+								<div className="space-y-6">
 									{/* Search Input */}
 									<div className="space-y-4">
 										<h2 className="text-xl font-medium text-foreground">Search</h2>
@@ -200,7 +206,9 @@ export function BlogClient({ posts }: BlogClientProps) {
 											<div className="space-y-1">
 												{posts.length > 0 ? (
 													posts.slice(0, 10).map((post) => {
-														const postTags = post.tags ? (Array.isArray(post.tags) ? post.tags : [post.tags]) : [];
+														const postTags = post.tags && Array.isArray(post.tags) && post.tags.length > 0
+															? post.tags.filter((tag): tag is string => typeof tag === "string" && Boolean(tag.trim()))
+															: [];
 														return (
 															<Link
 																key={post.slug.join("/")}
@@ -243,30 +251,34 @@ export function BlogClient({ posts }: BlogClientProps) {
 											</div>
 										</ScrollArea>
 									</div>
-
-									{/* Subscribe on Substack */}
-									<div className="space-y-4 pt-6 border-t border-border/30">
-										<h3 className="text-base font-medium text-foreground">Follow us for updates</h3>
-										<p className="text-sm text-muted-foreground">
-											Get new thinking on meta-cognition, knowledge work, and human-AI collaboration delivered to your inbox.
-										</p>
-										<Button asChild variant="outline" size="sm" className="rounded-full">
-											<Link
-												href={SUBSTACK_URL}
-												target="_blank"
-												rel="noreferrer"
-											>
-												Subscribe on Substack
-												<ArrowUpRight className="ml-2 h-4 w-4" />
-											</Link>
-										</Button>
-									</div>
 								</div>
 
 								{/* Results count */}
-								<div className="text-xs text-muted-foreground select-none">
+								<div className="text-xs text-muted-foreground select-none pt-4 border-t border-border/30">
 									{filteredPosts.length}/{posts.length} {filteredPosts.length === 1 ? "article" : "articles"}
 								</div>
+							</GridCard>
+
+							{/* Subscribe Card */}
+							<GridCard
+								enableHoverEffect
+								enableSpotlight
+								className="p-6 space-y-4 rounded-none pr-12"
+							>
+								<h3 className="text-base font-medium text-foreground">Follow us for updates</h3>
+								<p className="text-sm text-muted-foreground">
+									Get new thinking on meta-cognition, knowledge work, and human-AI collaboration delivered to your inbox.
+								</p>
+								<Button asChild variant="outline" size="sm" className="rounded-full">
+									<Link
+										href={SUBSTACK_URL}
+										target="_blank"
+										rel="noreferrer"
+									>
+										Subscribe on Substack
+										<ArrowUpRight className="ml-2 h-4 w-4" />
+									</Link>
+								</Button>
 							</GridCard>
 						</div>
 					</GridCell>
@@ -276,7 +288,9 @@ export function BlogClient({ posts }: BlogClientProps) {
 						<div>
 							{filteredPosts.length > 0 ? (
 								filteredPosts.map((post) => {
-									const postTags = post.tags ? (Array.isArray(post.tags) ? post.tags : [post.tags]) : [];
+									const postTags = post.tags && Array.isArray(post.tags) && post.tags.length > 0
+										? post.tags.filter((tag): tag is string => typeof tag === "string" && Boolean(tag.trim()))
+										: [];
 									return (
 										<div key={post.slug.join("/")} className="grid grid-cols-subgrid lg:grid-cols-5 gap-x-px gap-y-px">
 											<div className="col-span-8 lg:col-span-5">
