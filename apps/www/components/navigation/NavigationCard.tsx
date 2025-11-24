@@ -96,7 +96,7 @@ export function NavigationGridCard({ title, description, icon: Icon, image, href
 		<NavigationCard href={href} onClick={onClick} className="group flex h-full w-full select-none hover:bg-chart-1/20! dark:hover:bg-chart-1/10! focus:bg-chart-1/20!">
 			<div className="flex gap-3 w-full h-full">
 				{image && (
-					<div className="flex-shrink-0 w-20 rounded-md overflow-hidden border border-border/60">
+					<div className="shrink-0 w-20 rounded-md overflow-hidden border border-border/60">
 						<img
 							src={image}
 							alt={title}
@@ -105,13 +105,13 @@ export function NavigationGridCard({ title, description, icon: Icon, image, href
 					</div>
 				)}
 				<div className="flex flex-col justify-between flex-1">
-					<div className="text-sm font-medium leading-none">{title}</div>
+					<div className="text-sm font-medium leading-tight line-clamp-2">{title}</div>
 					<p className="line-clamp-3 text-xs leading-snug text-muted-foreground">
 						{description}
 					</p>
 				</div>
 				{Icon && !image && (
-					<div className="flex-shrink-0 flex items-start justify-start">
+					<div className="shrink-0 flex items-start justify-start">
 						<Icon className="size-4 text-muted-foreground/40 transition-colors group-hover:text-accent-foreground/60" strokeWidth={1.2} />
 					</div>
 				)}

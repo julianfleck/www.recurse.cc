@@ -52,35 +52,16 @@ export function createBlogHelpers(collection: FumadocsCollection) {
 		const config = loadBlogConfig();
 		const allPosts = blogSource.getPages().map(pickFrontmatter);
 		
-		// Debug: log config in development
-		if (process.env.NODE_ENV === "development") {
-			console.log("[Blog Filter] Config loaded:", {
-				titleBlacklist: config.titleBlacklist,
-				totalPosts: allPosts.length,
-			});
-		}
-		
 		// Apply runtime filtering based on configuration
-		const filteredPosts = allPosts.filter((post) => {
-			const shouldInclude = shouldIncludeBlogItem(
+		const filteredPosts = allPosts.filter((post) =>
+			shouldIncludeBlogItem(
 				{
 					title: post.title,
 					tags: post.tags,
 				},
 				config,
-			);
-			
-			// Debug: log posts being filtered
-			if (process.env.NODE_ENV === "development" && !shouldInclude) {
-				console.log(`[Blog Filter] Filtered out: "${post.title}"`);
-			}
-			
-			return shouldInclude;
-		});
-		
-		if (process.env.NODE_ENV === "development") {
-			console.log(`[Blog Filter] Filtered ${allPosts.length} posts to ${filteredPosts.length}`);
-		}
+			),
+		);
 		
 		return filteredPosts.sort(dateSorter);
 	}

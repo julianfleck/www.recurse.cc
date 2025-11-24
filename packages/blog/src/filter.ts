@@ -33,20 +33,8 @@ export function loadBlogConfig(rootDir?: string): BlogConfiguration {
 	const configPath = join(configRoot, "content", "blog", "configuration.json");
 	try {
 		const raw = readFileSync(configPath, "utf8");
-		const parsed = JSON.parse(raw) as BlogConfiguration;
-		
-		// Debug: log config loading in development
-		if (process.env.NODE_ENV === "development") {
-			console.log(`[Blog Config] Loaded from: ${configPath}`);
-			console.log(`[Blog Config] Title blacklist:`, parsed.titleBlacklist);
-		}
-		
-		return parsed;
-	} catch (error) {
-		// Debug: log error in development
-		if (process.env.NODE_ENV === "development") {
-			console.error(`[Blog Config] Failed to load from ${configPath}:`, error);
-		}
+		return JSON.parse(raw) as BlogConfiguration;
+	} catch {
 		// Return defaults if config file doesn't exist
 		return {
 			rssFeeds: ["https://j0lian.substack.com/feed"],
@@ -98,10 +86,6 @@ export function shouldIncludeBlogItem(
 	// Check title blacklist (wildcard matching)
 	for (const blacklistPattern of config.titleBlacklist) {
 		if (matchesWildcard(title, blacklistPattern)) {
-			// Debug: log when article is filtered out
-			if (process.env.NODE_ENV === "development") {
-				console.log(`[Blog Filter] Excluding article: "${title}" (matched pattern: "${blacklistPattern}")`);
-			}
 			return false;
 		}
 	}
