@@ -80,13 +80,13 @@ export default function BlogIndexPage() {
 				<Grid8Col>
 					{/* Sidebar - 3 columns, spans all rows */}
 					<GridCell colSpan={8} lgColSpan={3} lgRowSpan="full">
-						<div className="sticky top-16 z-20">
+						<div className="sticky top-16 z-20 pr-8">
 							<GridCard
 								enableHoverEffect
 								enableSpotlight
 								className="p-6 space-y-6 min-h-[calc(100vh-64px)] flex flex-col justify-between rounded-none"
 							>
-								<div className="space-y-8">
+								<div className="space-y-8 mb-8">
 									<div className="space-y-4">
 										<h2 className="text-xl font-semibold text-foreground">Stay close to the work</h2>
 										<p className="text-sm text-muted-foreground">
@@ -104,8 +104,8 @@ export default function BlogIndexPage() {
 										</Link>
 									</div>
 
-									<div className="space-y-3">
-										<h3 className="text-base font-semibold text-foreground">Recently published</h3>
+									<div className="space-y-3 mt-8">
+										<h3 className="text-base font-semibold text-foreground">Recent articles</h3>
 										<ScrollArea className="h-[calc(100vh-400px)] pr-4">
 											<div className="space-y-1">
 												{posts.length > 0 ? (
@@ -115,8 +115,8 @@ export default function BlogIndexPage() {
 															href={post.url}
 															className="flex flex-col py-2 text-sm border-b border-border/30 transition hover:text-primary"
 														>
-															<span className="font-medium">{post.title}</span>
-															<span className="text-xs text-muted-foreground">
+															<span className="font-medium pr-6">{post.title}</span>
+															<span className="text-xs text-muted-foreground pr-6">
 																{new Date(post.publishedAt).toLocaleDateString(undefined, {
 																	year: "numeric",
 																	month: "short",
@@ -151,27 +151,24 @@ export default function BlogIndexPage() {
 									<div className="col-span-8 lg:col-span-5">
 										<GlowCard
 											glowRadius="420px"
-											className="border border-border/70 bg-background/80 p-0 rounded-none overflow-hidden h-[200px]"
+											className="border border-border/70 bg-background/80 p-6 rounded-none h-[200px]"
 										>
-											<Link href={post.url} className="group flex flex-col md:flex-row h-full">
+											<Link href={post.url} className="group flex flex-col md:flex-row h-full gap-6">
+												<div className="flex flex-col justify-between flex-1 min-w-0">
+													<h2 className="text-2xl font-semibold tracking-tight">{post.title}</h2>
+													{post.description ? (
+														<p className="text-sm text-muted-foreground line-clamp-3">{post.description}</p>
+													) : null}
+												</div>
 												{post.heroImage ? (
-													<div className="md:w-[180px] shrink-0 h-full">
+													<div className="md:w-[180px] shrink-0 h-full rounded-md overflow-hidden relative">
 														<img
 															src={post.heroImage}
 															alt={post.title}
 															loading="lazy"
-															className="h-full w-full object-cover transition-opacity duration-300 opacity-60 group-hover:opacity-100"
+															className="h-full w-full object-cover transition-all duration-300 opacity-60 group-hover:opacity-100 group-hover:scale-105"
 														/>
-													</div>
-												) : (
-													<div className="md:w-[180px] shrink-0 flex h-full items-center justify-center border-r border-border/70 text-sm text-muted-foreground">
-														&nbsp;
-													</div>
-												)}
-												<div className="p-6 flex flex-col justify-between flex-1">
-													<div className="grid grid-cols-[1fr_auto] gap-4 items-start">
-														<h2 className="text-2xl font-semibold tracking-tight">{post.title}</h2>
-														<Badge variant="secondary" className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+														<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
 															{new Date(post.publishedAt).toLocaleDateString(undefined, {
 																year: "numeric",
 																month: "short",
@@ -179,10 +176,18 @@ export default function BlogIndexPage() {
 															})}
 														</Badge>
 													</div>
-													{post.description ? (
-														<p className="text-sm text-muted-foreground line-clamp-3 mt-4">{post.description}</p>
-													) : null}
-												</div>
+												) : (
+													<div className="md:w-[180px] shrink-0 flex h-full items-center justify-center rounded-md border border-border/70 text-sm text-muted-foreground relative">
+														&nbsp;
+														<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+															{new Date(post.publishedAt).toLocaleDateString(undefined, {
+																year: "numeric",
+																month: "short",
+																day: "numeric",
+															})}
+														</Badge>
+													</div>
+												)}
 											</Link>
 										</GlowCard>
 									</div>
