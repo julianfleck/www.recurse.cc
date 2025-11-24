@@ -33,61 +33,26 @@ interface BlogClientProps {
 
 export function BlogClient({ posts }: BlogClientProps) {
 	const [searchQuery, setSearchQuery] = useState("");
-	const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
-	// Extract all unique tags from posts
-	const allTags = useMemo(() => {
-		const tags = new Set<string>();
-		posts.forEach((post) => {
-			if (post.tags && Array.isArray(post.tags) && post.tags.length > 0) {
-				post.tags.forEach((tag) => {
-					if (tag && typeof tag === "string" && tag.trim()) {
-						tags.add(tag.trim());
-					}
-				});
-			} else if (post.tags && typeof post.tags === "string" && post.tags.trim()) {
-				tags.add(post.tags.trim());
-			}
-		});
-		return Array.from(tags).sort();
-	}, [posts]);
 
 	// Check if post matches current filters
 	const postMatchesFilters = (post: BlogSummary): boolean => {
-		// Search filter
+		// Search filter only
+		if (!searchQuery) return true;
+		
 		const searchLower = searchQuery.toLowerCase();
-		const matchesSearch: boolean =
-			!searchQuery ||
+		return (
 			post.title.toLowerCase().includes(searchLower) ||
-			(post.description?.toLowerCase().includes(searchLower) ?? false) ||
-			(post.tags && (Array.isArray(post.tags) ? post.tags : [post.tags]).some((tag) =>
-				tag.toLowerCase().includes(searchLower)
-			)) ||
-			false;
-
-		// Tag filter
-		const postTags = post.tags ? (Array.isArray(post.tags) ? post.tags : [post.tags]) : [];
-		const matchesTags: boolean =
-			selectedTags.length === 0 ||
-			selectedTags.some((selectedTag) => postTags.includes(selectedTag));
-
-		return matchesSearch && matchesTags;
+			(post.description?.toLowerCase().includes(searchLower) ?? false)
+		);
 	};
 
 	// Filter posts (only affects blog cards, not recent articles)
 	const filteredPosts = useMemo(() => {
 		return posts.filter(postMatchesFilters);
-	}, [posts, searchQuery, selectedTags]);
-
-	const toggleTag = (tag: string) => {
-		setSelectedTags((prev) =>
-			prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-		);
-	};
+	}, [posts, searchQuery]);
 
 	const clearFilters = () => {
 		setSearchQuery("");
-		setSelectedTags([]);
 	};
 
 	return (
@@ -157,45 +122,17 @@ export function BlogClient({ posts }: BlogClientProps) {
 										</div>
 									</div>
 
-									{/* Filter Tags */}
-									{allTags.length > 0 && (
-										<div className="space-y-3">
-											<div className="flex items-center justify-between">
-												<h3 className="text-base font-medium text-foreground">Filter</h3>
-												<Button
-													variant="ghost"
-													size="sm"
-													onClick={clearFilters}
-													className={cn(
-														"h-6 text-xs transition-opacity select-none",
-														searchQuery || selectedTags.length > 0
-															? "opacity-100"
-															: "opacity-0 pointer-events-none"
-													)}
-												>
-													Clear
-												</Button>
-											</div>
-											<div className="flex flex-wrap gap-1.5">
-												{allTags.map((tag) => {
-													const isSelected = selectedTags.includes(tag);
-													return (
-														<Badge
-															key={tag}
-															variant={isSelected ? "primary" : "secondary"}
-															appearance={isSelected ? "outline" : "light"}
-															size="sm"
-															className={cn(
-																"cursor-pointer select-none transition-all",
-																!isSelected && "hover:border-primary/30 hover:bg-primary/20 hover:text-accent-foreground text-foreground"
-															)}
-															onClick={() => toggleTag(tag)}
-														>
-															{tag}
-														</Badge>
-													);
-												})}
-											</div>
+									{/* Clear search button */}
+									{searchQuery && (
+										<div className="flex items-center justify-end">
+											<Button
+												variant="ghost"
+												size="sm"
+												onClick={clearFilters}
+												className="h-6 text-xs"
+											>
+												Clear
+											</Button>
 										</div>
 									)}
 
@@ -205,44 +142,22 @@ export function BlogClient({ posts }: BlogClientProps) {
 										<ScrollArea className="h-[calc(100vh-500px)] pr-4">
 											<div className="space-y-1">
 												{posts.length > 0 ? (
-													posts.slice(0, 10).map((post) => {
-														const postTags = post.tags && Array.isArray(post.tags) && post.tags.length > 0
-															? post.tags.filter((tag): tag is string => typeof tag === "string" && Boolean(tag.trim()))
-															: [];
-														return (
-															<Link
-																key={post.slug.join("/")}
-																href={post.url}
-																className="flex flex-col py-2 text-sm border-b border-border/30 transition hover:text-primary"
-															>
-																<span className="font-medium pr-6">{post.title}</span>
-																<div className="flex items-center gap-2 mt-1">
-																	<span className="text-xs text-muted-foreground pr-6">
-																		{new Date(post.publishedAt).toLocaleDateString(undefined, {
-																			year: "numeric",
-																			month: "short",
-																			day: "numeric",
-																		})}
-																	</span>
-																	{postTags.length > 0 && (
-																		<div className="flex flex-wrap gap-1">
-																			{postTags.map((tag) => (
-																				<Badge
-																					key={tag}
-																					variant="secondary"
-																					appearance="light"
-																					size="sm"
-																					className="text-xs"
-																				>
-																					{tag}
-																				</Badge>
-																			))}
-																		</div>
-																	)}
-																</div>
-															</Link>
-														);
-													})
+													posts.slice(0, 10).map((post) => (
+														<Link
+															key={post.slug.join("/")}
+															href={post.url}
+															className="flex flex-col py-2 text-sm border-b border-border/30 transition hover:text-primary"
+														>
+															<span className="font-medium pr-6">{post.title}</span>
+															<span className="text-xs text-muted-foreground pr-6 mt-1">
+																{new Date(post.publishedAt).toLocaleDateString(undefined, {
+																	year: "numeric",
+																	month: "short",
+																	day: "numeric",
+																})}
+															</span>
+														</Link>
+													))
 												) : (
 													<p className="text-sm text-muted-foreground">
 														New posts will appear here after the next sync.
@@ -287,39 +202,20 @@ export function BlogClient({ posts }: BlogClientProps) {
 					<GridCell colSpan={8} lgColSpan={5}>
 						<div>
 							{filteredPosts.length > 0 ? (
-								filteredPosts.map((post) => {
-									const postTags = post.tags && Array.isArray(post.tags) && post.tags.length > 0
-										? post.tags.filter((tag): tag is string => typeof tag === "string" && Boolean(tag.trim()))
-										: [];
-									return (
-										<div key={post.slug.join("/")} className="grid grid-cols-subgrid lg:grid-cols-5 gap-x-px gap-y-px">
-											<div className="col-span-8 lg:col-span-5">
-												<GlowCard
-													glowRadius="420px"
-													className="border border-border/70 bg-background/80 p-6 rounded-none h-[200px]"
-												>
-													<Link href={post.url} className="group flex flex-col md:flex-row h-full gap-6">
-														<div className="flex flex-col justify-between flex-1 min-w-0">
-															<h2 className="text-2xl font-semibold tracking-tight">{post.title}</h2>
-															{post.description ? (
-																<p className="text-sm text-muted-foreground line-clamp-3">{post.description}</p>
-															) : null}
-															{postTags.length > 0 && (
-																<div className="flex flex-wrap gap-1.5 mt-2">
-																	{postTags.map((tag) => (
-																		<Badge
-																			key={tag}
-																			variant="secondary"
-																			appearance="light"
-																			size="sm"
-																			className="text-xs"
-																		>
-																			{tag}
-																		</Badge>
-																	))}
-																</div>
-															)}
-														</div>
+								filteredPosts.map((post) => (
+									<div key={post.slug.join("/")} className="grid grid-cols-subgrid lg:grid-cols-5 gap-x-px gap-y-px">
+										<div className="col-span-8 lg:col-span-5">
+											<GlowCard
+												glowRadius="420px"
+												className="border border-border/70 bg-background/80 p-6 rounded-none h-[200px]"
+											>
+												<Link href={post.url} className="group flex flex-col md:flex-row h-full gap-6">
+													<div className="flex flex-col justify-between flex-1 min-w-0">
+														<h2 className="text-2xl font-semibold tracking-tight">{post.title}</h2>
+														{post.description ? (
+															<p className="text-sm text-muted-foreground line-clamp-3">{post.description}</p>
+														) : null}
+													</div>
 														{post.heroImage ? (
 															<div className="md:w-[180px] shrink-0 h-full rounded-md overflow-hidden relative">
 																<img
@@ -352,8 +248,8 @@ export function BlogClient({ posts }: BlogClientProps) {
 												</GlowCard>
 											</div>
 										</div>
-									);
-								})
+									)
+								)
 							) : (
 								<div className="col-span-8 lg:col-span-5">
 									<GlowCard

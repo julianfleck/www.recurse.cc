@@ -112,7 +112,7 @@ export function NavigationGridCard({ title, description, icon: Icon, image, href
 				</div>
 				{Icon && !image && (
 					<div className="flex-shrink-0 flex items-start justify-start">
-						<Icon className="size-8 text-muted-foreground/40 transition-colors group-hover:text-accent-foreground/60" strokeWidth={1.2} />
+						<Icon className="size-4 text-muted-foreground/40 transition-colors group-hover:text-accent-foreground/60" strokeWidth={1.2} />
 					</div>
 				)}
 			</div>

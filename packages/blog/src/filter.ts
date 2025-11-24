@@ -38,12 +38,18 @@ export function loadBlogConfig(rootDir: string = process.cwd()): BlogConfigurati
  * Example: "You are the*" matches "You are the attractor..."
  */
 export function matchesWildcard(text: string, pattern: string): boolean {
+	if (!text || !pattern) return false;
+	
+	// Trim both for comparison
+	const trimmedText = text.trim();
+	const trimmedPattern = pattern.trim();
+	
 	// Escape special regex characters except *
-	const escapedPattern = pattern
+	const escapedPattern = trimmedPattern
 		.replace(/[.+?^${}()|[\]\\]/g, "\\$&")
 		.replace(/\*/g, ".*");
 	const regex = new RegExp(`^${escapedPattern}$`, "i");
-	return regex.test(text);
+	return regex.test(trimmedText);
 }
 
 /**
@@ -67,6 +73,10 @@ export function shouldIncludeBlogItem(
 	// Check title blacklist (wildcard matching)
 	for (const blacklistPattern of config.titleBlacklist) {
 		if (matchesWildcard(title, blacklistPattern)) {
+			// Debug: log when article is filtered out
+			if (process.env.NODE_ENV === "development") {
+				console.log(`[Blog Filter] Excluding article: "${title}" (matched pattern: "${blacklistPattern}")`);
+			}
 			return false;
 		}
 	}
