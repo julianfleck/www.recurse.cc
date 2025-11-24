@@ -18,6 +18,9 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 	const heroRowSpan = isGrid ? `row-span-${gridRows}` : "row-span-4";
 	const needsScroll = isGrid && gridRows > 3; // Scroll if more than 3 rows (6 items)
 	
+	// For list layout, check if scrolling is actually needed
+	const listNeedsScroll = !isGrid && scrollable && items.length * 60 + (items.length - 1) * 8 > 380;
+	
 	const gridConfig = isGrid
 		? `w-[400px] md:w-[600px] lg:w-[700px] lg:grid-cols-[13rem_repeat(2,1fr)] lg:grid-rows-${gridRows}`
 		: "w-[400px] md:w-[500px] lg:w-[600px] lg:grid-cols-[13rem_1fr]";
@@ -41,7 +44,7 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 			// Wrap in ScrollArea if more than 3 rows
 			if (needsScroll) {
 				return (
-					<div className="col-span-2 row-span-3 overflow-hidden">
+					<div className="col-span-2 row-span-3 overflow-hidden min-h-0">
 						<ScrollArea className="h-[380px]">
 							<div className="grid grid-cols-2 gap-3 pr-4">
 								{gridItems}
@@ -65,10 +68,10 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 		/>
 	));
 
-		if (scrollable) {
+		if (listNeedsScroll) {
 			return (
 				<ScrollArea className="h-[380px]">
-					<div className="space-y-2 pr-4">
+					<div className="space-y-2 pr-4 pb-2">
 						{listItems}
 					</div>
 				</ScrollArea>
@@ -79,7 +82,7 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 	};
 
 	return (
-		<ul className={`grid gap-3 p-4 max-h-[400px] ${gridConfig}`}>
+		<ul className={`grid gap-3 p-4 max-h-[420px] ${gridConfig}`}>
 			<li className={needsScroll ? "row-span-3" : heroRowSpan}>
 				<NavigationHeroCard
 					href={hero.href}
@@ -92,9 +95,9 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 			{isGrid ? (
 				// Grid layout - items are direct children of ul (or wrapped in ScrollArea div)
 				renderItems()
-			) : scrollable ? (
+			) : listNeedsScroll ? (
 				// Scrollable list layout - items wrapped in ScrollArea
-				<li className="row-span-4">
+				<li className="min-h-0">
 					{renderItems()}
 				</li>
 			) : (
