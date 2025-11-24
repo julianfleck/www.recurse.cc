@@ -4,27 +4,18 @@ import type React from "react";
 import { useMemo } from "react";
 import Link from "next/link";
 import { ScrollArea } from "@recurse/ui/components/scroll-area";
-import { Badge } from "@recurse/ui/components/badge";
-import { CopyButton } from "@recurse/ui/components/copy-button";
 import { Tree, TreeItem, TreeItemLabel } from "@recurse/ui/components/tree";
 import { syncDataLoaderFeature } from "@headless-tree/core";
 import { useTree } from "@headless-tree/react";
-import { Share2, UserRound, Twitter, Linkedin, Rss } from "lucide-react";
+import { Share2, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ShareDialog, type ShareTarget } from "./ShareDialog";
 
 type SidebarPost = {
 	title: string;
 	slug: string[];
 	url: string;
 	publishedAt: string;
-};
-
-type ShareIcon = "twitter" | "linkedin" | "substack";
-
-type ShareTarget = {
-	label: string;
-	href: string;
-	icon: ShareIcon;
 };
 
 type TreeNodeData = {
@@ -47,12 +38,6 @@ interface BlogSidebarProps {
 }
 
 const ROOT_ID = "blog-root";
-
-const shareIconMap: Record<ShareIcon, (props: { className?: string }) => React.JSX.Element> = {
-	twitter: (props) => <Twitter strokeWidth={1.5} {...props} />,
-	linkedin: (props) => <Linkedin strokeWidth={1.5} {...props} />,
-	substack: (props) => <Rss strokeWidth={1.5} {...props} />,
-};
 
 export function BlogSidebar({
 	posts,
@@ -154,34 +139,7 @@ export function BlogSidebar({
 					</Link>
 				</div>
 
-				<div className="space-y-3">
-					<p className="text-sm font-semibold text-muted-foreground">Share this essay</p>
-					<div className="flex flex-wrap gap-2">
-						{shareTargets.map(({ label, href, icon }) => (
-							<Link key={label} href={href} target="_blank" rel="noreferrer">
-								<Badge
-									variant="secondary"
-									className="flex items-center gap-2 rounded-full border border-border/60 bg-background px-3 py-1 text-xs text-muted-foreground hover:border-primary hover:text-primary"
-								>
-									{shareIconMap[icon] ? (
-										shareIconMap[icon]({ className: "h-3.5 w-3.5" })
-									) : (
-										<Share2 className="h-3.5 w-3.5" />
-									)}
-									{label}
-								</Badge>
-							</Link>
-						))}
-						<CopyButton
-							text={canonicalUrl}
-							variant="ghost"
-							size="sm"
-							className="h-7 rounded-full border border-border/60 bg-background px-3 text-xs text-muted-foreground hover:border-primary hover:text-primary"
-						>
-							Copy link
-						</CopyButton>
-					</div>
-				</div>
+				<ShareDialog shareTargets={shareTargets} canonicalUrl={canonicalUrl} title="Share this essay" />
 
 				<div className="space-y-3">
 					<p className="text-sm font-semibold text-muted-foreground">Browse archive</p>
