@@ -15,11 +15,17 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 	// Calculate grid configuration based on layout and number of items
 	const isGrid = layout === "grid";
 	const gridRows = isGrid ? Math.ceil(items.length / 2) : 0; // 2 items per row for grid
-	const heroRowSpan = isGrid ? `row-span-${gridRows}` : "row-span-4";
 	const needsScroll = isGrid && gridRows > 3; // Scroll if more than 3 rows (6 items)
 	
 	// For list layout, check if scrolling is actually needed
 	const listNeedsScroll = !isGrid && scrollable && items.length * 60 + (items.length - 1) * 8 > 380;
+	
+	// Hero row span: for grid use calculated rows, for list only use row-span if scrolling is needed
+	const heroRowSpan = isGrid 
+		? `row-span-${gridRows}` 
+		: listNeedsScroll 
+			? "row-span-4" 
+			: undefined;
 	
 	const gridConfig = isGrid
 		? `w-[400px] md:w-[600px] lg:w-[700px] lg:grid-cols-[13rem_repeat(2,1fr)] lg:grid-rows-${gridRows}`
@@ -78,7 +84,12 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 			);
 		}
 
-		return listItems;
+		// Non-scrolling list: wrap in container with vertical spacing
+		return (
+			<div className="space-y-2">
+				{listItems}
+			</div>
+		);
 	};
 
 	return (
@@ -95,14 +106,11 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 			{isGrid ? (
 				// Grid layout - items are direct children of ul (or wrapped in ScrollArea div)
 				renderItems()
-			) : listNeedsScroll ? (
-				// Scrollable list layout - items wrapped in ScrollArea
+			) : (
+				// List layout - items wrapped in container (with or without ScrollArea)
 				<li className="min-h-0">
 					{renderItems()}
 				</li>
-			) : (
-				// Non-scrollable list layout - items are direct children
-				renderItems()
 			)}
 		</ul>
 	);
