@@ -104,7 +104,7 @@ export function NavigationGridCard({ title, description, icon: Icon, image, href
 						/>
 					</div>
 				)}
-				<div className="flex flex-col justify-between flex-1">
+				<div className="flex flex-col justify-between flex-1 gap-1.5">
 					<div className="text-sm font-medium leading-tight line-clamp-2">{title}</div>
 					<p className="line-clamp-3 text-xs leading-snug text-muted-foreground">
 						{description}
