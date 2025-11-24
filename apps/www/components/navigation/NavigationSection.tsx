@@ -42,7 +42,7 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 			if (needsScroll) {
 				return (
 					<div className="col-span-2 row-span-3 overflow-hidden">
-						<ScrollArea className="h-[420px]">
+						<ScrollArea className="h-[380px]">
 							<div className="grid grid-cols-2 gap-3 pr-4">
 								{gridItems}
 							</div>
@@ -67,7 +67,7 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 
 		if (scrollable) {
 			return (
-				<ScrollArea className="h-[280px]">
+				<ScrollArea className="h-[380px]">
 					<div className="space-y-2 pr-4">
 						{listItems}
 					</div>
@@ -79,7 +79,7 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 	};
 
 	return (
-		<ul className={`grid gap-3 p-4 ${gridConfig}`}>
+		<ul className={`grid gap-3 p-4 max-h-[400px] ${gridConfig}`}>
 			<li className={needsScroll ? "row-span-3" : heroRowSpan}>
 				<NavigationHeroCard
 					href={hero.href}
