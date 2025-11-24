@@ -75,108 +75,118 @@ export default function BlogIndexPage() {
 				</ScrollAnimation>
 			</div>
 
-			<section className="py-16">
-				<Grid8Col className="gap-px">
-					<GridCell colSpan={8} lgColSpan={3}>
-						<div className="space-y-6 lg:sticky lg:top-24">
+			<section>
+				<Grid8Col>
+					{/* Sidebar - 3 columns, spans all rows */}
+					<GridCell colSpan={8} lgColSpan={3} lgRowSpan="full">
+						<div className="sticky top-16 z-20">
 							<GridCard
 								enableHoverEffect
 								enableSpotlight
-								className="p-6 lg:p-8"
+								className="p-6 space-y-6 min-h-[calc(100vh-64px)] flex flex-col justify-between rounded-none"
 							>
-								<div className="space-y-4">
-									<h2 className="text-xl font-semibold text-foreground">Stay close to the work</h2>
-									<p className="text-sm text-muted-foreground">
-										The blog is where we narrate what it takes to build living context systems. Subscribe or skim the
-										latest drops whenever you need a pulse check.
-									</p>
-									<Link
-										href={SUBSTACK_URL}
-										target="_blank"
-										rel="noreferrer"
-										className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary"
-									>
-										Get new essays in your inbox
-										<ArrowUpRight className="h-4 w-4" />
-									</Link>
-								</div>
-							</GridCard>
+								<div className="space-y-8">
+									<div className="space-y-4">
+										<h2 className="text-xl font-semibold text-foreground">Stay close to the work</h2>
+										<p className="text-sm text-muted-foreground">
+											The blog is where we narrate what it takes to build living context systems. Subscribe or skim the
+											latest drops whenever you need a pulse check.
+										</p>
+										<Link
+											href={SUBSTACK_URL}
+											target="_blank"
+											rel="noreferrer"
+											className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary"
+										>
+											Get new essays in your inbox
+											<ArrowUpRight className="h-4 w-4" />
+										</Link>
+									</div>
 
-							<GridCard className="p-6">
-								<div className="space-y-3">
-									<h3 className="text-base font-semibold text-foreground">Recently published</h3>
-									<ScrollArea className="h-[360px] pr-4">
-										<div className="space-y-2">
-											{posts.length > 0 ? (
-												posts.map((post) => (
-													<Link
-														key={post.slug.join("/")}
-														href={post.url}
-														className="flex flex-col border border-border/60 px-4 py-3 text-sm transition hover:border-primary hover:text-primary"
-													>
-														<span className="font-semibold">{post.title}</span>
-														<span className="text-xs text-muted-foreground">
-															{new Date(post.publishedAt).toLocaleDateString(undefined, {
-																year: "numeric",
-																month: "short",
-																day: "numeric",
-															})}
-														</span>
-													</Link>
-												))
-											) : (
-												<p className="text-sm text-muted-foreground">
-													New posts will appear here after the next sync.
-												</p>
-											)}
-										</div>
-									</ScrollArea>
+									<div className="space-y-3">
+										<h3 className="text-base font-semibold text-foreground">Recently published</h3>
+										<ScrollArea className="h-[calc(100vh-400px)] pr-4">
+											<div className="space-y-1">
+												{posts.length > 0 ? (
+													posts.map((post) => (
+														<Link
+															key={post.slug.join("/")}
+															href={post.url}
+															className="flex flex-col py-2 text-sm border-b border-border/30 transition hover:text-primary"
+														>
+															<span className="font-medium">{post.title}</span>
+															<span className="text-xs text-muted-foreground">
+																{new Date(post.publishedAt).toLocaleDateString(undefined, {
+																	year: "numeric",
+																	month: "short",
+																	day: "numeric",
+																})}
+															</span>
+														</Link>
+													))
+												) : (
+													<p className="text-sm text-muted-foreground">
+														New posts will appear here after the next sync.
+													</p>
+												)}
+											</div>
+										</ScrollArea>
+									</div>
+								</div>
+
+								{/* Results count */}
+								<div className="text-xs text-muted-foreground select-none">
+									{posts.length} {posts.length === 1 ? "article" : "articles"}
 								</div>
 							</GridCard>
 						</div>
 					</GridCell>
 
+					{/* Blog Posts - 5 columns */}
 					<GridCell colSpan={8} lgColSpan={5}>
-						<div className="grid gap-4">
+						<div>
 							{posts.map((post) => (
-								<GlowCard
-									key={post.slug.join("/")}
-									glowRadius="420px"
-									className="border border-border/70 bg-background/80 p-0"
-								>
-									<Link href={post.url} className="flex flex-col gap-4 p-6">
-										<div className="grid gap-4 md:grid-cols-[180px_1fr]">
-											{post.heroImage ? (
-												<div className="overflow-hidden rounded-lg border border-border/70">
-													<img
-														src={post.heroImage}
-														alt={post.title}
-														loading="lazy"
-														className="h-40 w-full object-cover transition duration-500"
-													/>
+								<div key={post.slug.join("/")} className="grid grid-cols-subgrid lg:grid-cols-5 gap-x-px gap-y-px">
+									<div className="col-span-8 lg:col-span-5">
+										<GlowCard
+											glowRadius="420px"
+											className="border border-border/70 bg-background/80 p-0 rounded-none"
+										>
+											<Link href={post.url} className="flex flex-col gap-4 p-6">
+												<div className="grid gap-4 md:grid-cols-[180px_1fr]">
+													{post.heroImage ? (
+														<div className="overflow-hidden border border-border/70">
+															<img
+																src={post.heroImage}
+																alt={post.title}
+																loading="lazy"
+																className="h-40 w-full object-cover transition duration-500"
+															/>
+														</div>
+													) : (
+														<div className="flex h-40 items-center justify-center border border-border/70 text-sm text-muted-foreground">
+															&nbsp;
+														</div>
+													)}
+													<div className="space-y-3">
+														<p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+															{new Date(post.publishedAt).toLocaleDateString(undefined, {
+																year: "numeric",
+																month: "short",
+																day: "numeric",
+															})}
+														</p>
+														<h2 className="text-2xl font-semibold tracking-tight">{post.title}</h2>
+														{post.description ? (
+															<p className="text-sm text-muted-foreground line-clamp-3">{post.description}</p>
+														) : null}
+														<div className="text-sm font-medium text-primary">Read article →</div>
+													</div>
 												</div>
-											) : (
-												<div className="flex h-40 items-center justify-center rounded-lg border border-border/70 text-sm text-muted-foreground">
-													No image
-												</div>
-											)}
-											<div className="space-y-3">
-												<p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-													{new Date(post.publishedAt).toLocaleDateString(undefined, {
-														year: "numeric",
-														month: "short",
-														day: "numeric",
-													})}
-												</p>
-												<h2 className="text-2xl font-semibold tracking-tight">{post.title}</h2>
-												{post.description ? (
-													<p className="text-sm text-muted-foreground line-clamp-3">{post.description}</p>
-												) : null}
-												<div className="text-sm font-medium text-primary">Read article →</div>
-											</div>
-										</div>
-									</Link>
-								</GlowCard>
+											</Link>
+										</GlowCard>
+									</div>
+								</div>
 							))}
 						</div>
 					</GridCell>
