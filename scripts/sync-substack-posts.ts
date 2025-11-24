@@ -5,6 +5,11 @@ import process from "node:process";
 import { XMLParser } from "fast-xml-parser";
 import matter from "gray-matter";
 import TurndownService from "turndown";
+import {
+	loadBlogConfig,
+	shouldIncludeBlogItem,
+	type BlogConfiguration,
+} from "../packages/blog/src/filter";
 
 type FeedItem = {
 	title: string;
@@ -24,16 +29,8 @@ type SyncCache = {
 	processed: Record<string, string>;
 };
 
-type BlogConfiguration = {
-	rssFeeds: string[];
-	tagWhitelist: string[];
-	tagBlacklist: string[];
-	titleBlacklist: string[];
-};
-
 const ROOT = process.cwd();
 const CONTENT_ROOT = path.join(ROOT, "content", "blog");
-const CONFIG_PATH = path.join(CONTENT_ROOT, "configuration.json");
 const CACHE_PATH = path.join(ROOT, "scripts", ".substack-sync.json");
 const MAX_ITEMS = Number(process.env.SUBSTACK_MAX_ITEMS ?? 10);
 
@@ -67,13 +64,9 @@ async function saveJSON(filePath: string, data: unknown) {
 	await writeFile(filePath, JSON.stringify(data, null, 2) + "\n", "utf8");
 }
 
-async function loadConfig(): Promise<BlogConfiguration> {
-	return loadJSON<BlogConfiguration>(CONFIG_PATH, {
-		rssFeeds: ["https://j0lian.substack.com/feed"],
-		tagWhitelist: [],
-		tagBlacklist: [],
-		titleBlacklist: [],
-	});
+function loadConfig(): BlogConfiguration {
+	// Use the shared config loader from packages/blog
+	return loadBlogConfig(ROOT);
 }
 
 async function loadCache(): Promise<SyncCache> {
@@ -89,52 +82,15 @@ function toArray<T>(value: T | T[] | undefined): T[] {
 	return Array.isArray(value) ? value : [value];
 }
 
-/**
- * Matches a string against a wildcard pattern.
- * Supports '*' for any sequence of characters.
- * Example: "You are the*" matches "You are the attractor..."
- */
-function matchesWildcard(text: string, pattern: string): boolean {
-	// Escape special regex characters except *
-	const escapedPattern = pattern
-		.replace(/[.+?^${}()|[\]\\]/g, "\\$&")
-		.replace(/\*/g, ".*");
-	const regex = new RegExp(`^${escapedPattern}$`, "i");
-	return regex.test(text);
-}
-
 function shouldInclude(item: FeedItem, config: BlogConfiguration): boolean {
-	const title = item.title?.trim() ?? "";
-	
-	// Check title blacklist (wildcard matching)
-	for (const blacklistPattern of config.titleBlacklist) {
-		if (matchesWildcard(title, blacklistPattern)) {
-			return false;
-		}
-	}
-
-	const categories = toArray(item.category).map((tag) => tag.toLowerCase());
-	
-	// If whitelist exists, item must have at least one matching tag
-	if (config.tagWhitelist.length > 0) {
-		const normalizedWhitelist = config.tagWhitelist.map((tag) => tag.toLowerCase());
-		const hasWhitelistedTag = categories.some((tag) =>
-			normalizedWhitelist.some((whitelistTag) => matchesWildcard(tag, whitelistTag))
-		);
-		if (!hasWhitelistedTag) {
-			return false;
-		}
-	}
-
-	// Check tag blacklist (wildcard matching)
-	const normalizedBlacklist = config.tagBlacklist.map((tag) => tag.toLowerCase());
-	for (const blacklistPattern of normalizedBlacklist) {
-		if (categories.some((tag) => matchesWildcard(tag, blacklistPattern))) {
-			return false;
-		}
-	}
-
-	return true;
+	// Use the shared filter function from packages/blog
+	return shouldIncludeBlogItem(
+		{
+			title: item.title,
+			tags: item.category,
+		},
+		config,
+	);
 }
 
 async function fetchFeed(feedUrl: string): Promise<FeedItem[]> {
@@ -251,8 +207,8 @@ async function processItem(
 }
 
 async function main() {
-	const config = await loadConfig();
-	console.log("→ Loading blog configuration from:", CONFIG_PATH);
+	const config = loadConfig();
+	console.log("→ Loading blog configuration from:", path.join(ROOT, "content", "blog", "configuration.json"));
 	console.log(`   RSS Feeds: ${config.rssFeeds.length}`);
 	console.log(`   Tag whitelist: ${config.tagWhitelist.length > 0 ? config.tagWhitelist.join(", ") : "none"}`);
 	console.log(`   Tag blacklist: ${config.tagBlacklist.length > 0 ? config.tagBlacklist.join(", ") : "none"}`);

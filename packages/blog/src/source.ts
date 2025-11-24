@@ -3,6 +3,7 @@ import { loader } from "fumadocs-core/source";
 import type { Page } from "fumadocs-core/source";
 import type { ComponentType } from "react";
 import type { BlogFrontmatter, BlogSummary } from "./types";
+import { loadBlogConfig, shouldIncludeBlogItem } from "./filter";
 
 type FumadocsCollection = {
 	toFumadocsSource: () => Parameters<typeof loader>[0]["source"];
@@ -48,7 +49,21 @@ export function createBlogHelpers(collection: FumadocsCollection) {
 	const pickFrontmatter = createPickFrontmatter();
 
 	function getAllBlogPosts(): BlogSummary[] {
-		return blogSource.getPages().map(pickFrontmatter).sort(dateSorter);
+		const config = loadBlogConfig();
+		const allPosts = blogSource.getPages().map(pickFrontmatter);
+		
+		// Apply runtime filtering based on configuration
+		const filteredPosts = allPosts.filter((post) =>
+			shouldIncludeBlogItem(
+				{
+					title: post.title,
+					tags: post.tags,
+				},
+				config,
+			),
+		);
+		
+		return filteredPosts.sort(dateSorter);
 	}
 
 	function getBlogPage(slug: string[]): BlogPage | undefined {
@@ -64,7 +79,15 @@ export function createBlogHelpers(collection: FumadocsCollection) {
 		if (!page) {
 			return undefined;
 		}
-		return pickFrontmatter(page);
+		const post = pickFrontmatter(page);
+		
+		// Apply runtime filtering - don't return posts that should be excluded
+		const config = loadBlogConfig();
+		if (!shouldIncludeBlogItem({ title: post.title, tags: post.tags }, config)) {
+			return undefined;
+		}
+		
+		return post;
 	}
 
 	function generateBlogParams() {
