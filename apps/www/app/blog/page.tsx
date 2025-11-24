@@ -1,16 +1,20 @@
-import type { Metadata } from "next";
+"use client";
+
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Search, X } from "lucide-react";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
 import { GlowCard } from "@recurse/ui/components/glow-card";
 import { ScrollArea } from "@recurse/ui/components/scroll-area";
 import { Badge } from "@recurse/ui/components/badge";
 import { Button } from "@recurse/ui/components/button";
+import { Input } from "@/components/ui/input";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";
 import { TextSwap } from "@/components/text-transitions/text-swap";
 import { CTASection } from "@/components/common/CTASection";
 import { getAllBlogPosts } from "@/lib/blog";
+import { cn } from "@/lib/utils";
 
 const SUBSTACK_URL = "https://j0lian.substack.com";
 
@@ -23,17 +27,59 @@ const blogHeadlines = [
 	"Living notes on cognitive patterns for human-AI collaboration",
 ];
 
-export const metadata: Metadata = {
-	title: "Blog | Recurse",
-	description:
-		"Mirrored essays and research notes from our Substack, rendered with the www layout and MDX pipeline.",
-};
-
-export const revalidate = 3600;
-
 export default function BlogIndexPage() {
-	const posts = getAllBlogPosts();
-	const yearsRepresented = new Set(posts.map((post) => new Date(post.publishedAt).getFullYear()));
+	const allPosts = getAllBlogPosts();
+	const [searchQuery, setSearchQuery] = useState("");
+	const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+	// Extract all unique tags from posts
+	const allTags = useMemo(() => {
+		const tags = new Set<string>();
+		allPosts.forEach((post) => {
+			if (post.tags) {
+				const tagArray = Array.isArray(post.tags) ? post.tags : [post.tags];
+				tagArray.forEach((tag) => tags.add(tag));
+			}
+		});
+		return Array.from(tags).sort();
+	}, [allPosts]);
+
+	// Check if post matches current filters
+	const postMatchesFilters = (post: typeof allPosts[0]): boolean => {
+		// Search filter
+		const searchLower = searchQuery.toLowerCase();
+		const matchesSearch =
+			!searchQuery ||
+			post.title.toLowerCase().includes(searchLower) ||
+			post.description?.toLowerCase().includes(searchLower) ||
+			(post.tags && (Array.isArray(post.tags) ? post.tags : [post.tags]).some((tag) =>
+				tag.toLowerCase().includes(searchLower)
+			));
+
+		// Tag filter
+		const postTags = post.tags ? (Array.isArray(post.tags) ? post.tags : [post.tags]) : [];
+		const matchesTags =
+			selectedTags.length === 0 ||
+			selectedTags.some((selectedTag) => postTags.includes(selectedTag));
+
+		return matchesSearch && matchesTags;
+	};
+
+	// Filter posts (only affects blog cards, not recent articles)
+	const filteredPosts = useMemo(() => {
+		return allPosts.filter(postMatchesFilters);
+	}, [allPosts, searchQuery, selectedTags]);
+
+	const toggleTag = (tag: string) => {
+		setSelectedTags((prev) =>
+			prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+		);
+	};
+
+	const clearFilters = () => {
+		setSearchQuery("");
+		setSelectedTags([]);
+	};
 
 	return (
 		<>
@@ -56,7 +102,7 @@ export default function BlogIndexPage() {
 											/>
 										</div>
 										<p className="text-base font-light text-muted-foreground md:text-lg">
-											Essays exploring how we think alongside AI, how knowledge systems shape understanding, and the cognitive affordances that emerge when context infrastructure mirrors the way minds actually work.
+											Essays exploring how we (will) think alongside AI, how knowledge systems shape our understanding, and the technical affordances for context infrastructures that enable true human/AI collaboration.
 										</p>
 									</div>
 								</div>
@@ -76,30 +122,80 @@ export default function BlogIndexPage() {
 								enableSpotlight
 								className="p-6 space-y-6 min-h-[calc(100vh-64px)] flex flex-col justify-between rounded-none pr-12"
 							>
-								<div className="space-y-8 mb-8">
+								<div className="space-y-6 mb-8">
+									{/* Search Input */}
 									<div className="space-y-4">
-										<h2 className="text-xl font-medium text-foreground">Follow us for updates</h2>
-										<p className="text-sm text-muted-foreground">
-											Get new thinking on meta-cognition, knowledge work, and human-AI collaboration delivered to your inbox.
-										</p>
-										<Button asChild variant="outline" size="sm" className="rounded-full mt-4">
-											<Link
-												href={SUBSTACK_URL}
-												target="_blank"
-												rel="noreferrer"
-											>
-												Subscribe on Substack
-												<ArrowUpRight className="ml-2 h-4 w-4" />
-											</Link>
-										</Button>
+										<h2 className="text-xl font-medium text-foreground">Search</h2>
+										<div className="relative">
+											<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+											<Input
+												type="text"
+												placeholder="Search articles..."
+												value={searchQuery}
+												onChange={(e) => setSearchQuery(e.target.value)}
+												className="pl-10 pr-10"
+											/>
+											{searchQuery && (
+												<button
+													type="button"
+													onClick={() => setSearchQuery("")}
+													className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+												>
+													<X className="h-4 w-4" />
+												</button>
+											)}
+										</div>
 									</div>
 
-									<div className="space-y-3 pt-8">
+									{/* Filter Tags */}
+									{allTags.length > 0 && (
+										<div className="space-y-3">
+											<div className="flex items-center justify-between">
+												<h3 className="text-base font-medium text-foreground">Filter</h3>
+												<Button
+													variant="ghost"
+													size="sm"
+													onClick={clearFilters}
+													className={cn(
+														"h-6 text-xs transition-opacity select-none",
+														searchQuery || selectedTags.length > 0
+															? "opacity-100"
+															: "opacity-0 pointer-events-none"
+													)}
+												>
+													Clear
+												</Button>
+											</div>
+											<div className="flex flex-wrap gap-1.5">
+												{allTags.map((tag) => {
+													const isSelected = selectedTags.includes(tag);
+													return (
+														<Badge
+															key={tag}
+															variant={isSelected ? "primary" : "secondary"}
+															appearance={isSelected ? "outline" : "light"}
+															size="sm"
+															className={cn(
+																"cursor-pointer select-none transition-all",
+																!isSelected && "hover:border-primary/30 hover:bg-primary/20 hover:text-accent-foreground text-foreground"
+															)}
+															onClick={() => toggleTag(tag)}
+														>
+															{tag}
+														</Badge>
+													);
+												})}
+											</div>
+										</div>
+									)}
+
+									{/* Recent articles */}
+									<div className="space-y-3 pt-4">
 										<h3 className="text-base font-semibold text-foreground">Recent articles</h3>
-										<ScrollArea className="h-[calc(100vh-400px)] pr-4">
+										<ScrollArea className="h-[calc(100vh-500px)] pr-4">
 											<div className="space-y-1">
-												{posts.length > 0 ? (
-													posts.map((post) => (
+												{allPosts.length > 0 ? (
+													allPosts.slice(0, 10).map((post) => (
 														<Link
 															key={post.slug.join("/")}
 															href={post.url}
@@ -127,7 +223,7 @@ export default function BlogIndexPage() {
 
 								{/* Results count */}
 								<div className="text-xs text-muted-foreground select-none">
-									{posts.length} {posts.length === 1 ? "article" : "articles"}
+									{filteredPosts.length}/{allPosts.length} {filteredPosts.length === 1 ? "article" : "articles"}
 								</div>
 							</GridCard>
 						</div>
@@ -136,20 +232,38 @@ export default function BlogIndexPage() {
 					{/* Blog Posts - 5 columns */}
 					<GridCell colSpan={8} lgColSpan={5}>
 						<div>
-							{posts.map((post) => (
-								<div key={post.slug.join("/")} className="grid grid-cols-subgrid lg:grid-cols-5 gap-x-px gap-y-px">
-									<div className="col-span-8 lg:col-span-5">
-										<GlowCard
-											glowRadius="420px"
-											className="border border-border/70 bg-background/80 p-6 rounded-none h-[200px]"
-										>
-											<Link href={post.url} className="group flex flex-col md:flex-row h-full gap-6">
-												<div className="flex flex-col justify-between flex-1 min-w-0">
-													<h2 className="text-2xl font-semibold tracking-tight">{post.title}</h2>
-													{post.description ? (
-														<p className="text-sm text-muted-foreground line-clamp-3">{post.description}</p>
-													) : null}
-												</div>
+							{filteredPosts.length > 0 ? (
+								filteredPosts.map((post) => {
+									const postTags = post.tags ? (Array.isArray(post.tags) ? post.tags : [post.tags]) : [];
+									return (
+										<div key={post.slug.join("/")} className="grid grid-cols-subgrid lg:grid-cols-5 gap-x-px gap-y-px">
+											<div className="col-span-8 lg:col-span-5">
+												<GlowCard
+													glowRadius="420px"
+													className="border border-border/70 bg-background/80 p-6 rounded-none h-[200px]"
+												>
+													<Link href={post.url} className="group flex flex-col md:flex-row h-full gap-6">
+														<div className="flex flex-col justify-between flex-1 min-w-0">
+															<h2 className="text-2xl font-semibold tracking-tight">{post.title}</h2>
+															{post.description ? (
+																<p className="text-sm text-muted-foreground line-clamp-3">{post.description}</p>
+															) : null}
+															{postTags.length > 0 && (
+																<div className="flex flex-wrap gap-1.5 mt-2">
+																	{postTags.map((tag) => (
+																		<Badge
+																			key={tag}
+																			variant="secondary"
+																			appearance="light"
+																			size="sm"
+																			className="text-xs"
+																		>
+																			{tag}
+																		</Badge>
+																	))}
+																</div>
+															)}
+														</div>
 												{post.heroImage ? (
 													<div className="md:w-[180px] shrink-0 h-full rounded-md overflow-hidden relative">
 														<img
@@ -182,7 +296,20 @@ export default function BlogIndexPage() {
 										</GlowCard>
 									</div>
 								</div>
-							))}
+									);
+								})
+							) : (
+								<div className="col-span-8 lg:col-span-5">
+									<GlowCard
+										glowRadius="420px"
+										className="border border-border/70 bg-background/80 p-6 rounded-none"
+									>
+										<p className="text-muted-foreground">
+											No articles match your filters. Try adjusting your search or tags.
+										</p>
+									</GlowCard>
+								</div>
+							)}
 						</div>
 					</GridCell>
 				</Grid8Col>
