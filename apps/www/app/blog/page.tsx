@@ -5,20 +5,22 @@ import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnima
 import { GlowCard } from "@recurse/ui/components/glow-card";
 import { ScrollArea } from "@recurse/ui/components/scroll-area";
 import { Badge } from "@recurse/ui/components/badge";
+import { Button } from "@recurse/ui/components/button";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";
 import { TextSwap } from "@/components/text-transitions/text-swap";
+import { CTASection } from "@/components/common/CTASection";
 import { getAllBlogPosts } from "@/lib/blog";
 
 const SUBSTACK_URL = "https://j0lian.substack.com";
 
 const blogHeadlines = [
-	"Notes on meta-cognition and thinking alongside AI",
-	"Exploring divergence, not just relevance",
-	"Rethinking knowledge work for auto-associative minds",
-	"Beyond similarity search toward exploration",
-	"Understanding the affordances of context infrastructure",
-	"Cognitive patterns for human-AI collaboration",
+	"Living notes on meta-cognition and thinking alongside AI",
+	"Living notes on divergence engines and exploration",
+	"Living notes on auto-associative workspaces",
+	"Living notes on context infrastructure affordances",
+	"Living notes on knowledge work beyond similarity search",
+	"Living notes on cognitive patterns for human-AI collaboration",
 ];
 
 export const metadata: Metadata = {
@@ -42,20 +44,18 @@ export default function BlogIndexPage() {
 							<GridCard
 								enableHoverEffect
 								enableSpotlight
-								className="px-1col py-1col lg:px-2col lg:py-1.5col"
+								className="px-1col py-1col lg:px-2col lg:py-1col"
 							>
 								<div className="space-y-6 text-left">
-									<div className="space-y-6 lg:max-w-3xl">
-										<div className="h-32 overflow-hidden">
-											<h1 className="text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
-												<TextSwap
-													texts={blogHeadlines}
-													interval={6000}
-													durationMs={800}
-												/>
-											</h1>
+									<div className="space-y-6">
+										<div className="font-semibold text-2xl leading-[1.15] tracking-tight text-foreground md:text-4xl lg:text-[2.5rem] lg:max-w-xl h-40 overflow-hidden">
+											<TextSwap
+												texts={blogHeadlines}
+												interval={6000}
+												durationMs={800}
+											/>
 										</div>
-										<p className="text-lg text-muted-foreground">
+										<p className="text-base font-light text-muted-foreground md:text-lg">
 											Essays exploring how we think alongside AI, how knowledge systems shape understanding, and the cognitive affordances that emerge when context infrastructure mirrors the way minds actually work.
 										</p>
 									</div>
@@ -66,7 +66,7 @@ export default function BlogIndexPage() {
 				</ScrollAnimation>
 			</div>
 
-			<section>
+			<section className="mb-1col">
 				<Grid8Col>
 					{/* Sidebar - 3 columns, spans all rows */}
 					<GridCell colSpan={8} lgColSpan={3} lgRowSpan="full">
@@ -78,22 +78,23 @@ export default function BlogIndexPage() {
 							>
 								<div className="space-y-8 mb-8">
 									<div className="space-y-4">
-										<h2 className="text-xl font-semibold text-foreground">Subscribe on Substack</h2>
+										<h2 className="text-xl font-medium text-foreground">Follow us for updates</h2>
 										<p className="text-sm text-muted-foreground">
-											Get new thinking on meta-cognition, knowledge work, and human-AI collaboration delivered to your inbox. These essays mirror from our Substack.
+											Get new thinking on meta-cognition, knowledge work, and human-AI collaboration delivered to your inbox.
 										</p>
-										<Link
-											href={SUBSTACK_URL}
-											target="_blank"
-											rel="noreferrer"
-											className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary"
-										>
-											Get new essays in your inbox
-											<ArrowUpRight className="h-4 w-4" />
-										</Link>
+										<Button asChild variant="outline" size="sm" className="rounded-full mt-4">
+											<Link
+												href={SUBSTACK_URL}
+												target="_blank"
+												rel="noreferrer"
+											>
+												Subscribe on Substack
+												<ArrowUpRight className="ml-2 h-4 w-4" />
+											</Link>
+										</Button>
 									</div>
 
-									<div className="space-y-3 mt-8">
+									<div className="space-y-3 pt-8">
 										<h3 className="text-base font-semibold text-foreground">Recent articles</h3>
 										<ScrollArea className="h-[calc(100vh-400px)] pr-4">
 											<div className="space-y-1">
@@ -186,6 +187,9 @@ export default function BlogIndexPage() {
 					</GridCell>
 				</Grid8Col>
 			</section>
+
+			{/* CTA Section */}
+			<CTASection />
 		</>
 	);
 }

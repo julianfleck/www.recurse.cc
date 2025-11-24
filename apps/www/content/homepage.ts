@@ -43,12 +43,12 @@ export const homepageContent = {
 	hero: {
 		headline: "The Memory Substrate for Sense-making, not just Similarity Search",
 		introText:
-			"Most systems return similar chunks and call it memory—doesn't help you understand, can't discover connections, can't trace how arguments unfold. Recurse is memory infrastructure for systems that actually understand. Ingest unstructured content from anywhere, transform it into a living knowledge graph that AI (and you) can reason through and act on.",
+			"Most systems return similar chunks and call it memory – doesn’t help you understand, can’t discover connections, can't trace how arguments unfold. Recurse is memory infrastructure for systems that actually understand. Ingest unstructured content from anywhere, transform it into a living knowledge graph that AI (and you) can reason through and act on.",
 		learnMoreHref: "/about",
 		learnMoreText: "Learn More",
 		docsText: "Read the docs",
 		headlines: [
-			"The memory layer that explores connections, not just regurgitates chunks",
+			"The memory layer that explores connections, not just similar looking chunks",
 			"The memory layer that updates it’s understanding, not just keys and values",
 			"The knowledge substrate that explores, instead of retrieving similar stuff",
 			"The knowledge substrate that understands, instead of assuming facts",
