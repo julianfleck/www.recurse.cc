@@ -7,9 +7,19 @@ import { ScrollArea } from "@recurse/ui/components/scroll-area";
 import { Badge } from "@recurse/ui/components/badge";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";
+import { TextSwap } from "@/components/text-transitions/text-swap";
 import { getAllBlogPosts } from "@/lib/blog";
 
 const SUBSTACK_URL = "https://j0lian.substack.com";
+
+const blogHeadlines = [
+	"Notes on meta-cognition and thinking alongside AI",
+	"Exploring divergence, not just relevance",
+	"Rethinking knowledge work for auto-associative minds",
+	"Beyond similarity search toward exploration",
+	"Understanding the affordances of context infrastructure",
+	"Cognitive patterns for human-AI collaboration",
+];
 
 export const metadata: Metadata = {
 	title: "Blog | Recurse",
@@ -35,39 +45,19 @@ export default function BlogIndexPage() {
 								className="px-1col py-1col lg:px-2col lg:py-1.5col"
 							>
 								<div className="space-y-6 text-left">
-									<div className="space-y-4 lg:max-w-3xl">
-										<p className="text-sm text-muted-foreground">Essays from the Recurse team</p>
-										<h1 className="text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
-											Living notes on context infrastructure
-										</h1>
+									<div className="space-y-6 lg:max-w-3xl">
+										<div className="h-32 overflow-hidden">
+											<h1 className="text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
+												<TextSwap
+													texts={blogHeadlines}
+													interval={6000}
+													durationMs={800}
+												/>
+											</h1>
+										</div>
 										<p className="text-lg text-muted-foreground">
-											Every Substack post we publish mirrors into these pages, so long-form thinking, changelogs, and
-											product experiments sit beside the rest of recurse.cc.
+											Essays exploring how we think alongside AI, how knowledge systems shape understanding, and the cognitive affordances that emerge when context infrastructure mirrors the way minds actually work.
 										</p>
-									</div>
-									<div className="flex flex-col gap-6 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
-										<div className="flex gap-6">
-											<div>
-												<p className="text-3xl font-semibold text-foreground">{posts.length}</p>
-												<p className="mt-1 text-sm text-muted-foreground">Published essays</p>
-											</div>
-											<div>
-												<p className="text-3xl font-semibold text-foreground">{yearsRepresented.size}</p>
-												<p className="mt-1 text-sm text-muted-foreground">Years of archives</p>
-											</div>
-										</div>
-										<div className="flex flex-wrap items-center gap-3">
-											<Link
-												href={SUBSTACK_URL}
-												target="_blank"
-												rel="noreferrer"
-												className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground transition hover:border-primary hover:text-primary"
-											>
-												Subscribe on Substack
-												<ArrowUpRight className="h-4 w-4" />
-											</Link>
-											<p className="text-sm text-muted-foreground">Mirrored hourly via RSS sync</p>
-										</div>
 									</div>
 								</div>
 							</GridCard>
@@ -80,18 +70,17 @@ export default function BlogIndexPage() {
 				<Grid8Col>
 					{/* Sidebar - 3 columns, spans all rows */}
 					<GridCell colSpan={8} lgColSpan={3} lgRowSpan="full">
-						<div className="sticky top-16 z-20 pr-8">
+						<div className="sticky top-16 z-20">
 							<GridCard
 								enableHoverEffect
 								enableSpotlight
-								className="p-6 space-y-6 min-h-[calc(100vh-64px)] flex flex-col justify-between rounded-none"
+								className="p-6 space-y-6 min-h-[calc(100vh-64px)] flex flex-col justify-between rounded-none pr-12"
 							>
 								<div className="space-y-8 mb-8">
 									<div className="space-y-4">
-										<h2 className="text-xl font-semibold text-foreground">Stay close to the work</h2>
+										<h2 className="text-xl font-semibold text-foreground">Subscribe on Substack</h2>
 										<p className="text-sm text-muted-foreground">
-											The blog is where we narrate what it takes to build living context systems. Subscribe or skim the
-											latest drops whenever you need a pulse check.
+											Get new thinking on meta-cognition, knowledge work, and human-AI collaboration delivered to your inbox. These essays mirror from our Substack.
 										</p>
 										<Link
 											href={SUBSTACK_URL}
