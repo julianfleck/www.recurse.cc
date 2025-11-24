@@ -1,0 +1,11 @@
+{
+	"rssFeeds": [
+		"https://j0lian.substack.com/feed"
+	],
+	"tagWhitelist": [],
+	"tagBlacklist": [],
+	"titleBlacklist": [
+		"You are the*"
+	]
+}
+

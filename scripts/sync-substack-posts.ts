@@ -24,14 +24,17 @@ type SyncCache = {
 	processed: Record<string, string>;
 };
 
+type BlogConfiguration = {
+	rssFeeds: string[];
+	tagWhitelist: string[];
+	tagBlacklist: string[];
+	titleBlacklist: string[];
+};
+
 const ROOT = process.cwd();
 const CONTENT_ROOT = path.join(ROOT, "content", "blog");
+const CONFIG_PATH = path.join(CONTENT_ROOT, "configuration.json");
 const CACHE_PATH = path.join(ROOT, "scripts", ".substack-sync.json");
-const FEED_URL = process.env.SUBSTACK_FEED_URL ?? "https://j0lian.substack.com/feed";
-const TAG_FILTER = process.env.SUBSTACK_TAG_FILTER
-	?.split(",")
-	.map((tag) => tag.trim().toLowerCase())
-	.filter(Boolean);
 const MAX_ITEMS = Number(process.env.SUBSTACK_MAX_ITEMS ?? 10);
 
 const turndown = new TurndownService({
@@ -64,6 +67,15 @@ async function saveJSON(filePath: string, data: unknown) {
 	await writeFile(filePath, JSON.stringify(data, null, 2) + "\n", "utf8");
 }
 
+async function loadConfig(): Promise<BlogConfiguration> {
+	return loadJSON<BlogConfiguration>(CONFIG_PATH, {
+		rssFeeds: ["https://j0lian.substack.com/feed"],
+		tagWhitelist: [],
+		tagBlacklist: [],
+		titleBlacklist: [],
+	});
+}
+
 async function loadCache(): Promise<SyncCache> {
 	return loadJSON<SyncCache>(CACHE_PATH, { processed: {} });
 }
@@ -77,19 +89,58 @@ function toArray<T>(value: T | T[] | undefined): T[] {
 	return Array.isArray(value) ? value : [value];
 }
 
-function shouldInclude(item: FeedItem): boolean {
-	if (!TAG_FILTER?.length) {
-		return true;
+/**
+ * Matches a string against a wildcard pattern.
+ * Supports '*' for any sequence of characters.
+ * Example: "You are the*" matches "You are the attractor..."
+ */
+function matchesWildcard(text: string, pattern: string): boolean {
+	// Escape special regex characters except *
+	const escapedPattern = pattern
+		.replace(/[.+?^${}()|[\]\\]/g, "\\$&")
+		.replace(/\*/g, ".*");
+	const regex = new RegExp(`^${escapedPattern}$`, "i");
+	return regex.test(text);
+}
+
+function shouldInclude(item: FeedItem, config: BlogConfiguration): boolean {
+	const title = item.title?.trim() ?? "";
+	
+	// Check title blacklist (wildcard matching)
+	for (const blacklistPattern of config.titleBlacklist) {
+		if (matchesWildcard(title, blacklistPattern)) {
+			return false;
+		}
 	}
 
 	const categories = toArray(item.category).map((tag) => tag.toLowerCase());
-	return categories.some((tag) => TAG_FILTER.includes(tag));
+	
+	// If whitelist exists, item must have at least one matching tag
+	if (config.tagWhitelist.length > 0) {
+		const normalizedWhitelist = config.tagWhitelist.map((tag) => tag.toLowerCase());
+		const hasWhitelistedTag = categories.some((tag) =>
+			normalizedWhitelist.some((whitelistTag) => matchesWildcard(tag, whitelistTag))
+		);
+		if (!hasWhitelistedTag) {
+			return false;
+		}
+	}
+
+	// Check tag blacklist (wildcard matching)
+	const normalizedBlacklist = config.tagBlacklist.map((tag) => tag.toLowerCase());
+	for (const blacklistPattern of normalizedBlacklist) {
+		if (categories.some((tag) => matchesWildcard(tag, blacklistPattern))) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
-async function fetchFeed(): Promise<FeedItem[]> {
-	const response = await fetch(FEED_URL);
+async function fetchFeed(feedUrl: string): Promise<FeedItem[]> {
+	const response = await fetch(feedUrl);
 	if (!response.ok) {
-		throw new Error(`Failed to fetch RSS feed (${response.status})`);
+		throw new Error(`Failed to fetch RSS feed ${feedUrl} (${response.status})`);
 	}
 	const xmlText = await response.text();
 	const parser = new XMLParser({
@@ -147,6 +198,7 @@ async function fileExists(filePath: string) {
 async function processItem(
 	item: FeedItem,
 	cache: SyncCache,
+	config: BlogConfiguration,
 ): Promise<{ slug: string; path: string } | undefined> {
 	const guid = typeof item.guid === "string" ? item.guid : item.guid?.["#text"];
 	if (!guid) return undefined;
@@ -154,7 +206,7 @@ async function processItem(
 		return undefined;
 	}
 
-	if (!shouldInclude(item)) {
+	if (!shouldInclude(item, config)) {
 		return undefined;
 	}
 
@@ -199,14 +251,42 @@ async function processItem(
 }
 
 async function main() {
-	console.log("→ syncing Substack feed:", FEED_URL);
+	const config = await loadConfig();
+	console.log("→ Loading blog configuration from:", CONFIG_PATH);
+	console.log(`   RSS Feeds: ${config.rssFeeds.length}`);
+	console.log(`   Tag whitelist: ${config.tagWhitelist.length > 0 ? config.tagWhitelist.join(", ") : "none"}`);
+	console.log(`   Tag blacklist: ${config.tagBlacklist.length > 0 ? config.tagBlacklist.join(", ") : "none"}`);
+	console.log(`   Title blacklist: ${config.titleBlacklist.length > 0 ? config.titleBlacklist.join(", ") : "none"}`);
+
 	const cache = await loadCache();
-	const items = (await fetchFeed()).slice(0, MAX_ITEMS);
+	const allItems: FeedItem[] = [];
+
+	// Fetch from all configured RSS feeds
+	for (const feedUrl of config.rssFeeds) {
+		console.log(`→ Fetching RSS feed: ${feedUrl}`);
+		try {
+			const items = await fetchFeed(feedUrl);
+			allItems.push(...items);
+			console.log(`   ✓ Found ${items.length} items`);
+		} catch (error) {
+			console.error(`   ✗ Failed to fetch feed ${feedUrl}:`, error);
+		}
+	}
+
+	// Sort by publication date (newest first) and limit
+	const sortedItems = allItems
+		.sort((a, b) => {
+			const dateA = new Date(a.pubDate).valueOf();
+			const dateB = new Date(b.pubDate).valueOf();
+			return dateB - dateA;
+		})
+		.slice(0, MAX_ITEMS);
+
 	const created: { slug: string; path: string }[] = [];
 
-	for (const item of items) {
+	for (const item of sortedItems) {
 		try {
-			const result = await processItem(item, cache);
+			const result = await processItem(item, cache, config);
 			if (result) {
 				created.push(result);
 			}
