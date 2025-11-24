@@ -199,22 +199,42 @@ export function BlogClient({ posts }: BlogClientProps) {
 										<ScrollArea className="h-[calc(100vh-500px)] pr-4">
 											<div className="space-y-1">
 												{posts.length > 0 ? (
-													posts.slice(0, 10).map((post) => (
-														<Link
-															key={post.slug.join("/")}
-															href={post.url}
-															className="flex flex-col py-2 text-sm border-b border-border/30 transition hover:text-primary"
-														>
-															<span className="font-medium pr-6">{post.title}</span>
-															<span className="text-xs text-muted-foreground pr-6">
-																{new Date(post.publishedAt).toLocaleDateString(undefined, {
-																	year: "numeric",
-																	month: "short",
-																	day: "numeric",
-																})}
-															</span>
-														</Link>
-													))
+													posts.slice(0, 10).map((post) => {
+														const postTags = post.tags ? (Array.isArray(post.tags) ? post.tags : [post.tags]) : [];
+														return (
+															<Link
+																key={post.slug.join("/")}
+																href={post.url}
+																className="flex flex-col py-2 text-sm border-b border-border/30 transition hover:text-primary"
+															>
+																<span className="font-medium pr-6">{post.title}</span>
+																<div className="flex items-center gap-2 mt-1">
+																	<span className="text-xs text-muted-foreground pr-6">
+																		{new Date(post.publishedAt).toLocaleDateString(undefined, {
+																			year: "numeric",
+																			month: "short",
+																			day: "numeric",
+																		})}
+																	</span>
+																	{postTags.length > 0 && (
+																		<div className="flex flex-wrap gap-1">
+																			{postTags.map((tag) => (
+																				<Badge
+																					key={tag}
+																					variant="secondary"
+																					appearance="light"
+																					size="sm"
+																					className="text-xs"
+																				>
+																					{tag}
+																				</Badge>
+																			))}
+																		</div>
+																	)}
+																</div>
+															</Link>
+														);
+													})
 												) : (
 													<p className="text-sm text-muted-foreground">
 														New posts will appear here after the next sync.
@@ -222,6 +242,24 @@ export function BlogClient({ posts }: BlogClientProps) {
 												)}
 											</div>
 										</ScrollArea>
+									</div>
+
+									{/* Subscribe on Substack */}
+									<div className="space-y-4 pt-6 border-t border-border/30">
+										<h3 className="text-base font-medium text-foreground">Follow us for updates</h3>
+										<p className="text-sm text-muted-foreground">
+											Get new thinking on meta-cognition, knowledge work, and human-AI collaboration delivered to your inbox.
+										</p>
+										<Button asChild variant="outline" size="sm" className="rounded-full">
+											<Link
+												href={SUBSTACK_URL}
+												target="_blank"
+												rel="noreferrer"
+											>
+												Subscribe on Substack
+												<ArrowUpRight className="ml-2 h-4 w-4" />
+											</Link>
+										</Button>
 									</div>
 								</div>
 
