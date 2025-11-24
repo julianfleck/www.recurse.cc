@@ -15,13 +15,38 @@ export type BlogItem = {
 
 /**
  * Loads blog configuration from content/blog/configuration.json
+ * Resolves from monorepo root, handling both direct execution and Next.js server components
  */
-export function loadBlogConfig(rootDir: string = process.cwd()): BlogConfiguration {
-	const configPath = join(rootDir, "content", "blog", "configuration.json");
+export function loadBlogConfig(rootDir?: string): BlogConfiguration {
+	// If rootDir not provided, try to find monorepo root
+	let configRoot = rootDir;
+	if (!configRoot) {
+		const cwd = process.cwd();
+		// If we're in apps/www or apps/docs, go up to monorepo root
+		if (cwd.includes("/apps/")) {
+			configRoot = join(cwd, "..", "..");
+		} else {
+			configRoot = cwd;
+		}
+	}
+	
+	const configPath = join(configRoot, "content", "blog", "configuration.json");
 	try {
 		const raw = readFileSync(configPath, "utf8");
-		return JSON.parse(raw) as BlogConfiguration;
-	} catch {
+		const parsed = JSON.parse(raw) as BlogConfiguration;
+		
+		// Debug: log config loading in development
+		if (process.env.NODE_ENV === "development") {
+			console.log(`[Blog Config] Loaded from: ${configPath}`);
+			console.log(`[Blog Config] Title blacklist:`, parsed.titleBlacklist);
+		}
+		
+		return parsed;
+	} catch (error) {
+		// Debug: log error in development
+		if (process.env.NODE_ENV === "development") {
+			console.error(`[Blog Config] Failed to load from ${configPath}:`, error);
+		}
 		// Return defaults if config file doesn't exist
 		return {
 			rssFeeds: ["https://j0lian.substack.com/feed"],
