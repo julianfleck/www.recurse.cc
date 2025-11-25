@@ -199,7 +199,7 @@ export function BlogClient({ posts }: BlogClientProps) {
 										href={post.url}
 										enableHoverEffect
 										enableSpotlight
-										className="group/article-card flex h-full min-h-[260px] w-full flex-col gap-6 px-1col py-1col lg:flex-row lg:p-6 rounded-none"
+										className="group/article-card flex h-full min-h-[260px] w-full flex-col gap-6 px-1col py-1col lg:flex-row-reverse lg:p-6 rounded-none"
 									>
 										{post.heroImage ? (
 											<div className="relative h-[140px] w-full shrink-0 overflow-hidden rounded-md border border-border/60 lg:h-full lg:w-[200px] lg:self-stretch">
