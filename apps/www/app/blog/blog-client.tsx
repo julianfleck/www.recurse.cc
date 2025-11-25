@@ -191,56 +191,56 @@ export function BlogClient({ posts }: BlogClientProps) {
 
 					{/* Blog Posts - 5 columns */}
 					<GridCell colSpan={8} lgColSpan={5}>
-						<div>
+						<div className="grid grid-cols-subgrid lg:grid-cols-5 gap-x-px gap-y-px">
 							{filteredPosts.length > 0 ? (
 								filteredPosts.map((post) => (
-									<div key={post.slug.join("/")} className="grid grid-cols-subgrid lg:grid-cols-5 gap-x-px gap-y-px">
-										<GridCard
-											href={post.url}
-											enableHoverEffect
-											className="group/article-card col-span-8 flex h-full min-h-[260px] flex-col gap-6 border border-border/70 bg-background/80 px-1col py-1col transition-colors duration-300 md:col-span-5 md:flex-row md:p-6"
-										>
-											{post.heroImage ? (
-												<div className="relative h-[140px] w-full shrink-0 overflow-hidden rounded-md border border-border/60 md:h-full md:w-[200px]">
-													<img
-														src={post.heroImage}
-														alt={post.title}
-														loading="lazy"
-														className="h-full w-full object-cover transition-all duration-300 opacity-60 group-hover/article-card:opacity-100 group-hover/article-card:scale-105"
-													/>
-													<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 transition-opacity duration-300 group-hover/article-card:opacity-100">
-														{new Date(post.publishedAt).toLocaleDateString(undefined, {
-															year: "numeric",
-															month: "short",
-															day: "numeric",
-														})}
-													</Badge>
-												</div>
-											) : (
-												<div className="relative flex h-[140px] w-full shrink-0 items-center justify-center rounded-md border border-border/60 text-sm text-muted-foreground md:h-full md:w-[200px]">
-													&nbsp;
-													<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 transition-opacity duration-300 group-hover/article-card:opacity-100">
-														{new Date(post.publishedAt).toLocaleDateString(undefined, {
-															year: "numeric",
-															month: "short",
-															day: "numeric",
-														})}
-													</Badge>
-												</div>
-											)}
-											<div className="flex min-w-0 flex-1 flex-col justify-between">
-												<h2 className="mb-2 text-2xl font-semibold tracking-tight text-muted-foreground transition-colors duration-300 group-hover/article-card:text-foreground md:mb-0">
-													{post.title}
-												</h2>
-												{post.description ? <p className="text-sm text-muted-foreground line-clamp-3">{post.description}</p> : null}
+									<GridCard
+										key={post.slug.join("/")}
+										href={post.url}
+										enableHoverEffect
+										enableSpotlight
+										className="group/article-card col-span-8 flex h-full min-h-[260px] flex-col gap-6 px-1col py-1col md:col-span-5 md:flex-row md:p-6 rounded-none"
+									>
+										{post.heroImage ? (
+											<div className="relative h-[140px] w-full shrink-0 overflow-hidden rounded-md border border-border/60 md:h-full md:w-[200px]">
+												<img
+													src={post.heroImage}
+													alt={post.title}
+													loading="lazy"
+													className="h-full w-full object-cover transition-all duration-300 opacity-60 group-hover/article-card:opacity-100 group-hover/article-card:scale-105"
+												/>
+												<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 transition-opacity duration-300 group-hover/article-card:opacity-100">
+													{new Date(post.publishedAt).toLocaleDateString(undefined, {
+														year: "numeric",
+														month: "short",
+														day: "numeric",
+													})}
+												</Badge>
 											</div>
-										</GridCard>
-									</div>
+										) : (
+											<div className="relative flex h-[140px] w-full shrink-0 items-center justify-center rounded-md border border-border/60 text-sm text-muted-foreground md:h-full md:w-[200px]">
+												&nbsp;
+												<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 transition-opacity duration-300 group-hover/article-card:opacity-100">
+													{new Date(post.publishedAt).toLocaleDateString(undefined, {
+														year: "numeric",
+														month: "short",
+														day: "numeric",
+													})}
+												</Badge>
+											</div>
+										)}
+										<div className="flex min-w-0 flex-1 flex-col justify-between">
+											<h2 className="mb-2 text-2xl font-semibold tracking-tight text-muted-foreground transition-colors duration-300 group-hover/article-card:text-foreground md:mb-0">
+												{post.title}
+											</h2>
+											{post.description ? <p className="text-sm text-muted-foreground line-clamp-3">{post.description}</p> : null}
+										</div>
+									</GridCard>
 								))
 							) : (
 								<GridCard
 									enableHoverEffect
-									className="col-span-8 flex min-h-[220px] items-center justify-center border border-border/70 bg-background/80 px-1col py-1col text-muted-foreground md:col-span-5 md:p-6"
+									className="col-span-8 flex min-h-[220px] items-center justify-center px-1col py-1col text-muted-foreground md:col-span-5 md:p-6 rounded-none"
 								>
 									No articles match your filters. Try adjusting your search or tags.
 								</GridCard>
