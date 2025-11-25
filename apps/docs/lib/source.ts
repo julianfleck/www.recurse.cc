@@ -4,7 +4,7 @@ import { docs } from "@/.source";
 
 // Docs source for documentation pages only
 export const docsSource = loader({
-	baseUrl: "/docs",
+	baseUrl: "/",
 	source: docs.toFumadocsSource(),
 	pageTree: {
 		transformers: [

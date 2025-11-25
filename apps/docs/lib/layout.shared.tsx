@@ -8,7 +8,7 @@ import { HealthStatus } from "../components/status-components";
  *
  * you can customise layouts individually from:
  * Home Layout: app/(home)/layout.tsx
- * Docs Layout: app/docs/layout.tsx
+ * Docs Layout: app/[[...slug]]/layout.tsx
  */
 export function baseOptions(): BaseLayoutProps {
 	// Get www URL for navigation links

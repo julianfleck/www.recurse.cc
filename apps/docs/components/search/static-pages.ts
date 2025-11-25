@@ -11,7 +11,7 @@ export const staticPages: SearchItem[] = [
 		title: "Introduction",
 		summary: "Get started with Recurse and RAGE",
 		type: "page",
-		href: "/docs/introduction",
+		href: "/introduction",
 		breadcrumbs: ["Documentation"],
 	},
 	{
@@ -19,7 +19,7 @@ export const staticPages: SearchItem[] = [
 		title: "Quickstart",
 		summary: "Quick start guide for getting up and running",
 		type: "page",
-		href: "/docs/quickstart",
+		href: "/quickstart",
 		breadcrumbs: ["Documentation"],
 	},
 	{
@@ -27,7 +27,7 @@ export const staticPages: SearchItem[] = [
 		title: "Why RAGE",
 		summary: "Understanding the benefits and use cases of RAGE",
 		type: "page",
-		href: "/docs/About/why-rage",
+		href: "/About/why-rage",
 		breadcrumbs: ["Documentation", "About"],
 	},
 	{
@@ -35,7 +35,7 @@ export const staticPages: SearchItem[] = [
 		title: "About Us",
 		summary: "Learn about the team behind Recurse",
 		type: "page",
-		href: "/docs/About/about-us",
+		href: "/About/about-us",
 		breadcrumbs: ["Documentation", "About"],
 	},
 	{
@@ -43,7 +43,7 @@ export const staticPages: SearchItem[] = [
 		title: "Pricing",
 		summary: "Pricing information for Recurse",
 		type: "page",
-		href: "/docs/About/pricing",
+		href: "/About/pricing",
 		breadcrumbs: ["Documentation", "About"],
 	},
 	// API Documentation
@@ -52,7 +52,7 @@ export const staticPages: SearchItem[] = [
 		title: "API Documentation",
 		summary: "Complete API reference for RAGE",
 		type: "page",
-		href: "/docs/api-documentation",
+		href: "/api-documentation",
 		breadcrumbs: ["Documentation"],
 	},
 	{
@@ -60,7 +60,7 @@ export const staticPages: SearchItem[] = [
 		title: "Guide",
 		summary: "Comprehensive guides for using RAGE",
 		type: "page",
-		href: "/docs/guide",
+		href: "/guide",
 		breadcrumbs: ["Documentation"],
 	},
 ];

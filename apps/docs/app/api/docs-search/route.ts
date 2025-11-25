@@ -3,8 +3,6 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { source } from "@/lib/source";
 
-// Regex for removing /docs prefix (defined at top level for performance)
-const DOCS_PREFIX_REGEX = /^\/docs\//;
 // Regex for splitting query into words
 const QUERY_SPLIT_REGEX = /\s+/;
 
@@ -139,8 +137,8 @@ export async function GET(request: NextRequest) {
 		try {
 			// Remove hash from URL to get page path
 			const pagePath = pageUrl.split("#")[0];
-			// Remove leading /docs if present
-			const relativePath = pagePath.replace(DOCS_PREFIX_REGEX, "");
+			// Remove leading slash to get relative path
+			const relativePath = pagePath.startsWith("/") ? pagePath.slice(1) : pagePath;
 
 			const page = source.getPage(relativePath.split("/"));
 			if (!page) {

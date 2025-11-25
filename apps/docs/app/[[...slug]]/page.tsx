@@ -10,11 +10,11 @@ import {
 import { source } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
 
-export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
+export default async function Page(props: PageProps<"/[[...slug]]">) {
 	const params = await props.params;
-	// Redirect /docs to introduction
+	// Redirect root to introduction
 	if (!params.slug || params.slug.length === 0) {
-		redirect("/docs/introduction");
+		redirect("/introduction");
 	}
 	const page = source.getPage(params.slug);
 	if (!page) {
@@ -60,7 +60,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata(
-	props: PageProps<"/docs/[[...slug]]">,
+	props: PageProps<"/[[...slug]]">,
 ): Promise<Metadata> {
 	const params = await props.params;
 	const page = source.getPage(params.slug);
@@ -73,3 +73,4 @@ export async function generateMetadata(
 		description: page.data.description,
 	};
 }
+

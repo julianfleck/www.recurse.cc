@@ -254,7 +254,7 @@ export default function AboutPage() {
 							<HeaderCard title="Read More" enableSpotlight />
 						</GridCell>
 						<GridCell colSpan={8} mdColSpan={4} lgColSpan={2}>
-							<GridCard href="https://docs.recurse.cc/docs/concepts/rage" enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+							<GridCard href="https://docs.recurse.cc/concepts/rage" enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
 								<div className="space-y-3">
 									<h3 className="font-medium text-lg">
 										Technical Documentation
@@ -266,7 +266,7 @@ export default function AboutPage() {
 							</GridCard>
 						</GridCell>
 						<GridCell colSpan={8} mdColSpan={4} lgColSpan={2}>
-							<GridCard href="https://docs.recurse.cc/docs/concepts" enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
+							<GridCard href="https://docs.recurse.cc/concepts" enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-4 md:p-6">
 								<div className="space-y-3">
 									<h3 className="font-medium text-lg">
 										Core Concepts

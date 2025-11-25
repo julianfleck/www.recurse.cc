@@ -3,7 +3,7 @@ import { LargeSearchToggle } from "@/components/search/toggle";
 import { docsOptions } from "@/lib/layout.shared";
 import { docsSource } from "@/lib/source";
 
-export default function Layout({ children }: LayoutProps<"/docs">) {
+export default function Layout({ children }: LayoutProps<"/[[...slug]]">) {
 	const options = docsOptions();
 	return (
 		<DocsLayout
@@ -36,3 +36,4 @@ export default function Layout({ children }: LayoutProps<"/docs">) {
 		</DocsLayout>
 	);
 }
+
