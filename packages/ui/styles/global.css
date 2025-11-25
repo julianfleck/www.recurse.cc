@@ -1020,6 +1020,12 @@ main {
   opacity: calc(var(--glow-intensity, 0) * 0.5 + 0.2);
 }
 
+/* Reduce card glow opacity when Spotlight is active to prevent double glow effect */
+body.spotlight-active .grid-card-glow:hover::after,
+body.spotlight-active .grid-card-glow[style*="--glow-intensity: 1"]::after {
+  opacity: calc(var(--glow-intensity, 0) * 0.25 + 0.1);
+}
+
 .grid-card-glow[style*="--glow-intensity: 1"] {
   z-index: 30;
 }
@@ -1041,6 +1047,12 @@ main {
 .grid-card-glow--linked:hover::after,
 .grid-card-glow--linked[style*="--glow-intensity"]::after {
   opacity: calc(var(--glow-intensity, 0) * 0.8 + 0.4);
+}
+
+/* Reduce linked card glow opacity when Spotlight is active */
+body.spotlight-active .grid-card-glow--linked:hover::after,
+body.spotlight-active .grid-card-glow--linked[style*="--glow-intensity"]::after {
+  opacity: calc(var(--glow-intensity, 0) * 0.4 + 0.2);
 }
 
 /* Navigation Card Glow Effect */
@@ -1132,13 +1144,11 @@ main {
 
 /* Spotlight effect - cursor-following glow */
 /* Using hardcoded opacity values to ensure consistency across environments */
-/* Reduced opacity values to account for backdrop-blur stacking context interaction */
 .spotlight-effect {
-  isolation: isolate;
   background: radial-gradient(
     circle,
-    rgba(var(--glow-color-rgb), 0.08) 0%,
-    rgba(var(--glow-color-rgb), 0.03) 30%,
+    rgba(var(--glow-color-rgb), 0.12) 0%,
+    rgba(var(--glow-color-rgb), 0.05) 30%,
     transparent 60%
   );
   mix-blend-mode: var(--glow-blend-mode, multiply);
@@ -1147,8 +1157,8 @@ main {
 .dark .spotlight-effect {
   background: radial-gradient(
     circle,
-    rgba(var(--glow-color-rgb), 0.06) 0%,
-    rgba(var(--glow-color-rgb), 0.03) 30%,
+    rgba(var(--glow-color-rgb), 0.1) 0%,
+    rgba(var(--glow-color-rgb), 0.05) 30%,
     transparent 60%
   );
 }

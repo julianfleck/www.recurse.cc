@@ -28,6 +28,18 @@ export function Spotlight() {
 		};
 	}, []);
 
+	// Add body class when Spotlight is active to reduce card glow opacity
+	useEffect(() => {
+		if (spotlightActive) {
+			document.body.classList.add('spotlight-active');
+		} else {
+			document.body.classList.remove('spotlight-active');
+		}
+		return () => {
+			document.body.classList.remove('spotlight-active');
+		};
+	}, [spotlightActive]);
+
 	return (
 		<div
 			ref={spotlightRef}
