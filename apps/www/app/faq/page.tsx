@@ -508,18 +508,26 @@ export default function FAQPage() {
 								).length;
 								const hasAnyMatch = matchingFaqsCount > 0;
 
+								const shouldHideSection = !hasAnyMatch && (searchQuery || selectedTags.length > 0);
+
 								return (
-									<div key={sectionIndex} className="grid grid-cols-subgrid lg:grid-cols-6 gap-x-px gap-y-px">
+									<div 
+										key={sectionIndex} 
+										className={cn(
+											"grid grid-cols-subgrid lg:grid-cols-6 gap-x-px gap-y-px",
+											isMobile && shouldHideSection && "hidden"
+										)}
+									>
 										{/* Section Label - 2 columns */}
 										<div className="col-span-8 lg:col-span-2 flex flex-col">
 											<GridCard
 												enableHoverEffect
 												enableSpotlight
-												className={`h-full p-0 transition-opacity duration-300 ${
-													!hasAnyMatch && (searchQuery || selectedTags.length > 0)
-														? "opacity-30"
-														: "opacity-100"
-												}`}
+												className={cn(
+													"h-full p-0 transition-opacity duration-300",
+													!isMobile && shouldHideSection && "opacity-30",
+													!shouldHideSection && "opacity-100"
+												)}
 											>
 												<div className="sticky top-16 z-10 px-1col py-1col md:p-6 flex flex-col justify-start">
 													<h2 className="font-semibold text-foreground text-lg md:text-xl">
@@ -542,23 +550,24 @@ export default function FAQPage() {
 												enableSpotlight
 												className={cn(
 													"px-1col py-1col md:p-6 transition-opacity duration-300",
-													!hasAnyMatch && (searchQuery || selectedTags.length > 0)
-														? "opacity-30"
-														: "opacity-100"
+													!isMobile && shouldHideSection && "opacity-30",
+													!shouldHideSection && "opacity-100"
 												)}
 											>
 												<Accordion type="single" collapsible className="w-full">
 													{section.faqs.map((faq, faqIndex) => {
 														const matches = faqMatchesFilters(faq);
+														const shouldHideFaq = !matches && (searchQuery || selectedTags.length > 0);
 														return (
 															<AccordionItem
 																key={faqIndex}
 																value={`${sectionIndex}-${faqIndex}`}
-																className={`transition-opacity duration-300 ${
-																	!matches && (searchQuery || selectedTags.length > 0)
-																		? "opacity-30"
-																		: "opacity-100"
-																}`}
+																className={cn(
+																	"transition-opacity duration-300",
+																	isMobile && shouldHideFaq && "hidden",
+																	!isMobile && shouldHideFaq && "opacity-30",
+																	!shouldHideFaq && "opacity-100"
+																)}
 															>
 																<AccordionTrigger className="text-left font-medium text-muted-foreground text-sm md:text-base hover:no-underline hover:text-accent-foreground transition-colors">
 																	{faq.question}

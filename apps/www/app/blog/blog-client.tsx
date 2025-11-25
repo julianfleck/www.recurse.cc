@@ -95,7 +95,7 @@ export function BlogClient({ posts }: BlogClientProps) {
 							<GridCard
 								enableHoverEffect
 								enableSpotlight
-								className="p-6 space-y-6 rounded-none"
+								className="px-1col py-1col md:p-6 space-y-6 rounded-none"
 							>
 								<div className="space-y-6">
 									{/* Search Input */}
@@ -177,7 +177,7 @@ export function BlogClient({ posts }: BlogClientProps) {
 							<GridCard
 								enableHoverEffect
 								enableSpotlight
-								className="p-6 space-y-4 rounded-none pr-12"
+								className="px-1col py-1col md:p-6 space-y-4 rounded-none md:pr-12"
 							>
 								<h3 className="text-base font-medium text-foreground">Follow us for updates</h3>
 								<p className="text-sm text-muted-foreground">
@@ -199,45 +199,45 @@ export function BlogClient({ posts }: BlogClientProps) {
 										<div className="col-span-8 lg:col-span-5">
 											<GlowCard
 												glowRadius="420px"
-												className="border border-border/70 bg-background/80 p-6 rounded-none h-[200px] hover:bg-background/90 transition-colors duration-300 group/article-card"
+												className="border border-border/70 bg-background/80 px-1col py-1col md:p-6 rounded-none md:h-[240px] hover:bg-background/90 transition-colors duration-300 group/article-card"
 											>
-												<Link href={post.url} className="group flex flex-col md:flex-row h-full gap-6">
+												<Link href={post.url} className="group flex flex-col md:flex-row md:h-full gap-6">
+													{post.heroImage ? (
+														<div className="md:w-[200px] w-full h-[140px] md:h-full shrink-0 rounded-md overflow-hidden relative">
+															<img
+																src={post.heroImage}
+																alt={post.title}
+																loading="lazy"
+																className="h-full w-full object-cover transition-all duration-300 opacity-60 group-hover:opacity-100 group-hover:scale-105"
+															/>
+															<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+																{new Date(post.publishedAt).toLocaleDateString(undefined, {
+																	year: "numeric",
+																	month: "short",
+																	day: "numeric",
+																})}
+															</Badge>
+														</div>
+													) : (
+														<div className="md:w-[200px] w-full h-[140px] md:h-full shrink-0 flex items-center justify-center rounded-md border border-border/70 text-sm text-muted-foreground relative">
+															&nbsp;
+															<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+																{new Date(post.publishedAt).toLocaleDateString(undefined, {
+																	year: "numeric",
+																	month: "short",
+																	day: "numeric",
+																})}
+															</Badge>
+														</div>
+													)}
 													<div className="flex flex-col justify-between flex-1 min-w-0">
-														<h2 className="text-2xl font-semibold tracking-tight text-muted-foreground! group-hover/article-card:text-foreground! transition-colors duration-300">{post.title}</h2>
+														<h2 className="text-2xl font-semibold tracking-tight text-muted-foreground! group-hover/article-card:text-foreground! transition-colors duration-300 mb-2 md:mb-0">{post.title}</h2>
 														{post.description ? (
 															<p className="text-sm text-muted-foreground line-clamp-3">{post.description}</p>
 														) : null}
 													</div>
-														{post.heroImage ? (
-															<div className="md:w-[180px] shrink-0 h-full rounded-md overflow-hidden relative">
-																<img
-																	src={post.heroImage}
-																	alt={post.title}
-																	loading="lazy"
-																	className="h-full w-full object-cover transition-all duration-300 opacity-60 group-hover:opacity-100 group-hover:scale-105"
-																/>
-																<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-																	{new Date(post.publishedAt).toLocaleDateString(undefined, {
-																		year: "numeric",
-																		month: "short",
-																		day: "numeric",
-																	})}
-																</Badge>
-															</div>
-														) : (
-															<div className="md:w-[180px] shrink-0 flex h-full items-center justify-center rounded-md border border-border/70 text-sm text-muted-foreground relative">
-																&nbsp;
-																<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-																	{new Date(post.publishedAt).toLocaleDateString(undefined, {
-																		year: "numeric",
-																		month: "short",
-																		day: "numeric",
-																	})}
-																</Badge>
-															</div>
-														)}
-													</Link>
-												</GlowCard>
+												</Link>
+											</GlowCard>
 											</div>
 										</div>
 									)
@@ -246,7 +246,7 @@ export function BlogClient({ posts }: BlogClientProps) {
 								<div className="col-span-8 lg:col-span-5">
 									<GlowCard
 										glowRadius="420px"
-										className="border border-border/70 bg-background/80 p-6 rounded-none"
+										className="border border-border/70 bg-background/80 px-1col py-1col md:p-6 rounded-none"
 									>
 										<p className="text-muted-foreground">
 											No articles match your filters. Try adjusting your search or tags.
