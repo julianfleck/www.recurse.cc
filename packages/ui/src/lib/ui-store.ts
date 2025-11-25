@@ -170,6 +170,9 @@ export const useUIStore = create<UIState>((set) => {
     // Theme management
     setTheme: (theme) => {
       set((state) => {
+        if (state.theme === theme) {
+          return state;
+        }
         const next = { ...state, theme };
         persist(next);
         return next;

@@ -8,6 +8,10 @@ import {
 import { useEffect, useRef, type ReactNode } from 'react';
 import { useUIStore } from '../lib/ui-store';
 
+type ThemePreference = 'light' | 'dark' | 'system';
+
+const THEME_SYNC_DEBOUNCE_MS = 80;
+
 /**
  * Internal component to sync next-themes with UI store (bidirectional)
  * Uses refs to track last synced values and prevent infinite loops
@@ -15,10 +19,25 @@ import { useUIStore } from '../lib/ui-store';
 function ThemeSync({ children }: { children: ReactNode }) {
   const { theme: nextTheme, setTheme: setNextTheme } = useTheme();
   const { theme: storeTheme, setTheme: setStoreTheme } = useUIStore();
-  
+
   // Track last synced values to prevent circular updates
-  const lastSyncedNextTheme = useRef<string | undefined>(nextTheme);
-  const lastSyncedStoreTheme = useRef<string | undefined>(storeTheme);
+  const lastSyncedNextTheme = useRef<ThemePreference | undefined>(
+    nextTheme as ThemePreference | undefined
+  );
+  const lastSyncedStoreTheme = useRef<ThemePreference | undefined>(
+    storeTheme as ThemePreference | undefined
+  );
+  const pendingStoreThemeUpdate = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
+
+  useEffect(() => {
+    return () => {
+      if (pendingStoreThemeUpdate.current) {
+        clearTimeout(pendingStoreThemeUpdate.current);
+      }
+    };
+  }, []);
 
   // Sync UI store -> next-themes when store changes (e.g., from another tab)
   useEffect(() => {
@@ -36,7 +55,13 @@ function ThemeSync({ children }: { children: ReactNode }) {
     if (nextTheme && nextTheme !== lastSyncedNextTheme.current) {
       lastSyncedNextTheme.current = nextTheme;
       lastSyncedStoreTheme.current = nextTheme;
-      setStoreTheme(nextTheme as 'light' | 'dark' | 'system');
+      if (pendingStoreThemeUpdate.current) {
+        clearTimeout(pendingStoreThemeUpdate.current);
+      }
+      pendingStoreThemeUpdate.current = setTimeout(() => {
+        setStoreTheme(nextTheme as ThemePreference);
+        pendingStoreThemeUpdate.current = null;
+      }, THEME_SYNC_DEBOUNCE_MS);
     }
   }, [nextTheme, setStoreTheme]); // Don't include storeTheme in deps to avoid loop
 

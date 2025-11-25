@@ -1,5 +1,11 @@
 # Changelog
 
+## [2025-11-25T07:11:01Z] — Fix: Debounce Theme Sync
+**Context:** Theme toggles caused oscillating updates between next-themes and the shared UI store, leading to visible flicker.
+**Changes:** Debounced ThemeSync writes, short-circuited identical store updates, captured research + overview updates for the new debounce requirement.
+**Impact:** Theme changes now settle once while still propagating across tabs/subdomains without loops.
+**Files touched:** `packages/ui/src/components/theme-provider.tsx`, `packages/ui/src/lib/ui-store.ts`, `docs/research/2025-11-25/01-theme-toggle-debounce.md`, `.cursor/rules/overview.mdc`, `CHANGELOG.md`
+
 ## [2025-11-23T01:00:31Z] — Fix: Restore navigation styling + server-side blog data
 
 **Context:** Navigation cards were accidentally restyled during blog feature work, and client components were trying to import server-side Fumadocs code causing build errors.
