@@ -199,41 +199,43 @@ export function BlogClient({ posts }: BlogClientProps) {
 										href={post.url}
 										enableHoverEffect
 										enableSpotlight
-										className="group/article-card relative flex h-full min-h-[260px] w-full flex-col gap-6 px-1col py-1col lg:flex-row lg:pr-[216px] lg:p-6 rounded-none"
+										className="group/article-card flex h-full min-h-[260px] w-full rounded-none"
 									>
-										{post.heroImage ? (
-											<div className="relative h-[140px] w-full shrink-0 overflow-hidden rounded-md border border-border/60 lg:absolute lg:inset-y-0 lg:right-0 lg:h-full lg:w-[200px]">
-												<img
-													src={post.heroImage}
-													alt={post.title}
-													loading="lazy"
-													className="h-full w-full object-fill transition-all duration-300 opacity-60 group-hover/article-card:opacity-100 group-hover/article-card:scale-105"
-												/>
-												<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 transition-opacity duration-300 group-hover/article-card:opacity-100">
-													{new Date(post.publishedAt).toLocaleDateString(undefined, {
-														year: "numeric",
-														month: "short",
-														day: "numeric",
-													})}
-												</Badge>
+										<div className="grid h-full w-full grid-cols-1 gap-6 px-1col py-1col lg:grid-cols-[1fr_200px] lg:p-6">
+											<div className="flex min-w-0 flex-1 flex-col justify-between">
+												<h2 className="mb-2 text-2xl font-semibold tracking-tight text-muted-foreground transition-colors duration-300 group-hover/article-card:text-foreground lg:mb-0">
+													{post.title}
+												</h2>
+												{post.description ? <p className="text-sm text-muted-foreground line-clamp-3">{post.description}</p> : null}
 											</div>
-										) : (
-											<div className="relative flex h-[140px] w-full shrink-0 items-center justify-center rounded-md border border-border/60 text-sm text-muted-foreground lg:absolute lg:inset-y-0 lg:right-0 lg:h-full lg:w-[200px]">
-												&nbsp;
-												<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 transition-opacity duration-300 group-hover/article-card:opacity-100">
-													{new Date(post.publishedAt).toLocaleDateString(undefined, {
-														year: "numeric",
-														month: "short",
-														day: "numeric",
-													})}
-												</Badge>
-											</div>
-										)}
-										<div className="flex min-w-0 flex-1 flex-col justify-between">
-											<h2 className="mb-2 text-2xl font-semibold tracking-tight text-muted-foreground transition-colors duration-300 group-hover/article-card:text-foreground lg:mb-0">
-												{post.title}
-											</h2>
-											{post.description ? <p className="text-sm text-muted-foreground line-clamp-3">{post.description}</p> : null}
+											{post.heroImage ? (
+												<div className="relative h-[140px] w-full overflow-hidden rounded-md border border-border/60 lg:h-full lg:p-2">
+													<img
+														src={post.heroImage}
+														alt={post.title}
+														loading="lazy"
+														className="h-full w-full object-cover transition-all duration-300 opacity-60 group-hover/article-card:opacity-100 group-hover/article-card:scale-105"
+													/>
+													<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 transition-opacity duration-300 group-hover/article-card:opacity-100">
+														{new Date(post.publishedAt).toLocaleDateString(undefined, {
+															year: "numeric",
+															month: "short",
+															day: "numeric",
+														})}
+													</Badge>
+												</div>
+											) : (
+												<div className="relative flex h-[140px] w-full items-center justify-center rounded-md border border-border/60 text-sm text-muted-foreground lg:h-full lg:p-2">
+													&nbsp;
+													<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 transition-opacity duration-300 group-hover/article-card:opacity-100">
+														{new Date(post.publishedAt).toLocaleDateString(undefined, {
+															year: "numeric",
+															month: "short",
+															day: "numeric",
+														})}
+													</Badge>
+												</div>
+											)}
 										</div>
 									</GridCard>
 								))
