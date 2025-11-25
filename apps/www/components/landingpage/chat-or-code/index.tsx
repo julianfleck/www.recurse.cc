@@ -1,8 +1,6 @@
 "use client";
 
-import { Button } from "@recurse/ui/components";
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { LinkButton } from "@recurse/ui/components";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";
@@ -96,16 +94,9 @@ export function ChatOrCodeSection() {
 					{/* Right Card: Button (2 cols) */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
 						<GridCard enableHoverEffect enableSpotlight className="flex h-full items-center justify-center p-6 md:p-8">
-							<Button
-								asChild
-								size="lg"
-								className="group w-full"
-							>
-								<Link href="/docs/getting-started/using-the-ui">
-									Get started
-									<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-								</Link>
-							</Button>
+							<LinkButton href="/docs/getting-started/using-the-ui" size="lg" className="w-full">
+								Get started
+							</LinkButton>
 						</GridCard>
 					</GridCell>
 				</Grid8Col>

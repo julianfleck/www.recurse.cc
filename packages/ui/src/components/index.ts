@@ -3,6 +3,7 @@
 
 // UI Components
 export * from './ExternalLinkButton';
+export * from './link-button';
 export * from './accordion-menu';
 export * from './alert';
 export * from './avatar';

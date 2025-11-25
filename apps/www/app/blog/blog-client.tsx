@@ -2,12 +2,12 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Search, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
 import { GlowCard } from "@recurse/ui/components/glow-card";
 import { ScrollArea } from "@recurse/ui/components/scroll-area";
 import { Badge } from "@recurse/ui/components/badge";
-import { Button } from "@recurse/ui/components/button";
+import { LinkButton } from "@recurse/ui/components";
 import { Input } from "@/components/ui/input";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";
@@ -183,16 +183,9 @@ export function BlogClient({ posts }: BlogClientProps) {
 								<p className="text-sm text-muted-foreground">
 									Get new thinking on meta-cognition, knowledge work, and human-AI collaboration delivered to your inbox.
 								</p>
-								<Button asChild variant="outline" size="sm" className="rounded-full">
-									<Link
-										href={SUBSTACK_URL}
-										target="_blank"
-										rel="noreferrer"
-									>
-										Subscribe on Substack
-										<ArrowUpRight className="ml-2 h-4 w-4" />
-									</Link>
-								</Button>
+								<LinkButton href={SUBSTACK_URL} variant="default" size="sm" round={false} animateIcon={false}>
+									Subscribe on Substack
+								</LinkButton>
 							</GridCard>
 						</div>
 					</GridCell>

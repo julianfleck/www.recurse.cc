@@ -1,8 +1,6 @@
 "use client";
 
-import { Button } from "@recurse/ui/components";
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { LinkButton } from "@recurse/ui/components";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";
@@ -31,12 +29,9 @@ export function ComparisonSection() {
 							{homepageContent.comparison.description}
 						</p>
 						{homepageContent.comparison.detailedComparisonHref && (
-							<Button asChild className="group rounded-full px-4 py-3 font-medium text-sm" size="default" variant="outline">
-								<Link href={homepageContent.comparison.detailedComparisonHref}>
-									Full comparison
-									<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-								</Link>
-							</Button>
+							<LinkButton href={homepageContent.comparison.detailedComparisonHref} variant="outline" size="default" className="text-sm">
+								Full comparison
+							</LinkButton>
 						)}
 					</GridCard>
 				</GridCell>

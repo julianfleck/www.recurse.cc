@@ -1,10 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Badge } from "@recurse/ui/components";
-import { Button } from "@recurse/ui/components";
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { Badge, LinkButton } from "@recurse/ui/components";
 import { IconCircleCheck, IconCircleCheckFilled } from "@tabler/icons-react";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
@@ -111,12 +108,9 @@ function FeatureCard({
 						<div
 							className={`transition-opacity duration-200 ${isCardHovered ? "opacity-100" : "opacity-0"}`}
 						>
-							<Button asChild className="group/btn w-full rounded-full px-4 py-3 font-medium text-sm" size="default" variant="outline">
-								<span className="flex items-center justify-center">
-									Learn more
-									<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-								</span>
-							</Button>
+							<LinkButton href={capability.docLink} variant="outline" size="default" className="w-full text-sm">
+								Learn more
+							</LinkButton>
 						</div>
 					)}
 					</div>
@@ -131,13 +125,7 @@ function FeatureCard({
 			onMouseEnter={() => setIsCardHovered(true)} 
 			onMouseLeave={() => setIsCardHovered(false)}
 		>
-			{capability.docLink ? (
-				<Link href={capability.docLink} className="block h-full">
-					{cardContent}
-				</Link>
-			) : (
-				cardContent
-			)}
+			{cardContent}
 		</div>
 	);
 }

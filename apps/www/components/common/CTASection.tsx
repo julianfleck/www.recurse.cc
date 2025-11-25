@@ -1,8 +1,7 @@
 "use client";
 
-import { Button } from "@recurse/ui/components";
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { LinkButton } from "@recurse/ui/components";
+import { getDocsUrl } from "@/lib/utils";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";
@@ -28,28 +27,12 @@ export function CTASection() {
 								</p>
 
 								<div className="flex flex-wrap gap-4">
-									<Button
-										asChild
-										className="group rounded-full px-4 py-3 font-medium text-base"
-										size="default"
-										variant="default"
-									>
-										<Link href="/about">
-											Learn More
-											<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-										</Link>
-									</Button>
-									<Button
-										asChild
-										className="group rounded-full px-4 py-3 font-medium text-base"
-										size="default"
-										variant="outline"
-									>
-										<Link href="/docs">
-											View Documentation
-											<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-										</Link>
-									</Button>
+									<LinkButton href="/about" variant="default">
+										Learn More
+									</LinkButton>
+									<LinkButton href={`${getDocsUrl()}`} variant="outline">
+										View Documentation
+									</LinkButton>
 								</div>
 							</div>
 						</GridCard>

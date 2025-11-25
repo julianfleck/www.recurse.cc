@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Search, X, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { Search, X } from "lucide-react";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
 import { CTASection } from "@/components/common/CTASection";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
@@ -15,7 +14,7 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@recurse/ui/components/badge";
 import { Input } from "@/components/ui/input";
-import { Button } from "@recurse/ui/components/button";
+import { Button, LinkButton } from "@recurse/ui/components";
 import { getDocsUrl, cn } from "@/lib/utils";
 
 interface FAQ {
@@ -402,13 +401,13 @@ export default function FAQPage() {
 								<div className="space-y-8 text-left pl-6">
 									<div className="space-y-8">
 										<div className="lg:max-w-lg">
-											<h1 className="font-semibold text-2xl leading-[1.15]! tracking-tight md:text-4xl lg:text-5xl text-accent-foreground lg:max-w-3xl">
+											<h1 className="font-medium text-2xl leading-[1.15]! tracking-tight md:text-4xl lg:text-5xl text-accent-foreground lg:max-w-3xl">
 							Frequently Asked Questions
 						</h1>
 										</div>
 									</div>
 									<div>
-										<p className="max-w-4xl text-muted-foreground text-lg leading-relaxed md:text-xl lg:text-2xl">
+										<p className="max-w-4xl text-muted-foreground text-lg leading-relaxed md:text-xl">
 											Find answers to common questions about Recurse, RAGE, memory infrastructure, and building context-aware AI.
 						</p>
 					</div>
@@ -563,21 +562,13 @@ export default function FAQPage() {
 																	{faq.question}
 																</AccordionTrigger>
 																<AccordionContent className="space-y-4">
-																	<p className="font-light text-foreground text-sm leading-relaxed md:text-lg">
+																	<p className="font-light text-foreground text-sm leading-relaxed md:text-base">
 																		{faq.answer}
 																	</p>
 																	{faq.docLink && (
-																		<Button
-																			asChild
-																			variant="ghost"
-																			size="sm"
-																			className="group rounded-full"
-																		>
-																			<Link href={`${getDocsUrl()}${faq.docLink.href}`}>
-																				{faq.docLink.label}
-																				<ArrowRight className="ml-2 h-3 w-3 transition-transform group-hover:translate-x-1" />
-																			</Link>
-																		</Button>
+																		<LinkButton href={`${getDocsUrl()}${faq.docLink.href}`} variant="secondary" size="sm" round={false}>
+																			{faq.docLink.label}
+																		</LinkButton>
 																	)}
 																	<div className="flex flex-wrap gap-1.5 pt-2">
 																		{faq.tags.map((tag) => (

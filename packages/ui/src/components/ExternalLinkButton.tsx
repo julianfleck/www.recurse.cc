@@ -1,8 +1,6 @@
 "use client";
 
-import { Button } from "@recurse/ui/components";
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { LinkButton } from "./link-button";
 
 interface ExternalLinkButtonProps {
 	variant?: "default" | "subtle" | "outline" | "ghost";
@@ -10,29 +8,21 @@ interface ExternalLinkButtonProps {
 	children: React.ReactNode;
 }
 
+/**
+ * @deprecated Use LinkButton instead. This component is kept for backward compatibility.
+ * ExternalLinkButton was hardcoded to /docs/introduction. Use LinkButton with getDocsUrl() for flexibility.
+ * Example: <LinkButton href={`${getDocsUrl()}/introduction`} variant="subtle">Docs</LinkButton>
+ */
 export function ExternalLinkButton({
 	variant = "subtle",
 	showArrow = false,
 	children,
 }: ExternalLinkButtonProps) {
-	// Simply use /docs path - the redirect page will handle forwarding to the correct app
-	const content = (
-		<>
-			{children}
-			{showArrow && (
-				<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-			)}
-		</>
-	);
-
+	// Use LinkButton internally - redirects to /docs/introduction which will forward to docs app
+	// Note: showArrow is ignored as LinkButton handles icons automatically
 	return (
-		<Button
-			asChild
-			className="group rounded-full px-4 py-3 font-medium text-base"
-			size="default"
-			variant={variant}
-		>
-			<Link href="/docs/introduction">{content}</Link>
-		</Button>
+		<LinkButton href="/docs/introduction" variant={variant}>
+			{children}
+		</LinkButton>
 	);
 }

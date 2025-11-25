@@ -1,8 +1,6 @@
 "use client";
 
-import { Button, ExternalLinkButton } from "@recurse/ui/components";
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { LinkButton } from "@recurse/ui/components";
 import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnimation";
 import { AnimatedGraphExample } from "@/components/examples/graphs/AnimatedGraphExample";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
@@ -10,6 +8,7 @@ import { GridCard } from "@/components/layout/GridCard";
 import { HeaderCard } from "@/components/layout/HeaderCard";
 import { homepageContent } from "@/content/homepage";
 import { TextSwap } from "@/components/text-transitions/text-swap";
+import { getDocsUrl } from "@/lib/utils";
 
 export function Hero() {
 	return (
@@ -34,8 +33,8 @@ export function Hero() {
 									</p>
 								</div>
 								<div className="flex flex-wrap gap-4">
-									<ExternalLinkButton variant="default">FAQ</ExternalLinkButton>
-									<ExternalLinkButton variant="subtle">{homepageContent.hero.docsText}</ExternalLinkButton>
+									<LinkButton href="/faq" variant="default">FAQ</LinkButton>
+									<LinkButton href={`${getDocsUrl()}/introduction`} variant="subtle">{homepageContent.hero.docsText}</LinkButton>
 								</div>
 							</div>
 						</GridCard>
