@@ -202,7 +202,7 @@ export function BlogClient({ posts }: BlogClientProps) {
 										className="group/article-card flex h-full min-h-[260px] w-full flex-col gap-6 px-1col py-1col lg:flex-row lg:p-6 rounded-none"
 									>
 										{post.heroImage ? (
-											<div className="relative h-[140px] w-full shrink-0 overflow-hidden rounded-md border border-border/60 lg:h-full lg:w-[200px]">
+											<div className="relative h-[140px] w-full shrink-0 overflow-hidden rounded-md border border-border/60 lg:h-full lg:w-[200px] lg:self-stretch">
 												<img
 													src={post.heroImage}
 													alt={post.title}
@@ -218,7 +218,7 @@ export function BlogClient({ posts }: BlogClientProps) {
 												</Badge>
 											</div>
 										) : (
-											<div className="relative flex h-[140px] w-full shrink-0 items-center justify-center rounded-md border border-border/60 text-sm text-muted-foreground lg:h-full lg:w-[200px]">
+											<div className="relative flex h-[140px] w-full shrink-0 items-center justify-center rounded-md border border-border/60 text-sm text-muted-foreground lg:h-full lg:w-[200px] lg:self-stretch">
 												&nbsp;
 												<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 transition-opacity duration-300 group-hover/article-card:opacity-100">
 													{new Date(post.publishedAt).toLocaleDateString(undefined, {
