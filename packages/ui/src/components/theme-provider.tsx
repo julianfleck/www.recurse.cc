@@ -12,6 +12,9 @@ type ThemePreference = 'light' | 'dark' | 'system';
 
 const THEME_SYNC_DEBOUNCE_MS = 80;
 
+const isThemePreference = (value: unknown): value is ThemePreference =>
+  value === 'light' || value === 'dark' || value === 'system';
+
 /**
  * Internal component to sync next-themes with UI store (bidirectional)
  * Uses refs to track last synced values and prevent infinite loops
@@ -20,12 +23,17 @@ function ThemeSync({ children }: { children: ReactNode }) {
   const { theme: nextTheme, setTheme: setNextTheme } = useTheme();
   const { theme: storeTheme, setTheme: setStoreTheme } = useUIStore();
 
+  const normalizedNextTheme = isThemePreference(nextTheme) ? nextTheme : undefined;
+  const normalizedStoreTheme = isThemePreference(storeTheme)
+    ? storeTheme
+    : undefined;
+
   // Track last synced values to prevent circular updates
   const lastSyncedNextTheme = useRef<ThemePreference | undefined>(
-    nextTheme as ThemePreference | undefined
+    normalizedNextTheme
   );
   const lastSyncedStoreTheme = useRef<ThemePreference | undefined>(
-    storeTheme as ThemePreference | undefined
+    normalizedStoreTheme
   );
   const pendingStoreThemeUpdate = useRef<ReturnType<typeof setTimeout> | null>(
     null
@@ -52,7 +60,10 @@ function ThemeSync({ children }: { children: ReactNode }) {
   // Sync next-themes -> UI store when next-themes changes (e.g., user toggles theme)
   useEffect(() => {
     // Only sync if next-themes actually changed from what we last synced
-    if (nextTheme && nextTheme !== lastSyncedNextTheme.current) {
+    if (
+      isThemePreference(nextTheme) &&
+      nextTheme !== lastSyncedNextTheme.current
+    ) {
       lastSyncedNextTheme.current = nextTheme;
       lastSyncedStoreTheme.current = nextTheme;
       if (pendingStoreThemeUpdate.current) {
