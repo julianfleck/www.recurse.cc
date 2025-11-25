@@ -199,10 +199,10 @@ export function BlogClient({ posts }: BlogClientProps) {
 										href={post.url}
 										enableHoverEffect
 										enableSpotlight
-										className="group/article-card h-full min-h-[260px] w-full rounded-none"
+										className="group/article-card min-h-full md:h-[260px] w-full rounded-none"
 									>
 										<div className="grid h-full w-full grid-cols-1 gap-6 px-1col py-1col lg:grid-cols-[1fr_200px] lg:grid-rows-1 lg:p-6">
-											<div className="flex h-full min-w-0 flex-col justify-between">
+											<div className="flex h-full min-w-0 flex-col justify-between pr-12">
 												<h2 className="mb-2 text-2xl font-semibold tracking-tight text-muted-foreground transition-colors duration-300 group-hover/article-card:text-foreground lg:mb-0">
 													{post.title}
 												</h2>
