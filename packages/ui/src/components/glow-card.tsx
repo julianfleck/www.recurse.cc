@@ -26,9 +26,17 @@ export interface GlowCardProps extends React.HTMLAttributes<GlowCardElement> {
    */
   backgroundGlowIntensity?: number;
   /**
+   * Controls hover strength for the background glow (0-1).
+   */
+  backgroundGlowHoverIntensity?: number;
+  /**
    * Controls how strong the border glow appears (0-1).
    */
   borderGlowIntensity?: number;
+  /**
+   * Controls hover strength for the border glow (0-1).
+   */
+  borderGlowHoverIntensity?: number;
 }
 
 export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
@@ -38,7 +46,9 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
       enableGlow = true,
       glowRadius = '500px',
       backgroundGlowIntensity = 0.02,
+      backgroundGlowHoverIntensity,
       borderGlowIntensity = 0.38,
+      borderGlowHoverIntensity,
       className,
       style,
       ...props
@@ -79,9 +89,9 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
 
     const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
     const borderRest = clamp(borderGlowIntensity, 0, 1);
-    const borderHover = clamp(borderRest * 1.6, 0, 1);
-    const backgroundRest = clamp(backgroundGlowIntensity, 0, 0.3);
-    const backgroundHover = clamp(backgroundRest * 2, 0, 0.4);
+    const borderHover = clamp(borderGlowHoverIntensity ?? borderRest * 1.6, 0, 1);
+    const backgroundRest = clamp(backgroundGlowIntensity, 0, 0.4);
+    const backgroundHover = clamp(backgroundGlowHoverIntensity ?? backgroundRest * 2, 0, 0.4);
 
     const glowStyle = enableGlow
       ? ({
@@ -96,17 +106,19 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
         } as React.CSSProperties)
       : undefined;
 
-    const baseClass = asChild
-      ? 'glow-card'
-      : 'glow-card block h-full select-none rounded-xl border border-border bg-card/60 p-4 no-underline outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-chart-1/30';
+    const baseCardClass =
+      'block h-full select-none rounded-xl border border-border bg-card/60 p-4 no-underline outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-chart-1/30';
+
+    const classNames = cn(
+      enableGlow && 'glow-card',
+      !asChild && baseCardClass,
+      className,
+    );
 
     return (
       <Comp
         ref={mergedRef}
-        className={cn(
-          baseClass,
-          className,
-        )}
+        className={classNames}
         style={enableGlow ? { ...glowStyle, ...style } : style}
         {...props}
       />

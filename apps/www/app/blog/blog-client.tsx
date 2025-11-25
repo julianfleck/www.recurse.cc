@@ -201,11 +201,13 @@ export function BlogClient({ posts }: BlogClientProps) {
 												asChild
 												enableGlow
 												glowRadius="420px"
-												borderGlowIntensity={0.45}
-												backgroundGlowIntensity={0.035}
-												className="border border-border/70 bg-background/80 px-1col py-1col md:p-6 rounded-none md:h-[240px] transition-colors duration-300 group/article-card"
+												borderGlowIntensity={0.35}
+												borderGlowHoverIntensity={0.85}
+												backgroundGlowIntensity={0.03}
+												backgroundGlowHoverIntensity={0.12}
+												className="border border-border/70 bg-background/80 px-1col py-1col md:p-6 rounded-none h-full md:min-h-[260px] transition-colors duration-300 group/article-card"
 											>
-												<Link href={post.url} className="group flex flex-col md:flex-row md:h-full gap-6">
+												<Link href={post.url} className="group flex flex-col md:flex-row h-full gap-6">
 													{post.heroImage ? (
 														<div className="md:w-[200px] w-full h-[140px] md:h-full shrink-0 rounded-md overflow-hidden relative">
 															<img
@@ -250,8 +252,10 @@ export function BlogClient({ posts }: BlogClientProps) {
 								<div className="col-span-8 lg:col-span-5">
 									<GlowCard
 										glowRadius="420px"
-										borderGlowIntensity={0.35}
-										backgroundGlowIntensity={0.02}
+										borderGlowIntensity={0.25}
+										borderGlowHoverIntensity={0.55}
+										backgroundGlowIntensity={0.01}
+										backgroundGlowHoverIntensity={0.05}
 										className="border border-border/70 bg-background/80 px-1col py-1col md:p-6 rounded-none"
 									>
 										<p className="text-muted-foreground">

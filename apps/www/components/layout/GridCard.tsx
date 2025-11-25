@@ -48,13 +48,16 @@ export function GridCard({
 		<GlowCard
 			asChild
 			enableGlow={enableHoverEffect}
-			borderGlowIntensity={0.42}
-			backgroundGlowIntensity={0.025}
+			borderGlowIntensity={0.3}
+			borderGlowHoverIntensity={0.65}
+			backgroundGlowIntensity={0.015}
+			backgroundGlowHoverIntensity={0.065}
+			glowRadius="420px"
 			style={glowStyle}
 			onMouseEnter={enableSpotlight ? () => setSpotlightActive(true) : undefined}
 			onMouseLeave={enableSpotlight ? () => setSpotlightActive(false) : undefined}
 			className={cn(
-				"relative z-20 -ml-px -mt-px border border-border backdrop-blur-2xl bg-background/35 dark:bg-background/60",
+				"relative z-20 -ml-px -mt-px border border-border bg-background/35 backdrop-blur-2xl dark:bg-background/60 transition-colors duration-300",
 				rounded && "rounded-lg",
 				isLinked && "cursor-pointer",
 				className,

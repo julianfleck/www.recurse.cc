@@ -27,7 +27,15 @@ import { openapi } from "@/lib/openapi";
 function Card({ icon, className, ...props }: any) {
 	const resolvedIcon = typeof icon === "string" ? resolveIcon(icon) : icon;
 	return (
-		<GlowCard className="border-transparent bg-transparent p-0">
+		<GlowCard
+			asChild
+			enableGlow
+			borderGlowIntensity={0}
+			borderGlowHoverIntensity={0.45}
+			backgroundGlowIntensity={0}
+			backgroundGlowHoverIntensity={0.08}
+			className="border border-border bg-card p-0"
+		>
 			<FumadocsCard className={cn("block h-full", className)} icon={resolvedIcon} {...props} />
 		</GlowCard>
 	);

@@ -42,7 +42,13 @@ export function ContextCard({
 				ease: "easeOut",
 			}}
 		>
-			<GlowCard className="h-full p-0">
+			<GlowCard
+				borderGlowIntensity={0}
+				borderGlowHoverIntensity={0.4}
+				backgroundGlowIntensity={0}
+				backgroundGlowHoverIntensity={0.06}
+				className="h-full border border-border bg-card p-0"
+			>
 				<div className="flex h-full flex-col">
 					<div className="p-4">
 						<GenericTooltipLayout

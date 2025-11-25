@@ -22,7 +22,13 @@ export function AuthShell({
 }: AuthShellProps) {
 	return (
 		<div className={cn("flex h-[600px] flex-col gap-6", className)}>
-			<GlowCard className="z-10 flex flex-1 gap-0 overflow-hidden p-0">
+			<GlowCard
+				borderGlowIntensity={0}
+				borderGlowHoverIntensity={0.45}
+				backgroundGlowIntensity={0}
+				backgroundGlowHoverIntensity={0.07}
+				className="z-10 flex flex-1 gap-0 overflow-hidden border border-border bg-card p-0"
+			>
 				<div className="flex h-full w-full flex-col p-6 md:grid md:grid-cols-2 md:p-0">
 					<div className="flex h-full w-full flex-col p-0 md:p-8">
 						<div className="flex-shrink-0">{header}</div>
