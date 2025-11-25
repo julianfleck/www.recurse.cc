@@ -16,6 +16,7 @@ import { Badge } from "@recurse/ui/components/badge";
 import { Input } from "@/components/ui/input";
 import { Button, LinkButton } from "@recurse/ui/components";
 import { getDocsUrl, cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface FAQ {
 	question: string;
@@ -35,6 +36,7 @@ interface FAQSection {
 export default function FAQPage() {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
+	const isMobile = useIsMobile();
 
 	const faqSections: FAQSection[] = [
 		{
@@ -423,7 +425,10 @@ export default function FAQPage() {
 								<GridCard
 									enableHoverEffect
 									enableSpotlight
-									className="p-6 space-y-6 min-h-[calc(100vh-64px)] flex flex-col justify-between"
+									className={cn(
+										"px-1col py-1col md:p-6 space-y-6 flex flex-col justify-between",
+										!isMobile && "min-h-[calc(100vh-64px)]"
+									)}
 								>
 								<div>
 									{/* Search Input */}
@@ -516,7 +521,7 @@ export default function FAQPage() {
 														: "opacity-100"
 												}`}
 											>
-												<div className="sticky top-16 z-10 p-6 flex flex-col justify-start">
+												<div className="sticky top-16 z-10 px-1col py-1col md:p-6 flex flex-col justify-start">
 													<h2 className="font-semibold text-foreground text-lg md:text-xl">
 														{section.section}
 													</h2>
@@ -535,11 +540,12 @@ export default function FAQPage() {
 											<GridCard
 												enableHoverEffect
 												enableSpotlight
-												className={`p-6 transition-opacity duration-300 ${
+												className={cn(
+													"px-1col py-1col md:p-6 transition-opacity duration-300",
 													!hasAnyMatch && (searchQuery || selectedTags.length > 0)
 														? "opacity-30"
 														: "opacity-100"
-												}`}
+												)}
 											>
 												<Accordion type="single" collapsible className="w-full">
 													{section.faqs.map((faq, faqIndex) => {
