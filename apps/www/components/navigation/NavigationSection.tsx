@@ -15,21 +15,22 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 	// Calculate grid configuration based on layout and number of items
 	const isGrid = layout === "grid";
 	const gridRows = isGrid ? Math.ceil(items.length / 2) : 0; // 2 items per row for grid
-	const needsScroll = isGrid && gridRows > 3; // Scroll if more than 3 rows (6 items)
+	// Scroll if scrollable flag is set OR if more than 3 rows (6 items)
+	const needsScroll = isGrid && (scrollable || gridRows > 3);
 	
 	// For list layout, check if scrolling is actually needed
-	const listNeedsScroll = !isGrid && scrollable && items.length * 60 + (items.length - 1) * 8 > 380;
+	const listNeedsScroll = !isGrid && scrollable && items.length * 60 + (items.length - 1) * 8 > 320;
 	
-	// Hero row span: for grid use calculated rows, for list only use row-span if scrolling is needed
-	const heroRowSpan = isGrid 
-		? `row-span-${gridRows}` 
-		: listNeedsScroll 
-			? "row-span-4" 
-			: undefined;
+	// Determine if hero card should have fixed height (h-80) or natural height
+	// Fixed height when scrolling is needed to match ScrollArea height
+	const heroNeedsFixedHeight = needsScroll || listNeedsScroll;
+	
+	// Hero row span: for grid use calculated rows, for list layouts use number of items
+	const heroRowSpan = isGrid ? `row-span-${gridRows}` : `row-span-${items.length}`;
 	
 	const gridConfig = isGrid
 		? `w-[400px] md:w-[600px] lg:w-[700px] lg:grid-cols-[13rem_repeat(2,1fr)] lg:grid-rows-${gridRows}`
-		: "w-[400px] md:w-[500px] lg:w-[600px] lg:grid-cols-[13rem_1fr]";
+		: "w-[400px] md:w-[500px] lg:w-[600px]";
 
 	const renderItems = () => {
 		if (isGrid) {
@@ -51,7 +52,7 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 			if (needsScroll) {
 				return (
 					<div className="col-span-2 row-span-3 overflow-hidden min-h-0">
-						<ScrollArea className="h-[380px]">
+						<ScrollArea className="h-80">
 							<div className="grid grid-cols-2 gap-3 pr-4">
 								{gridItems}
 							</div>
@@ -76,7 +77,7 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 
 		if (listNeedsScroll) {
 			return (
-				<ScrollArea className="h-[380px]">
+				<ScrollArea className="h-80">
 					<div className="space-y-2 pr-4 pb-2">
 						{listItems}
 					</div>
@@ -92,27 +93,40 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 		);
 	};
 
-	return (
-		<ul className={`grid gap-3 p-4 max-h-[420px] ${gridConfig}`}>
-			<li className={needsScroll ? "row-span-3" : heroRowSpan}>
-				<NavigationHeroCard
-					href={hero.href}
-					onClick={hero.href.startsWith("/#") ? (e) => handleAnchorClick(e, sectionKey) : undefined}
-					title={hero.title}
-					description={hero.description}
-					footer={hero.footer}
-				/>
-			</li>
-			{isGrid ? (
-				// Grid layout - items are direct children of ul (or wrapped in ScrollArea div)
-				renderItems()
-			) : (
-				// List layout - items wrapped in container (with or without ScrollArea)
-				<li className="min-h-0">
-					{renderItems()}
+	if (isGrid) {
+		// Grid layout for features/blog
+		return (
+			<ul className={`grid gap-3 p-4 max-h-[420px] items-start ${gridConfig}`}>
+				<li className={needsScroll ? "row-span-3" : heroRowSpan}>
+					<NavigationHeroCard
+						href={hero.href}
+						onClick={hero.href.startsWith("/#") ? (e) => handleAnchorClick(e, sectionKey) : undefined}
+						title={hero.title}
+						description={hero.description}
+						footer={hero.footer}
+						fixedHeight={heroNeedsFixedHeight}
+					/>
 				</li>
-			)}
-		</ul>
+				{renderItems()}
+			</ul>
+		);
+	}
+
+	// List layout for about/docs - use flexbox so content determines height
+	return (
+		<div className={`flex items-start gap-3 p-4 max-h-[420px] ${gridConfig}`}>
+			<NavigationHeroCard
+				href={hero.href}
+				onClick={hero.href.startsWith("/#") ? (e) => handleAnchorClick(e, sectionKey) : undefined}
+				title={hero.title}
+				description={hero.description}
+				footer={hero.footer}
+				fixedHeight={heroNeedsFixedHeight}
+			/>
+			<div className="flex-1 min-w-0">
+				{renderItems()}
+			</div>
+		</div>
 	);
 }
 

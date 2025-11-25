@@ -42,11 +42,15 @@ interface NavigationHeroCardProps {
 	title: string;
 	description: string;
 	footer?: string;
+	fixedHeight?: boolean;
 }
 
-export function NavigationHeroCard({ title, description, footer, href, onClick }: NavigationHeroCardProps) {
+export function NavigationHeroCard({ title, description, footer, href, onClick, fixedHeight = false }: NavigationHeroCardProps) {
 	return (
-		<NavigationCard href={href} onClick={onClick} className="flex h-full w-52 select-none flex-col justify-between focus:shadow-md gap-y-8 min-h-72 bg-linear-to-b! to-accent/20 from-chart-1/10 shrink-0">
+		<NavigationCard href={href} onClick={onClick} className={cn(
+			"flex w-52 select-none flex-col justify-between focus:shadow-md gap-y-8 bg-linear-to-b! to-accent/20 from-chart-1/10 shrink-0",
+			fixedHeight ? "h-80" : "h-auto"
+		)}>
 			<div className="text-2xl font-light max-w-xs leading-tight">
 				{title}
 			</div>
