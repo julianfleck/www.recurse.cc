@@ -393,25 +393,21 @@ export default function FAQPage() {
 				<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 					<Grid8Col>
 						<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-							<GridCard
-								enableHoverEffect
-								enableSpotlight
-								className="px-1col py-1col lg:pl-2col lg:pr-1.5col"
-							>
-								<div className="space-y-8 text-left pl-6">
-									<div className="space-y-8">
-										<div className="lg:max-w-lg">
-											<h1 className="font-medium text-2xl leading-[1.15]! tracking-tight md:text-4xl lg:text-5xl text-accent-foreground lg:max-w-3xl">
-							Frequently Asked Questions
-						</h1>
-										</div>
+						<GridCard
+							enableHoverEffect
+							enableSpotlight
+							className="px-1col py-1col lg:pl-2col lg:pr-2col"
+						>
+							<div className="space-y-8 text-left">
+								<div className="space-y-6">
+									<div className="font-semibold text-2xl leading-[1.15] tracking-tight text-foreground md:text-4xl lg:text-[2.5rem] lg:max-w-xl">
+										<h1 className="font-semibold! text-foreground! leading-[1.15]! tracking-tight! m-0 p-0 text-2xl md:text-4xl lg:text-[2.5rem]">Frequently Asked Questions</h1>
 									</div>
-									<div>
-										<p className="max-w-4xl text-muted-foreground text-lg leading-relaxed md:text-xl">
-											Find answers to common questions about Recurse, RAGE, memory infrastructure, and building context-aware AI.
-						</p>
-					</div>
-				</div>
+									<p className="text-base font-light text-muted-foreground md:text-lg">
+										Find answers to common questions about Recurse, RAGE, memory infrastructure, and building context-aware AI.
+									</p>
+								</div>
+							</div>
 							</GridCard>
 						</GridCell>
 					</Grid8Col>
