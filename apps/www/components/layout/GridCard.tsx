@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import type { CSSProperties, ReactNode } from "react";
+import { GlowCard } from "@recurse/ui/components/glow-card";
 import { useUIStore } from "@recurse/ui";
 import Link from "next/link";
 
