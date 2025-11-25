@@ -988,70 +988,48 @@ main {
 .glow-card {
   position: relative;
   isolation: isolate;
-  --glow-border-color-strength: 0.35;
-  --glow-border-opacity-rest: 0;
-  --glow-border-opacity-hover: 0.65;
-  --glow-background-color-strength: 0.02;
-  --glow-background-opacity-rest: 0;
-  --glow-background-opacity-hover: 0.08;
   --glow-radius: 420px;
+  --glow-color-strength: 0.08;
+  --glow-blur: 100px;
 }
 
-.glow-card::before,
-.glow-card::after {
-  content: '';
+/* Inner spotlight element - follows cursor, only visible on hover */
+.glow-card-spotlight {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
   z-index: 0;
+  overflow: hidden;
   opacity: 0;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.3s ease;
 }
 
-.glow-card::before {
-  inset: -25%;
+.glow-card-spotlight::before {
+  content: '';
+  position: absolute;
+  width: var(--glow-radius, 420px);
+  height: var(--glow-radius, 420px);
+  left: var(--glow-x, 50%);
+  top: var(--glow-y, 50%);
+  transform: translate(-50%, -50%);
   background: radial-gradient(
     circle,
-    rgba(var(--glow-color-rgb), var(--glow-background-color-strength, 0.02)) 0%,
+    rgba(var(--glow-color-rgb), var(--glow-color-strength, 0.15)) 0%,
+    rgba(var(--glow-color-rgb), calc(var(--glow-color-strength, 0.15) * 0.5)) 40%,
     transparent 70%
   );
-  opacity: var(--glow-background-opacity-rest, 0);
-  filter: blur(40px);
+  filter: blur(var(--glow-blur, 80px));
 }
 
-.glow-card::after {
-  inset: -1px;
-  z-index: 1;
-  background: radial-gradient(
-    var(--glow-radius, 420px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    rgba(var(--glow-color-rgb), var(--glow-border-color-strength, 0.35)) 0%,
-    rgba(var(--glow-color-rgb), calc(var(--glow-border-color-strength, 0.35) * 0.4)) 35%,
-    transparent 70%
-  );
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask-composite: subtract;
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  padding: 1px;
-  box-sizing: border-box;
-  opacity: var(--glow-border-opacity-rest, 0.35);
+/* Only show spotlight when JS sets --glow-intensity to 1 (on mousemove) */
+.glow-card[style*="--glow-intensity: 1"] .glow-card-spotlight {
+  opacity: 1;
 }
 
-.glow-card:hover::before,
-.glow-card:focus-visible::before,
-.glow-card[style*="--glow-intensity: 1"]::before {
-  opacity: var(--glow-background-opacity-hover, 0.12);
-}
-
-.glow-card:hover::after,
-.glow-card:focus-visible::after,
-.glow-card[style*="--glow-intensity: 1"]::after {
-  opacity: var(--glow-border-opacity-hover, 0.65);
+/* Dark mode: slightly reduced intensity */
+.dark .glow-card-spotlight::before {
+  --glow-color-strength: 0.06;
 }
 
 /* Navigation Card Glow Effect */

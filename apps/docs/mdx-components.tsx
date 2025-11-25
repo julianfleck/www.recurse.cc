@@ -30,10 +30,8 @@ function Card({ icon, className, ...props }: any) {
 		<GlowCard
 			asChild
 			enableGlow
-			borderGlowIntensity={0}
-			borderGlowHoverIntensity={0.7}
-			backgroundGlowIntensity={0}
-			backgroundGlowHoverIntensity={0.12}
+			glowIntensity={0.08}
+			glowBlur={80}
 			className="border border-border bg-card p-0"
 		>
 			<FumadocsCard className={cn("block h-full", className)} icon={resolvedIcon} {...props} />

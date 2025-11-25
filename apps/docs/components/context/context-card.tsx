@@ -43,10 +43,8 @@ export function ContextCard({
 			}}
 		>
 			<GlowCard
-				borderGlowIntensity={0}
-				borderGlowHoverIntensity={0.4}
-				backgroundGlowIntensity={0}
-				backgroundGlowHoverIntensity={0.06}
+				glowIntensity={0.08}
+				glowBlur={80}
 				className="h-full border border-border bg-card p-0"
 			>
 				<div className="flex h-full flex-col">

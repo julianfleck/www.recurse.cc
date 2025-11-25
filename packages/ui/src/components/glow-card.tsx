@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Slot } from '@radix-ui/react-slot';
+import { Slot, Slottable } from '@radix-ui/react-slot';
 import { cn } from '@recurse/ui/lib/utils';
 import { mergeRefs } from '@recurse/ui/lib/merge-refs';
 
@@ -22,29 +22,14 @@ export interface GlowCardProps extends React.HTMLAttributes<GlowCardElement> {
    */
   glowRadius?: string;
   /**
-   * Controls how strong the background (outer) glow appears (0-1).
+   * Controls how strong the glow color appears (0-1).
+   * Higher values = more visible glow on hover.
    */
-  backgroundGlowIntensity?: number;
+  glowIntensity?: number;
   /**
-   * Controls hover strength for the background glow (0-1).
+   * Controls the blur amount for the glow in pixels.
    */
-  backgroundGlowHoverIntensity?: number;
-  /**
-   * Controls how strong the border glow appears (0-1).
-   */
-  borderGlowIntensity?: number;
-  /**
-   * Controls hover strength for the border glow (0-1).
-   */
-  borderGlowHoverIntensity?: number;
-  /**
-   * Controls color strength of the background glow (0-1).
-   */
-  backgroundGlowColorStrength?: number;
-  /**
-   * Controls color strength of the border glow (0-1).
-   */
-  borderGlowColorStrength?: number;
+  glowBlur?: number;
 }
 
 export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
@@ -52,27 +37,26 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
     {
       asChild = false,
       enableGlow = true,
-      glowRadius = '500px',
-      backgroundGlowIntensity = 0.02,
-      backgroundGlowHoverIntensity,
-      borderGlowIntensity = 0.38,
-      borderGlowHoverIntensity,
-      backgroundGlowColorStrength,
-      borderGlowColorStrength,
+      glowRadius = '420px',
+      glowIntensity = 0.08,
+      glowBlur = 100,
       className,
       style,
+      children,
       ...props
     },
     ref,
   ) => {
     const Comp = asChild ? Slot : 'div';
     const internalRef = React.useRef<GlowCardElement>(null);
+    const spotlightRef = React.useRef<HTMLDivElement>(null);
     const mergedRef = mergeRefs(ref, internalRef);
 
     React.useEffect(() => {
       if (!enableGlow || !internalRef.current) return;
 
       const card = internalRef.current;
+      const spotlight = spotlightRef.current;
 
       const handleMouseMove = (event: MouseEvent) => {
         const rect = card.getBoundingClientRect();
@@ -82,6 +66,12 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
         card.style.setProperty('--glow-x', `${relativeX}%`);
         card.style.setProperty('--glow-y', `${relativeY}%`);
         card.style.setProperty('--glow-intensity', '1');
+
+        // Also update the spotlight element directly for better performance
+        if (spotlight) {
+          spotlight.style.setProperty('--glow-x', `${relativeX}%`);
+          spotlight.style.setProperty('--glow-y', `${relativeY}%`);
+        }
       };
 
       const handleMouseLeave = () => {
@@ -97,13 +87,9 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
       };
     }, [enableGlow]);
 
-    const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
-    const borderRest = clamp(borderGlowIntensity, 0, 1);
-    const borderHover = clamp(borderGlowHoverIntensity ?? borderRest * 1.6, 0, 1);
-    const backgroundRest = clamp(backgroundGlowIntensity, 0, 0.4);
-    const backgroundHover = clamp(backgroundGlowHoverIntensity ?? backgroundRest * 2, 0, 0.4);
-    const backgroundColorStrength = clamp(backgroundGlowColorStrength ?? backgroundRest, 0, 0.4);
-    const borderColorStrength = clamp((borderGlowColorStrength ?? borderRest) || 0.35, 0, 1);
+    const clamp = (value: number, min: number, max: number) =>
+      Math.min(Math.max(value, min), max);
+    const intensity = clamp(glowIntensity, 0, 1);
 
     const glowStyle = enableGlow
       ? ({
@@ -111,12 +97,8 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
           '--glow-y': '50%',
           '--glow-intensity': '0',
           '--glow-radius': glowRadius,
-          '--glow-border-opacity-rest': borderRest.toString(),
-          '--glow-border-opacity-hover': borderHover.toString(),
-          '--glow-background-opacity-rest': backgroundRest.toString(),
-          '--glow-background-opacity-hover': backgroundHover.toString(),
-          '--glow-background-color-strength': backgroundColorStrength.toString(),
-          '--glow-border-color-strength': borderColorStrength.toString(),
+          '--glow-color-strength': intensity.toString(),
+          '--glow-blur': `${glowBlur}px`,
         } as React.CSSProperties)
       : undefined;
 
@@ -129,13 +111,49 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
       className,
     );
 
+    // For asChild mode, we need to inject the spotlight as a sibling
+    // For regular mode, we render it as a child
+    const spotlightElement = enableGlow ? (
+      <div
+        ref={spotlightRef}
+        className="glow-card-spotlight"
+        style={
+          {
+            '--glow-x': '50%',
+            '--glow-y': '50%',
+            '--glow-color-strength': intensity.toString(),
+            '--glow-blur': `${glowBlur}px`,
+            '--glow-radius': glowRadius,
+          } as React.CSSProperties
+        }
+        aria-hidden="true"
+      />
+    ) : null;
+
+    if (asChild) {
+      return (
+        <Comp
+          ref={mergedRef}
+          className={classNames}
+          style={enableGlow ? { ...glowStyle, ...style } : style}
+          {...props}
+        >
+          {spotlightElement}
+          <Slottable>{children}</Slottable>
+        </Comp>
+      );
+    }
+
     return (
       <Comp
         ref={mergedRef}
         className={classNames}
         style={enableGlow ? { ...glowStyle, ...style } : style}
         {...props}
-      />
+      >
+        {spotlightElement}
+        {children}
+      </Comp>
     );
   },
 );

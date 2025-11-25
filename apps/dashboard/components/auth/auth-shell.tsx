@@ -23,10 +23,8 @@ export function AuthShell({
 	return (
 		<div className={cn("flex h-[600px] flex-col gap-6", className)}>
 			<GlowCard
-				borderGlowIntensity={0}
-				borderGlowHoverIntensity={0.45}
-				backgroundGlowIntensity={0}
-				backgroundGlowHoverIntensity={0.07}
+				glowIntensity={0.08}
+				glowBlur={80}
 				className="z-10 flex flex-1 gap-0 overflow-hidden border border-border bg-card p-0"
 			>
 				<div className="flex h-full w-full flex-col p-6 md:grid md:grid-cols-2 md:p-0">

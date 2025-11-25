@@ -18,10 +18,8 @@ function NavigationCard({ href, onClick, className = "", children, enableGlow = 
 			<GlowCard
 				asChild
 				enableGlow={enableGlow}
-				borderGlowIntensity={0.18}
-				borderGlowHoverIntensity={0.95}
-				backgroundGlowIntensity={0.008}
-				backgroundGlowHoverIntensity={0.08}
+				glowIntensity={0.1}
+				glowBlur={60}
 				glowRadius="300px"
 				className={cn(
 					"block h-full select-none rounded-md border border-border/70 bg-background/40 p-3 leading-none no-underline outline-none transition-colors duration-300",
