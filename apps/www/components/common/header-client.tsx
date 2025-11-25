@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { DefaultNavigation } from "@/components/navigation/default";
 import { MobileNavigation } from "@/components/navigation/mobile";
 import { Grid8Col } from "@/components/layout/Grid8Col";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import type { NavigationItem } from "@/content/navigation";
 
@@ -35,6 +36,7 @@ export function HeaderClient({ blogItems }: HeaderClientProps) {
 	const isSpecialPage =
 		pathname.startsWith("/api-test") || pathname === "/split-text-demo";
 
+	const isMobile = useIsMobile();
 	const [isScrolled, setIsScrolled] = useState(false);
 	const [isHovered, setIsHovered] = useState(false);
 
@@ -47,7 +49,7 @@ export function HeaderClient({ blogItems }: HeaderClientProps) {
 		debouncedScroll();
 	}, []);
 
-	const isCompact = isSpecialPage || isScrolled;
+	const isCompact = isSpecialPage || isScrolled || isMobile;
 
 	useEffect(() => {
 		setIsScrolled(window.scrollY > shrinkThreshold);
