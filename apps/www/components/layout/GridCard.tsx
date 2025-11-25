@@ -23,6 +23,10 @@ interface GridCardProps {
  * Optional border glow hover effect and global spotlight cursor effect
  * Optional href for clickable cards
  */
+type GlowStyle = CSSProperties & {
+	"--glow-color-rgb"?: string;
+};
+
 export function GridCard({
 	children,
 	className,
@@ -36,12 +40,12 @@ export function GridCard({
 	const setSpotlightActive = useUIStore((state) => state.setSpotlightActive);
 	const isLinked = Boolean(href);
 
-	const glowStyle =
+	const glowStyle: GlowStyle | undefined =
 		enableHoverEffect && glowColor
 			? ({
 					...(glowColor === "chart-1" && { "--glow-color-rgb": "166, 200, 46" }),
 					...(glowColor === "chart-2" && { "--glow-color-rgb": "132, 0, 255" }),
-			  } satisfies CSSProperties)
+			  } satisfies GlowStyle)
 			: undefined;
 
 	const cardContent = (
