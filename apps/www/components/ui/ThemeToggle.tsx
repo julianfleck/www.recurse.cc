@@ -2,7 +2,7 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IconToggleButton } from "@/components/ui/IconToggleButton";
 
 interface ThemeToggleProps {
@@ -12,9 +12,32 @@ interface ThemeToggleProps {
 export function ThemeToggle({ className }: ThemeToggleProps) {
 	const { setTheme, resolvedTheme } = useTheme();
 	const [mounted, setMounted] = useState(false);
+	const buttonRef = useRef<HTMLButtonElement | null>(null);
 
 	useEffect(() => {
 		setMounted(true);
+	}, []);
+
+	// When returning to this tab, blur the theme toggle if the browser
+	// auto-restored focus to it. This keeps the button from feeling
+	// "sticky-focused" when switching tabs.
+	useEffect(() => {
+		if (typeof document === "undefined") return;
+
+		const handleVisibilityChange = () => {
+			if (
+				document.visibilityState === "visible" &&
+				buttonRef.current &&
+				document.activeElement === buttonRef.current
+			) {
+				buttonRef.current.blur();
+			}
+		};
+
+		document.addEventListener("visibilitychange", handleVisibilityChange);
+		return () => {
+			document.removeEventListener("visibilitychange", handleVisibilityChange);
+		};
 	}, []);
 
 	// Don't render anything until mounted to prevent hydration mismatch
@@ -30,6 +53,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
 
 	return (
 		<IconToggleButton
+			buttonRef={buttonRef}
 			buttonProps={{
 				variant: "outline",
 				size: "icon",

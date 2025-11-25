@@ -1,5 +1,5 @@
 import { Button } from "@recurse/ui/components";
-import type { ComponentType } from "react";
+import type { ComponentType, Ref } from "react";
 import { cn } from "@/lib/utils";
 
 type IconComponent = ComponentType<{ className?: string }>;
@@ -15,6 +15,7 @@ interface IconToggleButtonProps {
 	tooltip?: React.ReactNode;
 	tooltipSide?: "top" | "right" | "bottom" | "left";
 	buttonProps?: React.ComponentProps<typeof Button>;
+	buttonRef?: Ref<HTMLButtonElement>;
 }
 
 export function IconToggleButton({
@@ -28,9 +29,11 @@ export function IconToggleButton({
 	tooltip,
 	tooltipSide = "bottom",
 	buttonProps,
+	buttonRef,
 }: IconToggleButtonProps) {
 	return (
 		<Button
+			ref={buttonRef}
 			className={cn(
 				"group/toggle",
 				"group relative overflow-hidden",
