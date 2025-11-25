@@ -76,7 +76,7 @@ export function BlogClient({ posts }: BlogClientProps) {
 											/>
 										</div>
 										<p className="text-base font-light text-muted-foreground md:text-lg">
-											Essays exploring how we (will) think alongside AI, how knowledge systems shape our understanding, and the technical affordances for context infrastructures that enable true human/AI collaboration.
+											Essays exploring how we (might) think alongside AI, how knowledge systems shape our understanding, and the technical affordances for context infrastructures that enable true human/AI collaboration.
 										</p>
 									</div>
 								</div>
@@ -95,12 +95,11 @@ export function BlogClient({ posts }: BlogClientProps) {
 							<GridCard
 								enableHoverEffect
 								enableSpotlight
-								className="p-6 space-y-6 rounded-none pr-12"
+								className="p-6 space-y-6 rounded-none"
 							>
 								<div className="space-y-6">
 									{/* Search Input */}
 									<div className="space-y-4">
-										<h2 className="text-xl font-medium text-foreground">Search</h2>
 										<div className="relative">
 											<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 											<Input
@@ -139,16 +138,16 @@ export function BlogClient({ posts }: BlogClientProps) {
 									{/* Recent articles */}
 									<div className="space-y-3 pt-4">
 										<h3 className="text-base font-semibold text-foreground">Recent articles</h3>
-										<ScrollArea className="h-[calc(100vh-500px)] pr-4">
+										<ScrollArea className="h-[calc(100vh-500px)] pr-8">
 											<div className="space-y-1">
 												{posts.length > 0 ? (
 													posts.slice(0, 10).map((post) => (
 														<Link
 															key={post.slug.join("/")}
 															href={post.url}
-															className="flex flex-col py-2 text-sm border-b border-border/30 transition hover:text-primary"
+															className="flex flex-col py-2 text-sm border-b border-border/30 transition text-muted-foreground hover:text-foreground group/article-link"
 														>
-															<span className="font-medium pr-6">{post.title}</span>
+															<span className="font-light text-sm pr-6">{post.title}</span>
 															<span className="text-xs text-muted-foreground pr-6 mt-1">
 																{new Date(post.publishedAt).toLocaleDateString(undefined, {
 																	year: "numeric",
@@ -207,11 +206,11 @@ export function BlogClient({ posts }: BlogClientProps) {
 										<div className="col-span-8 lg:col-span-5">
 											<GlowCard
 												glowRadius="420px"
-												className="border border-border/70 bg-background/80 p-6 rounded-none h-[200px]"
+												className="border border-border/70 bg-background/80 p-6 rounded-none h-[200px] hover:bg-background/90 transition-colors duration-300 group/article-card"
 											>
 												<Link href={post.url} className="group flex flex-col md:flex-row h-full gap-6">
 													<div className="flex flex-col justify-between flex-1 min-w-0">
-														<h2 className="text-2xl font-semibold tracking-tight">{post.title}</h2>
+														<h2 className="text-2xl font-semibold tracking-tight text-muted-foreground! group-hover/article-card:text-foreground! transition-colors duration-300">{post.title}</h2>
 														{post.description ? (
 															<p className="text-sm text-muted-foreground line-clamp-3">{post.description}</p>
 														) : null}

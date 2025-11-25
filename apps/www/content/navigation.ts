@@ -66,8 +66,8 @@ export function createBlogNavItems(blogPosts: Array<{ title: string; description
 export const navigationContent: NavigationContent = {
 	about: {
 		hero: {
-			title: "Substrate for Sense-making",
-			description: "Recurse is memory infrastructure for systems that actually understand.",
+			title: "Knowledge Substrate for Sense-making",
+			description: "Recurse is context infrastructure for systems that actually understand.",
 			href: "/#about",
 		},
 		items: [
@@ -97,7 +97,7 @@ export const navigationContent: NavigationContent = {
 	},
 	features: {
 		hero: {
-			title: "Transform Your Raw Data",
+			title: "Transform Raw Data into Living Context",
 			description: "Turn raw input into structured, actionable context for you and your AI agents.",
 			href: "/#features",
 		},
@@ -168,7 +168,7 @@ export const navigationContent: NavigationContent = {
 	},
 	blog: {
 		hero: {
-			title: "Blog",
+			title: "Thoughts on Thinking alongside AI",
 			description: "Updates, insights, and deep dives into context infrastructure",
 			href: "/blog",
 			footer: "Read articles →",
