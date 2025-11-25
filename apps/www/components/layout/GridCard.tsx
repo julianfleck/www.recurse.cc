@@ -1,8 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { ReactNode } from "react";
-import { useEffect, useRef } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { useUIStore } from "@recurse/ui";
 import Link from "next/link";
 
@@ -23,95 +22,45 @@ interface GridCardProps {
  * Optional border glow hover effect and global spotlight cursor effect
  * Optional href for clickable cards
  */
-export function GridCard({ children, className, enableHoverEffect = false, enableSpotlight = false, href, rounded = false, glowColor, onClick }: GridCardProps) {
-	const cardRef = useRef<HTMLDivElement>(null);
+export function GridCard({
+	children,
+	className,
+	enableHoverEffect = false,
+	enableSpotlight = false,
+	href,
+	rounded = false,
+	glowColor,
+	onClick,
+}: GridCardProps) {
 	const setSpotlightActive = useUIStore((state) => state.setSpotlightActive);
 	const isLinked = Boolean(href);
 
-	useEffect(() => {
-		if (!enableHoverEffect || !cardRef.current) return;
-
-		const card = cardRef.current;
-
-		const handleMouseMove = (e: MouseEvent) => {
-			const rect = card.getBoundingClientRect();
-			const relativeX = ((e.clientX - rect.left) / rect.width) * 100;
-			const relativeY = ((e.clientY - rect.top) / rect.height) * 100;
-
-			card.style.setProperty('--glow-x', `${relativeX}%`);
-			card.style.setProperty('--glow-y', `${relativeY}%`);
-			card.style.setProperty('--glow-intensity', '1');
-		};
-
-		const handleMouseLeave = () => {
-			card.style.setProperty('--glow-intensity', '0');
-		};
-
-		card.addEventListener('mousemove', handleMouseMove);
-		card.addEventListener('mouseleave', handleMouseLeave);
-
-		return () => {
-			card.removeEventListener('mousemove', handleMouseMove);
-			card.removeEventListener('mouseleave', handleMouseLeave);
-		};
-	}, [enableHoverEffect]);
-
-	// Spotlight effect - activate global spotlight on hover
-	useEffect(() => {
-		if (!enableSpotlight || !cardRef.current) return;
-
-		const card = cardRef.current;
-
-		const handleMouseEnter = () => {
-			setSpotlightActive(true);
-		};
-
-		const handleMouseLeave = () => {
-			setSpotlightActive(false);
-		};
-
-		card.addEventListener('mouseenter', handleMouseEnter);
-		card.addEventListener('mouseleave', handleMouseLeave);
-
-		return () => {
-			card.removeEventListener('mouseenter', handleMouseEnter);
-			card.removeEventListener('mouseleave', handleMouseLeave);
-		};
-	}, [enableSpotlight, setSpotlightActive]);
+	const glowStyle =
+		enableHoverEffect && glowColor
+			? ({
+					...(glowColor === "chart-1" && { "--glow-color-rgb": "166, 200, 46" }),
+					...(glowColor === "chart-2" && { "--glow-color-rgb": "132, 0, 255" }),
+			  } satisfies CSSProperties)
+			: undefined;
 
 	const cardContent = (
-		<div
-			ref={cardRef}
+		<GlowCard
+			asChild
+			enableGlow={enableHoverEffect}
+			borderGlowIntensity={0.42}
+			backgroundGlowIntensity={0.025}
+			style={glowStyle}
+			onMouseEnter={enableSpotlight ? () => setSpotlightActive(true) : undefined}
+			onMouseLeave={enableSpotlight ? () => setSpotlightActive(false) : undefined}
 			className={cn(
-				"relative z-20",
-				// Backdrop blur with semi-transparent background
-				"backdrop-blur-2xl bg-background/35 dark:bg-background/60",
-				// Optional rounded corners
+				"relative z-20 -ml-px -mt-px border border-border backdrop-blur-2xl bg-background/35 dark:bg-background/60",
 				rounded && "rounded-lg",
-				// Standard border approach with negative margins to collapse adjacent borders
-				"border border-border",
-				// Negative margins collapse borders: -ml-px -mt-px collapses left and top borders
-				"-ml-px -mt-px",
-				enableHoverEffect && "grid-card-glow",
-				enableHoverEffect && isLinked && "grid-card-glow--linked",
 				isLinked && "cursor-pointer",
 				className,
 			)}
-			style={
-				enableHoverEffect
-					? ({
-							'--glow-x': '50%',
-							'--glow-y': '50%',
-							'--glow-intensity': '0',
-							'--glow-radius': '400px',
-							...(glowColor === 'chart-1' && { '--glow-color-rgb': '166, 200, 46' }),
-							...(glowColor === 'chart-2' && { '--glow-color-rgb': '132, 0, 255' }),
-						} as React.CSSProperties)
-					: undefined
-			}
 		>
-			{children}
-		</div>
+			<div>{children}</div>
+		</GlowCard>
 	);
 
 	if (href) {

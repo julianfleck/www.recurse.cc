@@ -21,10 +21,30 @@ export interface GlowCardProps extends React.HTMLAttributes<GlowCardElement> {
    * Override the CSS radius for the glow gradient.
    */
   glowRadius?: string;
+  /**
+   * Controls how strong the background (outer) glow appears (0-1).
+   */
+  backgroundGlowIntensity?: number;
+  /**
+   * Controls how strong the border glow appears (0-1).
+   */
+  borderGlowIntensity?: number;
 }
 
 export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
-  ({ asChild = false, enableGlow = true, glowRadius = '500px', className, style, ...props }, ref) => {
+  (
+    {
+      asChild = false,
+      enableGlow = true,
+      glowRadius = '500px',
+      backgroundGlowIntensity = 0.02,
+      borderGlowIntensity = 0.38,
+      className,
+      style,
+      ...props
+    },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : 'div';
     const internalRef = React.useRef<GlowCardElement>(null);
     const mergedRef = mergeRefs(ref, internalRef);
@@ -57,23 +77,34 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
       };
     }, [enableGlow]);
 
-  const glowStyle = enableGlow
+    const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+    const borderRest = clamp(borderGlowIntensity, 0, 1);
+    const borderHover = clamp(borderRest * 1.6, 0, 1);
+    const backgroundRest = clamp(backgroundGlowIntensity, 0, 0.3);
+    const backgroundHover = clamp(backgroundRest * 2, 0, 0.4);
+
+    const glowStyle = enableGlow
       ? ({
           '--glow-x': '50%',
           '--glow-y': '50%',
           '--glow-intensity': '0',
           '--glow-radius': glowRadius,
+          '--glow-border-opacity-rest': borderRest.toString(),
+          '--glow-border-opacity-hover': borderHover.toString(),
+          '--glow-background-opacity-rest': backgroundRest.toString(),
+          '--glow-background-opacity-hover': backgroundHover.toString(),
         } as React.CSSProperties)
       : undefined;
+
+    const baseClass = asChild
+      ? 'glow-card'
+      : 'glow-card block h-full select-none rounded-xl border border-border bg-card/60 p-4 no-underline outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-chart-1/30';
 
     return (
       <Comp
         ref={mergedRef}
         className={cn(
-          'nav-card-glow block h-full select-none rounded-xl border border-border bg-card/60 p-4 no-underline outline-none transition-all',
-          'hover:border-chart-1 focus-visible:ring-4 focus-visible:ring-chart-1/20',
-          'dark:hover:border-chart-1/40 dark:focus-visible:ring-chart-1/40',
-          enableGlow && 'nav-card-glow',
+          baseClass,
           className,
         )}
         style={enableGlow ? { ...glowStyle, ...style } : style}

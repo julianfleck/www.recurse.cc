@@ -179,9 +179,9 @@ export function BlogClient({ posts }: BlogClientProps) {
 								enableSpotlight
 								className="px-1col py-1col md:p-6 space-y-4 rounded-none md:pr-12"
 							>
-								<h3 className="text-base font-medium text-foreground">Follow us for updates</h3>
+								<h3 className="text-base font-medium text-foreground">Get updates</h3>
 								<p className="text-sm text-muted-foreground">
-									Get new thinking on meta-cognition, knowledge work, and human-AI collaboration delivered to your inbox.
+									Follow our thinking on meta-cognition, tools for knowledge work, and human-AI collaboration. Delivered straight to your inbox.
 								</p>
 								<LinkButton href={SUBSTACK_URL} variant="default" size="sm" round={false} animateIcon={false}>
 									Subscribe on Substack
@@ -198,8 +198,12 @@ export function BlogClient({ posts }: BlogClientProps) {
 									<div key={post.slug.join("/")} className="grid grid-cols-subgrid lg:grid-cols-5 gap-x-px gap-y-px">
 										<div className="col-span-8 lg:col-span-5">
 											<GlowCard
+												asChild
+												enableGlow
 												glowRadius="420px"
-												className="border border-border/70 bg-background/80 px-1col py-1col md:p-6 rounded-none md:h-[240px] hover:bg-background/90 transition-colors duration-300 group/article-card"
+												borderGlowIntensity={0.45}
+												backgroundGlowIntensity={0.035}
+												className="border border-border/70 bg-background/80 px-1col py-1col md:p-6 rounded-none md:h-[240px] transition-colors duration-300 group/article-card"
 											>
 												<Link href={post.url} className="group flex flex-col md:flex-row md:h-full gap-6">
 													{post.heroImage ? (
@@ -246,6 +250,8 @@ export function BlogClient({ posts }: BlogClientProps) {
 								<div className="col-span-8 lg:col-span-5">
 									<GlowCard
 										glowRadius="420px"
+										borderGlowIntensity={0.35}
+										backgroundGlowIntensity={0.02}
 										className="border border-border/70 bg-background/80 px-1col py-1col md:p-6 rounded-none"
 									>
 										<p className="text-muted-foreground">
