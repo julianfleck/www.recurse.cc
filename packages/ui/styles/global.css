@@ -996,90 +996,17 @@ main {
 }
 
 /* Navigation Card Glow Effect */
-.nav-card-glow {
+.nav-card-glow,
+.nav-card-glow--linked {
   position: relative;
-  overflow: hidden;
-  isolation: isolate;
 }
 
-.nav-card-glow > * {
-  position: relative;
-  z-index: 2;
-}
-
-.nav-card-glow[data-slot="navigation-menu-link"],
-.nav-card-glow[data-slot="navigation-menu-link"]:hover,
-.nav-card-glow[data-slot="navigation-menu-link"]:focus,
-.dark .nav-card-glow[data-slot="navigation-menu-link"],
-.dark .nav-card-glow[data-slot="navigation-menu-link"]:hover,
-.dark .nav-card-glow[data-slot="navigation-menu-link"]:focus {
-  background-color: transparent !important;
-}
-
-.nav-card-glow::before {
+.nav-card-glow::before,
+.nav-card-glow::after,
+.nav-card-glow--linked::before,
+.nav-card-glow--linked::after {
   content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  filter: blur(40px);
-  background: radial-gradient(
-    var(--glow-radius, 500px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    rgba(var(--glow-color-rgb), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-2, 0.3))) 0%,
-    rgba(var(--glow-color-rgb), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-3, 0.15))) 30%,
-    transparent 60%
-  );
-}
-
-.nav-card-glow::after {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  background: radial-gradient(
-    var(--glow-radius, 500px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    rgba(var(--glow-color-rgb), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-1, 0.6))) 0%,
-    rgba(var(--glow-color-rgb), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-2, 0.4))) 20%,
-    rgba(var(--glow-color-rgb), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-3, 0.2))) 40%,
-    transparent 70%
-  );
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask-composite: subtract;
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  padding: 1px;
-  box-sizing: border-box;
-}
-
-.nav-card-glow:hover {
-  z-index: 5;
-}
-
-.nav-card-glow:hover::before {
-  opacity: calc(var(--glow-intensity, 0) * 0.8);
-}
-
-.nav-card-glow:hover::after {
-  opacity: calc(var(--glow-intensity, 0) * 0.5 + 0.2);
-}
-
-.nav-card-glow[style*="--glow-intensity: 1"]::before {
-  opacity: calc(var(--glow-intensity, 0) * 0.8);
-}
-
-.nav-card-glow[style*="--glow-intensity: 1"]::after {
-  opacity: calc(var(--glow-intensity, 0) * 0.5 + 0.2);
+  display: none;
 }
 
 /* Spotlight effect - cursor-following glow */
