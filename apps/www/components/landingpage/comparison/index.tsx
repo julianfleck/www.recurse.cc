@@ -39,22 +39,22 @@ export function ComparisonSection() {
 				{/* Comparison Table - Mobile: 8/8, Tablet: 8/8, Desktop: 6/8 */}
 				<GridCell colSpan={8} mdColSpan={8} lgColSpan={6}>
 					<GridCard enableHoverEffect enableSpotlight className="h-full px-1col py-1col md:p-8">
-						<Table className="w-full">
+						<Table className="w-full text-[0.72rem] md:text-sm">
 							<TableHeader>
 								<TableRow>
-									<TableHead>Feature</TableHead>
-									<TableHead>Traditional RAG</TableHead>
-									<TableHead>Graph RAG</TableHead>
-									<TableHead>Recurse</TableHead>
+									<TableHead className="whitespace-normal">Feature</TableHead>
+									<TableHead className="whitespace-normal">Traditional RAG</TableHead>
+									<TableHead className="whitespace-normal">Graph RAG</TableHead>
+									<TableHead className="whitespace-normal">Recurse</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
 								{homepageContent.comparison.rows.map((row, index) => (
 									<TableRow key={index}>
-										<TableCell className="font-medium">{row.feature}</TableCell>
-										<TableCell className="font-light text-muted-foreground">{row.traditionalRAG}</TableCell>
-										<TableCell className="font-light text-muted-foreground">{row.graphRAG}</TableCell>
-										<TableCell className="font-medium">{row.recurse}</TableCell>
+										<TableCell className="font-medium whitespace-normal">{row.feature}</TableCell>
+										<TableCell className="font-light text-muted-foreground whitespace-normal">{row.traditionalRAG}</TableCell>
+										<TableCell className="font-light text-muted-foreground whitespace-normal">{row.graphRAG}</TableCell>
+										<TableCell className="font-medium whitespace-normal">{row.recurse}</TableCell>
 									</TableRow>
 								))}
 							</TableBody>

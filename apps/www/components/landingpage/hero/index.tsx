@@ -50,7 +50,7 @@ export function Hero() {
 							<p className="font-medium text-foreground text-xl leading-relaxed hyphens-auto">
 								Recurse turns raw input into structured, actionable context
 							</p>
-							<p className="font-light text-muted-foreground text-base leading-relaxed">
+							<p className="mt-3 font-light text-muted-foreground text-base leading-relaxed">
 								Add any type of content and we transform it into a living, semantically typed knowledge graph that you (and
 								your AI agents) can act on, reason through, and build on top of. <br className="hidden md:block" />
 								<br className="hidden md:block" />
@@ -85,7 +85,7 @@ export function About() {
 								Not quite.
 								<br className="hidden md:block" /> It’s built a bit differently...
 							</p>
-							<p className="font-light text-base text-foreground md:text-xl">
+							<p className="mt-3 font-light text-base text-foreground md:text-xl">
 								Recurse is memory infrastructure for systems that actually <mark className=" underline-offset-6 text-foreground">understand</mark>.
 							</p>
 						</GridCard>
