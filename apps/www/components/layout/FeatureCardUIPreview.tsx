@@ -60,7 +60,7 @@ export function FeatureCardUIPreview() {
 
 		{/* Headline at top */}
 		<motion.h3
-			className="absolute top-0 left-0 right-0 z-10 text-2xl md:text-3xl font-light! leading-tight mb-6 tracking-tight p-6 md:p-8"
+			className="absolute top-0 left-0 right-0 z-10 text-xl md:text-3xl font-light! leading-tight mb-4 tracking-tight px-1col py-1col md:p-8"
 			animate={{
 				opacity: isHovered ? 0.35 : 1,
 				filter: isHovered ? "blur(4px)" : "blur(0px)",
@@ -75,7 +75,7 @@ export function FeatureCardUIPreview() {
 
 		{/* Card Stack - springs to center with scale on hover */}
 		<motion.div
-			className="absolute w-full px-6 md:px-8 top-1/2 left-1/2 -translate-x-1/2 z-20"
+			className="absolute w-full px-1col md:px-8 top-1/2 left-1/2 -translate-x-1/2 z-20"
 			style={{
 				maxWidth: '600px',
 			}}

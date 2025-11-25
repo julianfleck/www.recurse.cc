@@ -119,7 +119,7 @@ export function SignupForm({ onSubmit, className = "" }: SignupFormProps) {
 	};
 
 	return (
-		<GridCard enableHoverEffect enableSpotlight className={`p-6 md:p-8 ${className}`}>
+		<GridCard enableHoverEffect enableSpotlight className={`px-1col py-1col md:p-8 ${className}`}>
 			<Form {...form}>
 				<form className="space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
 					{/* Success state */}

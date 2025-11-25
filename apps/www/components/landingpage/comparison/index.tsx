@@ -11,7 +11,7 @@ import { homepageContent } from "@/content/homepage";
 export function ComparisonSection() {
 	return (
 		<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-			<div id="comparison" className="pb-1col group/comparison">
+			<div id="comparison" className="group/comparison">
 			<Grid8Col className="">
 				{/* Header - spans all columns */}
 				<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>

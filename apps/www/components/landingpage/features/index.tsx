@@ -13,7 +13,7 @@ import { homepageContent } from "@/content/homepage";
 export function Features() {
 	return (
 		<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-			<div id="features" className="pb-1col scroll-mt-[60px]">
+			<div id="features" className="scroll-mt-[60px]">
 			<Grid8Col className="">
 				{/* Header - spans all columns */}
 				<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>

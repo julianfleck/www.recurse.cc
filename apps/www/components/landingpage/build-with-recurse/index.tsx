@@ -41,7 +41,7 @@ export function BuildWithRecurseSection() {
 
 	return (
 		<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
-			<div ref={sectionRef} id="build" className="pb-1col group/build-with-recurse scroll-mt-[60px]">
+			<div ref={sectionRef} id="build" className="group/build-with-recurse scroll-mt-[60px]">
 				<Grid8Col className="">
 					{/* Header - spans all columns */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>

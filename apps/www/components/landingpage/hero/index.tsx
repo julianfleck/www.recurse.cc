@@ -12,7 +12,7 @@ import { getDocsUrl } from "@/lib/utils";
 
 export function Hero() {
 	return (
-		<div id="hero" className="relative z-10 group/hero pt-halfcol pb-1col">
+		<div id="hero" className="relative z-10 group/hero pt-halfcol">
 			{/* Hero Card */}
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 				<Grid8Col >
@@ -72,7 +72,7 @@ export function Hero() {
 
 export function About() {
 	return (
-		<div id="about" className="relative z-10 pb-1col group/about scroll-mt-[80px]">
+		<div id="about" className="relative z-10 group/about scroll-mt-[80px]">
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 				<Grid8Col className="">
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
