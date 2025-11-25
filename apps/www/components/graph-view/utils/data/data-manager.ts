@@ -314,14 +314,23 @@ export class GraphDataManager {
 				upsertMetadata(nodeIdToUse, "hyponym", hyponyms);
 
 				// Create links to children and recurse
-				const childNodes = Array.isArray(sn.children) ? sn.children : [];
-				for (const ch of childNodes) {
-					const childId = ch.id;
-					if (childId) {
-						links.push({ source: nodeIdToUse, target: childId });
-					}
-					walk(ch, nodeIdToUse);
-				}
+        const childNodes = Array.isArray(sn.children) ? sn.children : [];
+        for (const ch of childNodes) {
+          if (typeof ch === "string") {
+            if (nodeIdToUse) {
+              links.push({ source: nodeIdToUse, target: ch });
+            }
+            continue;
+          }
+          if (!ch || typeof ch !== "object") {
+            continue;
+          }
+          const childId = ch.id;
+          if (childId && nodeIdToUse) {
+            links.push({ source: nodeIdToUse, target: childId });
+          }
+          walk(ch, nodeIdToUse);
+        }
 			};
 
 			// Process the provided JSON data

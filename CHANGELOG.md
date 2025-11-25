@@ -1,5 +1,11 @@
 # Changelog
 
+## [2025-11-25T07:21:56Z] — Fix: Ignore string-only child references
+**Context:** The example GraphView fullscreen sidebar showed an “Untitled” node because JSON imports treated string child IDs as standalone nodes, generating empty placeholders.
+**Changes:** Updated every GraphDataManager copy to convert string children into simple links and skip recursive parsing so we only walk actual node objects.
+**Impact:** Static JSON examples (including the www marketing demo) no longer produce phantom nodes, and JSON ingestion across apps stays consistent.
+**Files touched:** `apps/www/components/graph-view/utils/data/data-manager.ts`, `apps/docs/components/graph-view/utils/data/data-manager.ts`, `apps/dashboard/components/graph-view/utils/data/data-manager.ts`, `components/graph-view/utils/data/data-manager.ts`, `CHANGELOG.md`
+
 ## [2025-11-25T07:11:01Z] — Fix: Debounce Theme Sync
 **Context:** Theme toggles caused oscillating updates between next-themes and the shared UI store, leading to visible flicker.
 **Changes:** Debounced ThemeSync writes, short-circuited identical store updates, captured research + overview updates for the new debounce requirement.
