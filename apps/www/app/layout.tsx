@@ -21,6 +21,13 @@ export const metadata: Metadata = {
 	title: "recurse.cc - Universal Memory Layer",
 	description:
 		"RAGE (Recursive Agentic Graph Embeddings) transform raw text into persistent, structured memory for AI-native applications.",
+	openGraph: {
+		type: "website",
+		title: "recurse.cc - Universal Memory Layer",
+		description:
+			"RAGE (Recursive Agentic Graph Embeddings) transform raw text into persistent, structured memory for AI-native applications.",
+		siteName: "recurse.cc",
+	},
 };
 
 export default function RootLayout({
