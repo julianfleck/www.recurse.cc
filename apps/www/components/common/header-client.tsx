@@ -49,7 +49,8 @@ export function HeaderClient({ blogItems }: HeaderClientProps) {
 		debouncedScroll();
 	}, []);
 
-	const isCompact = isSpecialPage || isScrolled || isMobile;
+	// Compact header on special pages or after scrolling
+	const isCompact = isSpecialPage || isScrolled;
 
 	useEffect(() => {
 		setIsScrolled(window.scrollY > shrinkThreshold);
@@ -63,14 +64,22 @@ export function HeaderClient({ blogItems }: HeaderClientProps) {
 		};
 	}, [handleScroll, isCompact]);
 
+	const showBackground = isScrolled;
+
 	return (
 		<header
 			className={cn(
 				"fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out",
-				// Top padding: 1 grid unit in expanded, 0.2 in compact
-				isCompact
-					? "pt-[calc(var(--spacing-halfcol-abs)*0.2)]"
-					: "pt-[calc(var(--spacing-halfcol-abs)*1)]",
+				// Top padding (desktop): 1 grid unit in expanded, 0.2 in compact
+				!isMobile &&
+					(isCompact
+						? "pt-[calc(var(--spacing-halfcol-abs)*0.2)]"
+						: "pt-[calc(var(--spacing-halfcol-abs)*1)]"),
+				// Top padding (mobile): more space when expanded, less when compact
+				isMobile &&
+					(isCompact
+						? "pt-[calc(var(--spacing-halfcol-abs)*0.4)]"
+						: "pt-[calc(var(--spacing-halfcol-abs)*0.8)]"),
 				// Bottom padding: 0.5 grid unit in expanded, 0.2 in compact
 				isCompact
 					? "pb-[calc(var(--spacing-halfcol-abs)*0.2)]"
@@ -86,8 +95,10 @@ export function HeaderClient({ blogItems }: HeaderClientProps) {
 			{/* Background */}
 			<div
 				className={cn(
-					"absolute inset-0 bg-background/80 backdrop-blur-lg transition-opacity duration-300 ease-in-out z-[-1]",
-					isCompact ? "opacity-100" : "opacity-0",
+					"absolute inset-0 transition-opacity duration-300 ease-in-out z-[-1]",
+					showBackground
+						? "bg-background/80 backdrop-blur-lg opacity-100"
+						: "bg-transparent backdrop-blur-none opacity-0",
 				)}
 			/>
 			{/* Content */}

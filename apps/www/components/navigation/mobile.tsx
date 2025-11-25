@@ -46,7 +46,7 @@ function MobileNavigationSection({ sectionKey, section, onNavigate }: MobileSect
 						onClick={(event) => onNavigate(event, hero.href)}
 						rounded
 						enableHoverEffect
-						className="p-4"
+						className="px-1col py-1col"
 					>
 						<div className="flex flex-col gap-2">
 							<div className="text-base font-semibold leading-snug">
@@ -70,7 +70,7 @@ function MobileNavigationSection({ sectionKey, section, onNavigate }: MobileSect
 								key={item.title}
 								href={item.href}
 								onClick={(event) => onNavigate(event, item.href)}
-								className="block rounded-md px-2 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+								className="block rounded-md px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
 							>
 								<div className="font-medium">
 									{item.title}
@@ -135,14 +135,15 @@ export function MobileNavigation({ isCompact, blogItems }: MobileNavigationProps
 		<div
 			className="flex items-center justify-between h-full w-full"
 			style={{
-				paddingLeft: "1.25rem",
-				paddingRight: isCompact ? "0.75rem" : "1.25rem",
+				// Use generous, symmetric horizontal padding in the compact header used on mobile.
+				paddingLeft: "2.25rem",
+				paddingRight: "2.25rem",
 			}}
 		>
 			{/* Left: Logo and wordmark */}
 			<Link
 				href="/"
-				className="flex items-center gap-2"
+				className="flex items-center gap-2 pl-4"
 				aria-label="Recurse Home"
 			>
 				<svg
@@ -180,7 +181,7 @@ export function MobileNavigation({ isCompact, blogItems }: MobileNavigationProps
 			</Link>
 
 			{/* Right: search, theme, and menu */}
-			<div className="flex items-center gap-2">
+			<div className="flex items-center gap-3">
 				<SearchToggle
 					className={cn(
 						"p-0 h-9 w-9",
@@ -214,9 +215,9 @@ export function MobileNavigation({ isCompact, blogItems }: MobileNavigationProps
 					</Button>
 					<SheetContent
 						side="right"
-						className="w-full max-w-sm border-l px-0 pb-4 pt-2 flex flex-col"
+						className="w-full max-w-sm border-l px-2 pb-4 pt-3 flex flex-col"
 					>
-						<SheetHeader className="px-4 pb-2 pt-4">
+						<SheetHeader className="px-4 pb-2 pt-3">
 							<SheetTitle>Menu</SheetTitle>
 						</SheetHeader>
 						<div className="flex-1 overflow-y-auto px-4">

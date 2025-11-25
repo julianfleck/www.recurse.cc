@@ -75,15 +75,17 @@ export function DefaultNavigation({
 		<div 
 			className="flex items-center justify-between h-full w-full transition-all duration-300"
 			style={{
-				paddingLeft: '2rem',
-				paddingRight: isCompact ? '0.5rem' : '2rem'
+				paddingLeft: "2.5rem",
+				paddingRight: isCompact ? "1.25rem" : "2.5rem",
 			}}
 		>
 			{/* Left side: Logo, Wordmark and navigation */}
-			<div className={cn(
-				"flex items-center transition-all duration-300",
-				isCompact ? "gap-20" : "gap-6"
-			)}>
+				<div
+					className={cn(
+						"flex items-center transition-all duration-300",
+						isCompact ? "gap-16" : "gap-8",
+					)}
+				>
 				<div className={cn("flex items-start gap-8")}>
 				{/* Logo */}
 				<Link
@@ -210,10 +212,12 @@ export function DefaultNavigation({
 
 			{/* Right side: Utility buttons */}
 			<TooltipProvider delayDuration={0}>
-				<div className={cn(
-					"flex items-center transition-all duration-300",
-					isCompact ? "gap-1" : "gap-2"
-				)}>
+				<div
+					className={cn(
+						"flex items-center transition-all duration-300",
+						"gap-2",
+					)}
+				>
 					<Button
 						className={cn(
 							"transition-all duration-300",
@@ -228,8 +232,8 @@ export function DefaultNavigation({
 
 					<SearchToggle
 						className={cn(
-							"p-0 transition-all duration-300",
-							isCompact ? "h-9 w-9" : "h-10 w-10"
+							"transition-all duration-300",
+							isCompact ? "h-9 w-9" : "h-10 w-10",
 						)}
 						enableHotkey={true}
 						placeholder="Search documentation..."
@@ -240,8 +244,8 @@ export function DefaultNavigation({
 					<Link href="/faq">
 						<Button
 							className={cn(
-								"p-0 transition-all duration-300",
-								isCompact ? "h-9 w-9" : "h-10 w-10"
+								"transition-all duration-300",
+								isCompact ? "h-9 w-9" : "h-10 w-10",
 							)}
 							size="icon"
 							tooltip="Frequently Asked Questions"

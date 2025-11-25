@@ -17,7 +17,11 @@ export function Hero() {
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 				<Grid8Col >
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-						<GridCard enableHoverEffect enableSpotlight className="px-1col py-1col lg:pl-2col lg:pr-2col">
+						<GridCard
+							enableHoverEffect
+							enableSpotlight
+							className="px-1col py-1col lg:pl-2col lg:pr-2col border-t-0 md:border-t backdrop-blur-none bg-transparent dark:bg-transparent bg-linear-to-t from-background/90 to-background/0 md:bg-linear-0 md:backdrop-blur-2xl md:bg-background/30 dark:md:bg-background/60"
+						>
 							<div className="space-y-8 text-left">
 								<div className="space-y-6">
 									<div className="font-semibold text-2xl leading-[1.15] tracking-tight text-foreground md:text-4xl lg:text-[2.5rem] lg:max-w-xl h-40 overflow-hidden">

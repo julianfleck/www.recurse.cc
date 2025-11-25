@@ -85,7 +85,7 @@ export function GridCard({ children, className, enableHoverEffect = false, enabl
 			className={cn(
 				"relative z-20",
 				// Backdrop blur with semi-transparent background
-				"backdrop-blur-3xl bg-background/50 dark:bg-background/70",
+				"backdrop-blur-2xl bg-background/35 dark:bg-background/60",
 				// Optional rounded corners
 				rounded && "rounded-lg",
 				// Standard border approach with negative margins to collapse adjacent borders
@@ -95,7 +95,7 @@ export function GridCard({ children, className, enableHoverEffect = false, enabl
 				enableHoverEffect && "grid-card-glow",
 				enableHoverEffect && isLinked && "grid-card-glow--linked",
 				isLinked && "cursor-pointer",
-				className
+				className,
 			)}
 			style={
 				enableHoverEffect
