@@ -6,7 +6,6 @@ import { Toaster } from "@/components/ui/sonner";
 
 // Suppress Auth0 errors globally that are expected in development:
 // - "Missing Refresh Token" - expected when requesting tokens with an audience/scope that wasn't included in initial login
-// - "must run on a secure origin" - expected in dev when accessing via IP address instead of localhost
 if (typeof window !== "undefined") {
 	const originalConsoleError = console.error;
 	console.error = (...args) => {
@@ -18,9 +17,7 @@ if (typeof window !== "undefined") {
 			(errorMessage.includes("Missing Refresh Token") ||
 				(errorMessage.includes("refresh") &&
 					errorMessage.includes("token") &&
-					errorMessage.includes("audience")) ||
-				(errorMessage.includes("auth0-spa-js must run on a secure origin") &&
-					process.env.NODE_ENV === "development"))
+					errorMessage.includes("audience")))
 		) {
 			return; // Suppress this error silently
 		}
@@ -28,7 +25,48 @@ if (typeof window !== "undefined") {
 	};
 }
 
+/**
+ * Check if the current origin is considered secure by Auth0
+ * Auth0 requires HTTPS or localhost/127.0.0.1 (any port)
+ */
+function isSecureOrigin(): boolean {
+	if (typeof window === "undefined") {
+		return true; // Server-side, assume secure
+	}
+
+	const { protocol, hostname } = window.location;
+
+	// HTTPS is always secure
+	if (protocol === "https:") {
+		return true;
+	}
+
+	// HTTP is only secure if on localhost or 127.0.0.1
+	if (protocol === "http:") {
+		return (
+			hostname === "localhost" ||
+			hostname === "127.0.0.1" ||
+			hostname === "[::1]"
+		);
+	}
+
+	return false;
+}
+
 export function Providers({ children }: { children: ReactNode }) {
+	const isSecure = isSecureOrigin();
+
+	// In development, allow app to work without Auth0 when on non-secure origin
+	// (e.g., accessing via network IP like 10.0.0.x)
+	if (!isSecure && process.env.NODE_ENV === "development") {
+		return (
+			<>
+				{children}
+				<Toaster />
+			</>
+		);
+	}
+
 	return (
 		<Auth0Provider
 			authorizationParams={{
