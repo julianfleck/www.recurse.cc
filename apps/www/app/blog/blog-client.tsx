@@ -7,7 +7,7 @@ import ScrollAnimation from "@/components/animations/ScrollAnimation/ScrollAnima
 import { GlowCard } from "@recurse/ui/components/glow-card";
 import { ScrollArea } from "@recurse/ui/components/scroll-area";
 import { Badge } from "@recurse/ui/components/badge";
-import { LinkButton } from "@recurse/ui/components";
+import { Button, LinkButton } from "@recurse/ui/components";
 import { Input } from "@/components/ui/input";
 import { Grid8Col, GridCell } from "@/components/layout/Grid8Col";
 import { GridCard } from "@/components/layout/GridCard";

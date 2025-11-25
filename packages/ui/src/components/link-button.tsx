@@ -73,7 +73,7 @@ export function LinkButton({
 	
 	// For xs size, use sm button size but override with custom classes
 	// Button component only supports: "sm" | "default" | "lg" | "icon" | "icon-sm"
-	const buttonSize = size === "xs" ? "sm" : (size === "sm" || size === "default" || size === "lg" ? size : "default");
+	const buttonSize = (size as string) === "xs" ? "sm" : (size === "sm" || size === "default" || size === "lg" ? size : "default");
 
 	const content = (
 		<>

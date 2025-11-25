@@ -3,7 +3,6 @@
 
 // UI Components
 export * from './ExternalLinkButton';
-export * from './link-button';
 export * from './accordion-menu';
 export * from './alert';
 export * from './avatar';
@@ -25,6 +24,7 @@ export * from './icon-toggle-button';
 export * from './input';
 export * from './kbd';
 export * from './label';
+export * from './link-button';
 export * from './logo';
 export * from './navigation-menu';
 export * from './popover';
