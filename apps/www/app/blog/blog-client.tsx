@@ -207,7 +207,7 @@ export function BlogClient({ posts }: BlogClientProps) {
 													src={post.heroImage}
 													alt={post.title}
 													loading="lazy"
-													className="h-full w-full object-cover transition-all duration-300 opacity-60 group-hover/article-card:opacity-100 group-hover/article-card:scale-105"
+													className="h-full w-full object-fill transition-all duration-300 opacity-60 group-hover/article-card:opacity-100 group-hover/article-card:scale-105"
 												/>
 												<Badge variant="secondary" className="absolute top-2 right-2 opacity-0 transition-opacity duration-300 group-hover/article-card:opacity-100">
 													{new Date(post.publishedAt).toLocaleDateString(undefined, {
