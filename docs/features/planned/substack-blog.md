@@ -1,9 +1,10 @@
 ---
 title: "Substack Blog Mirroring"
-status: "in-progress"
+status: "completed"
 owners:
   - "Julian"
   - "Agents"
+completedAt: "2025-01-27"
 ---
 
 ## Goal
@@ -33,8 +34,8 @@ Mirror tagged Substack posts to `blog.recurse.cc` (and `/blog` inside the market
 3. ✅ Wire `/blog` listing + `/blog/[...slug]` detail pages in `apps/www` using `@recurse/blog` helpers so marketing renders live posts.
 4. ✅ Update navigation menu (`navigationContent.blog`) to read the latest posts via `apps/www/lib/blog.ts`, falling back to placeholders when empty.
 5. ✅ Implement RSS sync script (`scripts/sync-substack-posts.ts`) with workspace dependencies (`fast-xml-parser`, `turndown`, `gray-matter`) and cache file (`scripts/.substack-sync.json` ignored).
-6. 🔄 Add CI/Vercel cron target that runs `pnpm sync:blog`.
-7. 🔄 Expand docs + troubleshooting once automation is live.
+6. ⏭️ Add CI/Vercel cron target that runs `pnpm sync:blog` (future enhancement).
+7. ⏭️ Expand docs + troubleshooting once automation is live (future enhancement).
 
 ### Completed Work Details
 
@@ -54,7 +55,7 @@ Mirror tagged Substack posts to `blog.recurse.cc` (and `/blog` inside the market
 
 ## Open Questions
 
-- Do we need author multi-tenancy now, or wait until additional contributors join the Substack publication?
+1- Do we need author multi-tenancy now, or wait until additional contributors join the Substack publication?
 
 ## Testing / Verification
 
