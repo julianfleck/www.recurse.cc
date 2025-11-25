@@ -103,7 +103,7 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
     const backgroundRest = clamp(backgroundGlowIntensity, 0, 0.4);
     const backgroundHover = clamp(backgroundGlowHoverIntensity ?? backgroundRest * 2, 0, 0.4);
     const backgroundColorStrength = clamp(backgroundGlowColorStrength ?? backgroundRest, 0, 0.4);
-    const borderColorStrength = clamp(borderGlowColorStrength ?? borderRest || 0.35, 0, 1);
+    const borderColorStrength = clamp((borderGlowColorStrength ?? borderRest) || 0.35, 0, 1);
 
     const glowStyle = enableGlow
       ? ({
