@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { DefaultNavigation } from "@/components/navigation/default";
+import { MobileNavigation } from "@/components/navigation/mobile";
 import { Grid8Col } from "@/components/layout/Grid8Col";
 import { cn } from "@/lib/utils";
 import type { NavigationItem } from "@/content/navigation";
@@ -89,11 +90,21 @@ export function HeaderClient({ blogItems }: HeaderClientProps) {
 			/>
 			{/* Content */}
 			<Grid8Col className="relative z-[1] h-full flex items-center">
-				<DefaultNavigation
-					isCompact={isCompact}
-					isHovered={isHovered}
-					blogItems={blogItems}
-				/>
+				<div className="w-full">
+					<div className="hidden md:block">
+						<DefaultNavigation
+							isCompact={isCompact}
+							isHovered={isHovered}
+							blogItems={blogItems}
+						/>
+					</div>
+					<div className="block md:hidden">
+						<MobileNavigation
+							isCompact={isCompact}
+							blogItems={blogItems}
+						/>
+					</div>
+				</div>
 			</Grid8Col>
 		</header>
 	);

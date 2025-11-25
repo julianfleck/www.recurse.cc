@@ -15,6 +15,19 @@
 
 **Files touched:** `apps/www/components/navigation/default.tsx`, `apps/www/content/navigation.ts`, `apps/www/app/layout.tsx`, `CHANGELOG.md`
 
+## [2025-11-25T00:00:00Z] — Feature: Mobile navigation sheet for marketing site
+
+**Context:** The desktop navigation mega menu overflowed on small screens and needed a responsive mobile-specific experience without the complex grid layout.
+
+**Changes:**
+- Added a `MobileNavigation` component that uses a Sheet + Accordion pattern with a simplified vertical layout for navigation sections
+- Updated the header client to render the existing desktop `DefaultNavigation` on md+ screens and the new mobile sheet navigation on smaller viewports
+- Recorded the new component in the project structure ledger
+
+**Impact:** The marketing site now shows a full-height, responsive navigation sheet on mobile that preserves existing section structure and anchor scrolling behavior while fitting within the viewport.
+
+**Files touched:** `apps/www/components/navigation/mobile.tsx`, `apps/www/components/common/header-client.tsx`, `.cursor/rules/overview.mdc`, `CHANGELOG.md`
+
 ## [2025-11-21T07:08:03Z] — Feature: TextTransitionNew + FAQ hero variations
 
 **Context:** Needed a richer token-aware text transition that measures actual widths, staggers animations per line, and reveals edits with a typed blur-in effect for reuse across marketing pages—starting with the FAQ hero copy.
