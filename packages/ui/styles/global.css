@@ -984,29 +984,80 @@ main {
 }
 
 /* Grid cards rely solely on the global Spotlight for glow */
+/* Grid Card Hover Effect */
 .grid-card-glow,
 .grid-card-glow--linked {
   position: relative;
+  overflow: hidden;
 }
 
 .grid-card-glow::after,
 .grid-card-glow--linked::after {
   content: '';
-  display: none;
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.25;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+  background: radial-gradient(
+    var(--glow-radius, 420px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(var(--glow-color-rgb), 0.3) 0%,
+    rgba(var(--glow-color-rgb), 0.12) 40%,
+    transparent 70%
+  );
+}
+
+.grid-card-glow:hover::after,
+.grid-card-glow--linked:hover::after,
+.grid-card-glow:focus-visible::after,
+.grid-card-glow--linked:focus-visible::after {
+  opacity: 0.95;
+}
+
+.grid-card-glow[style*="--glow-intensity: 1"]::after,
+.grid-card-glow--linked[style*="--glow-intensity: 1"]::after {
+  opacity: 0.95;
 }
 
 /* Navigation Card Glow Effect */
-.nav-card-glow,
-.nav-card-glow--linked {
+.nav-card-glow {
   position: relative;
+  overflow: hidden;
+  isolation: isolate;
 }
 
-.nav-card-glow::before,
-.nav-card-glow::after,
-.nav-card-glow--linked::before,
-.nav-card-glow--linked::after {
+.nav-card-glow > * {
+  position: relative;
+  z-index: 2;
+}
+
+.nav-card-glow::after {
   content: '';
-  display: none;
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.2;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+  background: radial-gradient(
+    var(--glow-radius, 360px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(var(--glow-color-rgb), 0.25) 0%,
+    rgba(var(--glow-color-rgb), 0.1) 40%,
+    transparent 70%
+  );
+}
+
+.nav-card-glow:hover::after,
+.nav-card-glow:focus-visible::after,
+.nav-card-glow[style*="--glow-intensity: 1"]::after {
+  opacity: 0.8;
 }
 
 /* Spotlight effect - cursor-following glow */
