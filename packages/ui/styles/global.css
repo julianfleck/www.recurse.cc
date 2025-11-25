@@ -983,64 +983,16 @@ main {
   padding-top: calc(var(--spacing-halfcol-abs) * 0.2 + 1.5rem);
 }
 
-/* Grid Card Hover Effect */
-.grid-card-glow::after {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  background: radial-gradient(
-    var(--glow-radius, 400px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    rgba(var(--glow-color-rgb, 166, 200, 46), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-1, 0.6))) 0%,
-    rgba(var(--glow-color-rgb, 166, 200, 46), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-2, 0.4))) 20%,
-    rgba(var(--glow-color-rgb, 166, 200, 46), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-3, 0.2))) 40%,
-    transparent 70%
-  );
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask-composite: subtract;
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  padding: 1px;
-  box-sizing: border-box;
+/* Grid cards rely solely on the global Spotlight for glow */
+.grid-card-glow,
+.grid-card-glow--linked {
+  position: relative;
 }
 
-.grid-card-glow:hover {
-  z-index: 30;
-}
-
-.grid-card-glow:hover::after {
-  opacity: clamp(0, calc(var(--glow-intensity, 0) * 0.75 + 0.12), 1);
-}
-
-.grid-card-glow[style*="--glow-intensity: 1"] {
-  z-index: 30;
-}
-
-.grid-card-glow[style*="--glow-intensity: 1"]::after {
-  opacity: clamp(0, calc(var(--glow-intensity, 0) * 0.75 + 0.12), 1);
-}
-
+.grid-card-glow::after,
 .grid-card-glow--linked::after {
-  background: radial-gradient(
-    var(--glow-radius, 400px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    rgba(var(--glow-color-rgb, 166, 200, 46), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-1, 0.6) * 1.5)) 0%,
-    rgba(var(--glow-color-rgb, 166, 200, 46), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-2, 0.4) * 1.5)) 20%,
-    rgba(var(--glow-color-rgb, 166, 200, 46), calc(var(--glow-intensity, 0) * var(--glow-opacity-multiplier-3, 0.2) * 1.5)) 40%,
-    transparent 70%
-  );
-}
-
-.grid-card-glow--linked:hover::after,
-.grid-card-glow--linked[style*="--glow-intensity"]::after {
-  opacity: clamp(0, calc(var(--glow-intensity, 0) * 0.95 + 0.18), 1);
+  content: '';
+  display: none;
 }
 
 /* Navigation Card Glow Effect */
