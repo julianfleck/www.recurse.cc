@@ -1142,18 +1142,6 @@ main {
   mix-blend-mode: var(--glow-blend-mode, multiply);
 }
 
-/* Reduce Spotlight opacity when active (hovering cards) to prevent double glow effect */
-/* Cards have backdrop-blur which creates a stacking context that makes blend modes more pronounced */
-/* Keep only ~5% additional glow when Spotlight is active (0.12 * 0.05 ≈ 0.006, 0.05 * 0.05 ≈ 0.0025) */
-body.spotlight-active .spotlight-effect {
-  background: radial-gradient(
-    circle,
-    rgba(var(--glow-color-rgb), 0.006) 0%,
-    rgba(var(--glow-color-rgb), 0.0025) 30%,
-    transparent 60%
-  );
-}
-
 .dark .spotlight-effect {
   background: radial-gradient(
     circle,
@@ -1164,11 +1152,3 @@ body.spotlight-active .spotlight-effect {
 }
 
 /* Dark mode: ~5% of original (0.1 * 0.05 ≈ 0.005, 0.05 * 0.05 ≈ 0.0025) */
-.dark body.spotlight-active .spotlight-effect {
-  background: radial-gradient(
-    circle,
-    rgba(var(--glow-color-rgb), 0.005) 0%,
-    rgba(var(--glow-color-rgb), 0.0025) 30%,
-    transparent 60%
-  );
-}
