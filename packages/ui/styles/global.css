@@ -988,10 +988,12 @@ main {
 .glow-card {
   position: relative;
   isolation: isolate;
+  --glow-border-color-strength: 0.35;
   --glow-border-opacity-rest: 0;
-  --glow-border-opacity-hover: 0.6;
+  --glow-border-opacity-hover: 0.65;
+  --glow-background-color-strength: 0.02;
   --glow-background-opacity-rest: 0;
-  --glow-background-opacity-hover: 0.1;
+  --glow-background-opacity-hover: 0.08;
   --glow-radius: 420px;
 }
 
@@ -1011,7 +1013,7 @@ main {
   inset: -25%;
   background: radial-gradient(
     circle,
-    rgba(var(--glow-color-rgb), var(--glow-background-opacity-rest, 0)) 0%,
+    rgba(var(--glow-color-rgb), var(--glow-background-color-strength, 0.02)) 0%,
     transparent 70%
   );
   opacity: var(--glow-background-opacity-rest, 0);
@@ -1023,8 +1025,8 @@ main {
   z-index: 1;
   background: radial-gradient(
     var(--glow-radius, 420px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    rgba(var(--glow-color-rgb), var(--glow-border-opacity-rest, 0)) 0%,
-    rgba(var(--glow-color-rgb), calc(var(--glow-border-opacity-rest, 0) * 0.4)) 35%,
+    rgba(var(--glow-color-rgb), var(--glow-border-color-strength, 0.35)) 0%,
+    rgba(var(--glow-color-rgb), calc(var(--glow-border-color-strength, 0.35) * 0.4)) 35%,
     transparent 70%
   );
   mask:

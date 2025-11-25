@@ -37,6 +37,14 @@ export interface GlowCardProps extends React.HTMLAttributes<GlowCardElement> {
    * Controls hover strength for the border glow (0-1).
    */
   borderGlowHoverIntensity?: number;
+  /**
+   * Controls color strength of the background glow (0-1).
+   */
+  backgroundGlowColorStrength?: number;
+  /**
+   * Controls color strength of the border glow (0-1).
+   */
+  borderGlowColorStrength?: number;
 }
 
 export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
@@ -49,6 +57,8 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
       backgroundGlowHoverIntensity,
       borderGlowIntensity = 0.38,
       borderGlowHoverIntensity,
+      backgroundGlowColorStrength,
+      borderGlowColorStrength,
       className,
       style,
       ...props
@@ -92,6 +102,8 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
     const borderHover = clamp(borderGlowHoverIntensity ?? borderRest * 1.6, 0, 1);
     const backgroundRest = clamp(backgroundGlowIntensity, 0, 0.4);
     const backgroundHover = clamp(backgroundGlowHoverIntensity ?? backgroundRest * 2, 0, 0.4);
+    const backgroundColorStrength = clamp(backgroundGlowColorStrength ?? backgroundRest, 0, 0.4);
+    const borderColorStrength = clamp(borderGlowColorStrength ?? borderRest || 0.35, 0, 1);
 
     const glowStyle = enableGlow
       ? ({
@@ -103,6 +115,8 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
           '--glow-border-opacity-hover': borderHover.toString(),
           '--glow-background-opacity-rest': backgroundRest.toString(),
           '--glow-background-opacity-hover': backgroundHover.toString(),
+          '--glow-background-color-strength': backgroundColorStrength.toString(),
+          '--glow-border-color-strength': borderColorStrength.toString(),
         } as React.CSSProperties)
       : undefined;
 
