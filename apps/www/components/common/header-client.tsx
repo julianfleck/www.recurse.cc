@@ -68,15 +68,15 @@ export function HeaderClient({ blogItems }: HeaderClientProps) {
 			className={cn(
 				"fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out",
 				// Top padding: 1 grid unit in expanded, 0.2 in compact
-				isCompact 
-					? "pt-[calc(var(--spacing-halfcol-abs)*0.2)]" 
+				isCompact
+					? "pt-[calc(var(--spacing-halfcol-abs)*0.2)]"
 					: "pt-[calc(var(--spacing-halfcol-abs)*1)]",
 				// Bottom padding: 0.5 grid unit in expanded, 0.2 in compact
-				isCompact 
+				isCompact
 					? "pb-[calc(var(--spacing-halfcol-abs)*0.2)]"
 					: "pb-[calc(var(--spacing-halfcol-abs)*0.5)]",
-				// Border at bottom for collapsed mode
-				isCompact && "border-border border-b",
+				// Border at bottom for collapsed mode, desktop only
+				isCompact && !isMobile && "border-border border-b",
 				// Minimum height
 				"min-h-[40px]",
 			)}
@@ -93,14 +93,14 @@ export function HeaderClient({ blogItems }: HeaderClientProps) {
 			{/* Content */}
 			<Grid8Col className="relative z-[1] h-full flex items-center">
 				<div className="w-full">
-					<div className="hidden md:block">
+					<div className="hidden lg:block">
 						<DefaultNavigation
 							isCompact={isCompact}
 							isHovered={isHovered}
 							blogItems={blogItems}
 						/>
 					</div>
-					<div className="block md:hidden">
+					<div className="block lg:hidden">
 						<MobileNavigation
 							isCompact={isCompact}
 							blogItems={blogItems}
