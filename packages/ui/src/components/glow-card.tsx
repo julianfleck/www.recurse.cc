@@ -24,7 +24,7 @@ export interface GlowCardProps extends React.HTMLAttributes<GlowCardElement> {
 }
 
 export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
-  ({ asChild = false, enableGlow = false, glowRadius = '500px', className, style, ...props }, ref) => {
+  ({ asChild = false, enableGlow = true, glowRadius = '500px', className, style, ...props }, ref) => {
     const Comp = asChild ? Slot : 'div';
     const internalRef = React.useRef<GlowCardElement>(null);
     const mergedRef = mergeRefs(ref, internalRef);
@@ -57,10 +57,10 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
       };
     }, [enableGlow]);
 
-    const glowStyle = enableGlow
+  const glowStyle = enableGlow
       ? ({
-          '--glow-x': '20%',
-          '--glow-y': '20%',
+          '--glow-x': '50%',
+          '--glow-y': '50%',
           '--glow-intensity': '0',
           '--glow-radius': glowRadius,
         } as React.CSSProperties)
