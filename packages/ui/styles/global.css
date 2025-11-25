@@ -1020,12 +1020,6 @@ main {
   opacity: calc(var(--glow-intensity, 0) * 0.5 + 0.2);
 }
 
-/* Reduce card glow opacity when Spotlight is active to prevent double glow effect */
-body.spotlight-active .grid-card-glow:hover::after,
-body.spotlight-active .grid-card-glow[style*="--glow-intensity: 1"]::after {
-  opacity: calc(var(--glow-intensity, 0) * 0.25 + 0.1);
-}
-
 .grid-card-glow[style*="--glow-intensity: 1"] {
   z-index: 30;
 }
@@ -1047,12 +1041,6 @@ body.spotlight-active .grid-card-glow[style*="--glow-intensity: 1"]::after {
 .grid-card-glow--linked:hover::after,
 .grid-card-glow--linked[style*="--glow-intensity"]::after {
   opacity: calc(var(--glow-intensity, 0) * 0.8 + 0.4);
-}
-
-/* Reduce linked card glow opacity when Spotlight is active */
-body.spotlight-active .grid-card-glow--linked:hover::after,
-body.spotlight-active .grid-card-glow--linked[style*="--glow-intensity"]::after {
-  opacity: calc(var(--glow-intensity, 0) * 0.4 + 0.2);
 }
 
 /* Navigation Card Glow Effect */
@@ -1154,11 +1142,33 @@ body.spotlight-active .grid-card-glow--linked[style*="--glow-intensity"]::after 
   mix-blend-mode: var(--glow-blend-mode, multiply);
 }
 
+/* Reduce Spotlight opacity when active (hovering cards) to prevent double glow effect */
+/* Cards have backdrop-blur which creates a stacking context that makes blend modes more pronounced */
+/* Keep only ~5% additional glow when Spotlight is active (0.12 * 0.05 ≈ 0.006, 0.05 * 0.05 ≈ 0.0025) */
+body.spotlight-active .spotlight-effect {
+  background: radial-gradient(
+    circle,
+    rgba(var(--glow-color-rgb), 0.006) 0%,
+    rgba(var(--glow-color-rgb), 0.0025) 30%,
+    transparent 60%
+  );
+}
+
 .dark .spotlight-effect {
   background: radial-gradient(
     circle,
     rgba(var(--glow-color-rgb), 0.1) 0%,
     rgba(var(--glow-color-rgb), 0.05) 30%,
+    transparent 60%
+  );
+}
+
+/* Dark mode: ~5% of original (0.1 * 0.05 ≈ 0.005, 0.05 * 0.05 ≈ 0.0025) */
+.dark body.spotlight-active .spotlight-effect {
+  background: radial-gradient(
+    circle,
+    rgba(var(--glow-color-rgb), 0.005) 0%,
+    rgba(var(--glow-color-rgb), 0.0025) 30%,
     transparent 60%
   );
 }
