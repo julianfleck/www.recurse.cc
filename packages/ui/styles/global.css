@@ -1131,12 +1131,22 @@ main {
 }
 
 /* Spotlight effect - cursor-following glow */
+/* Using hardcoded opacity values to ensure consistency across environments */
 .spotlight-effect {
   background: radial-gradient(
     circle,
-    rgba(var(--glow-color-rgb), var(--glow-opacity-base, 0.12)) 0%,
-    rgba(var(--glow-color-rgb), var(--glow-opacity-fade, 0.05)) 30%,
+    rgba(var(--glow-color-rgb), 0.12) 0%,
+    rgba(var(--glow-color-rgb), 0.05) 30%,
     transparent 60%
   );
   mix-blend-mode: var(--glow-blend-mode, multiply);
+}
+
+.dark .spotlight-effect {
+  background: radial-gradient(
+    circle,
+    rgba(var(--glow-color-rgb), 0.1) 0%,
+    rgba(var(--glow-color-rgb), 0.05) 30%,
+    transparent 60%
+  );
 }
