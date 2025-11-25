@@ -23,7 +23,7 @@ export function ComparisonSection() {
 					<GridCard
 						enableHoverEffect
 						enableSpotlight
-						className="flex flex-col h-full items-start p-6 md:p-8 justify-between gap-8 md:gap-4"
+						className="flex flex-col h-full items-start px-1col py-1col md:p-8 justify-between gap-8 md:gap-4"
 					>
 						<p className="font-light text-muted-foreground leading-relaxed">
 							{homepageContent.comparison.description}
@@ -38,7 +38,7 @@ export function ComparisonSection() {
 
 				{/* Comparison Table - Mobile: 8/8, Tablet: 8/8, Desktop: 6/8 */}
 				<GridCell colSpan={8} mdColSpan={8} lgColSpan={6}>
-					<GridCard enableHoverEffect enableSpotlight className="h-full p-6 md:p-8">
+					<GridCard enableHoverEffect enableSpotlight className="h-full px-1col py-1col md:p-8">
 						<Table className="w-full">
 							<TableHeader>
 								<TableRow>

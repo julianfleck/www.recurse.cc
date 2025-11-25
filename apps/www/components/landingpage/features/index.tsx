@@ -54,7 +54,7 @@ function FeatureCard({
 
 	const cardContent = (
 		<div className="group/feature-card h-full">
-			<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col p-6 md:p-8 relative">
+			<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col px-1col py-1col md:p-8 relative">
 				{/* Icon and Coming Soon Badge */}
 				<div className="flex justify-between items-center pb-6">
 					<div className="rounded-md border border-accent/20 bg-accent/10">

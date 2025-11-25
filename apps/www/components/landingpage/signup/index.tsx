@@ -13,7 +13,7 @@ export function SignupSection() {
 				<Grid8Col>
 					{/* Column 1: Title and intro (2 cols) */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between px-1col py-1col md:p-8">
 							<h2 className="text-2xl md:text-3xl font-medium text-foreground leading-tight">
 								Join our beta
 							</h2>
@@ -25,7 +25,7 @@ export function SignupSection() {
 
 					{/* Column 2: Description (2 cols) */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between px-1col py-1col md:p-8">
 							<p className="font-light text-foreground text-base leading-relaxed">
 								Are you building AI assistants, managing extensive knowledge bases, or streamlining research
 								workflows?

@@ -56,7 +56,7 @@ export function BuildWithRecurseSection() {
 									key={index}
 									enableHoverEffect
 									enableSpotlight
-									className="group/build-card flex flex-col justify-between p-6 md:p-8 rounded-none border-r border-b last:border-r-0 nth-2:border-r-0 nth-3:border-b-0 nth-4:border-b-0"
+									className="group/build-card flex flex-col justify-between px-1col py-1col md:p-8 rounded-none border-r border-b last:border-r-0 nth-2:border-r-0 nth-3:border-b-0 nth-4:border-b-0"
 								>
 									<div className="space-y-3">
 										<h3 className="text-muted-foreground! dark:group-hover/build-card:text-chart-1! group-hover/build-card:text-foreground! leading-relaxed text-lg transition-colors duration-300">
@@ -73,9 +73,9 @@ export function BuildWithRecurseSection() {
 
 					{/* Code Example Card - Mobile: 8/8, Tablet: 8/8, Desktop: 4/8 (right half) */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
-						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col p-6 md:p-8">
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col px-1col py-1col md:p-8">
 							{/* Claim */}
-							<h3 className="text-2xl md:text-3xl font-light! leading-tight mb-6">
+							<h3 className="text-xl md:text-3xl font-light! leading-tight mb-6">
 								Make your AI context-aware with just one line of code
 							</h3>
 
@@ -170,7 +170,7 @@ export function BuildWithRecurseSection() {
 					{/* CTA Cards - Three cards (2-4-2) */}
 					{/* Left: Headline (2 columns) */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex flex-col justify-between h-full p-6 md:p-8">
+						<GridCard enableHoverEffect enableSpotlight className="flex flex-col justify-between h-full px-1col py-1col md:p-8">
 							<h3 className="text-xl text-foreground leading-tight">Automatic context injection</h3>
 							<p className="font-light text-muted-foreground text-lg leading-relaxed mt-auto pt-4">
 								No need for manual context engineering. Use our proxy to get started in minutes.
@@ -180,7 +180,7 @@ export function BuildWithRecurseSection() {
 
 					{/* Center: Description text (4 columns) */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
-						<GridCard enableHoverEffect enableSpotlight className="flex flex-col justify-center h-full p-6 md:p-8">
+						<GridCard enableHoverEffect enableSpotlight className="flex flex-col justify-center h-full px-1col py-1col md:p-8">
 							<p className="font-light text-foreground text-base max-w-sm leading-relaxed">
 								Swap your base URL to point to the Recurse proxy. When you send a request to your AI provider,
 								Recurse retrieves context from your knowledge graph and injects it into the request. When your
@@ -192,7 +192,7 @@ export function BuildWithRecurseSection() {
 
 					{/* Right: CTA button (2 columns) */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex items-center justify-center h-full p-6 md:p-8">
+						<GridCard enableHoverEffect enableSpotlight className="flex items-center justify-center h-full px-1col py-1col md:p-8">
 							<LinkButton href="/docs/getting-started/using-the-proxy" size="lg" className="w-full">
 								Get started
 							</LinkButton>

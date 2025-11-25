@@ -3,6 +3,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import type React from "react";
 import { type ReactNode, useRef } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ScrollAnimationProps {
 	children: ReactNode;
@@ -20,6 +21,7 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
 	enableFadeOut = true,
 }) => {
 	const ref = useRef<HTMLDivElement>(null);
+	const isMobile = useIsMobile();
 
 	// Use different offset tracking based on what effects are enabled
 	const { scrollYProgress } = useScroll({
@@ -76,6 +78,11 @@ const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
 
 	// Create filter transform for blur
 	const scrollFilter = useTransform(scrollBlur, (value) => `blur(${value}px)`);
+
+	// On mobile, disable scroll-based blur/fade animations to avoid early content fade-out.
+	if (isMobile) {
+		return <div ref={ref}>{children}</div>;
+	}
 
 	return (
 		<motion.div

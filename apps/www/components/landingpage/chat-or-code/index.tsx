@@ -19,7 +19,7 @@ export function ChatOrCodeSection() {
 
 					{/* Left: Big card with interface preview/image (4 cols) */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
-						<GridCard enableHoverEffect className="flex h-full flex-col p-8 md:p-12 group overflow-hidden relative min-h-[300px] md:min-h-[400px]">
+						<GridCard enableHoverEffect className="flex h-full flex-col px-1col py-1col md:p-12 group overflow-hidden relative min-h-[300px] md:min-h-[400px]">
 							<FeatureCardUIPreview />
 						</GridCard>
 					</GridCell>
@@ -28,7 +28,7 @@ export function ChatOrCodeSection() {
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
 						<div className="grid grid-cols-2 gap-0 h-full">
 							{/* Card 1: Content Upload (top-left) */}
-							<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-6 md:p-8">
+							<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col px-1col py-1col md:p-8">
 								<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
 									Upload Content
 								</h4>
@@ -38,7 +38,7 @@ export function ChatOrCodeSection() {
 							</GridCard>
 
 							{/* Card 2: Chat & Query (top-right) */}
-							<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-6 md:p-8">
+							<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col px-1col py-1col md:p-8">
 								<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
 									Chat & Query
 								</h4>
@@ -48,7 +48,7 @@ export function ChatOrCodeSection() {
 							</GridCard>
 
 							{/* Card 3: Visual Exploration (bottom-left) */}
-							<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-6 md:p-8">
+							<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col px-1col py-1col md:p-8">
 								<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
 									Explore Visually
 								</h4>
@@ -58,7 +58,7 @@ export function ChatOrCodeSection() {
 							</GridCard>
 
 							{/* Card 4: Developer Teaser (bottom-right) */}
-							<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col p-6 md:p-8">
+							<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col px-1col py-1col md:p-8">
 								<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
 									For Developers
 								</h4>
@@ -71,8 +71,8 @@ export function ChatOrCodeSection() {
 
 					{/* CTA Cards - 2-4-2 layout */}
 					{/* Left Card: Headline (2 cols) */}
-					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between px-1col py-1col md:p-8">
 							<h3 className="text-2xl font-medium text-foreground">
 								Start Exploring
 							</h3>
@@ -83,8 +83,8 @@ export function ChatOrCodeSection() {
 					</GridCell>
 
 					{/* Center Card: Description (4 cols) */}
-					<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
-						<GridCard enableHoverEffect enableSpotlight className="flex h-full items-center p-6 md:p-8">
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full items-center px-1col py-1col md:p-8">
 							<p className="font-light text-muted-foreground text-lg leading-relaxed">
 								Our interface makes your knowledge immediately explorable. Upload documents, ask questions in natural language, trace connections through your graph. And if you need programmatic access for building applications or custom integrations on top of your knowledge base, there's a full API underneath.
 							</p>
@@ -92,8 +92,8 @@ export function ChatOrCodeSection() {
 					</GridCell>
 
 					{/* Right Card: Button (2 cols) */}
-					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex h-full items-center justify-center p-6 md:p-8">
+						<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
+							<GridCard enableHoverEffect enableSpotlight className="flex h-full items-center justify-center px-1col py-1col md:p-8">
 							<LinkButton href="/docs/getting-started/using-the-ui" size="lg" className="w-full">
 								Get started
 							</LinkButton>

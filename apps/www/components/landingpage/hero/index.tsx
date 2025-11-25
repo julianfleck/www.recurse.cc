@@ -46,7 +46,7 @@ export function Hero() {
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 				<Grid8Col>
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between px-1col py-1col md:p-8">
 							<p className="font-medium text-foreground text-xl leading-relaxed hyphens-auto">
 								Recurse turns raw input into structured, actionable context
 							</p>
@@ -80,23 +80,23 @@ export function About() {
 					</GridCell>
 
 					<GridCell colSpan={8} mdColSpan={2} lgColSpan={2} rowSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
-							<p className="font-light text-2xl text-foreground">
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between px-1col py-1col md:p-8">
+							<p className="font-light text-xl text-foreground md:text-2xl">
 								Not quite.
 								<br className="hidden md:block" /> It’s built a bit differently...
 							</p>
-							<p className="font-light text-xl text-foreground">
+							<p className="font-light text-base text-foreground md:text-xl">
 								Recurse is memory infrastructure for systems that actually <mark className=" underline-offset-6 text-foreground">understand</mark>.
 							</p>
 						</GridCard>
 					</GridCell>
 
 					<GridCell colSpan={8} mdColSpan={3} lgColSpan={3} rowSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8">
-							<p className="font-light text-2xl text-muted-foreground pb-8 leading-relaxed">
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between px-1col py-1col md:p-8">
+							<p className="font-light text-xl text-muted-foreground pb-8 leading-relaxed md:text-2xl">
 								Most context management systems are optimized for retrieval, not exploration.
 							</p>
-							<p className="font-light text-lg text-muted-foreground leading-relaxed">
+							<p className="font-light text-base text-muted-foreground leading-relaxed md:text-lg">
 								Ask a question, get back what looks most similar to your query. This works if you know what you're looking for.
 								But it systematically prevents the kind of exploration that leads to genuine understanding and novel insights.
 							</p>
@@ -104,12 +104,12 @@ export function About() {
 					</GridCell>
 
 					<GridCell colSpan={8} mdColSpan={3} lgColSpan={3} rowSpan={2}>
-						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between p-6 md:p-8 gap-8">
-							<p className="font-light text-lg text-foreground pb-8 leading-relaxed">
+						<GridCard enableHoverEffect enableSpotlight className="flex h-full flex-col justify-between px-1col py-1col md:p-8 gap-8">
+							<p className="font-light text-base text-foreground pb-8 leading-relaxed md:text-lg">
 								Standard retrieval systems don't allow you to discover connections you didn't know existed, stumble onto relevant
 								context from unexpected sources or follow threads that diverge from your initial question.
 							</p>
-							<p className="font-light text-xl text-foreground leading-relaxed pr-8">
+							<p className="font-light text-base text-foreground leading-relaxed pr-8 md:text-xl">
 								Recurse favors <mark>depth</mark> over similarity, <mark>relationships</mark> over rankings and <mark>evolution</mark> over
 								static storage.
 							</p>
