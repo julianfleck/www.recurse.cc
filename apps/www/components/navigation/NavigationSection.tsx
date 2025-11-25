@@ -85,9 +85,9 @@ export function NavigationSection({ section, sectionKey, handleAnchorClick }: Na
 			);
 		}
 
-		// Non-scrolling list: wrap in container with vertical spacing
+		// Non-scrolling list: wrap in container with vertical spacing and min height to match hero card
 		return (
-			<div className="space-y-2">
+			<div className="space-y-2 min-h-72 flex flex-col justify-between">
 				{listItems}
 			</div>
 		);

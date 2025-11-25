@@ -49,7 +49,7 @@ export function NavigationHeroCard({ title, description, footer, href, onClick, 
 	return (
 		<NavigationCard href={href} onClick={onClick} className={cn(
 			"flex w-52 select-none flex-col justify-between focus:shadow-md gap-y-8 bg-linear-to-b! to-accent/20 from-chart-1/10 shrink-0",
-			fixedHeight ? "h-80" : "h-auto"
+			fixedHeight ? "h-80" : "min-h-72"
 		)}>
 			<div className="text-2xl font-light max-w-xs leading-tight">
 				{title}
