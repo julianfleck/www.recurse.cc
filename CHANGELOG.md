@@ -1,5 +1,11 @@
 # Changelog
 
+## [2025-11-25T07:45:10Z] — Fix: Remove duplicate docs root route
+**Context:** The docs app failed to start because the optional catch-all route (`/[[...slug]]`) and the `(home)` root redirect both resolved to `/`, and Next.js forbids routes with identical specificity.
+**Changes:** Deleted the `(home)` route group (layout + redirect page) and recorded the legacy path in the project overview as deprecated.
+**Impact:** `next build` for `docs.recurse.cc` now completes without the specificity error, while `/` still redirects to `/introduction` through the existing optional catch-all logic.
+**Files touched:** `apps/docs/app/(home)/page.tsx`, `apps/docs/app/(home)/layout.tsx`, `.cursor/rules/overview.mdc`, `CHANGELOG.md`
+
 ## [2025-11-25T07:21:56Z] — Fix: Ignore string-only child references
 **Context:** The example GraphView fullscreen sidebar showed an “Untitled” node because JSON imports treated string child IDs as standalone nodes, generating empty placeholders.
 **Changes:** Updated every GraphDataManager copy to convert string children into simple links and skip recursive parsing so we only walk actual node objects.

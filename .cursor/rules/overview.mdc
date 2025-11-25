@@ -1,0 +1,256 @@
+---
+description: "Project structure ledger"
+globs: ["**/*"]
+alwaysApply: true
+lastVerified: 2025-10-30T02:14:32Z
+---
+
+```yaml
+project:
+  name: "recurse.cc monorepo"
+  description: "Documentation, marketing, and dashboard for Recurse.cc RAGE platform"
+  domain: "mixed"
+  owners:
+    - name: "Julian Fleck"
+      role: "Lead Developer"
+
+inventory:
+  # Rules
+  - path: ".cursor/rules/general.mdc"
+    kind: "rule"
+    purpose: "Core bootstrapping protocol (Extract-Map-Evaluate-Compress-Recurse)"
+    status: "current"
+  
+  - path: ".cursor/rules/typescript.mdc"
+    kind: "rule"
+    purpose: "TypeScript 5.x conventions and best practices"
+    status: "current"
+  
+  - path: ".cursor/rules/next.mdc"
+    kind: "rule"
+    purpose: "Next.js 15 App Router patterns and conventions"
+    status: "current"
+  
+  - path: ".cursor/rules/routing.mdc"
+    kind: "rule"
+    purpose: "Next.js App Router patterns and route organization"
+    status: "current"
+  
+  - path: ".cursor/rules/fumadocs.mdc"
+    kind: "rule"
+    purpose: "Fumadocs framework configuration and MDX patterns"
+    status: "current"
+  
+  - path: ".cursor/rules/ultracite.mdc"
+    kind: "rule"
+    purpose: "Ultracite/Biome linting and formatting rules"
+    status: "current"
+  
+  - path: ".cursor/rules/monorepo.mdc"
+    kind: "rule"
+    purpose: "Monorepo patterns and pnpm workspace conventions"
+    status: "current"
+  
+  - path: ".cursor/rules/overview.mdc"
+    kind: "rule"
+    purpose: "Project structure ledger - mandatory rule file"
+    status: "current"
+  
+  # Apps
+  - path: "apps/www"
+    kind: "code"
+    purpose: "Marketing website (www.recurse.cc) - migrated, uses Switzer font, uses shared UI store"
+    status: "current"
+  
+  - path: "apps/www/components/navigation/mobile.tsx"
+    kind: "code"
+    purpose: "Mobile navigation component using Sheet + Accordion for full-height responsive menu"
+    status: "current"
+  
+  - path: "apps/docs"
+    kind: "code"
+    purpose: "Documentation site (docs.recurse.cc) - refactored to docs-only, uses Switzer font"
+    status: "current"
+  
+  - path: "apps/docs/app/(home)"
+    kind: "code"
+    purpose: "Legacy docs root redirect route; deprecated after optional catch-all began handling '/' → '/introduction'"
+    status: "deprecated"
+
+  - path: "apps/dashboard"
+    kind: "code"
+    purpose: "Dashboard application (dashboard.recurse.cc) - fully migrated, uses Switzer font"
+    status: "current"
+  
+  - path: "apps/www/app/blog"
+    kind: "code"
+    purpose: "Marketing site blog routes (/blog listing + /blog/[...slug]) rendering Substack mirrors with Fumadocs MDX components"
+    status: "current"
+  
+  # Packages
+  - path: "packages/ui"
+    kind: "code"
+    purpose: "Shared UI components and Zustand stores (useUIStore for cross-app state) - all UI components centralized here, apps import from @recurse/ui/components"
+    status: "current"
+  
+  - path: "packages/ui/components.json"
+    kind: "code"
+    purpose: "Shadcn/ReUI configuration for packages/ui - allows installing components directly to shared package"
+    status: "current"
+  
+  - path: "packages/ui/src/lib/ui-store.ts"
+    kind: "code"
+    purpose: "Shared Zustand store for UI state (theme, sidebars) persisted across all apps"
+    status: "current"
+  
+  - path: "packages/ui/src/components/theme-provider.tsx"
+    kind: "code"
+    purpose: "Shared ThemeProvider component that syncs with UI store"
+    status: "current"
+  
+  - path: "packages/ui/src/components/glow-card.tsx"
+    kind: "code"
+    purpose: "Reusable glow-enabled card wrapper shared across apps (navigation/docs/dashboard)"
+    status: "current"
+  
+  - path: "packages/ui/src/components/text-transition.tsx"
+    kind: "code"
+    purpose: "Shared animated text transition component for marketing copy"
+    status: "current"
+  
+  - path: "packages/ui/src/components/text-transition-new.tsx"
+    kind: "code"
+    purpose: "Advanced token-aware text transition with line-aware typing animation"
+    status: "current"
+  
+  - path: "packages/auth"
+    kind: "code"
+    purpose: "Authentication components and logic"
+    status: "current"
+  
+  - path: "packages/api"
+    kind: "code"
+    purpose: "API client and types"
+    status: "current"
+  
+  - path: "packages/fumadocs"
+    kind: "code"
+    purpose: "Fumadocs shared configuration"
+    status: "current"
+  
+  - path: "packages/config"
+    kind: "code"
+    purpose: "Shared configurations (tailwind, tsconfig, biome, global CSS, Switzer fonts)"
+    status: "current"
+  
+  - path: "packages/config/styles/global.css"
+    kind: "code"
+    purpose: "Shared global CSS styles for all apps"
+    status: "current"
+  
+  - path: "packages/config/styles/switzer.css"
+    kind: "code"
+    purpose: "Switzer variable font definitions"
+    status: "current"
+  
+  - path: "packages/blog"
+    kind: "code"
+    purpose: "Blog-specific Fumadocs loader, MDX components, and BlogArticleLayout consumed by apps/www"
+    status: "current"
+
+  # Content
+  - path: "content/blog"
+    kind: "data"
+    purpose: "Mirrored Substack articles stored as MDX with year folders and meta.json navigation definitions"
+    status: "current"
+  
+  - path: "content/blog/configuration.json"
+    kind: "data"
+    purpose: "Centralized blog configuration: RSS feed URLs, tag whitelist/blacklist, title blacklist (with wildcard matching)"
+    status: "current"
+  
+  # Documentation
+  - path: "docs/research/2025-10-28/01-typescript-best-practices.md"
+    kind: "research"
+    purpose: "Research: TypeScript 5.x best practices"
+    status: "current"
+  
+  - path: "docs/research/2025-10-28/02-nextjs-15-patterns.md"
+    kind: "research"
+    purpose: "Research: Next.js 15 App Router patterns"
+    status: "current"
+  
+  - path: "docs/research/2025-10-28/03-fumadocs-integration.md"
+    kind: "research"
+    purpose: "Research: Fumadocs framework integration"
+    status: "current"
+  
+  - path: "docs/research/2025-10-28/04-monorepo-tooling.md"
+    kind: "research"
+    purpose: "Research: Monorepo tooling with pnpm"
+    status: "current"
+  
+  - path: "docs/research/2025-10-28/05-internal-codebase-analysis.md"
+    kind: "research"
+    purpose: "Internal research: Existing cursor rules and codebase patterns"
+    status: "current"
+  
+  - path: "docs/context/project-understanding.md"
+    kind: "context"
+    purpose: "Initial context map for progressive context building"
+    status: "current"
+  
+  - path: "docs/context/text-transition-animation.md"
+    kind: "context"
+    purpose: "Reference notes for the legacy TextTransition animation behavior"
+    status: "current"
+  
+  - path: "docs/planning/vercel-monorepo-setup.md"
+    kind: "document"
+    purpose: "Vercel deployment configuration guide"
+    status: "current"
+  
+  - path: "docs/tasks/completed/phase-4-refactor-docs.md"
+    kind: "task"
+    purpose: "Completed task: Phase 4 refactor documentation"
+    status: "current"
+  
+  - path: "docs/features/planned/substack-blog.md"
+    kind: "document"
+    purpose: "Feature brief for the RSS-driven Substack blog mirroring workflow"
+    status: "current"
+  
+  - path: "docs/research/2025-11-22/02-substack-blog.md"
+    kind: "research"
+    purpose: "Research note covering Substack RSS access patterns and internal mapping"
+    status: "current"
+  
+  - path: "docs/research/2025-11-25/01-theme-toggle-debounce.md"
+    kind: "research"
+    purpose: "Research note on debouncing theme synchronization between next-themes and the shared UI store"
+    status: "current"
+  
+  # Tooling
+  - path: "scripts/sync-substack-posts.ts"
+    kind: "code"
+    purpose: "CLI script that ingests RSS feeds from configuration.json, filters by tags/titles (wildcard matching), converts HTML ➜ MDX, and updates content/blog meta"
+    status: "current"
+
+conventions:
+  software:
+    language: "TypeScript"
+    framework: "Next.js 15"
+    testing: "TBD"
+    lint: "Ultracite (Biome)"
+    typography: "Switzer (sans-serif), JetBrains Mono (monospace)"
+  
+  documentation:
+    framework: "Fumadocs"
+    format: "MDX"
+    style: "docs-writing-rules.mdc"
+  
+  package_manager: "pnpm"
+  workspace_type: "monorepo"
+
+last_updated: 2025-11-25T07:45:10Z
+```
