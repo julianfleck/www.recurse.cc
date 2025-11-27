@@ -5,7 +5,13 @@ type PageProps = {
 };
 
 function getDashboardUrl(): string {
-	return process.env.NEXT_PUBLIC_DASHBOARD_URL || "http://localhost:3001";
+	if (process.env.NEXT_PUBLIC_DASHBOARD_URL) {
+		return process.env.NEXT_PUBLIC_DASHBOARD_URL;
+	}
+	if (process.env.NODE_ENV === "production") {
+		return "https://dashboard.recurse.cc";
+	}
+	return "http://localhost:3001";
 }
 
 export default async function LoginRedirectPage({ searchParams }: PageProps) {

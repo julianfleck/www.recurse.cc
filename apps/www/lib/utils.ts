@@ -59,5 +59,11 @@ export function getDocsUrl(path = ""): string {
 	}
 
 	// Server-side fallback
-	return appendPath(process.env.NEXT_PUBLIC_DOCS_URL || "http://localhost:3000");
+	if (process.env.NEXT_PUBLIC_DOCS_URL) {
+		return appendPath(process.env.NEXT_PUBLIC_DOCS_URL);
+	}
+	if (process.env.NODE_ENV === "production") {
+		return appendPath("https://docs.recurse.cc");
+	}
+	return appendPath("http://localhost:3000");
 }

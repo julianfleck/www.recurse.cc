@@ -169,7 +169,7 @@ export function SignupForm({ className }: { className?: string }) {
   const [currentStep, setCurrentStep] = useState<StepId>(STEP_INVITE);
   const [resending, setResending] = useState(false);
   const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward
-  // restore persisted state on mount (email and step only; passwords are not persisted)
+  // restore persisted state on mount (email and name only; passwords and step are not persisted)
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
@@ -182,17 +182,11 @@ export function SignupForm({ className }: { className?: string }) {
     if (savedName) {
       setName(savedName);
     }
-    const savedStep = localStorage.getItem("signup_step");
-    if (savedStep) {
-      const stepNum = Number(savedStep);
-      if (
-        stepNum === STEP_INVITE ||
-        stepNum === STEP_EMAIL ||
-        stepNum === STEP_PASSWORD ||
-        stepNum === STEP_CONFIRM
-      ) {
-        setCurrentStep(stepNum as StepId);
-      }
+    // Clear any legacy persisted step so we always start from the invite screen
+    try {
+      localStorage.removeItem("signup_step");
+    } catch {
+      // ignore
     }
   }, []);
   // Persist form state to localStorage
@@ -208,12 +202,8 @@ export function SignupForm({ className }: { className?: string }) {
     }
     localStorage.setItem("signup_name", name);
   }, [name]);
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    localStorage.setItem("signup_step", String(currentStep));
-  }, [currentStep]);
+  // We intentionally do NOT persist the current step; the invite step must
+  // always be completed on each visit so later screens can't be accessed directly.
 
   function validateForm() {
     const parsed = signupSchema.safeParse({
