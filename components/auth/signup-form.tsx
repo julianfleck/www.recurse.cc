@@ -328,15 +328,11 @@ export function SignupForm({ className }: { className?: string }) {
           {currentStep === STEP_EMAIL && (
             <Button
               className="h-11 w-full bg-primary shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
+              form="signup-email-form"
               icon={<ArrowRight className="size-4" />}
               iconSide="right"
-              onClick={() => {
-                if (validateNameAndEmail()) {
-                  goToStep(STEP_PASSWORD);
-                }
-              }}
               showIconOnHover={true}
-              type="button"
+              type="submit"
             >
               Continue
             </Button>
@@ -446,7 +442,16 @@ export function SignupForm({ className }: { className?: string }) {
       {/* Step content */}
       {currentStep === STEP_EMAIL && (
         <StepContent direction={direction} step={1}>
-          <div className="grid gap-3">
+          <form
+            className="grid gap-3"
+            id="signup-email-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (validateNameAndEmail()) {
+                goToStep(STEP_PASSWORD);
+              }
+            }}
+          >
             <label className="text-sm" htmlFor="name">
               Full Name
             </label>
@@ -481,7 +486,7 @@ export function SignupForm({ className }: { className?: string }) {
                 {fieldErrors.email}
               </div>
             ) : null}
-          </div>
+          </form>
         </StepContent>
       )}
 

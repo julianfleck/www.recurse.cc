@@ -385,49 +385,43 @@ export function SignupForm({ className }: { className?: string }) {
       transition={{ duration: 0.45, ease: "easeInOut" }}
     >
       <AuthShell
-      className={cn("flex flex-col gap-6", className)}
-      stepProgress={
-        <StepProgress currentStep={currentStep} onStepClick={goToStep} />
-      }
-      footer={
-        <>
-          {/* Step-specific buttons */}
-          {currentStep === STEP_INVITE && (
-            <Button
-              className="h-11 w-full bg-primary shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
-              icon={<ArrowRight className="size-4" />}
-              iconSide="right"
-              onClick={() => {
-                void handleInviteContinue();
-              }}
-              showIconOnHover={true}
-              type="button"
-              disabled={inviteStatus === "checking"}
-            >
-              {inviteStatus === "checking"
-                ? "Checking…"
-                : inviteStatus === "error"
-                  ? "Wrong invite code"
-                  : "Continue"}
-            </Button>
-          )}
+        className={cn("flex flex-col gap-6", className)}
+        stepProgress={
+          <StepProgress currentStep={currentStep} onStepClick={goToStep} />
+        }
+        footer={
+          <>
+            {/* Step-specific buttons */}
+            {currentStep === STEP_INVITE && (
+              <Button
+                className="h-11 w-full bg-primary shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
+                disabled={inviteStatus === "checking"}
+                form="invite-form"
+                icon={<ArrowRight className="size-4" />}
+                iconSide="right"
+                showIconOnHover={true}
+                type="submit"
+              >
+                {inviteStatus === "checking"
+                  ? "Checking…"
+                  : inviteStatus === "error"
+                    ? "Wrong invite code"
+                    : "Continue"}
+              </Button>
+            )}
 
-          {currentStep === STEP_EMAIL && (
-            <Button
-              className="h-11 w-full bg-primary shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
-              icon={<ArrowRight className="size-4" />}
-              iconSide="right"
-              onClick={() => {
-                if (validateNameAndEmail()) {
-                  goToStep(STEP_PASSWORD);
-                }
-              }}
-              showIconOnHover={true}
-              type="button"
-            >
-              Continue
-            </Button>
-          )}
+            {currentStep === STEP_EMAIL && (
+              <Button
+                className="h-11 w-full bg-primary shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
+                form="signup-email-form"
+                icon={<ArrowRight className="size-4" />}
+                iconSide="right"
+                showIconOnHover={true}
+                type="submit"
+              >
+                Continue
+              </Button>
+            )}
 
           {currentStep === STEP_PASSWORD && (
             <div className="flex gap-3">
@@ -456,70 +450,70 @@ export function SignupForm({ className }: { className?: string }) {
             </div>
           )}
 
-          {currentStep === STEP_CONFIRM && (
-            <div className="flex flex-col gap-3">
-              <Button
-                disabled={resending}
-                icon={<ChevronRight className="size-4" />}
-                iconSide="right"
-                onClick={async () => {
-                  setResending(true);
-                  try {
-                    await fetch("/api/auth/resend-verification", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ email }),
-                    });
-                  } finally {
-                    setResending(false);
-                  }
-                }}
-                showIconOnHover={true}
-                type="button"
-                variant="outline"
-              >
-                {resending ? "Resending…" : "Resend verification email"}
-              </Button>
-              <Button asChild type="button" variant="default">
-                <a href="/login">Go to login</a>
-              </Button>
-            </div>
-          )}
-
-          {/* Social auth section - only show on first step */}
-          {currentStep === STEP_EMAIL && (
-            <div className="mt-8">
-              <AuthDivider />
-              <div className="mt-4">
-                <SocialButtons
-                  onGithub={() => handleSocialSignup("github")}
-                  onGoogle={() => handleSocialSignup("google-oauth2")}
-                />
+            {currentStep === STEP_CONFIRM && (
+              <div className="flex flex-col gap-3">
+                <Button
+                  disabled={resending}
+                  icon={<ChevronRight className="size-4" />}
+                  iconSide="right"
+                  onClick={async () => {
+                    setResending(true);
+                    try {
+                      await fetch("/api/auth/resend-verification", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email }),
+                      });
+                    } finally {
+                      setResending(false);
+                    }
+                  }}
+                  showIconOnHover={true}
+                  type="button"
+                  variant="outline"
+                >
+                  {resending ? "Resending…" : "Resend verification email"}
+                </Button>
+                <Button asChild type="button" variant="default">
+                  <a href="/login">Go to login</a>
+                </Button>
               </div>
+            )}
+
+            {/* Social auth section - only show on first step */}
+            {currentStep === STEP_EMAIL && (
+              <div className="mt-8">
+                <AuthDivider />
+                <div className="mt-4">
+                  <SocialButtons
+                    onGithub={() => handleSocialSignup("github")}
+                    onGoogle={() => handleSocialSignup("google-oauth2")}
+                  />
+                </div>
+              </div>
+            )}
+            <div className="mt-6 text-center text-sm">
+              Already have an account?{" "}
+              <a className="underline underline-offset-4" href="/login">
+                Log in
+              </a>
             </div>
-          )}
-          <div className="mt-6 text-center text-sm">
-            Already have an account?{" "}
-            <a className="underline underline-offset-4" href="/login">
-              Log in
-            </a>
+          </>
+        }
+        header={
+          <div className="flex flex-col gap-2">
+            <h1 className="font-bold text-xl">Create your account</h1>
+            <p className="text-base text-muted-foreground">
+              Sign up for your recurse.cc account
+            </p>
           </div>
-        </>
-      }
-      header={
-        <div className="flex flex-col gap-2">
-          <h1 className="font-bold text-xl">Create your account</h1>
-          <p className="text-base text-muted-foreground">
-            Sign up for your recurse.cc account
-          </p>
-        </div>
-      }
-      subline={
-        <>
-          By signing up, you agree to our <a href="/terms">Terms of Service</a>{" "}
-          and <a href="/privacy">Privacy Policy</a>.
-        </>
-      }
+        }
+        subline={
+          <>
+            By signing up, you agree to our <a href="/terms">Terms of Service</a>{" "}
+            and <a href="/privacy">Privacy Policy</a>.
+          </>
+        }
       >
       {error ? (
         <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-destructive text-sm shadow-sm">
@@ -532,7 +526,14 @@ export function SignupForm({ className }: { className?: string }) {
 
       {currentStep === STEP_INVITE && (
         <StepContent direction={direction} step={0}>
-          <div className="grid gap-3">
+          <form
+            className="grid gap-3"
+            id="invite-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              void handleInviteContinue();
+            }}
+          >
             <label className="text-sm" htmlFor="inviteCode">
               Invitation Code
             </label>
@@ -550,13 +551,22 @@ export function SignupForm({ className }: { className?: string }) {
               Recurse is currently invite-only. Ask us for an invite code to
               create an account.
             </p>
-          </div>
+          </form>
         </StepContent>
       )}
 
       {currentStep === STEP_EMAIL && (
         <StepContent direction={direction} step={1}>
-          <div className="grid gap-3">
+          <form
+            className="grid gap-3"
+            id="signup-email-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (validateNameAndEmail()) {
+                goToStep(STEP_PASSWORD);
+              }
+            }}
+          >
             <label className="text-sm" htmlFor="name">
               Full Name
             </label>
@@ -591,7 +601,7 @@ export function SignupForm({ className }: { className?: string }) {
                 {fieldErrors.email}
               </div>
             ) : null}
-          </div>
+          </form>
         </StepContent>
       )}
 

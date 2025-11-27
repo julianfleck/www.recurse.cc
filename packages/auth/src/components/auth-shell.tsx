@@ -30,7 +30,7 @@ export function AuthShell({
         className="flex flex-1 overflow-hidden border border-border p-0 shadow-xl"
       >
         <div className="flex flex-1 md:grid md:grid-cols-2">
-          <div className="flex h-full w-full flex-col p-6 md:p-8">
+          <div className="flex h-full w-full flex-col p-8">
             <div className="shrink-0">{header}</div>
             {stepProgress ? <div className="py-3 md:py-4">{stepProgress}</div> : null}
             <div className="flex min-h-0 flex-1 flex-col py-4">{children}</div>
