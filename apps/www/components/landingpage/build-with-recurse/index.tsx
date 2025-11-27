@@ -59,7 +59,7 @@ export function BuildWithRecurseSection() {
 									className="group/build-card flex flex-col justify-between px-1col py-1col md:p-8 rounded-none border-r border-b last:border-r-0 nth-2:border-r-0 nth-3:border-b-0 nth-4:border-b-0"
 								>
 									<div className="space-y-3">
-										<h3 className="text-muted-foreground! dark:group-hover/build-card:text-chart-1! group-hover/build-card:text-foreground! leading-relaxed text-lg transition-colors duration-300">
+										<h3 className="text-muted-foreground! dark:group-hover/build-card:text-foreground! group-hover/build-card:text-foreground! leading-relaxed text-lg transition-colors duration-300">
 											{item.what}
 										</h3>
 										<p className="font-light text-muted-foreground group-hover/build-card:text-foreground text-sm leading-relaxed transition-colors duration-300">

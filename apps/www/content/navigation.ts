@@ -177,7 +177,7 @@ export const navigationContent: NavigationContent = {
 				href: "https://docs.recurse.cc/concepts/rage",
 			},
 			{
-				title: "Frame Semantics",
+				title: "Semantic Frames",
 				description: "Structured patterns for knowledge representation",
 				href: "https://docs.recurse.cc/concepts/frames",
 			},

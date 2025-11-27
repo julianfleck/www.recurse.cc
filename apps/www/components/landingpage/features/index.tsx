@@ -81,7 +81,7 @@ function FeatureCard({
 
 				{/* Headline - reserve 2 lines */}
 				<h3
-					className={`text-muted-foreground! dark:group-hover/feature-card:text-chart-1! group-hover/feature-card:text-foreground! leading-relaxed line-clamp-2 min-h-14 transition-colors duration-300 ${capability.comingSoon ? "opacity-60" : ""}`}
+					className={`text-muted-foreground! dark:group-hover/feature-card:text-foreground! group-hover/feature-card:text-foreground! leading-relaxed line-clamp-2 min-h-14 transition-colors duration-300 ${capability.comingSoon ? "opacity-60" : ""}`}
 				>
 					{capability.title}
 				</h3>

@@ -994,10 +994,11 @@ main {
 }
 
 /* Border glow effect - uses mask to show ONLY on border, not interior */
+/* Positioned 1px outside card bounds to center on border between adjacent cards */
 .glow-card::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: -1px; /* Extend 1px outside card bounds */
   border-radius: inherit;
   pointer-events: none;
   z-index: 1;
@@ -1030,11 +1031,9 @@ main {
   opacity: 1;
 }
 
-/* Ensure card content is above the border glow */
-.glow-card > * {
-  position: relative;
-  z-index: 2;
-}
+/* Note: Removed .glow-card > * { position: relative; z-index: 2; } rule
+   It was breaking absolutely positioned children (e.g., image switchers, auth visuals)
+   The border glow uses pointer-events: none and mask-composite so it doesn't interfere */
 
 /* Inner spotlight element - follows cursor, only visible on hover */
 .glow-card-spotlight {

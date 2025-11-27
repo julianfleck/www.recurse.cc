@@ -6,30 +6,20 @@ import {
 	PARSING_MODELS,
 } from "@recurse/config/models";
 import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-} from "@recurse/ui/components/command";
-import { CheckIcon, ChevronsUpDownIcon, HelpCircle } from "lucide-react";
+	Combobox,
+	type ComboboxOption,
+} from "@recurse/ui/components/combobox";
+import { ChevronsUpDownIcon, HelpCircle } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useAuthStore } from "@/components/auth/auth-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
-import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
 
 export default function SettingsPage() {
 	// Seed defaults (could be loaded from API/local storage later)
@@ -55,20 +45,16 @@ export default function SettingsPage() {
 
 	const [state, setState] = useState(initialState);
 	const [baseline, setBaseline] = useState(initialState);
-	const [openParsingModel, setOpenParsingModel] = useState(false);
-	const [openContextModel, setOpenContextModel] = useState(false);
 
-	const providers = [
+	const providers: ComboboxOption[] = [
 		{ value: "openai", label: "OpenAI" },
 		{ value: "openrouter", label: "OpenRouter" },
 	];
 
-	const [openProvider, setOpenProvider] = useState(false);
 	const [loadingModels, setLoadingModels] = useState(false);
 	const [modelsError, setModelsError] = useState("");
 	const [fetchedModels, setFetchedModels] = useState<ModelOption[]>([]);
 
-	const [openContextProvider, setOpenContextProvider] = useState(false);
 	const [loadingContextModels, setLoadingContextModels] = useState(false);
 	const [contextModelsError, setContextModelsError] = useState("");
 	const [fetchedContextModels, setFetchedContextModels] = useState<
@@ -164,7 +150,7 @@ export default function SettingsPage() {
 		[state, baseline],
 	);
 
-	const parsingModelLabel = useMemo(() => {
+	const parsingModelPlaceholder = useMemo(() => {
 		if (state.provider === "openrouter") {
 			if (!state.parsingModelApiKey) {
 				return "Enter API key to load models";
@@ -176,20 +162,15 @@ export default function SettingsPage() {
 				return "Error loading models";
 			}
 		}
-		return (
-			currentModels.find((m) => m.value === state.defaultParsingModel)?.label ||
-			"Select model..."
-		);
+		return "Select model...";
 	}, [
 		state.provider,
-		state.defaultParsingModel,
 		state.parsingModelApiKey,
 		loadingModels,
 		modelsError,
-		currentModels,
 	]);
 
-	const contextModelLabel = useMemo(() => {
+	const contextModelPlaceholder = useMemo(() => {
 		if (state.contextProvider === "openrouter") {
 			if (!state.contextModelApiKey) {
 				return "Enter API key to load models";
@@ -201,28 +182,27 @@ export default function SettingsPage() {
 				return "Error loading models";
 			}
 		}
-		return (
-			currentContextModels.find((m) => m.value === state.contextModel)?.label ||
-			"Select model..."
-		);
+		return "Select model...";
 	}, [
 		state.contextProvider,
-		state.contextModel,
 		state.contextModelApiKey,
 		loadingContextModels,
 		contextModelsError,
-		currentContextModels,
 	]);
 
-	const handleSelectParsingModel = (value: string) => {
-		setState((s) => ({ ...s, defaultParsingModel: value }));
-		setOpenParsingModel(false);
-	};
+	const parsingModelOptions: ComboboxOption[] = useMemo(() => {
+		return currentModels.map((m) => ({
+			value: m.value,
+			label: m.label,
+		}));
+	}, [currentModels]);
 
-	const handleSelectContextModel = (value: string) => {
-		setState((s) => ({ ...s, contextModel: value }));
-		setOpenContextModel(false);
-	};
+	const contextModelOptions: ComboboxOption[] = useMemo(() => {
+		return currentContextModels.map((m) => ({
+			value: m.value,
+			label: m.label,
+		}));
+	}, [currentContextModels]);
 
 	const handleSave = () => {
 		// For now, we just update the baseline. Integration with backend will come later.
@@ -282,111 +262,47 @@ export default function SettingsPage() {
 								<div className="sm:col-span-2">
 									<div className="flex flex-col items-stretch gap-2 sm:flex-row">
 										<div className="flex items-center gap-2 sm:flex-1">
-											<Popover
-												onOpenChange={setOpenProvider}
-												open={openProvider}
-											>
-												<PopoverTrigger asChild>
-													<Button
-														aria-expanded={openProvider}
-														className="flex-1 justify-between"
-														role="combobox"
-														variant="outline"
-													>
-														{providers.find((p) => p.value === state.provider)
-															?.label || "Select provider..."}
-														<ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-													</Button>
-												</PopoverTrigger>
-												<PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-													<Command>
-														<CommandInput placeholder="Search providers..." />
-														<CommandList>
-															<CommandEmpty>No providers found.</CommandEmpty>
-															<CommandGroup>
-																{providers.map((p) => (
-																	<CommandItem
-																		key={p.value}
-																		onSelect={(currentValue) => {
-																			setState((s) => ({
-																				...s,
-																				provider: currentValue,
-																				defaultParsingModel: "",
-																			}));
-																			setOpenProvider(false);
-																		}}
-																		value={p.value}
-																	>
-																		<CheckIcon
-																			className={cn(
-																				"mr-2 h-4 w-4",
-																				state.provider === p.value
-																					? "opacity-100"
-																					: "opacity-0",
-																			)}
-																		/>
-																		{p.label}
-																	</CommandItem>
-																))}
-															</CommandGroup>
-														</CommandList>
-													</Command>
-												</PopoverContent>
-											</Popover>
+											<Combobox
+												options={providers}
+												value={state.provider}
+												onValueChange={(value) => {
+													const providerValue =
+														typeof value === "string" ? value : value[0];
+													setState((s) => ({
+														...s,
+														provider: providerValue,
+														defaultParsingModel: "",
+													}));
+												}}
+												placeholder="Select provider..."
+												emptyMessage="No providers found."
+												searchPlaceholder="Search providers..."
+												className="flex-1"
+											/>
 										</div>
 										<div className="flex items-center gap-2 sm:flex-1">
-											<Popover
-												onOpenChange={setOpenParsingModel}
-												open={openParsingModel}
-											>
-												<PopoverTrigger asChild>
-													<Button
-														aria-expanded={openParsingModel}
-														className="flex-1 justify-between"
-														disabled={Boolean(
-															state.provider === "openrouter" &&
-																(!state.parsingModelApiKey ||
-																	loadingModels ||
-																	modelsError),
-														)}
-														role="combobox"
-														variant="outline"
-													>
-														{parsingModelLabel}
-														<ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-													</Button>
-												</PopoverTrigger>
-												<PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-													<Command>
-														<CommandInput placeholder="Search models..." />
-														<CommandList>
-															<CommandEmpty>No models found.</CommandEmpty>
-															<CommandGroup>
-																{currentModels.map((model: ModelOption) => (
-																	<CommandItem
-																		key={model.value}
-																		onSelect={(currentValue) =>
-																			handleSelectParsingModel(currentValue)
-																		}
-																		value={model.value}
-																	>
-																		<CheckIcon
-																			className={cn(
-																				"mr-2 h-4 w-4",
-																				state.defaultParsingModel ===
-																					model.value
-																					? "opacity-100"
-																					: "opacity-0",
-																			)}
-																		/>
-																		{model.label}
-																	</CommandItem>
-																))}
-															</CommandGroup>
-														</CommandList>
-													</Command>
-												</PopoverContent>
-											</Popover>
+											<Combobox
+												options={parsingModelOptions}
+												value={state.defaultParsingModel}
+												onValueChange={(value) => {
+													const modelValue =
+														typeof value === "string" ? value : value[0];
+													setState((s) => ({
+														...s,
+														defaultParsingModel: modelValue,
+													}));
+												}}
+												placeholder={parsingModelPlaceholder}
+												emptyMessage="No models found."
+												searchPlaceholder="Search models..."
+												disabled={Boolean(
+													state.provider === "openrouter" &&
+														(!state.parsingModelApiKey ||
+															loadingModels ||
+															modelsError),
+												)}
+												className="flex-1"
+											/>
 										</div>
 										<Input
 											className="sm:flex-1"
@@ -438,113 +354,47 @@ export default function SettingsPage() {
 								<div className="sm:col-span-2">
 									<div className="flex flex-col items-stretch gap-2 sm:flex-row">
 										<div className="flex items-center gap-2 sm:flex-1">
-											<Popover
-												onOpenChange={setOpenContextProvider}
-												open={openContextProvider}
-											>
-												<PopoverTrigger asChild>
-													<Button
-														aria-expanded={openContextProvider}
-														className="flex-1 justify-between"
-														role="combobox"
-														variant="outline"
-													>
-														{providers.find(
-															(p) => p.value === state.contextProvider,
-														)?.label || "Select provider..."}
-														<ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-													</Button>
-												</PopoverTrigger>
-												<PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-													<Command>
-														<CommandInput placeholder="Search providers..." />
-														<CommandList>
-															<CommandEmpty>No providers found.</CommandEmpty>
-															<CommandGroup>
-																{providers.map((p) => (
-																	<CommandItem
-																		key={p.value}
-																		onSelect={(currentValue) => {
-																			setState((s) => ({
-																				...s,
-																				contextProvider: currentValue,
-																				contextModel: "",
-																			}));
-																			setOpenContextProvider(false);
-																		}}
-																		value={p.value}
-																	>
-																		<CheckIcon
-																			className={cn(
-																				"mr-2 h-4 w-4",
-																				state.contextProvider === p.value
-																					? "opacity-100"
-																					: "opacity-0",
-																			)}
-																		/>
-																		{p.label}
-																	</CommandItem>
-																))}
-															</CommandGroup>
-														</CommandList>
-													</Command>
-												</PopoverContent>
-											</Popover>
+											<Combobox
+												options={providers}
+												value={state.contextProvider}
+												onValueChange={(value) => {
+													const providerValue =
+														typeof value === "string" ? value : value[0];
+													setState((s) => ({
+														...s,
+														contextProvider: providerValue,
+														contextModel: "",
+													}));
+												}}
+												placeholder="Select provider..."
+												emptyMessage="No providers found."
+												searchPlaceholder="Search providers..."
+												className="flex-1"
+											/>
 										</div>
 										<div className="flex items-center gap-2 sm:flex-1">
-											<Popover
-												onOpenChange={setOpenContextModel}
-												open={openContextModel}
-											>
-												<PopoverTrigger asChild>
-													<Button
-														aria-expanded={openContextModel}
-														className="flex-1 justify-between"
-														disabled={Boolean(
-															state.contextProvider === "openrouter" &&
-																(!state.contextModelApiKey ||
-																	loadingContextModels ||
-																	contextModelsError),
-														)}
-														role="combobox"
-														variant="outline"
-													>
-														{contextModelLabel}
-														<ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-													</Button>
-												</PopoverTrigger>
-												<PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-													<Command>
-														<CommandInput placeholder="Search models..." />
-														<CommandList>
-															<CommandEmpty>No models found.</CommandEmpty>
-															<CommandGroup>
-																{currentContextModels.map(
-																	(model: ModelOption) => (
-																		<CommandItem
-																			key={model.value}
-																			onSelect={(currentValue) =>
-																				handleSelectContextModel(currentValue)
-																			}
-																			value={model.value}
-																		>
-																			<CheckIcon
-																				className={cn(
-																					"mr-2 h-4 w-4",
-																					state.contextModel === model.value
-																						? "opacity-100"
-																						: "opacity-0",
-																				)}
-																			/>
-																			{model.label}
-																		</CommandItem>
-																	),
-																)}
-															</CommandGroup>
-														</CommandList>
-													</Command>
-												</PopoverContent>
-											</Popover>
+											<Combobox
+												options={contextModelOptions}
+												value={state.contextModel}
+												onValueChange={(value) => {
+													const modelValue =
+														typeof value === "string" ? value : value[0];
+													setState((s) => ({
+														...s,
+														contextModel: modelValue,
+													}));
+												}}
+												placeholder={contextModelPlaceholder}
+												emptyMessage="No models found."
+												searchPlaceholder="Search models..."
+												disabled={Boolean(
+													state.contextProvider === "openrouter" &&
+														(!state.contextModelApiKey ||
+															loadingContextModels ||
+															contextModelsError),
+												)}
+												className="flex-1"
+											/>
 										</div>
 										<Input
 											className="sm:flex-1"
@@ -594,7 +444,7 @@ export default function SettingsPage() {
 								</div>
 								<div className="flex items-center gap-2 sm:col-span-2">
 									<Button
-										className={cn("justify-between", "flex-1")}
+										className="flex-1 justify-between"
 										disabled
 										id="embedding-model"
 										role="combobox"
