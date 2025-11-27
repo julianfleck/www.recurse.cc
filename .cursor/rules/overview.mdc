@@ -87,6 +87,16 @@ inventory:
     purpose: "Marketing site blog routes (/blog listing + /blog/[...slug]) rendering Substack mirrors with Fumadocs MDX components"
     status: "current"
   
+  - path: "apps/www/components/backgrounds/Particles/Particles.tsx"
+    kind: "code"
+    purpose: "Canvas-based particle background for marketing site with performance-aware animation (throttled FPS, reduced motion support, fewer particles on constrained devices)"
+    status: "current"
+
+  - path: "apps/www/components/backgrounds/Aurora/Aurora.tsx"
+    kind: "code"
+    purpose: "Legacy WebGL aurora background; removed to simplify background effects and reduce GPU load"
+    status: "deprecated"
+  
   # Packages
   - path: "packages/ui"
     kind: "code"

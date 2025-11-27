@@ -41,7 +41,8 @@ export default function Particles({
 	const animationRef = useRef<number | null>(null);
 	const particlesRef = useRef<Particle[]>([]);
 	const mouseRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-	const scrollRef = useRef<number>(typeof window !== 'undefined' ? window.scrollY : 0);
+	const scrollRef = useRef<number>(0);
+	const lastFrameTimeRef = useRef<number>(0);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -53,6 +54,23 @@ export default function Particles({
 		if (!ctx) {
 			return;
 		}
+
+		// Respect user/device capabilities
+		const prefersReducedMotion = window.matchMedia(
+			"(prefers-reduced-motion: reduce)",
+		).matches;
+		const isSmallScreen = window.innerWidth < 768;
+		const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+
+		// On small screens, coarse pointers, or reduced motion, we render a
+		// simplified, low-cost version (fewer particles, optionally no mouse-follow)
+		const effectiveEnableMouseFollow =
+			enableMouseFollow && !prefersReducedMotion && !isCoarsePointer;
+
+		// Target a lower frame rate to reduce CPU/GPU load
+		// 30fps on normal devices, 20fps when reduced motion is requested
+		const targetFps = prefersReducedMotion ? 20 : 30;
+		const frameInterval = 1000 / targetFps;
 
 		// Get computed color if using currentColor
 		const getActualColor = () => {
@@ -98,7 +116,14 @@ export default function Particles({
 
 		const createParticles = () => {
 			particlesRef.current = [];
-			for (let i = 0; i < particleCount; i++) {
+
+			// Fewer particles on small screens or when reduced motion is requested
+			const effectiveCount =
+				isSmallScreen || prefersReducedMotion
+					? Math.max(10, Math.floor(particleCount * 0.4))
+					: particleCount;
+
+			for (let i = 0; i < effectiveCount; i++) {
 				const particle = createParticle();
 				// Stagger initial appearances
 				particle.life = Math.random() * particle.maxLife * 0.5;
@@ -128,7 +153,7 @@ export default function Particles({
 				particle.baseY = Math.max(0, Math.min(canvas.height, particle.baseY));
 
 				// Apply parallax effect based on mouse position and scroll position
-				if (enableMouseFollow) {
+				if (effectiveEnableMouseFollow) {
 					const parallaxX =
 						(mouseRef.current.x - canvas.width / 2) *
 						parallaxStrength *
@@ -199,18 +224,28 @@ export default function Particles({
 			});
 
 			// Draw connections between nearby particles
+			// To avoid O(N^2) work being too heavy, we:
+			// - use squared distance (no Math.sqrt in the hot path)
+			// - cap the number of connections per particle
+			const maxConnectionsPerParticle = 6;
+			const maxDistance = 100;
+			const maxDistanceSq = maxDistance * maxDistance;
+
 			particlesRef.current.forEach((particle, i) => {
-				particlesRef.current.slice(i + 1).forEach((otherParticle) => {
+				let connections = 0;
+				for (let j = i + 1; j < particlesRef.current.length; j++) {
+					const otherParticle = particlesRef.current[j];
 					const dx = particle.x - otherParticle.x;
 					const dy = particle.y - otherParticle.y;
-					const distance = Math.sqrt(dx * dx + dy * dy);
+					const distanceSq = dx * dx + dy * dy;
 
-					if (distance < 100) {
+					if (distanceSq < maxDistanceSq) {
+						const distance = Math.sqrt(distanceSq);
 						ctx.save();
 						// More prominent in dark mode, subtle in light mode
 						const baseOpacity = isDarkMode() ? 0.4 : 0.25;
 						const lineWidth = isDarkMode() ? 1.0 : 0.8;
-						ctx.globalAlpha = (1 - distance / 100) * baseOpacity;
+						ctx.globalAlpha = (1 - distance / maxDistance) * baseOpacity;
 						ctx.strokeStyle = actualColor;
 						ctx.lineWidth = lineWidth;
 						ctx.beginPath();
@@ -218,20 +253,54 @@ export default function Particles({
 						ctx.lineTo(otherParticle.x, otherParticle.y);
 						ctx.stroke();
 						ctx.restore();
+
+						connections++;
+						if (connections >= maxConnectionsPerParticle) {
+							break;
+						}
 					}
-				});
+				}
 			});
 		};
 
-		const animate = () => {
-			updateParticles();
-			drawParticles();
+		const animate = (time: number) => {
+			// If user prefers reduced motion, we skip animation entirely.
+			if (prefersReducedMotion) {
+				return;
+			}
+
+			if (!lastFrameTimeRef.current) {
+				lastFrameTimeRef.current = time;
+			}
+
+			const delta = time - lastFrameTimeRef.current;
+			if (delta >= frameInterval) {
+				lastFrameTimeRef.current = time;
+				updateParticles();
+				drawParticles();
+			}
+
 			animationRef.current = requestAnimationFrame(animate);
 		};
 
 		resizeCanvas();
 		createParticles();
-		animate();
+
+		// If reduced motion is enabled, draw a single static frame and skip RAF.
+		if (prefersReducedMotion) {
+			// Draw once for a subtle, non-animated background.
+			const drawOnce = () => {
+				// Ensure particles are placed before drawing.
+				// No lifecycle updates needed for static render.
+				const ctxOnce = canvas.getContext("2d");
+				if (!ctxOnce) return;
+				// Reuse drawParticles to keep visuals consistent.
+				drawParticles();
+			};
+			drawOnce();
+		} else {
+			animationRef.current = requestAnimationFrame(animate);
+		}
 
 		const handleResize = () => {
 			resizeCanvas();
@@ -239,7 +308,7 @@ export default function Particles({
 		};
 
 		const handleMouseMove = (e: MouseEvent) => {
-			if (enableMouseFollow) {
+			if (effectiveEnableMouseFollow) {
 				// Use viewport coordinates since particles are fixed positioned
 				mouseRef.current = {
 					x: e.clientX,
@@ -249,13 +318,13 @@ export default function Particles({
 		};
 
 		const handleScroll = () => {
-			if (enableMouseFollow) {
+			if (effectiveEnableMouseFollow) {
 				scrollRef.current = window.scrollY;
 			}
 		};
 
 		window.addEventListener("resize", handleResize);
-		if (enableMouseFollow) {
+		if (effectiveEnableMouseFollow) {
 			// Add mouse listener to document since particles are in a fixed container
 			document.addEventListener("mousemove", handleMouseMove);
 			// Add scroll listener for scroll-based parallax
@@ -267,7 +336,7 @@ export default function Particles({
 				cancelAnimationFrame(animationRef.current);
 			}
 			window.removeEventListener("resize", handleResize);
-			if (enableMouseFollow) {
+				if (effectiveEnableMouseFollow) {
 				document.removeEventListener("mousemove", handleMouseMove);
 				window.removeEventListener("scroll", handleScroll);
 			}

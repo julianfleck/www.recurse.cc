@@ -1,5 +1,12 @@
 # Changelog
 
+## [2025-11-27T00:00:00Z] — Perf: Stabilize particles background and remove aurora
+
+**Context:** The www marketing site showed sluggish performance in some browsers due to heavy background animations (continuous WebGL aurora and dense canvas particles with full-speed rAF and O(N²) line drawing).
+**Changes:** Removed the unused Aurora WebGL background, throttled the particles canvas to a lower frame rate with reduced particle counts on constrained devices, capped per-particle connections, and added `prefers-reduced-motion` handling that renders a static frame instead of a full animation.
+**Impact:** Background visuals remain, but CPU/GPU usage is significantly lower on weaker devices and browsers, and users who request reduced motion see a non-animated but still styled background.
+**Files touched:** `apps/www/components/backgrounds/Particles/Particles.tsx`, `apps/www/app/layout.tsx`, `apps/www/components/backgrounds/Aurora/Aurora.tsx` (deleted), `.cursor/rules/overview.mdc`, `CHANGELOG.md`
+
 ## [2025-11-25T07:45:10Z] — Fix: Remove duplicate docs root route
 **Context:** The docs app failed to start because the optional catch-all route (`/[[...slug]]`) and the `(home)` root redirect both resolved to `/`, and Next.js forbids routes with identical specificity.
 **Changes:** Deleted the `(home)` route group (layout + redirect page) and recorded the legacy path in the project overview as deprecated.
