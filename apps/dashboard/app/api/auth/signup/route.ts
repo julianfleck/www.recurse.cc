@@ -2,15 +2,30 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
 	try {
-		const { email, password, name } = (await request.json()) as {
+		const { email, password, name, inviteCode } = (await request.json()) as {
 			email?: string;
 			password?: string;
 			name?: string;
+			inviteCode?: string;
 		};
 		if (!(email && password)) {
 			return NextResponse.json(
 				{ error: "Missing email or password" },
 				{ status: 400 },
+			);
+		}
+
+		const invite = process.env.DASHBOARD_INVITE_CODE;
+		if (!invite) {
+			return NextResponse.json(
+				{ error: "Invitation code is not configured" },
+				{ status: 500 },
+			);
+		}
+		if (inviteCode !== invite) {
+			return NextResponse.json(
+				{ error: "Invalid or missing invitation code" },
+				{ status: 401 },
 			);
 		}
 

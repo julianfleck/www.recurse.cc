@@ -20,21 +20,31 @@ const passwordSchema = z
 
 const emailSchema = z.string().email("Enter a valid email");
 
+const STEP_INVITE = 0;
 const STEP_EMAIL = 1;
 const STEP_PASSWORD = 2;
 const STEP_CONFIRM = 3;
 
-const STEPS = [
+type StepId =
+  | typeof STEP_INVITE
+  | typeof STEP_EMAIL
+  | typeof STEP_PASSWORD
+  | typeof STEP_CONFIRM;
+
+const STEPS: { id: StepId; label: string; description: string }[] = [
+  {
+    id: STEP_INVITE,
+    label: "Invite",
+    description: "Enter your invitation code",
+  },
   { id: STEP_EMAIL, label: "Email", description: "Enter your email address" },
   { id: STEP_PASSWORD, label: "Password", description: "Create your password" },
   { id: STEP_CONFIRM, label: "Confirm", description: "Verify your account" },
 ] as const;
 
 type StepProgressProps = {
-  currentStep: typeof STEP_EMAIL | typeof STEP_PASSWORD | typeof STEP_CONFIRM;
-  onStepClick: (
-    step: typeof STEP_EMAIL | typeof STEP_PASSWORD | typeof STEP_CONFIRM
-  ) => void;
+  currentStep: StepId;
+  onStepClick: (step: StepId) => void;
   className?: string;
 };
 
@@ -144,6 +154,11 @@ const signupSchema = z
 
 export function SignupForm({ className }: { className?: string }) {
   const { loginWithRedirect } = useAuth0();
+  const [inviteCode, setInviteCode] = useState("");
+  const [inviteStatus, setInviteStatus] = useState<"idle" | "checking" | "error">(
+    "idle",
+  );
+  const [shake, setShake] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -151,9 +166,7 @@ export function SignupForm({ className }: { className?: string }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [currentStep, setCurrentStep] = useState<
-    typeof STEP_EMAIL | typeof STEP_PASSWORD | typeof STEP_CONFIRM
-  >(STEP_EMAIL);
+  const [currentStep, setCurrentStep] = useState<StepId>(STEP_INVITE);
   const [resending, setResending] = useState(false);
   const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward
   // restore persisted state on mount (email and step only; passwords are not persisted)
@@ -172,8 +185,13 @@ export function SignupForm({ className }: { className?: string }) {
     const savedStep = localStorage.getItem("signup_step");
     if (savedStep) {
       const stepNum = Number(savedStep);
-      if (stepNum === STEP_PASSWORD || stepNum === STEP_CONFIRM) {
-        setCurrentStep(stepNum as typeof STEP_PASSWORD | typeof STEP_CONFIRM);
+      if (
+        stepNum === STEP_INVITE ||
+        stepNum === STEP_EMAIL ||
+        stepNum === STEP_PASSWORD ||
+        stepNum === STEP_CONFIRM
+      ) {
+        setCurrentStep(stepNum as StepId);
       }
     }
   }, []);
@@ -246,15 +264,53 @@ export function SignupForm({ className }: { className?: string }) {
     return true;
   }
 
-  function goToStep(
-    target: typeof STEP_EMAIL | typeof STEP_PASSWORD | typeof STEP_CONFIRM
-  ) {
+  function goToStep(target: StepId) {
     if (target < currentStep) {
       setDirection(-1); // backward
       setCurrentStep(target);
     } else if (target > currentStep) {
       setDirection(1); // forward
       setCurrentStep(target);
+    }
+  }
+
+  async function handleInviteContinue() {
+    setError(null);
+
+    if (!inviteCode.trim()) {
+      setInviteStatus("error");
+      setShake(true);
+      setTimeout(() => {
+        setInviteStatus("idle");
+      }, 900);
+      return;
+    }
+
+    setInviteStatus("checking");
+    try {
+      const res = await fetch("/api/auth/check-invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: inviteCode.trim() }),
+      });
+
+      if (!res.ok) {
+        setInviteStatus("error");
+        setShake(true);
+        setTimeout(() => {
+          setInviteStatus("idle");
+        }, 900);
+        return;
+      }
+
+      setInviteStatus("idle");
+      goToStep(STEP_EMAIL);
+    } catch {
+      setInviteStatus("error");
+      setShake(true);
+      setTimeout(() => {
+        setInviteStatus("idle");
+      }, 900);
     }
   }
 
@@ -271,7 +327,7 @@ export function SignupForm({ className }: { className?: string }) {
       const createRes = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({ email, password, name, inviteCode }),
       });
       const createJson = await createRes.json();
       if (!createRes.ok) {
@@ -315,11 +371,42 @@ export function SignupForm({ className }: { className?: string }) {
   }
 
   return (
-    <AuthShell
+    <motion.div
+      animate={
+        shake
+          ? {
+              x: [0, -10, 10, -8, 8, -5, 5, 0],
+            }
+          : { x: 0 }
+      }
+      onAnimationComplete={() => setShake(false)}
+      transition={{ duration: 0.45, ease: "easeInOut" }}
+    >
+      <AuthShell
       className={cn("flex flex-col gap-6", className)}
       footer={
         <>
           {/* Step-specific buttons */}
+          {currentStep === STEP_INVITE && (
+            <Button
+              className="h-11 w-full bg-primary shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
+              icon={<ArrowRight className="size-4" />}
+              iconSide="right"
+              onClick={() => {
+                void handleInviteContinue();
+              }}
+              showIconOnHover={true}
+              type="button"
+              disabled={inviteStatus === "checking"}
+            >
+              {inviteStatus === "checking"
+                ? "Checking…"
+                : inviteStatus === "error"
+                  ? "Wrong invite code"
+                  : "Continue"}
+            </Button>
+          )}
+
           {currentStep === STEP_EMAIL && (
             <Button
               className="h-11 w-full bg-primary shadow-sm transition-all duration-200 hover:bg-primary/90 hover:shadow-md"
@@ -439,6 +526,30 @@ export function SignupForm({ className }: { className?: string }) {
       ) : null}
 
       {/* Step content */}
+      {currentStep === STEP_INVITE && (
+        <StepContent direction={direction} step={0}>
+          <div className="grid gap-3">
+            <label className="text-sm" htmlFor="inviteCode">
+              Invitation Code
+            </label>
+            <input
+              autoComplete="one-time-code"
+              className="flex h-10 w-full rounded-lg border border-input bg-background px-4 py-2 text-sm shadow-sm outline-hidden ring-offset-background transition-all duration-200 placeholder:text-muted-foreground focus-visible:shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              id="inviteCode"
+              onChange={(e) => setInviteCode(e.target.value)}
+              placeholder="Enter your invite code"
+              required
+              type="text"
+              value={inviteCode}
+            />
+            <p className="text-muted-foreground text-xs">
+              Recurse is currently invite-only. Ask us for an invite code to
+              create an account.
+            </p>
+          </div>
+        </StepContent>
+      )}
+
       {currentStep === STEP_EMAIL && (
         <StepContent direction={direction} step={1}>
           <div className="grid gap-3">
@@ -534,5 +645,6 @@ export function SignupForm({ className }: { className?: string }) {
       {/* Step Progress */}
       <StepProgress currentStep={currentStep} onStepClick={goToStep} />
     </AuthShell>
+    </motion.div>
   );
 }
