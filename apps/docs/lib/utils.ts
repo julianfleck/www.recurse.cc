@@ -51,7 +51,14 @@ export function getDashboardUrl(): string {
 	}
 
 	// Server-side fallback
-	return process.env.NEXT_PUBLIC_DASHBOARD_URL || "http://localhost:3001";
+	if (process.env.NEXT_PUBLIC_DASHBOARD_URL) {
+		return process.env.NEXT_PUBLIC_DASHBOARD_URL;
+	}
+	// Prefer production domain when running in production without explicit env
+	if (process.env.NODE_ENV === "production") {
+		return "https://dashboard.recurse.cc";
+	}
+	return "http://localhost:3001";
 }
 
 /**
@@ -92,7 +99,13 @@ export function getWwwUrl(): string {
 	}
 
 	// Server-side fallback
-	return process.env.NEXT_PUBLIC_WWW_URL || "http://localhost:3002";
+	if (process.env.NEXT_PUBLIC_WWW_URL) {
+		return process.env.NEXT_PUBLIC_WWW_URL;
+	}
+	if (process.env.NODE_ENV === "production") {
+		return "https://www.recurse.cc";
+	}
+	return "http://localhost:3002";
 }
 
 /**
@@ -133,5 +146,11 @@ export function getDocsUrl(): string {
 	}
 
 	// Server-side fallback
-	return process.env.NEXT_PUBLIC_DOCS_URL || "http://localhost:3000";
+	if (process.env.NEXT_PUBLIC_DOCS_URL) {
+		return process.env.NEXT_PUBLIC_DOCS_URL;
+	}
+	if (process.env.NODE_ENV === "production") {
+		return "https://docs.recurse.cc";
+	}
+	return "http://localhost:3000";
 }
