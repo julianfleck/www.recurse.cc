@@ -275,7 +275,10 @@ export function AnimatedGraphExample({
 			>
 				<GraphView
 					data={graphData}
-					depth={initialDepth ?? 1000}
+					// For the marketing example we always want to fully expand the
+					// hierarchy for the current step so all newly added nodes are visible.
+					// Use a large depth here rather than the JSON-provided initialDepth.
+					depth={1000}
 					fitSignal={fitTick}
 					withSidebar={false}
 					zoomModifier="cmd"
