@@ -993,6 +993,49 @@ main {
   --glow-blur: 100px;
 }
 
+/* Border glow effect - uses mask to show ONLY on border, not interior */
+.glow-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    var(--glow-radius, 420px) circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(var(--glow-color-rgb), 0.6) 0%,
+    rgba(var(--glow-color-rgb), 0.35) 25%,
+    rgba(var(--glow-color-rgb), 0.15) 45%,
+    transparent 65%
+  );
+  /* Mask creates a border frame: opaque on border, transparent inside */
+  /* First layer (content-box) masks the interior, second layer is full coverage */
+  /* XOR composite subtracts interior from full = border only */
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  padding: 1px; /* Border glow width */
+}
+
+.glow-card:hover::before,
+.glow-card:focus-visible::before,
+.glow-card[style*="--glow-intensity: 1"]::before {
+  opacity: 1;
+}
+
+/* Ensure card content is above the border glow */
+.glow-card > * {
+  position: relative;
+  z-index: 2;
+}
+
 /* Inner spotlight element - follows cursor, only visible on hover */
 .glow-card-spotlight {
   position: absolute;
