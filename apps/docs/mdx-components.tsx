@@ -27,14 +27,15 @@ import { openapi } from "@/lib/openapi";
 function Card({ icon, className, ...props }: any) {
 	const resolvedIcon = typeof icon === "string" ? resolveIcon(icon) : icon;
 	return (
+		// TODO: clean this up so that the border glow works; probably replace FumadocsCard with GlowCard entirely and pass props that fumadocs card uses
 		<GlowCard
 			asChild
 			enableGlow
-			glowIntensity={0.08}
+			glowIntensity={0.12}
 			glowBlur={80}
-			className="border border-border bg-card p-0"
+			// className="border border-border bg-card p-0"
 		>
-			<FumadocsCard className={cn("block h-full", className)} icon={resolvedIcon} {...props} />
+			<FumadocsCard className={cn("block bg-card hover:bg-card", className)} icon={resolvedIcon} {...props} />
 		</GlowCard>
 	);
 }
