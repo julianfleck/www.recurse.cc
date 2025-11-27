@@ -105,18 +105,30 @@ function StepContent({
 }: StepContentProps) {
   const ANIMATION_OFFSET = 300;
   const variants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? ANIMATION_OFFSET : -ANIMATION_OFFSET,
-      opacity: 0,
-    }),
+    enter: (direction: number) =>
+      step === STEP_INVITE
+        ? {
+            x: 0,
+            opacity: 0,
+          }
+        : {
+            x: direction > 0 ? ANIMATION_OFFSET : -ANIMATION_OFFSET,
+            opacity: 0,
+          },
     center: {
       x: 0,
       opacity: 1,
     },
-    exit: (direction: number) => ({
-      x: direction < 0 ? ANIMATION_OFFSET : -ANIMATION_OFFSET,
-      opacity: 0,
-    }),
+    exit: (direction: number) =>
+      step === STEP_INVITE
+        ? {
+            x: 0,
+            opacity: 0,
+          }
+        : {
+            x: direction < 0 ? ANIMATION_OFFSET : -ANIMATION_OFFSET,
+            opacity: 0,
+          },
   };
 
   return (
@@ -374,6 +386,9 @@ export function SignupForm({ className }: { className?: string }) {
     >
       <AuthShell
       className={cn("flex flex-col gap-6", className)}
+      stepProgress={
+        <StepProgress currentStep={currentStep} onStepClick={goToStep} />
+      }
       footer={
         <>
           {/* Step-specific buttons */}
@@ -505,7 +520,7 @@ export function SignupForm({ className }: { className?: string }) {
           and <a href="/privacy">Privacy Policy</a>.
         </>
       }
-    >
+      >
       {error ? (
         <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-destructive text-sm shadow-sm">
           <div className="flex items-center gap-2">
@@ -515,7 +530,6 @@ export function SignupForm({ className }: { className?: string }) {
         </div>
       ) : null}
 
-      {/* Step content */}
       {currentStep === STEP_INVITE && (
         <StepContent direction={direction} step={0}>
           <div className="grid gap-3">
@@ -524,7 +538,7 @@ export function SignupForm({ className }: { className?: string }) {
             </label>
             <input
               autoComplete="one-time-code"
-              className="flex h-10 w-full rounded-lg border border-input bg-background px-4 py-2 text-sm shadow-sm outline-hidden ring-offset-background transition-all duration-200 placeholder:text-muted-foreground focus-visible:shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-10 w-full rounded-lg border border-input bg-transparent px-4 py-2 text-sm shadow-sm outline-hidden ring-offset-background transition-all duration-200 placeholder:text-muted-foreground focus-visible:shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               id="inviteCode"
               onChange={(e) => setInviteCode(e.target.value)}
               placeholder="Enter your invite code"
@@ -548,7 +562,7 @@ export function SignupForm({ className }: { className?: string }) {
             </label>
             <input
               autoComplete="name"
-              className="flex h-10 w-full rounded-lg border border-input bg-background px-4 py-2 text-sm shadow-sm outline-hidden ring-offset-background transition-all duration-200 placeholder:text-muted-foreground focus-visible:shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-10 w-full rounded-lg border border-input bg-transparent px-4 py-2 text-sm shadow-sm outline-hidden ring-offset-background transition-all duration-200 placeholder:text-muted-foreground focus-visible:shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               id="name"
               onChange={(e) => setName(e.target.value)}
               placeholder="Your full name"
@@ -564,7 +578,7 @@ export function SignupForm({ className }: { className?: string }) {
             </label>
             <input
               autoComplete="email"
-              className="flex h-10 w-full rounded-lg border border-input bg-background px-4 py-2 text-sm shadow-sm outline-hidden ring-offset-background transition-all duration-200 placeholder:text-muted-foreground focus-visible:shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-10 w-full rounded-lg border border-input bg-transparent px-4 py-2 text-sm shadow-sm outline-hidden ring-offset-background transition-all duration-200 placeholder:text-muted-foreground focus-visible:shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               id="email"
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
@@ -589,7 +603,7 @@ export function SignupForm({ className }: { className?: string }) {
             </label>
             <input
               autoComplete="new-password"
-              className="flex h-10 w-full rounded-lg border border-input bg-background px-4 py-2 text-sm shadow-sm outline-hidden ring-offset-background transition-all duration-200 placeholder:text-muted-foreground focus-visible:shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-10 w-full rounded-lg border border-input bg-transparent px-4 py-2 text-sm shadow-sm outline-hidden ring-offset-background transition-all duration-200 placeholder:text-muted-foreground focus-visible:shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               id="password"
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -606,7 +620,7 @@ export function SignupForm({ className }: { className?: string }) {
             </label>
             <input
               autoComplete="new-password"
-              className="flex h-10 w-full rounded-lg border border-input bg-background px-4 py-2 text-sm shadow-sm outline-hidden ring-offset-background transition-all duration-200 placeholder:text-muted-foreground focus-visible:shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-10 w-full rounded-lg border border-input bg-transparent px-4 py-2 text-sm shadow-sm outline-hidden ring-offset-background transition-all duration-200 placeholder:text-muted-foreground focus-visible:shadow-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               id="confirmPassword"
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
@@ -631,9 +645,6 @@ export function SignupForm({ className }: { className?: string }) {
           </div>
         </StepContent>
       )}
-
-      {/* Step Progress */}
-      <StepProgress currentStep={currentStep} onStepClick={goToStep} />
     </AuthShell>
     </motion.div>
   );
