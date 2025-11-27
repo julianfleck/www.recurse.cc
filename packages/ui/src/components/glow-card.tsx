@@ -103,7 +103,7 @@ export const GlowCard = React.forwardRef<GlowCardElement, GlowCardProps>(
       : undefined;
 
     const baseCardClass =
-      'block h-full select-none rounded-xl border border-border bg-card/60 p-4 no-underline outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-chart-1/30';
+      'block select-none rounded-xl border border-border bg-card/60 p-4 no-underline outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-chart-1/30';
 
     const classNames = cn(
       enableGlow && 'glow-card',
