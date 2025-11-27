@@ -15,6 +15,7 @@ import type {
 } from "d3-force";
 import { select } from "d3-selection";
 import { zoom } from "d3-zoom";
+import type { ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DefaultSpinner } from "@/components/loaders/default-spinner";
 import { graphApiClient } from "../api";
@@ -142,6 +143,10 @@ export interface GraphViewProps {
 	fitSignal?: number;
 	// When true, controls are hidden by default and only show on hover
 	showControlsOnHoverOnly?: boolean;
+	// Optional inline status content (e.g., animation subtitles) rendered near the bottom-left graph controls
+	statusContent?: ReactNode;
+	// Optional key to re-run initial depth-based expansion logic when it changes
+	autoExpandDepthKey?: number | string;
 }
 
 export function GraphView({
@@ -154,6 +159,8 @@ export function GraphView({
 	zoomModifier = "",
 	fitSignal,
 	showControlsOnHoverOnly = false,
+	statusContent,
+	autoExpandDepthKey,
 }: GraphViewProps) {
 	const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
 	const [hasLoadCompleted, setHasLoadCompleted] = useState(false);
@@ -354,6 +361,14 @@ export function GraphView({
 		zoomBehaviorRef,
 		// Do not depend on fitAll to avoid TDZ; we use a local wrapper instead
 	]);
+
+	// Allow callers (like the animated example) to re-run the initial depth expansion
+	// logic whenever their key changes (e.g., on each animation step).
+	useEffect(() => {
+		if (autoExpandDepthKey === undefined) return;
+		appliedInitialDepthRef.current = false;
+		depthInitInProgressRef.current = false;
+	}, [autoExpandDepthKey]);
 
 	// Initialize GraphDataManager with API service
 	useEffect(() => {
@@ -2137,6 +2152,21 @@ export function GraphView({
 							onZoomOut={zoomOut}
 						/>
 					</div>
+
+					{/* Optional inline status/subtitle content, spanning between bottom-left controls and bottom-right level indicator on larger screens */}
+					{statusContent ? (
+						<div
+							className={`pointer-events-none absolute bottom-4 left-32 right-32 z-10 hidden md:block ${
+								showControlsOnHoverOnly
+									? "opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+									: ""
+							}`}
+						>
+							<div className="pointer-events-auto flex items-center justify-between rounded-md border border-border bg-background/95 px-3 py-2 text-[11px] leading-snug text-muted-foreground shadow-sm backdrop-blur">
+								{statusContent}
+							</div>
+						</div>
+					) : null}
 
 					{/* Zoom surface wrapping edges and nodes */}
 					<div

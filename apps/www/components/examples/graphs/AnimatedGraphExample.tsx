@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@recurse/ui/components/button";
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -72,7 +73,9 @@ function buildDataUpToStep(
 	return result;
 }
 
-const STEP_DELAY_MS = 2500; // 2.5 second delay between steps
+// Delay between animation steps. Kept reasonably short so the story progresses
+// quickly while still giving people time to read the subtitle/status text.
+const STEP_DELAY_MS = 1500; // 1.5 second delay between steps
 const PROGRESS_BAR_WIDTH_PERCENT = 100; // 100% for full width
 const INITIAL_FIT_DELAY_MS = 500; // Delay before initial fit to view
 const STEP_CHANGE_FIT_DELAY_MS = 300; // Delay before fit to view after step change
@@ -277,6 +280,51 @@ export function AnimatedGraphExample({
 					withSidebar={false}
 					zoomModifier="cmd"
 					showControlsOnHoverOnly={showControlsOnHoverOnly}
+					autoExpandDepthKey={currentStep}
+					statusContent={
+						animationSteps.length > 0 ? (
+							<div className="flex w-full items-center gap-3">
+								<span className="flex-1 truncate font-mono text-xs text-muted-foreground">
+									{currentStepData.description}
+								</span>
+								<div className="flex shrink-0 items-center gap-1">
+									{/* TODO: add tooltips */}
+									<Button
+										className="size-6"
+										disabled={currentStep <= 0}
+										onClick={handleStepBack}
+										title="Previous step"
+										type="button"
+										size="icon"
+										variant="outline"
+									>
+										<ChevronLeft className="h-4 w-4" />
+									</Button>
+									<Button
+										className="size-6"
+										disabled={currentStep >= animationSteps.length - 1}
+										onClick={handleStepForward}
+										title="Next step"
+										type="button"
+										size="icon"
+										variant="outline"
+									>
+										<ChevronRight className="h-4 w-4" />
+									</Button>
+									<Button
+										className="size-6"
+										onClick={handleReload}
+										title="Restart animation"
+										type="button"
+										size="icon"
+										variant="outline"
+									>
+										<RotateCcw className="h-4 w-4" />
+									</Button>
+								</div>
+							</div>
+						) : undefined
+					}
 				/>
 			</div>
 			{/* Progress indicator with description - only show if more than one step and showControls is true */}
