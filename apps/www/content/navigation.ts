@@ -3,13 +3,12 @@ import {
 	Brain,
 	GitGraph,
 	InfinityIcon,
-	Layers,
 	Network,
-	Search,
-	SendToBack,
-	Clock,
+	Rss,
+	Package,
+	Route,
 } from "lucide-react";
-import { IconSparkles, IconGitBranch } from "@tabler/icons-react";
+import { IconSparkles } from "@tabler/icons-react";
 
 export type NavigationHero = {
 	title: string;
@@ -74,7 +73,7 @@ export const navigationContent: NavigationContent = {
 			{
 				title: "Technology",
 				description: "What Recurse does",
-				href: "/about",
+				href: "https://docs.recurse.cc/introduction",
 			},
 			{
 				title: "Beta Access",
@@ -83,7 +82,7 @@ export const navigationContent: NavigationContent = {
 			},
 			{
 				title: "How Recurse Compares",
-				description: "RAGE vs. RAG and other approaches",
+				description: "Recurse's RAGE engine vs. RAG and other approaches",
 				href: "/#comparison",
 			},
 			{
@@ -103,64 +102,52 @@ export const navigationContent: NavigationContent = {
 		},
 		items: [
 			{
-				title: "Semantic Navigation",
-				description: "Follow typed relationships through reasoning chains",
-				href: "/#features",
-				icon: Network,
-			},
-			{
 				title: "Adaptive Schemas",
-				description: "Works with any content, zero configuration needed",
+				description: "Structure emerges from your content—no predefined schemas required",
 				href: "/#features",
 				icon: IconSparkles,
 			},
 			{
+				title: "Context Assembly",
+				description: "Complete context bundles with sources cited, not scattered chunks",
+				href: "/#features",
+				icon: Package,
+			},
+			{
+				title: "Semantic Frames",
+				description: "Navigate typed relationships through reasoning chains",
+				href: "/#features",
+				icon: Network,
+			},
+			{
 				title: "Temporal Versioning",
-				description: "Preserve historical context while tracking changes",
+				description: "Track knowledge evolution over time with complete history",
 				href: "/#features",
 				icon: GitGraph,
 			},
 			{
-				title: "Expert Knowledge",
+				title: "Source Subscriptions",
+				description: "Automatic ingestion from RSS feeds and URLs you follow",
+				href: "/#features",
+				icon: Rss,
+			},
+			{
+				title: "Context Streams",
 				description: "Subscribe to expert knowledge bases directly",
 				href: "/#features",
 				icon: Brain,
 			},
 			{
-				title: "Knowledge Substrate",
-				description: "Tie agent memories together in one living fabric",
+				title: "Intent Navigation",
+				description: "Agents traverse reasoning chains to assemble query-fitting context",
 				href: "/#features",
-				icon: SendToBack,
+				icon: Route,
 			},
 			{
-				title: "Living Context",
-				description: "Query fact tables or reasoning chains from one interface",
-				href: "/#features",
-				icon: Layers,
-			},
-			{
-				title: "Intent Modeling",
-				description: "Every query carries the questioner's frame and desired outcome",
-				href: "/#features",
-				icon: Search,
-			},
-			{
-				title: "Actionable Outputs",
-				description: "Generate multi-step plans, not just single responses",
-				href: "/#features",
-				icon: IconGitBranch,
-			},
-			{
-				title: "Divergent Recall",
-				description: "Surface contradictions and weak signals automatically",
+				title: "Orthogonal Search",
+				description: "Go beyond similarity—surface contradictions, weak signals, and adjacent ideas",
 				href: "/#features",
 				icon: InfinityIcon,
-			},
-			{
-				title: "Realtime Synchronization",
-				description: "Keep your graph alive with streaming updates",
-				href: "/#features",
-				icon: Clock,
 			},
 		],
 		layout: "grid",
