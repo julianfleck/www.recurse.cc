@@ -306,7 +306,7 @@ completion = client.chat.completions.create(
 				recurse: "Living substrate",
 			},
 		] as ComparisonRow[],
-		detailedComparisonHref: "/docs/concepts/rage",
+		detailedComparisonHref: "/docs/concepts/rage#how-rage-compares",
 	},
 };
 
