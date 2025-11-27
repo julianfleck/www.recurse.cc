@@ -370,6 +370,51 @@ export function GraphView({
 		depthInitInProgressRef.current = false;
 	}, [autoExpandDepthKey]);
 
+	// For callers that provide autoExpandDepthKey (like the animated marketing
+	// example), aggressively expand all non-metadata nodes that have children
+	// whenever the key changes. This ensures that deeply nested nodes introduced
+	// in a single step are actually visible without requiring multiple manual
+	// level expansions.
+	useEffect(() => {
+		if (autoExpandDepthKey === undefined) {
+			return;
+		}
+		if (!Array.isArray(treeData) || treeData.length === 0) {
+			return;
+		}
+
+		const nodesWithChildren = new Set<string>();
+
+		const walk = (
+			nodes: Array<DataNode & { children?: DataNode[] }>,
+		): void => {
+			for (const n of nodes) {
+				// Skip metadata nodes in expansion logic
+				if (isMetadata(n.id)) {
+					continue;
+				}
+				if (Array.isArray(n.children) && n.children.length > 0) {
+					nodesWithChildren.add(n.id);
+					walk(n.children);
+				}
+			}
+		};
+
+		walk(treeData);
+
+		if (nodesWithChildren.size === 0) {
+			return;
+		}
+
+		setExpandedNodes((prev) => {
+			const next = new Set(prev);
+			for (const id of nodesWithChildren) {
+				next.add(id);
+			}
+			return next;
+		});
+	}, [autoExpandDepthKey, treeData, setExpandedNodes]);
+
 	// Initialize GraphDataManager with API service
 	useEffect(() => {
 		if (!dataManagerRef.current) {
