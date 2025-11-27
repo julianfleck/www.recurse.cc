@@ -9,6 +9,7 @@ import { GridCard } from "@/components/layout/GridCard";
 import { HeaderCard } from "@/components/layout/HeaderCard";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { homepageContent } from "@/content/homepage";
+import { getDocsUrl } from "@/lib/utils";
 
 export function Features() {
 	return (
@@ -21,14 +22,17 @@ export function Features() {
 				</GridCell>
 			</Grid8Col>
 
-			{/* Feature cards in separate grid to control row heights */}
-			<Grid8Col className="grid-rows-[repeat(auto-fill,minmax(0,1fr))]">
-				{/* Four feature cards, each 2 columns wide */}
-				{homepageContent.coreCapabilities.capabilities.map((capability, index) => (
-					<GridCell key={index} colSpan={8} mdColSpan={4} lgColSpan={2} className="flex">
-						<FeatureCard capability={capability} />
-					</GridCell>
-				))}
+			{/* Feature cards in 3x2 grid */}
+			<Grid8Col>
+				<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+						{homepageContent.coreCapabilities.capabilities.map((capability, index) => (
+							<div key={index} className="flex">
+								<FeatureCard capability={capability} />
+							</div>
+						))}
+					</div>
+				</GridCell>
 			</Grid8Col>
 			</div>
 		</ScrollAnimation>
@@ -108,7 +112,7 @@ function FeatureCard({
 						<div
 							className={`transition-opacity duration-200 ${isCardHovered ? "opacity-100" : "opacity-0"}`}
 						>
-							<LinkButton href={capability.docLink} variant="outline" size="default" className="w-full text-sm">
+							<LinkButton href={getDocsUrl(capability.docLink)} variant="outline" size="default" className="w-full text-sm">
 								Learn more
 							</LinkButton>
 						</div>

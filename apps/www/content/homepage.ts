@@ -8,6 +8,8 @@ import {
 	Search,
 	SendToBack,
 	Clock,
+	Package,
+	Rss,
 } from "lucide-react";
 import { IconSparkles, IconGitBranch } from "@tabler/icons-react";
 
@@ -88,52 +90,77 @@ export const homepageContent = {
 			"",
 		capabilities: [
 			{
-				title: "Let's You Navigate Semantic Structure",
+				title: "Learns Your Structure Automatically",
 				description:
-					"Recurse creates typed relationships between semantic units—arguments link to evidence, decisions connect to discussions. <mark>Navigate meaning</mark> through actual reasoning chains, not keyword similarity.",
-				icon: Network,
-				features: [
-					"Follow typed relationships",
-					"Trace reasoning chains",
-					"Multi-hop traversal",
-				],
-				docLink: "/docs/concepts/frames",
-			},
-			{
-				title: "Discovers Schemas Automatically",
-				description:
-					"Recurse <mark>learns patterns from any content</mark> you add to it, be it research papers, bug reports, meeting notes, etc, and created relationships between them without needing any predefined ontologies. Source-agnostic schema discovery adapts to your domain.",
+					"Drop in any content—research papers, meeting notes, code documentation—and watch structure emerge. <mark>Recurse learns the patterns</mark> in your material and creates meaningful relationships automatically. No schemas to define, no categories to maintain.",
 				icon: IconSparkles,
 				features: [
-					"Works with any content",
+					"Adapts to any content type",
 					"Zero configuration needed",
-					"Adapts to your domain",
+					"Learns your domain automatically",
 				],
-				docLink: "/docs/concepts/adaptive-schemas",
+				docLink: "/concepts/adaptive-schemas",
 			},
 			{
-				title: "Evolves Knowledge Graphs Over Time",
+				title: "Assembles Context When You Need It",
 				description:
-					"Recurse updates knowledge while preserving complete history with timestamps, diffs, and explanations of what changed. This turns your Recurse graphs into a <mark>living memory</mark> that maintains both current understanding and historical context.",
+					"When you need information, Recurse assembles <mark>complete context bundles</mark>—not scattered chunks. Copy with one click for any AI tool, or connect your agents directly. Context arrives pre-assembled with sources cited and relationships preserved.",
+				icon: Package,
+				features: [
+					"One-click context export",
+					"Direct agent injection",
+					"Sources always cited",
+				],
+				docLink: "/concepts/frames", // TODO: update to context-assembly docs when created
+			},
+			{
+				title: "Let's You Navigate Semantic Structure",
+				description:
+					"Follow how ideas actually connect. Arguments link to evidence, decisions trace back to discussions. <mark>Both you and your AI agents</mark> can navigate these reasoning chains, discovering relationships that similarity search would miss.",
+				icon: Network,
+				features: [
+					"Typed relationship traversal",
+					"Agent-accessible navigation",
+					"Multi-hop exploration",
+				],
+				docLink: "/concepts/frames",
+			},
+			{
+				title: "Evolves Your Knowledge Base Over Time",
+				description:
+					"Your knowledge graph isn't static—it <mark>grows and refines</mark> as you add content. Recurse preserves complete history with timestamps and explanations of what changed, so you can trace how understanding developed.",
 				icon: GitGraph,
 				features: [
-					"Preserve historical context",
+					"Complete version history",
 					"Track knowledge evolution",
-					"Query temporal changes",
+					"Query past states",
 				],
-				docLink: "/docs/concepts/temporal-versioning",
+				docLink: "/concepts/temporal-versioning",
+			},
+			{
+				title: "Keeps Your Knowledge Base Current with Source Subscriptions",
+				description:
+					"Subscribe to RSS feeds, documentation sites, and newsletters. <mark>New content flows in automatically</mark>, gets processed, and connects to your existing knowledge. Stay current without manual uploads.",
+				icon: Rss,
+				features: [
+					"Automatic ingestion",
+					"Monitor any feed or URL",
+					"Continuous updates",
+				],
+				docLink: "/concepts/subscriptions",
+				comingSoon: true,
 			},
 			{
 				title: "Let's You Tap into Expert Knowledge",
 				description:
-					"Subscribe to domain experts' knowledge bases directly—their sources, synthesis, and connections become queryable. <mark>Your AI draws from their expertise</mark> automatically, updating as they learn. Access how they organize and connect information, not just their published output.",
+					"Subscribe to domain experts' curated knowledge bases directly—their sources, synthesis, and connections become part of your context. <mark>Your AI draws from their expertise</mark> automatically, updating as they publish.",
 				icon: Brain,
 				features: [
 					"Access expert knowledge",
-					"Share curated subgraphs",
+					"Share curated collections",
 					"Automatic updates",
 				],
-				docLink: "/docs/concepts/streams",
+				docLink: "/concepts/streams",
 				comingSoon: true,
 			},
 		] as Capability[],

@@ -27,23 +27,23 @@ export function ChatOrCodeSection() {
 					{/* Right: Use case cards in 2x2 grid (4 cols total) */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={4}>
 						<div className="grid grid-cols-2 gap-0 h-full">
-							{/* Card 1: Content Upload (top-left) */}
+							{/* Card 1: Upload & Chat (merged - top-left) */}
 							<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col px-1col py-1col md:p-8">
 								<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
-									Upload Content
+									Upload & Chat
 								</h4>
 								<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto transition-colors duration-300 group-hover/use-case:text-foreground">
-									Drop PDFs, text files, markdown, or paste URLs directly. Recurse extracts semantic structure and makes content queryable within minutes.
+									Drop PDFs, text files, or paste URLs. Then ask questions naturally—answers come grounded in your sources. Works like ChatGPT but connected to your knowledge.
 								</p>
 							</GridCard>
 
-							{/* Card 2: Chat & Query (top-right) */}
+							{/* Card 2: Context Assembly (top-right) */}
 							<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col px-1col py-1col md:p-8">
 								<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
-									Chat & Query
+									Assemble Context
 								</h4>
 								<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto transition-colors duration-300 group-hover/use-case:text-foreground">
-									Ask questions naturally and get answers grounded in your sources. Works like ChatGPT but connected to your knowledge graph – no code required.
+									Build context bundles with one click. Select what matters, export for any AI tool, or inject directly into your agent workflows. Sources cited, relationships intact.
 								</p>
 							</GridCard>
 

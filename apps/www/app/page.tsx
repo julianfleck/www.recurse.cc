@@ -11,27 +11,39 @@ import { SignupSection } from "@/components/landingpage/signup";
 export default function HomePage() {
 	return (
 		<>
-			{/* Hero + Graph + About Sections */}
+			{/* Hero + About Sections - no spacing between them */}
 			<Hero />
 			<About />
 
 			{/* Features Section */}
-			<Features />
+			<div className="pt-1col">
+				<Features />
+			</div>
 
-			{/* Chat or Code Section (non-developer focus) - BEFORE Build with Recurse */}
-			<ChatOrCodeSection />
+			{/* Chat or Code Section (non-developer focus) */}
+			<div className="pt-1col">
+				<ChatOrCodeSection />
+			</div>
 
 			{/* Build with Recurse Section (developer focus) */}
-			<BuildWithRecurseSection />
+			<div className="pt-1col">
+				<BuildWithRecurseSection />
+			</div>
 
 			{/* Comparison Section */}
-			<ComparisonSection />
+			<div className="pt-1col">
+				<ComparisonSection />
+			</div>
 
 			{/* Signup Form Section */}
-			<SignupSection />
+			<div className="pt-1col">
+				<SignupSection />
+			</div>
 
 			{/* Final CTA Section */}
-			<CTASection />
+			<div className="pt-1col">
+				<CTASection />
+			</div>
 		</>
 	);
 }
