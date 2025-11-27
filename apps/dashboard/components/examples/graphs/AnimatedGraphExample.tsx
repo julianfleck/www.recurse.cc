@@ -289,7 +289,7 @@ function buildDataUpToStep(stepNumber: number) {
 	return result;
 }
 
-const STEP_DELAY_MS = 2500; // 2.5 second delay between steps
+const STEP_DELAY_MS = 3000; // 3 second delay between steps
 const PROGRESS_BAR_WIDTH_PERCENT = 100; // 100% for full width
 const INITIAL_FIT_DELAY_MS = 500; // Delay before initial fit to view
 const STEP_CHANGE_FIT_DELAY_MS = 300; // Delay before fit to view after step change
@@ -413,7 +413,7 @@ export function AnimatedGraphExample() {
 				{/* Progress indicator with description */}
 				<div className="mt-2 mb-4 flex items-center gap-3 rounded-md border border-border p-2">
 					<button
-						className="flex-shrink-0 rounded p-1 hover:bg-secondary"
+						className="shrink-0 rounded p-1 hover:bg-secondary"
 						onClick={buttonHandler}
 						title={buttonTitle}
 						type="button"
@@ -421,11 +421,11 @@ export function AnimatedGraphExample() {
 						{buttonIcon}
 					</button>
 
-					<span className="flex-shrink-0 whitespace-nowrap font-medium text-sm">
+					<span className="shrink-0 whitespace-nowrap font-medium text-sm">
 						Step {currentStep + 1} of {animationSteps.length}
 					</span>
 
-					<div className="h-2 w-24 flex-shrink-0 overflow-hidden rounded-full bg-secondary">
+					<div className="h-2 w-24 shrink-0 overflow-hidden rounded-full bg-secondary">
 						<div
 							className="h-full bg-primary transition-all duration-500"
 							style={{
@@ -439,7 +439,7 @@ export function AnimatedGraphExample() {
 							{currentStepData.description}
 						</span>
 
-						<div className="flex flex-shrink-0 items-center gap-1">
+						<div className="flex shrink-0 items-center gap-1">
 							<button
 								className="rounded p-1 hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50"
 								disabled={currentStep <= 0}

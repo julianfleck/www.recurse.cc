@@ -6,39 +6,11 @@
 				"type": "Document:article",
 				"title": "Introduction to Recurse",
 				"summary": "Recurse is infrastructure for sense-making, not just retrieval—it structures knowledge so both humans and AI can explore and develop deep understanding",
-				"children": ["sec-problem", "sec-principles", "sec-how-it-works"],
-				"metadata": {}
-			},
-			{
-				"id": "sec-problem",
-				"type": "heading_section",
-				"title": "The Problem with Similarity-Based Systems",
-				"summary": "Most AI memory systems work by similarity matching—you ask a question and get back similar-looking results. This approach works when you know what you're looking for, but it systematically prevents discovery of unexpected connections.",
-				"children": [],
-				"metadata": {}
-			},
-			{
-				"id": "sec-principles",
-				"type": "heading_section",
-				"title": "Recurse Principles",
-				"summary": "Recurse is built on three different principles: prioritizing structure over similarity, relationships over rankings, and evolution over static storage. These principles enable fundamentally different capabilities.",
-				"children": [],
-				"metadata": {}
-			},
-			{
-				"id": "sec-how-it-works",
-				"type": "heading_section",
-				"title": "How Recurse Works",
-				"summary": "Instead of returning similar text chunks or entities, Recurse extracts semantic structure—understanding what sources argue, what evidence supports those arguments, and how different pieces of information relate to each other.",
 				"children": [],
 				"metadata": {}
 			}
 		],
-		"links": [
-			{ "source": "doc-1", "target": "sec-problem" },
-			{ "source": "doc-1", "target": "sec-principles" },
-			{ "source": "doc-1", "target": "sec-how-it-works" }
-		]
+		"links": []
 	},
 	"stepAdditions": {
 		"1": {
@@ -46,8 +18,37 @@
 			"links": []
 		},
 		"2": {
-			"nodes": [],
-			"links": []
+			"nodes": [
+				{
+					"id": "sec-problem",
+					"type": "heading_section",
+					"title": "The Problem with Similarity-Based Systems",
+					"summary": "Most AI memory systems work by similarity matching—you ask a question and get back similar-looking results. This approach works when you know what you're looking for, but it systematically prevents discovery of unexpected connections.",
+					"children": [],
+					"metadata": {}
+				},
+				{
+					"id": "sec-principles",
+					"type": "heading_section",
+					"title": "Recurse Principles",
+					"summary": "Recurse is built on three different principles: prioritizing structure over similarity, relationships over rankings, and evolution over static storage. These principles enable fundamentally different capabilities.",
+					"children": [],
+					"metadata": {}
+				},
+				{
+					"id": "sec-how-it-works",
+					"type": "heading_section",
+					"title": "How Recurse Works",
+					"summary": "Instead of returning similar text chunks or entities, Recurse extracts semantic structure—understanding what sources argue, what evidence supports those arguments, and how different pieces of information relate to each other.",
+					"children": [],
+					"metadata": {}
+				}
+			],
+			"links": [
+				{ "source": "doc-1", "target": "sec-problem" },
+				{ "source": "doc-1", "target": "sec-principles" },
+				{ "source": "doc-1", "target": "sec-how-it-works" }
+			]
 		},
 		"3": {
 			"nodes": [
@@ -181,140 +182,6 @@
 						"frames-sec-slots",
 						"frames-sec-recursive"
 					],
-					"metadata": {
-						"highlighted": true
-					}
-				},
-				{
-					"id": "doc-rage",
-					"type": "Document:article",
-					"title": "RAGE",
-					"summary": "RAGE stands for Recursive, Agentic Graph Embeddings—it's the processing engine that powers Recurse by transforming unstructured sources into a navigable knowledge substrate. The technology combines four key capabilities that work together.",
-					"children": [
-						"rage-sec-recursive",
-						"rage-sec-agentic",
-						"rage-sec-graph"
-					],
-					"metadata": {
-						"highlighted": true
-					}
-				},
-				{
-					"id": "rage-sec-recursive",
-					"type": "heading_section",
-					"title": "Recursive",
-					"summary": "Knowledge doesn't exist in flat layers—ideas nest inside other ideas, arguments reference evidence that was gathered using methods that depend on assumptions. RAGE treats this nesting explicitly through recursive frame composition.",
-					"children": ["rage-claim-recursive", "rage-def-recursive-frames"],
-					"metadata": {
-						"highlighted": true
-					}
-				},
-				{
-					"id": "rage-claim-recursive",
-					"type": "claim",
-					"title": "Knowledge isn't flat",
-					"summary": "An argument references evidence, that evidence was gathered using specific methods, those methods depend on theoretical assumptions, and those assumptions often connect back to other arguments. This creates nested structures where ideas exist inside other ideas.",
-					"children": [],
-					"metadata": {
-						"highlighted": true
-					}
-				},
-				{
-					"id": "rage-def-recursive-frames",
-					"type": "definition",
-					"title": "Recursive frame composition",
-					"summary": "Frames can contain other frames, which can contain still more frames, creating structures of arbitrary depth. This mirrors how concepts actually relate in practice—not as flat categories but as nested, hierarchical relationships.",
-					"children": ["rage-example-traversal"],
-					"metadata": {
-						"highlighted": true
-					}
-				},
-				{
-					"id": "rage-example-traversal",
-					"type": "example",
-					"title": "Traversing decisions to constraints",
-					"summary": "When you query about a decision, you can traverse down to the discussions that led to it, then to the constraints that shaped those discussions, then to the prior decisions that established those constraints. Or you can move back up from a technical detail to see the broader context that makes it meaningful.",
-					"children": [],
-					"metadata": {
-						"highlighted": true
-					}
-				},
-				{
-					"id": "rage-sec-agentic",
-					"type": "heading_section",
-					"title": "Agentic",
-					"summary": "Most knowledge graphs just store static information—nodes and edges that represent facts but don't actually do anything. RAGE frames carry executable instructions that guide how to navigate and work with the knowledge.",
-					"children": ["rage-claim-agentic", "rage-evidence-agentic"],
-					"metadata": {
-						"highlighted": true
-					}
-				},
-				{
-					"id": "rage-claim-agentic",
-					"type": "claim",
-					"title": "Frames are executable",
-					"summary": "Unlike static knowledge graphs where nodes and edges just represent facts, RAGE frames carry executable instructions. Each frame knows how to validate itself, what relationships to follow, and how to guide further exploration.",
-					"children": [],
-					"metadata": {
-						"highlighted": true
-					}
-				},
-				{
-					"id": "rage-evidence-agentic",
-					"type": "evidence",
-					"title": "Frames as navigation junctions",
-					"summary": "Each frame becomes a junction that can inform further actions. When an agent encounters a Problem frame, that frame carries instructions for how to search for related Diagnosis frames. A Claim frame knows how to validate itself by checking its Evidence slots and following connections to supporting Method frames.",
-					"children": ["rage-reference-minsky"],
-					"metadata": {
-						"highlighted": true
-					}
-				},
-				{
-					"id": "rage-reference-minsky",
-					"type": "reference",
-					"title": "Minsky's frames-with-slots",
-					"summary": "The concept builds on Marvin Minsky's frames-with-slots theory, but extends it by making frames executable. Each frame carries both semantic structure (what it represents) and behavioral instructions (how agents should work with it).",
-					"children": [],
-					"metadata": {
-						"highlighted": true
-					}
-				},
-				{
-					"id": "rage-sec-graph",
-					"type": "heading_section",
-					"title": "Graph",
-					"summary": "Structure without relationships is just organized text. RAGE treats knowledge as a web of typed connections where frames don't just link to related frames—they point to specific frames with explicit relationship types that preserve meaning.",
-					"children": ["rage-claim-graph", "rage-evidence-graph"],
-					"metadata": {
-						"highlighted": true
-					}
-				},
-				{
-					"id": "rage-claim-graph",
-					"type": "claim",
-					"title": "Knowledge as typed connections",
-					"summary": "A Claim frame doesn't just link to related claims—it points to specific Evidence frames that support it, Method frames that describe how that evidence was gathered, and Critique frames that challenge its validity. The connections are explicit, typed relationships.",
-					"children": [],
-					"metadata": {
-						"highlighted": true
-					}
-				},
-				{
-					"id": "rage-evidence-graph",
-					"type": "evidence",
-					"title": "Specific typed relationships",
-					"summary": "The graph uses typed relationships that preserve meaning: 'supports,' 'contradicts,' 'depends on,' 'refines.' You can follow these across your entire knowledge base—from a solution back to the problem it addresses, from a concept to all examples that illustrate it.",
-					"children": ["rage-def-typed-relationships"],
-					"metadata": {
-						"highlighted": true
-					}
-				},
-				{
-					"id": "rage-def-typed-relationships",
-					"type": "definition",
-					"title": "Relationship types",
-					"summary": "The graph defines explicit relationship types: 'supports' (evidence backing claims), 'contradicts' (opposing viewpoints), 'depends on' (prerequisite knowledge), 'refines' (elaborations and specifications). These typed relationships enable precise navigation through the knowledge graph.",
-					"children": [],
 					"metadata": {
 						"highlighted": true
 					}
@@ -474,32 +341,6 @@
 				}
 			],
 			"links": [
-				{ "source": "doc-1", "target": "doc-frames" },
-				{ "source": "doc-1", "target": "doc-rage" },
-				{ "source": "doc-rage", "target": "rage-sec-recursive" },
-				{ "source": "doc-rage", "target": "rage-sec-agentic" },
-				{ "source": "doc-rage", "target": "rage-sec-graph" },
-				{ "source": "rage-sec-recursive", "target": "rage-claim-recursive" },
-				{
-					"source": "rage-claim-recursive",
-					"target": "rage-def-recursive-frames"
-				},
-				{
-					"source": "rage-def-recursive-frames",
-					"target": "rage-example-traversal"
-				},
-				{ "source": "rage-sec-agentic", "target": "rage-claim-agentic" },
-				{ "source": "rage-claim-agentic", "target": "rage-evidence-agentic" },
-				{
-					"source": "rage-evidence-agentic",
-					"target": "rage-reference-minsky"
-				},
-				{ "source": "rage-sec-graph", "target": "rage-claim-graph" },
-				{ "source": "rage-claim-graph", "target": "rage-evidence-graph" },
-				{
-					"source": "rage-evidence-graph",
-					"target": "rage-def-typed-relationships"
-				},
 				{ "source": "doc-frames", "target": "frames-sec-text-structure" },
 				{ "source": "doc-frames", "target": "frames-sec-slots" },
 				{ "source": "doc-frames", "target": "frames-sec-recursive" },
@@ -545,6 +386,162 @@
 					"source": "frames-example-navigation",
 					"target": "frames-insight-structure-meaning"
 				},
+				{
+					"source": "claim-semantic-structure",
+					"target": "doc-frames"
+				}
+			]
+		},
+		"5": {
+			"nodes": [
+				{
+					"id": "rage-sec-recursive",
+					"type": "heading_section",
+					"title": "Recursive",
+					"summary": "Knowledge doesn't exist in flat layers—ideas nest inside other ideas, arguments reference evidence that was gathered using methods that depend on assumptions. RAGE treats this nesting explicitly through recursive frame composition.",
+					"children": ["rage-claim-recursive", "rage-def-recursive-frames"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-claim-recursive",
+					"type": "claim",
+					"title": "Knowledge isn't flat",
+					"summary": "An argument references evidence, that evidence was gathered using specific methods, those methods depend on theoretical assumptions, and those assumptions often connect back to other arguments. This creates nested structures where ideas exist inside other ideas.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-def-recursive-frames",
+					"type": "definition",
+					"title": "Recursive frame composition",
+					"summary": "Frames can contain other frames, which can contain still more frames, creating structures of arbitrary depth. This mirrors how concepts actually relate in practice—not as flat categories but as nested, hierarchical relationships.",
+					"children": ["rage-example-traversal"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-example-traversal",
+					"type": "example",
+					"title": "Traversing decisions to constraints",
+					"summary": "When you query about a decision, you can traverse down to the discussions that led to it, then to the constraints that shaped those discussions, then to the prior decisions that established those constraints. Or you can move back up from a technical detail to see the broader context that makes it meaningful.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-sec-agentic",
+					"type": "heading_section",
+					"title": "Agentic",
+					"summary": "Most knowledge graphs just store static information—nodes and edges that represent facts but don't actually do anything. RAGE frames carry executable instructions that guide how to navigate and work with the knowledge.",
+					"children": ["rage-claim-agentic", "rage-evidence-agentic"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-claim-agentic",
+					"type": "claim",
+					"title": "Frames are executable",
+					"summary": "Unlike static knowledge graphs where nodes and edges just represent facts, RAGE frames carry executable instructions. Each frame knows how to validate itself, what relationships to follow, and how to guide further exploration.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-evidence-agentic",
+					"type": "evidence",
+					"title": "Frames as navigation junctions",
+					"summary": "Each frame becomes a junction that can inform further actions. When an agent encounters a Problem frame, that frame carries instructions for how to search for related Diagnosis frames. A Claim frame knows how to validate itself by checking its Evidence slots and following connections to supporting Method frames.",
+					"children": ["rage-reference-minsky"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-reference-minsky",
+					"type": "reference",
+					"title": "Minsky's Frame Theory",
+					"summary": "The concept builds on Marvin Minsky's Frame Theory, but extends it by making frames executable. Each frame carries both semantic structure (what it represents) and behavioral instructions (how agents should work with it).",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-sec-graph",
+					"type": "heading_section",
+					"title": "Graph",
+					"summary": "Structure without relationships is just organized text. RAGE treats knowledge as a web of typed connections where frames don't just link to related frames—they point to specific frames with explicit relationship types that preserve meaning.",
+					"children": ["rage-claim-graph", "rage-evidence-graph"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-claim-graph",
+					"type": "claim",
+					"title": "Knowledge as typed connections",
+					"summary": "A Claim frame doesn't just link to related claims—it points to specific Evidence frames that support it, Method frames that describe how that evidence was gathered, and Critique frames that challenge its validity. The connections are explicit, typed relationships.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-evidence-graph",
+					"type": "evidence",
+					"title": "Specific typed relationships",
+					"summary": "The graph uses typed relationships that preserve meaning: 'supports,' 'contradicts,' 'depends on,' 'refines.' You can follow these across your entire knowledge base—from a solution back to the problem it addresses, from a concept to all examples that illustrate it.",
+					"children": ["rage-def-typed-relationships"],
+					"metadata": {
+						"highlighted": true
+					}
+				},
+				{
+					"id": "rage-def-typed-relationships",
+					"type": "definition",
+					"title": "Relationship types",
+					"summary": "The graph defines explicit relationship types: 'supports' (evidence backing claims), 'contradicts' (opposing viewpoints), 'depends on' (prerequisite knowledge), 'refines' (elaborations and specifications). These typed relationships enable precise navigation through the knowledge graph.",
+					"children": [],
+					"metadata": {
+						"highlighted": true
+					}
+				}
+			],
+			"links": [
+				{ "source": "rage-sec-recursive", "target": "rage-claim-recursive" },
+				{
+					"source": "rage-claim-recursive",
+					"target": "rage-def-recursive-frames"
+				},
+				{
+					"source": "rage-def-recursive-frames",
+					"target": "rage-example-traversal"
+				},
+				{ "source": "rage-sec-agentic", "target": "rage-claim-agentic" },
+				{ "source": "rage-claim-agentic", "target": "rage-evidence-agentic" },
+				{
+					"source": "rage-evidence-agentic",
+					"target": "rage-reference-minsky"
+				},
+				{ "source": "rage-sec-graph", "target": "rage-claim-graph" },
+				{ "source": "rage-claim-graph", "target": "rage-evidence-graph" },
+				{
+					"source": "rage-evidence-graph",
+					"target": "rage-def-typed-relationships"
+				}
+			]
+		},
+		"6": {
+			"nodes": [],
+			"links": [
 				{ "source": "claim-semantic-structure", "target": "frames-def-frame" },
 				{
 					"source": "rage-def-recursive-frames",
@@ -565,6 +562,10 @@
 				{
 					"source": "rage-example-traversal",
 					"target": "frames-evidence-recursive-composition"
+				},
+				{
+					"source": "rage-evidence-agentic",
+					"target": "frames-claim-navigation"
 				}
 			]
 		}
@@ -572,19 +573,27 @@
 	"animationSteps": [
 		{
 			"stepNumber": 1,
-			"description": "Document ingested and basic metadata extracted"
+			"description": "Source ingested metadata extracted"
 		},
 		{
 			"stepNumber": 2,
-			"description": "Identified semantic structure and section hierarchy"
+			"description": "Identified section hierarchy"
 		},
 		{
 			"stepNumber": 3,
-			"description": "Extracted semantic frames with their relationships"
+			"description": "Extracted semantic frames and relationships"
 		},
 		{
 			"stepNumber": 4,
-			"description": "Establishing connections to existing knowledge base"
+			"description": "Added external connections"
+		},
+		{
+			"stepNumber": 5,
+			"description": "Added external connections"
+		},
+		{
+			"stepNumber": 6,
+			"description": "Added external connections"
 		}
 	]
 }

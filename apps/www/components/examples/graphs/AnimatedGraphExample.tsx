@@ -73,9 +73,9 @@ function buildDataUpToStep(
 	return result;
 }
 
-// Delay between animation steps. Kept reasonably short so the story progresses
-// quickly while still giving people time to read the subtitle/status text.
-const STEP_DELAY_MS = 1500; // 1.5 second delay between steps
+// Delay between animation steps. Slightly longer now to give more time to
+// read subtitles as additional nodes are introduced per step.
+const STEP_DELAY_MS = 3000; // 3 second delay between steps
 const PROGRESS_BAR_WIDTH_PERCENT = 100; // 100% for full width
 const INITIAL_FIT_DELAY_MS = 500; // Delay before initial fit to view
 const STEP_CHANGE_FIT_DELAY_MS = 300; // Delay before fit to view after step change

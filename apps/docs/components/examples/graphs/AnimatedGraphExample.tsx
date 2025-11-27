@@ -72,7 +72,7 @@ function buildDataUpToStep(
 	return result;
 }
 
-const STEP_DELAY_MS = 2500; // 2.5 second delay between steps
+const STEP_DELAY_MS = 3000; // 3 second delay between steps
 const PROGRESS_BAR_WIDTH_PERCENT = 100; // 100% for full width
 const INITIAL_FIT_DELAY_MS = 500; // Delay before initial fit to view
 const STEP_CHANGE_FIT_DELAY_MS = 300; // Delay before fit to view after step change
