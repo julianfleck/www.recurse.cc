@@ -55,7 +55,7 @@ export default function FAQPage() {
 					tags: ["Core Concepts", "Technical"],
 					docLink: {
 						label: "Read the RAGE documentation",
-						href: "/docs/concepts/rage",
+						href: "/concepts/rage",
 					},
 				},
 				{
@@ -65,7 +65,7 @@ export default function FAQPage() {
 					tags: ["Core Concepts", "Technical"],
 					docLink: {
 						label: "Learn about Frames",
-						href: "/docs/concepts/frames",
+						href: "/concepts/frames",
 					},
 				},
 				{
@@ -92,7 +92,7 @@ export default function FAQPage() {
 					tags: ["Features", "Technical"],
 					docLink: {
 						label: "Learn about Adaptive Schemas",
-						href: "/docs/concepts/adaptive-schemas",
+						href: "/concepts/adaptive-schemas",
 					},
 				},
 				{
@@ -102,7 +102,7 @@ export default function FAQPage() {
 					tags: ["Features", "Technical"],
 					docLink: {
 						label: "Learn about Temporal Versioning",
-						href: "/docs/concepts/temporal-versioning",
+						href: "/concepts/temporal-versioning",
 					},
 				},
 				{
@@ -118,7 +118,7 @@ export default function FAQPage() {
 					tags: ["Features", "Streams"],
 					docLink: {
 						label: "Learn about Context Streams",
-						href: "/docs/concepts/streams",
+						href: "/concepts/streams",
 					},
 				},
 				{
@@ -186,7 +186,7 @@ export default function FAQPage() {
 					tags: ["Getting Started"],
 					docLink: {
 						label: "View Quickstart Guide",
-						href: "/docs/getting-started/quickstart",
+						href: "/getting-started/quickstart",
 					},
 				},
 				{
@@ -219,7 +219,7 @@ export default function FAQPage() {
 					tags: ["Integration", "API", "Proxy"],
 					docLink: {
 						label: "Compare API vs Proxy",
-						href: "/docs/getting-started/api-vs-proxy",
+						href: "/getting-started/api-vs-proxy",
 					},
 				},
 				{
@@ -235,7 +235,7 @@ export default function FAQPage() {
 					tags: ["Integration", "Proxy"],
 					docLink: {
 						label: "Using the Proxy Guide",
-						href: "/docs/getting-started/using-the-proxy",
+						href: "/getting-started/using-the-proxy",
 					},
 		},
 		{

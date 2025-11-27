@@ -206,7 +206,7 @@ export function BlogClient({ posts }: BlogClientProps) {
 												<h2 className="mb-2 text-2xl font-semibold tracking-tight text-muted-foreground transition-colors duration-300 group-hover/article-card:text-foreground lg:mb-0">
 													{post.title}
 												</h2>
-												{post.description ? <p className="text-sm text-muted-foreground line-clamp-3">{post.description}</p> : null}
+												{post.description ? <p className="text-base text-muted-foreground line-clamp-3">{post.description}</p> : null}
 											</div>
 											{post.heroImage ? (
 												<div className="relative h-[140px] w-full overflow-hidden rounded-md lg:h-full lg:p-2">

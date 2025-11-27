@@ -39,6 +39,37 @@ const turndown = new TurndownService({
 	codeBlockStyle: "fenced",
 });
 
+function decodeHtmlEntities(text: string): string {
+	if (!text) return text;
+	
+	// Decode numeric entities like &#8127; or &#x1F4A9;
+	// Use fromCodePoint to handle all Unicode code points (including > 65535)
+	let decoded = text.replace(/&#(\d+);|&#x([0-9A-Fa-f]+);/g, (match, dec, hex) => {
+		const codePoint = dec ? Number.parseInt(dec, 10) : Number.parseInt(hex, 16);
+		try {
+			return String.fromCodePoint(codePoint);
+		} catch {
+			// Fallback for invalid code points
+			return match;
+		}
+	});
+	
+	// Decode named entities like &apos; &amp; &quot; &lt; &gt;
+	// Order matters: &amp; must be last to avoid double-decoding
+	decoded = decoded
+		.replace(/&apos;/g, "'")
+		.replace(/&quot;/g, '"')
+		.replace(/&lt;/g, "<")
+		.replace(/&gt;/g, ">")
+		.replace(/&nbsp;/g, " ")
+		.replace(/&mdash;/g, "—")
+		.replace(/&ndash;/g, "–")
+		.replace(/&hellip;/g, "…")
+		.replace(/&amp;/g, "&");
+	
+	return decoded;
+}
+
 function slugify(value: string) {
 	return value
 		.toLowerCase()
@@ -102,6 +133,7 @@ async function fetchFeed(feedUrl: string): Promise<FeedItem[]> {
 	const parser = new XMLParser({
 		ignoreAttributes: false,
 		attributeNamePrefix: "@_",
+		decodeHTMLentities: true,
 	});
 	const parsed = parser.parse(xmlText);
 	const items: FeedItem[] = parsed?.rss?.channel?.item ?? [];
@@ -166,8 +198,11 @@ async function processItem(
 		return undefined;
 	}
 
-	const title = item.title?.trim();
-	if (!title) return undefined;
+	const rawTitle = item.title?.trim();
+	if (!rawTitle) return undefined;
+	
+	// Decode HTML entities in title
+	const title = decodeHtmlEntities(rawTitle);
 
 	const slug = slugify(title);
 	const publishedAt = new Date(item.pubDate);
@@ -186,9 +221,14 @@ async function processItem(
 
 	const html = item["content:encoded"] ?? item.description ?? "";
 	const mdxBody = turndown.turndown(html);
+	
+	// Decode HTML entities in description
+	const rawDescription = item.description?.trim();
+	const description = rawDescription ? decodeHtmlEntities(rawDescription) : undefined;
+	
 	const frontmatter = {
 		title,
-		description: item.description?.trim(),
+		description,
 		publishedAt: publishedAt.toISOString(),
 		tags: toArray(item.category),
 		substackUrl: item.link,

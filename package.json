@@ -12,7 +12,8 @@
     "build:check": "node scripts/check-builds.mjs",
     "lint": "pnpm --filter './apps/*' exec ultracite check",
     "fix": "pnpm --filter './apps/*' exec ultracite fix",
-    "sync:blog": "pnpm tsx scripts/sync-substack-posts.ts"
+    "sync:blog": "pnpm tsx scripts/sync-substack-posts.ts",
+    "decode:blog": "pnpm tsx scripts/decode-blog-entities.ts"
   },
   "devDependencies": {
     "shadcn": "^3.5.0",
