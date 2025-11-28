@@ -48,7 +48,7 @@ export function HeaderCard({
 				<GridCard 
 					enableHoverEffect
 					enableSpotlight={enableSpotlight}
-					className={cn("group cursor-pointer px-1col py-1col lg:pl-2col lg:pr-2col lg:py-halfcol", className)}
+					className={cn("group cursor-pointer px-1col py-1col lg:pl-2col lg:pr-1col lg:py-halfcol", className)}
 				>
 					{content}
 				</GridCard>
