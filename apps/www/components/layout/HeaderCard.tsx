@@ -13,6 +13,7 @@ interface HeaderCardProps {
 	children?: ReactNode;
 	className?: string;
 	enableSpotlight?: boolean;
+	openInNewTab?: boolean;
 }
 
 /**
@@ -25,6 +26,7 @@ export function HeaderCard({
 	children,
 	className,
 	enableSpotlight = false,
+	openInNewTab = false,
 }: HeaderCardProps) {
 	const content = (
 		<div className="relative flex items-center">
@@ -44,7 +46,11 @@ export function HeaderCard({
 
 	if (href) {
 		return (
-			<Link href={href} className="block">
+			<Link 
+				href={href} 
+				className="block"
+				{...(openInNewTab && { target: "_blank", rel: "noopener noreferrer" })}
+			>
 				<GridCard 
 					enableHoverEffect
 					enableSpotlight={enableSpotlight}

@@ -80,7 +80,7 @@ export function About() {
 			<ScrollAnimation enableFadeIn={true} exitBlur={4} exitScale={0.98}>
 				<Grid8Col className="">
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-						<HeaderCard title="Yet Another AI Memory System?" href="/docs/introduction" enableSpotlight />
+						<HeaderCard title="Yet Another AI Memory System?" href="/docs/introduction" enableSpotlight openInNewTab />
 					</GridCell>
 
 					<GridCell colSpan={8} mdColSpan={2} lgColSpan={2} rowSpan={2}>

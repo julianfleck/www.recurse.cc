@@ -45,7 +45,7 @@ export function BuildWithRecurseSection() {
 				<Grid8Col className="">
 					{/* Header - spans all columns */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-						<HeaderCard title={homepageContent.whatYouCanBuild.title} href="/docs/getting-started/api-vs-proxy" enableSpotlight />
+						<HeaderCard title={homepageContent.whatYouCanBuild.title} href="/docs/getting-started/api-vs-proxy" enableSpotlight openInNewTab />
 					</GridCell>
 
 					{/* Build Items - 2x2 nested grid - Mobile: 8/8, Tablet: 8/8, Desktop: 4/8 (left half) */}
