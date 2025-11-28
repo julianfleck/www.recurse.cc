@@ -94,7 +94,7 @@ export function ChatOrCodeSection() {
 					{/* Right Card: Button (2 cols) */}
 						<GridCell colSpan={8} mdColSpan={8} lgColSpan={2}>
 							<GridCard enableHoverEffect enableSpotlight className="flex h-full items-center justify-center px-1col py-1col md:p-8">
-							<LinkButton href="/docs/getting-started/using-the-ui" size="lg" className="w-full">
+							<LinkButton href="/docs/getting-started/quickstart" size="lg" className="w-full">
 								Get started
 							</LinkButton>
 						</GridCard>

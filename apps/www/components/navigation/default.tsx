@@ -7,11 +7,10 @@ import {
 	NavigationMenuItem,
 	NavigationMenuList,
 	NavigationMenuTrigger,
-	navigationMenuTriggerStyle,
 } from "@recurse/ui/components/navigation-menu";
 import { IconQuestionMark } from "@tabler/icons-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { type MouseEvent } from "react";
 import { NavigationSection } from "@/components/navigation/NavigationSection";
 import { SearchToggle } from "@/components/search/toggle";
@@ -20,6 +19,14 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { navigationContent, type NavigationItem } from "@/content/navigation";
 import { useScroll } from "@/contexts/ScrollContext";
 import { cn } from "@/lib/utils";
+
+// Map section keys to their primary hrefs
+const SECTION_HREFS: Record<string, string> = {
+	about: "/#about",
+	features: "/#features",
+	blog: "/blog",
+	docs: "https://docs.recurse.cc",
+};
 
 interface DefaultNavigationProps {
 	isCompact: boolean;
@@ -41,7 +48,37 @@ export function DefaultNavigation({
 	blogItems,
 }: DefaultNavigationProps) {
 	const pathname = usePathname();
+	const router = useRouter();
 	const { scrollToElement } = useScroll();
+
+	const handleTriggerClick = (e: MouseEvent, sectionKey: string) => {
+		const href = SECTION_HREFS[sectionKey];
+		if (!href) return;
+
+		// For external links, open in new tab
+		if (href.startsWith("http")) {
+			window.open(href, "_blank", "noopener,noreferrer");
+			return;
+		}
+
+		// For anchor links on the home page
+		if (href.startsWith("/#")) {
+			const anchor = href.substring(2);
+			if (pathname === "/") {
+				e.preventDefault();
+				const header = document.querySelector("header");
+				const headerHeight = header ? header.getBoundingClientRect().height : 0;
+				const offset = anchor === "about" ? headerHeight : undefined;
+				scrollToElement(anchor, offset);
+			} else {
+				router.push(href);
+			}
+			return;
+		}
+
+		// For internal pages
+		router.push(href);
+	};
 
 	const handleBetaClick = (e: MouseEvent) => {
 		e.preventDefault();
@@ -138,6 +175,7 @@ export function DefaultNavigation({
 									"transition-none",
 									isCompact ? "h-9 px-2 text-sm" : ""
 								)}
+								onClick={(e) => handleTriggerClick(e, "about")}
 							>
 								About
 							</NavigationMenuTrigger>
@@ -157,6 +195,7 @@ export function DefaultNavigation({
 									"transition-none",
 									isCompact ? "h-9 px-2 text-sm" : ""
 								)}
+								onClick={(e) => handleTriggerClick(e, "features")}
 							>
 								Features
 							</NavigationMenuTrigger>
@@ -176,6 +215,7 @@ export function DefaultNavigation({
 									"transition-none",
 									isCompact ? "h-9 px-2 text-sm" : ""
 								)}
+								onClick={(e) => handleTriggerClick(e, "blog")}
 							>
 								Blog
 							</NavigationMenuTrigger>
@@ -195,6 +235,7 @@ export function DefaultNavigation({
 									"transition-none",
 									isCompact ? "h-9 px-2 text-sm" : ""
 								)}
+								onClick={(e) => handleTriggerClick(e, "docs")}
 							>
 								Docs
 							</NavigationMenuTrigger>

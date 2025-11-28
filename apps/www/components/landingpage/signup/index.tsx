@@ -32,7 +32,7 @@ export function SignupSection() {
 							</p>
 							<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto pt-6">
 								Tell us a bit about your use case and join our beta. We are currently onboarding new users on a bring your own key basis{" "}
-								<Link href="/docs/getting-started/using-the-ui">(learn more).</Link>
+								<Link href="/docs/getting-started/beta">(learn more).</Link>
 							</p>
 						</GridCard>
 					</GridCell>

@@ -2,17 +2,35 @@
 
 import { Button } from "@recurse/ui/components";
 import { IconMenu2 } from "@tabler/icons-react";
+import { ChevronDownIcon } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, type MouseEvent } from "react";
+import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { GridCard } from "@/components/layout/GridCard";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Accordion, AccordionContent, AccordionItem } from "@/components/ui/accordion";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { SearchToggle } from "@/components/search/toggle";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { navigationContent, type NavigationItem, type NavigationSection as NavigationSectionType } from "@/content/navigation";
 import { useScroll } from "@/contexts/ScrollContext";
 import { cn } from "@/lib/utils";
+
+// Map section keys to their primary hrefs
+const SECTION_HREFS: Record<string, string> = {
+	about: "/#about",
+	features: "/#features",
+	blog: "/blog",
+	docs: "https://docs.recurse.cc",
+};
+
+// Section display names
+const SECTION_LABELS: Record<string, string> = {
+	about: "About",
+	features: "Features",
+	blog: "Blog",
+	docs: "Docs",
+};
 
 interface MobileNavigationProps {
 	isCompact: boolean;
@@ -25,19 +43,47 @@ interface MobileSectionProps {
 	sectionKey: NavigationSectionKey;
 	section: NavigationSectionType;
 	onNavigate: (event: MouseEvent<HTMLAnchorElement>, href: string) => void;
+	onSectionClick: (sectionKey: NavigationSectionKey) => void;
 }
 
-function MobileNavigationSection({ sectionKey, section, onNavigate }: MobileSectionProps) {
+function MobileNavigationSection({ sectionKey, section, onNavigate, onSectionClick }: MobileSectionProps) {
 	const { hero, items } = section;
+	const href = SECTION_HREFS[sectionKey];
+	const isExternal = href.startsWith("http");
 
 	return (
 		<AccordionItem value={sectionKey}>
-			<AccordionTrigger className="text-left font-medium text-muted-foreground text-sm hover:no-underline hover:text-accent-foreground transition-colors">
-				{sectionKey === "about" && "About"}
-				{sectionKey === "features" && "Features"}
-				{sectionKey === "blog" && "Blog"}
-				{sectionKey === "docs" && "Docs"}
-			</AccordionTrigger>
+			{/* Custom accordion trigger with clickable link */}
+			<AccordionPrimitive.Header className="flex">
+				<div className="flex flex-1 items-center justify-between py-4">
+					{/* Clickable link label */}
+					{isExternal ? (
+						<a
+							href={href}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-left font-medium text-muted-foreground text-sm hover:text-accent-foreground transition-colors"
+							onClick={() => onSectionClick(sectionKey)}
+						>
+							{SECTION_LABELS[sectionKey]}
+						</a>
+					) : (
+						<button
+							type="button"
+							className="text-left font-medium text-muted-foreground text-sm hover:text-accent-foreground transition-colors"
+							onClick={() => onSectionClick(sectionKey)}
+						>
+							{SECTION_LABELS[sectionKey]}
+						</button>
+					)}
+					{/* Expand/collapse chevron */}
+					<AccordionPrimitive.Trigger
+						className="rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors [&[data-state=open]>svg]:rotate-180"
+					>
+						<ChevronDownIcon className="size-4 shrink-0 transition-transform duration-200" />
+					</AccordionPrimitive.Trigger>
+				</div>
+			</AccordionPrimitive.Header>
 			<AccordionContent>
 				<div className="space-y-4 pt-1">
 					{/* Hero card */}
@@ -91,6 +137,7 @@ function MobileNavigationSection({ sectionKey, section, onNavigate }: MobileSect
 
 export function MobileNavigation({ isCompact, blogItems }: MobileNavigationProps) {
 	const pathname = usePathname();
+	const router = useRouter();
 	const { scrollToElement } = useScroll();
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -117,6 +164,35 @@ export function MobileNavigation({ isCompact, blogItems }: MobileNavigationProps
 		} else {
 			window.location.href = `/#${anchor}`;
 		}
+	};
+
+	const handleSectionClick = (sectionKey: NavigationSectionKey) => {
+		const href = SECTION_HREFS[sectionKey];
+		if (!href) return;
+
+		setIsOpen(false);
+
+		// For external links, handled by the <a> tag
+		if (href.startsWith("http")) {
+			return;
+		}
+
+		// For anchor links on the home page
+		if (href.startsWith("/#")) {
+			const anchor = href.substring(2);
+			if (pathname === "/") {
+				const header = document.querySelector("header");
+				const headerHeight = header ? header.getBoundingClientRect().height : 0;
+				const offset = anchor === "about" ? headerHeight : undefined;
+				scrollToElement(anchor, offset);
+			} else {
+				router.push(href);
+			}
+			return;
+		}
+
+		// For internal pages
+		router.push(href);
 	};
 
 	const handleNavigate = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -228,6 +304,7 @@ export function MobileNavigation({ isCompact, blogItems }: MobileNavigationProps
 										sectionKey={key}
 										section={sections[key]}
 										onNavigate={handleNavigate}
+										onSectionClick={handleSectionClick}
 									/>
 								))}
 							</Accordion>
