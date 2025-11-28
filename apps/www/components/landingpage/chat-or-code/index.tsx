@@ -39,7 +39,7 @@ export function ChatOrCodeSection() {
 
 							{/* Card 2: Context Assembly (top-right) */}
 							<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col px-1col py-1col md:p-8">
-								<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
+								<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-foreground! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
 									Assemble Context
 								</h4>
 								<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto transition-colors duration-300 group-hover/use-case:text-foreground">
@@ -49,7 +49,7 @@ export function ChatOrCodeSection() {
 
 							{/* Card 3: Visual Exploration (bottom-left) */}
 							<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col px-1col py-1col md:p-8">
-								<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
+								<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-foreground! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
 									Explore Visually
 								</h4>
 								<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto transition-colors duration-300 group-hover/use-case:text-foreground">
@@ -59,7 +59,7 @@ export function ChatOrCodeSection() {
 
 							{/* Card 4: Developer Teaser (bottom-right) */}
 							<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col px-1col py-1col md:p-8">
-								<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
+								<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-foreground! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
 									For Developers
 								</h4>
 								<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto transition-colors duration-300 group-hover/use-case:text-foreground">
