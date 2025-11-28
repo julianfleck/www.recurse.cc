@@ -41,7 +41,7 @@ export function AuthShell({
           </div>
 
           {/* Right: Visual (hidden on mobile) */}
-          <div className="relative hidden border-l border-border bg-chart-1/5 md:block">
+          <div className="relative hidden border-l border-border bg-chart-1/10 md:block">
             <div className="absolute inset-0 flex items-center justify-center">
               <Logo size={100} className="opacity-70" />
             </div>
