@@ -1171,6 +1171,11 @@ export function GraphView({
 				if (isDraggingRef.current) {
 					return false;
 				}
+				// Disable zoom/pan on small screens (screen width < 768px)
+				const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 768;
+				if (isSmallScreen) {
+					return false;
+				}
 				// If a modifier is required for zoom, allow pan but require meta/ctrl for wheel/dblclick zoom
 				if (zoomModifier === "cmd" && event && !isFullscreenOpen) {
 					const type = event.type as string | undefined;
