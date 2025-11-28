@@ -29,7 +29,7 @@ export function ChatOrCodeSection() {
 						<div className="grid grid-cols-2 gap-0 h-full">
 							{/* Card 1: Upload & Chat (merged - top-left) */}
 							<GridCard enableHoverEffect enableSpotlight className="group/use-case flex flex-col px-1col py-1col md:p-8">
-								<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-chart-1! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
+								<h4 className="font-normal text-muted-foreground! dark:group-hover/use-case:text-foreground! group-hover/use-case:text-foreground! leading-relaxed text-lg transition-colors duration-300 mb-2">
 									Upload & Chat
 								</h4>
 								<p className="font-light text-muted-foreground text-sm leading-relaxed mt-auto transition-colors duration-300 group-hover/use-case:text-foreground">

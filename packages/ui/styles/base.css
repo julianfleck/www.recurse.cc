@@ -9,4 +9,5 @@
 @source "../../../apps/dashboard/components/**/*.{js,ts,jsx,tsx,mdx}";
 @source "../../../apps/dashboard/app/**/*.{js,ts,jsx,tsx,mdx}";
 @source "../src/**/*.{js,ts,jsx,tsx,mdx}";
+@source "../../auth/src/**/*.{js,ts,jsx,tsx,mdx}";
 

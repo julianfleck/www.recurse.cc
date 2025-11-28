@@ -372,19 +372,9 @@ export function SignupForm({ className }: { className?: string }) {
     });
   }
 
-  return (
-    <motion.div
-      animate={
-        shake
-          ? {
-              x: [0, -10, 10, -8, 8, -5, 5, 0],
-            }
-          : { x: 0 }
-      }
-      onAnimationComplete={() => setShake(false)}
-      transition={{ duration: 0.45, ease: "easeInOut" }}
-    >
-      <AuthShell
+  // Wrap content - only animate when shake is true to avoid transform stacking context issues
+  const content = (
+    <AuthShell
         className={cn("flex flex-col gap-6", className)}
         stepProgress={
           <StepProgress currentStep={currentStep} onStepClick={goToStep} />
@@ -656,6 +646,20 @@ export function SignupForm({ className }: { className?: string }) {
         </StepContent>
       )}
     </AuthShell>
-    </motion.div>
   );
+
+  // Only wrap with motion.div when shake animation is active
+  if (shake) {
+    return (
+      <motion.div
+        animate={{ x: [0, -10, 10, -8, 8, -5, 5, 0] }}
+        onAnimationComplete={() => setShake(false)}
+        transition={{ duration: 0.45, ease: "easeInOut" }}
+      >
+        {content}
+      </motion.div>
+    );
+  }
+
+  return content;
 }

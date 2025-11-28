@@ -1031,6 +1031,11 @@ main {
   opacity: 1;
 }
 
+/* Elevate card on hover so glow appears above adjacent cards */
+.glow-card:hover {
+  z-index: 50;
+}
+
 /* Note: Removed .glow-card > * { position: relative; z-index: 2; } rule
    It was breaking absolutely positioned children (e.g., image switchers, auth visuals)
    The border glow uses pointer-events: none and mask-composite so it doesn't interfere */
