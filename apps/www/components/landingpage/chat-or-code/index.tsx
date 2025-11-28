@@ -14,7 +14,7 @@ export function ChatOrCodeSection() {
 				<Grid8Col>
 					{/* Header - spans all columns */}
 					<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-						<HeaderCard title="Built for Exploration" enableSpotlight />
+						<HeaderCard title="Built for Exploration" href="/docs/getting-started/user-interface" enableSpotlight />
 					</GridCell>
 
 					{/* Left: Big card with interface preview/image (4 cols) */}

@@ -18,7 +18,7 @@ export function Features() {
 			<Grid8Col className="">
 				{/* Header - spans all columns */}
 				<GridCell colSpan={8} mdColSpan={8} lgColSpan={8}>
-					<HeaderCard title="What Recurse does" enableSpotlight />
+					<HeaderCard title="What Recurse does" href="/docs/concepts" enableSpotlight />
 				</GridCell>
 			</Grid8Col>
 
