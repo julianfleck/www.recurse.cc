@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { requestPasswordReset } from "@/lib/auth-api";
 
-import { AuthShell } from "./auth-shell";
+import { AuthShell } from "@recurse/auth";
 
 export function ForgotPasswordForm({ className }: { className?: string }) {
 	const [email, setEmail] = useState("");
