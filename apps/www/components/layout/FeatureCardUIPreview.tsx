@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { CardStack } from "@/components/ui/card-stack";
+import { ThemeImage } from "@/components/ui/theme-image";
 
 export function FeatureCardUIPreview() {
 	const [isHovered, setIsHovered] = useState(false);
@@ -15,8 +16,12 @@ export function FeatureCardUIPreview() {
 			{
 				id: 1,
 				content: (
-					<div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm bg-card rounded-lg border">
-						Image 1
+					<div className="w-full h-full flex items-center justify-center bg-card rounded-lg border p-4">
+						<ThemeImage
+							src="recurse-ui-1.png"
+							alt="Recurse UI Preview 1"
+							className="max-w-full max-h-full w-auto h-auto object-contain"
+						/>
 					</div>
 				),
 				className: "",
@@ -24,17 +29,12 @@ export function FeatureCardUIPreview() {
 			{
 				id: 2,
 				content: (
-					<div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm bg-card rounded-lg border">
-						Image 2
-					</div>
-				),
-				className: "",
-			},
-			{
-				id: 3,
-				content: (
-					<div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm bg-card rounded-lg border">
-						Image 3
+					<div className="w-full h-full flex items-center justify-center bg-card rounded-lg border p-4">
+						<ThemeImage
+							src="recurse-ui-2.png"
+							alt="Recurse UI Preview 2"
+							className="max-w-full max-h-full w-auto h-auto object-contain"
+						/>
 					</div>
 				),
 				className: "",
@@ -89,7 +89,7 @@ export function FeatureCardUIPreview() {
 				damping: 22,
 			}}
 		>
-			<CardStack items={cardItems} isPaused={isHovered} isHovered={isHovered} />
+			<CardStack items={cardItems} isPaused={isHovered} isHovered={isHovered} flexibleHeight />
 		</motion.div>
 		</motion.div>
 	);

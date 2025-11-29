@@ -59,7 +59,7 @@ export function GridCard({
 			onMouseEnter={enableSpotlight ? () => setSpotlightActive(true) : undefined}
 			onMouseLeave={enableSpotlight ? () => setSpotlightActive(false) : undefined}
 			className={cn(
-				"relative z-20 -ml-px -mt-px border border-border bg-background/35 dark:bg-background/60 transition-colors duration-300",
+				"relative z-20 -ml-px -mt-px border border-border bg-background/60 dark:bg-background/80 transition-colors duration-300",
 				rounded && "rounded-lg",
 				isLinked && "cursor-pointer",
 				className,

@@ -15,18 +15,25 @@ const CardStackComponent = ({
 	scaleFactor,
 	isPaused = false,
 	isHovered = false,
+	flexibleHeight = false,
 }: {
 	items: Card[];
 	offset?: number;
 	scaleFactor?: number;
 	isPaused?: boolean;
 	isHovered?: boolean;
+	flexibleHeight?: boolean;
 }) => {
 	const CARD_OFFSET = offset || 10;
 	const SCALE_FACTOR = scaleFactor || 0.06;
 	const [cards, setCards] = useState<Card[]>(items);
 	const [isAnimating, setIsAnimating] = useState(false);
 	const intervalRef = useRef<any>(null);
+
+	// Sync cards state when items prop changes
+	useEffect(() => {
+		setCards(items);
+	}, [items]);
 
 	const advanceCard = useCallback(() => {
 		if (isAnimating) return; // Prevent double-clicks during animation
@@ -80,7 +87,7 @@ const CardStackComponent = ({
 
 	return (
 		<div 
-			className="relative h-60 w-full select-none"
+			className={`relative w-full select-none ${flexibleHeight ? 'min-h-60' : 'h-60'}`}
 			onClick={isHovered ? advanceCard : undefined}
 			style={{
 				cursor: isHovered ? 'pointer' : 'default',
@@ -118,7 +125,7 @@ const CardStackComponent = ({
 				return (
 					<motion.div
 						key={card.id}
-						className={`absolute h-60 w-full rounded-lg bg-card ${card.className}`}
+						className={`absolute w-full rounded-lg bg-card ${flexibleHeight ? 'min-h-60' : 'h-60'} ${card.className}`}
 						style={{
 							transformOrigin: "top center",
 							zIndex: cards.length - index,
