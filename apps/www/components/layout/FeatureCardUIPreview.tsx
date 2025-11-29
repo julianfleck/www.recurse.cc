@@ -16,7 +16,7 @@ export function FeatureCardUIPreview() {
 			{
 				id: 1,
 				content: (
-					<div className="w-full h-full flex items-center justify-center bg-card rounded-lg border p-4">
+					<div className="w-full h-full flex items-center justify-center bg-card rounded-lg border">
 						<ThemeImage
 							src="recurse-ui-1.png"
 							alt="Recurse UI Preview 1"
@@ -29,7 +29,7 @@ export function FeatureCardUIPreview() {
 			{
 				id: 2,
 				content: (
-					<div className="w-full h-full flex items-center justify-center bg-card rounded-lg border p-4">
+					<div className="w-full h-full flex items-center justify-center bg-card rounded-lg border">
 						<ThemeImage
 							src="recurse-ui-2.png"
 							alt="Recurse UI Preview 2"
