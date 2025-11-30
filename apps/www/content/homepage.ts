@@ -51,7 +51,7 @@ export const homepageContent = {
 		docsText: "Read the docs",
 		headlines: [
 			"The memory layer that explores connections, not just similar looking chunks",
-			"The memory layer that updates it’s understanding, not just keys and values",
+			"The memory layer that updates its understanding, not just keys and values",
 			"The knowledge substrate that explores, instead of retrieving similar stuff",
 			"The knowledge substrate that understands, instead of assuming facts",
 			"The knowledge graph that connects semantic structure, instead of entities",
@@ -90,7 +90,7 @@ export const homepageContent = {
 			"",
 		capabilities: [
 			{
-				title: "Learns Your Structure Automatically",
+				title: "Learns your structure automatically",
 				description:
 					"Drop in any content—research papers, meeting notes, code documentation—and watch structure emerge. <mark>Recurse learns the patterns</mark> in your material and creates meaningful relationships automatically. No schemas to define, no categories to maintain.",
 				icon: IconSparkles,
@@ -102,7 +102,7 @@ export const homepageContent = {
 				docLink: "/concepts/adaptive-schemas",
 			},
 			{
-				title: "Assembles Context When You Need It",
+				title: "Assembles context bundles that enrich your inquiries",
 				description:
 					"When you need information, Recurse assembles <mark>complete context bundles</mark>—not scattered chunks. Copy with one click for any AI tool, or connect your agents directly. Context arrives pre-assembled with sources cited and relationships preserved.",
 				icon: Package,
@@ -114,7 +114,7 @@ export const homepageContent = {
 				docLink: "/concepts/frames", // TODO: update to context-assembly docs when created
 			},
 			{
-				title: "Let's You Navigate Semantic Structure",
+				title: "Lets you navigate semantic structure",
 				description:
 					"Follow how ideas actually connect. Arguments link to evidence, decisions trace back to discussions. <mark>Both you and your AI agents</mark> can navigate these reasoning chains, discovering relationships that similarity search would miss.",
 				icon: Network,
@@ -126,7 +126,7 @@ export const homepageContent = {
 				docLink: "/concepts/frames",
 			},
 			{
-				title: "Evolves Your Knowledge Base Over Time",
+				title: "Evolves your knowledge base over time",
 				description:
 					"Your knowledge graph isn't static—it <mark>grows and refines</mark> as you add content. Recurse preserves complete history with timestamps and explanations of what changed, so you can trace how understanding developed.",
 				icon: GitGraph,
@@ -138,7 +138,7 @@ export const homepageContent = {
 				docLink: "/concepts/temporal-versioning",
 			},
 			{
-				title: "Keeps Your Knowledge Base Current with Source Subscriptions",
+				title: "Keeps your knowledge base always up to date",
 				description:
 					"Subscribe to RSS feeds, documentation sites, and newsletters. <mark>New content flows in automatically</mark>, gets processed, and connects to your existing knowledge. Stay current without manual uploads.",
 				icon: Rss,
@@ -151,7 +151,7 @@ export const homepageContent = {
 				comingSoon: true,
 			},
 			{
-				title: "Let's You Tap into Expert Knowledge",
+				title: "Lets you tap into expert knowledge",
 				description:
 					"Subscribe to domain experts' curated knowledge bases directly—their sources, synthesis, and connections become part of your context. <mark>Your AI draws from their expertise</mark> automatically, updating as they publish.",
 				icon: Brain,
