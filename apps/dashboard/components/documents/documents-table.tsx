@@ -14,6 +14,7 @@ import {
 	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
+	getExpandedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -95,8 +96,7 @@ export type Document = {
 	hyponyms?: string[];
 };
 
-// Flattened row type for table display
-export type FlatTableRow = {
+interface TableNode {
 	id: string;
 	title: string;
 	type: string;
@@ -105,11 +105,39 @@ export type FlatTableRow = {
 	created_at?: string;
 	updated_at?: string;
 	metadata?: MetadataFields;
-	level: number; // 0 = document, 1+ = nested frames
-	parentId?: string;
-	hasChildren: boolean;
-	children?: Frame[];
-};
+	level: number;
+	subRows: TableNode[];
+}
+
+function buildTree(documents: Document[]): TableNode[] {
+	return documents.map(doc => ({
+		id: doc.id,
+		title: doc.title,
+		type: doc.type,
+		summary: doc.summary,
+		text: doc.text,
+		created_at: doc.created_at,
+		updated_at: doc.updated_at,
+		metadata: normalizeMetadata(doc),
+		level: 0,
+		subRows: buildSubTree(doc.children ?? [], 1),
+	}));
+}
+
+function buildSubTree(frames: Frame[], level: number): TableNode[] {
+	return frames.map(frame => ({
+		id: frame.id,
+		title: frame.title,
+		type: frame.type,
+		summary: frame.summary,
+		text: frame.text,
+		created_at: frame.created_at,
+		updated_at: frame.updated_at,
+		metadata: normalizeMetadata(frame),
+		level,
+		subRows: buildSubTree(frame.children ?? [], level + 1),
+	}));
+}
 
 // Helper to normalize metadata from either nested or top-level location
 function normalizeMetadata(node: Document | Frame): MetadataFields | undefined {
@@ -222,58 +250,6 @@ const INITIAL_BACKOFF_MS = 1000;
 type DocumentsTableProps = {
 	onUploadClick?: () => void;
 };
-
-// Helper function to flatten documents and frames into table rows
-function flattenDocuments(documents: Document[]): FlatTableRow[] {
-	const rows: FlatTableRow[] = [];
-
-	const flattenFrame = (frame: Frame, level: number, parentId?: string): void => {
-		rows.push({
-			id: frame.id,
-			title: frame.title,
-			type: frame.type,
-			summary: frame.summary,
-			text: frame.text,
-			created_at: frame.created_at,
-			updated_at: frame.updated_at,
-			metadata: normalizeMetadata(frame),
-			level,
-			parentId,
-			hasChildren: (frame.children?.length ?? 0) > 0,
-			children: frame.children,
-		});
-
-		if (frame.children && frame.children.length > 0) {
-			for (const child of frame.children) {
-				flattenFrame(child, level + 1, frame.id);
-			}
-		}
-	};
-
-	for (const doc of documents) {
-		rows.push({
-			id: doc.id,
-			title: doc.title,
-			type: doc.type,
-			summary: doc.summary,
-			text: doc.text,
-			created_at: doc.created_at,
-			updated_at: doc.updated_at,
-			metadata: normalizeMetadata(doc),
-			level: 0,
-			hasChildren: (doc.children?.length ?? 0) > 0,
-			children: doc.children,
-		});
-
-		if (doc.children && doc.children.length > 0) {
-			for (const child of doc.children) {
-				flattenFrame(child, 1, doc.id);
-			}
-		}
-	}
-
-	return rows;
-}
 
 export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 	const [data, setData] = useState<Document[]>([]);
@@ -423,43 +399,37 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 		[fetchDocuments],
 	);
 
-	// Flatten documents and frames into table rows
-	const flattenedData = useMemo(() => flattenDocuments(data), [data]);
+	const treeData = useMemo(() => buildTree(data), [data]);
 
-	const deleteSelectedDocuments = useCallback(async () => {
-		const selectedIds = Object.keys(rowSelection);
-		const selectedRows = flattenedData.filter((row) => selectedIds.includes(row.id));
-		
-		const documents = selectedRows.filter((row) => row.level === 0);
-		const frames = selectedRows.filter((row) => row.level > 0);
+	const deleteSelectedDocuments = async () => {
+		if (selectedCount === 0) return;
+
+		const selectedNodes = table.getSelectedRowModel().rows.map(row => row.original);
+
+		const promises: Promise<unknown>[] = [];
+
+		for (const node of selectedNodes) {
+			const id = node.id;
+			const endpoint = node.level === 0 ? `/documents/${id}` : `/frames/${id}`;
+
+			promises.push(
+				apiService.delete(endpoint).catch((err: ApiError) => {
+					toast.error(`Failed to delete ${node.title}: ${err.message}`);
+				})
+			);
+		}
 
 		try {
-			// Delete documents
-			await Promise.all(
-				documents.map((doc) => apiService.delete(`/documents/${doc.id}`)),
-			);
-
-			// Delete frames
-			await Promise.all(
-				frames.map((frame) => apiService.delete(`/node/${frame.id}/delete`)),
-			);
-
-			const docCount = documents.length;
-			const frameCount = frames.length;
-			const parts: string[] = [];
-			if (docCount > 0) parts.push(`${docCount} document${docCount > 1 ? "s" : ""}`);
-			if (frameCount > 0) parts.push(`${frameCount} frame${frameCount > 1 ? "s" : ""}`);
-			
-			toast.success(`${parts.join(" and ")} deleted successfully`);
-
+			await Promise.all(promises);
+			toast.success(`Deleted ${promises.length} items`);
 			setRowSelection({});
 			fetchDocuments();
 		} catch (_err) {
-			toast.error("Failed to delete selected items");
+			toast.error("Failed to delete some items");
 		}
-	}, [rowSelection, flattenedData, fetchDocuments]);
+	};
 
-	const columns: ColumnDef<FlatTableRow>[] = useMemo(
+	const columns: ColumnDef<TableNode>[] = useMemo(
 		() => [
 			{
 				id: "select",
@@ -491,47 +461,33 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 				accessorKey: "title",
 				header: "Title",
 				cell: ({ row }) => {
-					const title = row.original.title || row.getValue("title") || "Untitled";
-					const rowType = row.original.type || "document";
-					const level = row.original.level;
-					const hasChildren = row.original.hasChildren;
-					const rowId = row.original.id;
-					// Use ref to get current expanded state without causing column re-renders
-					const isExpanded = (expandedRef.current as Record<string, boolean>)[rowId] ?? false;
+					const title = row.original.title;
+					const rowType = row.original.type;
 					const { iconClosed } = getNodeIcons(rowType, {
 						size: "h-3.5 w-3.5",
 						strokeWidth: 1.5,
 					});
-					
+
 					return (
 						<div 
 							className="flex items-center gap-1"
-							style={{ paddingLeft: `${level * 16}px` }}
+							style={{ paddingLeft: `${row.depth * 1}rem` }}
 						>
-							{/* Expander button - always reserve space */}
-							<button
-								type="button"
-								onClick={(e) => {
-									e.stopPropagation();
-									if (hasChildren) {
-										// Directly update expanded state
-										setExpanded((prev) => {
-											const prevRecord = prev as Record<string, boolean>;
-											return {
-												...prevRecord,
-												[rowId]: !prevRecord[rowId],
-											};
-										});
-									}
-								}}
-								className={`flex h-4 w-4 items-center justify-center rounded hover:bg-accent ${!hasChildren ? "invisible" : ""}`}
-							>
-								{isExpanded ? (
-									<ChevronDownIcon className="h-3 w-3" />
-								) : (
-									<ChevronRightIcon className="h-3 w-3" />
-								)}
-							</button>
+							{row.getCanExpand() ? (
+								<button
+									type="button"
+									onClick={row.getToggleExpandedHandler()}
+									className="flex h-4 w-4 items-center justify-center rounded hover:bg-accent"
+								>
+									{row.getIsExpanded() ? (
+										<ChevronDownIcon className="h-3 w-3" />
+									) : (
+										<ChevronRightIcon className="h-3 w-3" />
+									)}
+								</button>
+							) : (
+								<div className="w-4" /> // placeholder for alignment
+							)}
 							<span className="text-muted-foreground shrink-0">
 								{iconClosed}
 							</span>
@@ -573,15 +529,15 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 				accessorKey: "metadata",
 				header: "Metadata",
 				cell: ({ row }) => {
-					const metadata = row.original.metadata;
-					const tags = metadata?.tags ?? [];
-					const hypernyms = metadata?.hypernyms ?? [];
-					const hyponyms = metadata?.hyponyms ?? [];
+					const normalized = row.original.metadata;
+					const tags = normalized?.tags ?? [];
+					const hypernyms = normalized?.hypernyms ?? [];
+					const hyponyms = normalized?.hyponyms ?? [];
 					
 					const allItems = [
-						...tags.slice(0, 3).map((t) => ({ key: `tag-${t}`, label: t, variant: "secondary" as const })),
-						...hypernyms.slice(0, 2).map((h) => ({ key: `hyper-${h}`, label: h, variant: "outline" as const })),
-						...hyponyms.slice(0, 2).map((h) => ({ key: `hypo-${h}`, label: h, variant: "outline" as const })),
+						...tags.slice(0,3).map((t: string) => ({ key: `t-${t}`, label: t, variant: "secondary" as const })),
+						...hypernyms.slice(0,2).map((h: string) => ({ key: `hyper-${h}`, label: `↑${h}`, variant: "outline" as const })),
+						...hyponyms.slice(0,2).map((h: string) => ({ key: `hypo-${h}`, label: `↓${h}`, variant: "outline" as const })),
 					];
 					
 					const totalCount = tags.length + hypernyms.length + hyponyms.length;
@@ -702,55 +658,8 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 		};
 	}, [fetchDocuments, data.length, loading]);
 
-	// Filter rows based on expansion state - only show children if parent is expanded
-	const visibleRows = useMemo(() => {
-		const visible: FlatTableRow[] = [];
-		const expandedRecord = expanded as Record<string, boolean>;
-		const expandedSet = new Set(
-			Object.keys(expandedRecord).filter((k) => expandedRecord[k])
-		);
-
-		console.log("[VisibleRows] Computing with:", {
-			flattenedDataCount: flattenedData.length,
-			expandedIds: Array.from(expandedSet),
-			level0Count: flattenedData.filter(r => r.level === 0).length,
-		});
-
-		for (const row of flattenedData) {
-			if (row.level === 0) {
-				// Always show top-level documents
-				visible.push(row);
-			} else {
-				// For nested items, check if all parents are expanded
-				let parentId = row.parentId;
-				let shouldShow = true;
-				
-				while (parentId) {
-					if (!expandedSet.has(parentId)) {
-						shouldShow = false;
-						break;
-					}
-					// Find parent to check its parent
-					const parent = flattenedData.find((r) => r.id === parentId);
-					parentId = parent?.parentId;
-				}
-				
-				if (shouldShow) {
-					visible.push(row);
-				}
-			}
-		}
-
-		console.log("[VisibleRows] Result:", {
-			visibleCount: visible.length,
-			level0Visible: visible.filter(r => r.level === 0).length,
-		});
-
-		return visible;
-	}, [flattenedData, expanded]);
-
 	const table = useReactTable({
-		data: visibleRows,
+		data: treeData,
 		columns,
 		onSortingChange: setSorting,
 		onColumnFiltersChange: setColumnFilters,
@@ -758,14 +667,18 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
+		getExpandedRowModel: getExpandedRowModel(),
+		getSubRows: (row) => row.subRows,
 		onColumnVisibilityChange: setColumnVisibility,
 		onRowSelectionChange: setRowSelection,
+		onExpandedChange: setExpanded,
 		getRowId: (row) => row.id,
 		state: {
 			sorting,
 			columnFilters,
 			columnVisibility,
 			rowSelection,
+			expanded,
 		},
 	});
 
