@@ -5,7 +5,332 @@ description: Query your knowledge base to retrieve relevant context
 
 # Retrieving Context
 
-Learn how to search and retrieve relevant context from your knowledge base using semantic search, keyword search, and filtering.
+The `/search` endpoint is your primary interface for retrieving relevant context from your knowledge base. It combines semantic search with intelligent filtering and returns results as a clean, recursive node structure.
 
-[Content placeholder - to be written]
+## Basic Search
 
+The simplest search is a natural language query:
+
+```bash
+curl -X GET "https://api.recurse.dev/search/?query=machine+learning+best+practices" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+This performs a semantic search, finding content that matches the *meaning* of your query, not just exact keywords.
+
+## Response Structure
+
+Search results use a clean, recursive node structure where every node follows the same pattern:
+
+```json
+{
+  "query": "semantic:machine learning best practices",
+  "nodes": [
+    {
+      "id": "abc123...",
+      "title": "ML Engineering Guide",
+      "type": "article",
+      "summary": "A comprehensive guide to...",
+      "score": 0.85,
+      "created_at": "2025-01-15T10:30:00Z",
+      "metadata": {
+        "tags": ["machine-learning", "best-practices"],
+        "hypernyms": [],
+        "hyponyms": []
+      },
+      "children": [
+        {
+          "id": "def456...",
+          "title": "Model Training",
+          "type": "section",
+          "summary": "Key principles for training...",
+          "score": 0.82,
+          "index": 0,
+          "parent_id": "abc123...",
+          "children": []
+        }
+      ]
+    }
+  ],
+  "total_found": 5,
+  "returned_count": 1,
+  "search_time_ms": 150.5
+}
+```
+
+### Key Response Fields
+
+| Field | Description |
+|-------|-------------|
+| `id` | Unique identifier for the node |
+| `title` | Node title |
+| `type` | Node type (e.g., `article`, `section`, `claim`, `example`) |
+| `summary` | Brief description of the content |
+| `score` | Relevance score (0-1) indicating how well this matches your query |
+| `index` | Position among siblings (for ordering) |
+| `parent_id` | ID of the parent node (for non-root nodes) |
+| `children` | Array of child nodes (always present, may be empty) |
+| `metadata` | Tags, hypernyms, and hyponyms |
+
+### Node Types
+
+Types are simple, lowercase values without prefixes:
+
+| Type | Description |
+|------|-------------|
+| `article` | Article-type document |
+| `technical_documentation` | Technical documentation |
+| `section` | Section within a document |
+| `subsection` | Subsection within a section |
+| `claim` | A claim or argument |
+| `evidence` | Supporting evidence |
+| `example` | An example |
+| `definition` | A definition |
+| `method` | A method or procedure |
+
+## Controlling Depth
+
+Use the `depth` parameter to control how many levels of children to include:
+
+```bash
+# Just the matching nodes (no children)
+curl "https://api.recurse.dev/search/?query=...&depth=0"
+
+# Include direct children
+curl "https://api.recurse.dev/search/?query=...&depth=1"
+
+# Include children and grandchildren
+curl "https://api.recurse.dev/search/?query=...&depth=2"
+```
+
+| Depth | Result |
+|-------|--------|
+| `0` | Node only, `children: []` |
+| `1` | Node + direct children |
+| `2` | Node + children + grandchildren |
+| `N` | Node + descendants up to N levels deep |
+
+When depth > 0 and a query has frame type hints (e.g., "give me examples"), children are automatically filtered to prioritize relevant content.
+
+## Including Ancestors
+
+For richer context, request the ancestor chain (path to root):
+
+```bash
+curl "https://api.recurse.dev/search/?query=governance&include_ancestors=true"
+```
+
+Response includes an `ancestors` array:
+
+```json
+{
+  "nodes": [
+    {
+      "id": "subsec-governance",
+      "title": "Governance Features",
+      "type": "subsection",
+      "score": 0.98,
+      "parent_id": "section-mendix",
+      "children": [],
+      "ancestors": [
+        {
+          "id": "section-mendix",
+          "title": "Mendix",
+          "type": "section",
+          "parent_id": "doc-lowcode"
+        },
+        {
+          "id": "doc-lowcode",
+          "title": "Low-Code Development Platforms",
+          "type": "article",
+          "parent_id": null
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Pagination
+
+Control result pagination with `page` and `limit`:
+
+```bash
+curl "https://api.recurse.dev/search/?query=...&page=1&limit=10"
+```
+
+The response includes pagination metadata:
+
+```json
+{
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total_count": 47,
+    "total_pages": 5,
+    "has_next": true,
+    "has_previous": false
+  }
+}
+```
+
+## Looking Up by ID
+
+Retrieve a specific node by its ID:
+
+```bash
+curl "https://api.recurse.dev/search/?id=abc123&depth=2"
+```
+
+This returns the node and its children up to the specified depth.
+
+## Field Sets
+
+Control which fields are included in the response:
+
+```bash
+# Basic fields (default)
+curl "https://api.recurse.dev/search/?query=...&field_set=basic"
+
+# Include content/text
+curl "https://api.recurse.dev/search/?query=...&field_set=content"
+
+# Include metadata (tags, hypernyms, hyponyms)
+curl "https://api.recurse.dev/search/?query=...&field_set=metadata"
+
+# All available fields
+curl "https://api.recurse.dev/search/?query=...&field_set=all"
+```
+
+## Example: Building LLM Context
+
+Here's a complete example for retrieving context to inject into an LLM prompt:
+
+```bash
+curl -X GET "https://api.recurse.dev/search/" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -G \
+  --data-urlencode "query=How do I optimize database queries?" \
+  --data-urlencode "field_set=content" \
+  --data-urlencode "depth=1" \
+  --data-urlencode "limit=5"
+```
+
+Then use the results to build context:
+
+```python
+def build_context(response):
+    """Build LLM context from search results."""
+    context_parts = []
+    
+    def process_node(node, depth=0):
+        indent = "  " * depth
+        text = f"{indent}## {node['title']}\n{indent}{node.get('summary', '')}"
+        context_parts.append(text)
+        
+        for child in node.get("children", []):
+            process_node(child, depth + 1)
+    
+    for node in response["nodes"]:
+        process_node(node)
+    
+    return "\n\n".join(context_parts)
+
+context = build_context(response)
+```
+
+## Strict Mode and Relevance Filtering
+
+By default, the search API operates in **strict mode**, which means it will return empty results rather than showing marginally relevant content that might be false positives.
+
+### How It Works
+
+When you search, RAGE performs semantic similarity matching and then validates each result against relevance thresholds. In strict mode:
+
+- **High-confidence matches** (strong term overlap with your query) are returned
+- **Low-confidence matches** (similarity score above threshold but weak term overlap) are filtered out
+- If no results pass the threshold, you get an empty response with helpful suggestions
+
+### Disabling Strict Mode
+
+If you want to retrieve marginally relevant results that were found by similarity search but fell below the relevance threshold, disable strict mode:
+
+```bash
+curl "https://api.recurse.dev/search/?query=quantum+entanglement&strict=false"
+```
+
+With `strict=false`:
+- Results that match the general semantic space but lack strong term overlap are included
+- Useful for exploratory searches where you want to discover related content
+- May include some false positives (content that appears similar but isn't truly relevant)
+
+### When to Use Each Mode
+
+| Mode | Use Case |
+|------|----------|
+| `strict=true` (default) | Production queries, LLM context injection, precision-focused retrieval |
+| `strict=false` | Exploratory searches, discovering related content, debugging empty results |
+
+### Response Metadata
+
+Each result includes relevance metadata to help you understand the match quality:
+
+```json
+{
+  "nodes": [
+    {
+      "id": "...",
+      "relevance_score": 0.73,
+      "confidence_band": "high",
+      "term_overlap": 0.85
+    }
+  ],
+  "cutoff_applied": "gap_detection"
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `relevance_score` | Combined score (similarity + term overlap) |
+| `confidence_band` | "high", "medium", "low", or "uncertain" |
+| `term_overlap` | How well query terms match the result's tags, title, and summary |
+| `cutoff_applied` | The filtering strategy used ("gap_detection" or "confidence_threshold") |
+
+## Frame Type Queries
+
+When your query mentions specific frame types, results are automatically filtered:
+
+```bash
+# Ask for examples - prioritizes example frames
+curl "https://api.recurse.dev/search/?query=examples+of+low-code+platforms&depth=1"
+
+# Ask for methods - prioritizes method frames  
+curl "https://api.recurse.dev/search/?query=what+methods+are+used&depth=1"
+
+# Ask for evidence - prioritizes evidence frames
+curl "https://api.recurse.dev/search/?query=evidence+for+climate+change&depth=1"
+```
+
+The response includes metadata about detected frame type preference:
+
+```json
+{
+  "frame_type_detected": "example",
+  "frame_type_confidence": 0.85,
+  "cutoff_applied": "gap_detection"
+}
+```
+
+## Next Steps
+
+<Cards>
+  <Card title="Scoping and Filtering" href="/guides/using-the-api/scoping-and-filtering">
+    Field sets, type filters, and advanced options
+  </Card>
+  <Card title="Retrieving Graphs" href="/guides/using-the-api/retrieving-graphs">
+    Navigate knowledge graphs
+  </Card>
+  <Card title="Writing Endpoints" href="/api-documentation/writing">
+    Generate text with citations (uses citation format)
+  </Card>
+</Cards>
