@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
+import { AnimatePresence, motion } from "framer-motion";
 
 type MouseFollowerTooltipProps = {
 	children: React.ReactNode;
@@ -36,6 +37,7 @@ export function MouseFollowerTooltip({
 	onOpenChange,
 }: MouseFollowerTooltipProps) {
 	const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
+	const hoverTimeoutRef = React.useRef<number | null>(null);
 	const [position, setPosition] = React.useState<{ x: number; y: number } | null>(
 		null,
 	);
@@ -64,11 +66,21 @@ export function MouseFollowerTooltip({
 		onPointerEnter: (event: React.PointerEvent<HTMLElement>) => {
 			(child.props as { onPointerEnter?: (e: React.PointerEvent<HTMLElement>) => void })
 				.onPointerEnter?.(event);
-			handleOpenChange(true);
+			// Delay tooltip appearance to avoid flicker
+			if (hoverTimeoutRef.current !== null) {
+				window.clearTimeout(hoverTimeoutRef.current);
+			}
+			hoverTimeoutRef.current = window.setTimeout(() => {
+				handleOpenChange(true);
+			}, 800);
 		},
 		onPointerLeave: (event: React.PointerEvent<HTMLElement>) => {
 			(child.props as { onPointerLeave?: (e: React.PointerEvent<HTMLElement>) => void })
 				.onPointerLeave?.(event);
+			if (hoverTimeoutRef.current !== null) {
+				window.clearTimeout(hoverTimeoutRef.current);
+				hoverTimeoutRef.current = null;
+			}
 			handleOpenChange(false);
 		},
 		onPointerMove: (event: React.PointerEvent<HTMLElement>) => {
@@ -85,23 +97,30 @@ export function MouseFollowerTooltip({
 		<>
 			{patchedChild}
 			{mounted &&
-				resolvedOpen &&
-				position &&
 				typeof document !== "undefined" &&
 				createPortal(
-					<div
-						style={{
-							position: "fixed",
-							left: position.x + offsetX,
-							top: position.y + offsetY,
-							zIndex: 60,
-							pointerEvents: "none",
-						}}
-					>
-						<div className="max-h-[400px] max-w-xs overflow-auto whitespace-pre-wrap wrap-break-word rounded-md border border-border bg-popover px-3 py-1.5 text-foreground text-xs shadow-md">
-							{content}
-						</div>
-					</div>,
+					<AnimatePresence>
+						{resolvedOpen && position ? (
+							<motion.div
+								key="mouse-follower-tooltip"
+								initial={{ opacity: 0, scale: 0.96, y: 4 }}
+								animate={{ opacity: 1, scale: 1, y: 0 }}
+								exit={{ opacity: 0, scale: 0.96, y: 4 }}
+								transition={{ duration: 0.12, ease: "easeOut" }}
+								style={{
+									position: "fixed",
+									left: position.x + offsetX,
+									top: position.y + offsetY,
+									zIndex: 60,
+									pointerEvents: "none",
+								}}
+							>
+								<div className="max-h-[400px] max-w-xs overflow-auto whitespace-pre-wrap wrap-break-word rounded-md border border-border bg-popover px-3 py-1.5 text-foreground text-xs shadow-md">
+									{content}
+								</div>
+							</motion.div>
+						) : null}
+					</AnimatePresence>,
 					document.body,
 				)}
 		</>
