@@ -18,6 +18,8 @@ export * from './content-tree';
 export * from './copy-button';
 export * from './dialog';
 export * from './dropdown-menu';
+export * from './file-upload';
+export * from './file-upload-dropzone';
 export * from './filters';
 export * from './glow-card';
 export * from './icon-toggle-button';

@@ -347,9 +347,14 @@ const SortableTableHead = ({ header }: { header: any }) => {
 	);
 };
 
+// Constants for retry logic
+const MAX_RETRIES = 3;
+const INITIAL_BACKOFF_MS = 1000; // 1 second
+
 export function ApiKeysTable() {
 	const [data, setData] = useState<ApiKey[]>([]);
 	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 	const [sorting, setSorting] = useState<SortingState>([
 		{ id: "created_at", desc: true },
 	]);
@@ -366,31 +371,55 @@ export function ApiKeysTable() {
 	const fetchApiKeys = useCallback(async (retryCount = 0) => {
 		try {
 			setLoading(true);
-			const response = await apiService.get<ApiKey[]>("/users/me/api-keys");
-			setData(response.data);
-		} catch (error) {
-			// If it's an authentication error and we haven't retried yet, wait a bit and retry
-			if (
-				error instanceof ApiError &&
-				(error.status === 401 || error.status === 403) &&
-				retryCount < 2 &&
-				!retryTimeoutRef.current
-			) {
-				const delay = 2000 * (retryCount + 1); // 2s, 4s delays
+			setError(null);
+			
+			// Debug: Log current auth token
+			const currentToken = useAuthStore.getState().accessToken;
+			console.log(`[API Keys] Attempt ${retryCount + 1}/${MAX_RETRIES + 1} with token:`, currentToken ? `${currentToken.substring(0, 50)}...` : "NO TOKEN");
+			
+			const response = await apiService.get<{ keys: ApiKey[]; count: number; message?: string }>("/users/me/api-keys");
+			console.log("[API Keys] Response:", response);
+			
+			// Handle the new response structure: { keys: [], count: 0, message?: "..." }
+			const keys = response.data?.keys ?? response.data ?? [];
+			setData(Array.isArray(keys) ? keys : []);
+			setError(null);
+		} catch (err) {
+			console.error(`[API Keys] Fetch error (attempt ${retryCount + 1}):`, err);
+			
+			// Check if we should retry
+			const isAuthError = err instanceof ApiError && (err.status === 401 || err.status === 403);
+			const canRetry = retryCount < MAX_RETRIES && !retryTimeoutRef.current;
+			
+			if (isAuthError && canRetry) {
+				// Exponential backoff: 1s, 2s, 4s, 8s...
+				const delay = INITIAL_BACKOFF_MS * Math.pow(2, retryCount);
+				console.log(`[API Keys] Retrying in ${delay}ms (attempt ${retryCount + 2}/${MAX_RETRIES + 1})`);
 
 				retryTimeoutRef.current = setTimeout(() => {
 					retryTimeoutRef.current = null;
 					if (useAuthStore.getState().accessToken) {
 						fetchApiKeys(retryCount + 1);
+					} else {
+						setError("Authentication required. Please log in again.");
+						setLoading(false);
 					}
 				}, delay);
-				return;
+				return; // Keep loading state while waiting for retry
 			}
 
-			// Silently handle other API key fetch errors
-		} finally {
+			// Max retries exceeded or non-auth error
+			if (isAuthError) {
+				setError("Unable to authenticate. Please try logging out and back in.");
+			} else if (err instanceof ApiError) {
+				setError(`Failed to load API keys: ${err.message}`);
+			} else {
+				setError("Failed to load API keys. Please try again later.");
+			}
 			setLoading(false);
+			return;
 		}
+		setLoading(false);
 	}, []);
 
 	const deleteApiKey = useCallback(
@@ -652,16 +681,31 @@ export function ApiKeysTable() {
 
 		const fetchIfAuthenticated = () => {
 			if (!isMounted) {
+				console.log("[API Keys] Component unmounted, skipping fetch");
 				return;
 			}
 
 			const token = useAuthStore.getState().accessToken;
+			console.log("[API Keys] fetchIfAuthenticated called:", {
+				hasToken: !!token,
+				dataLength: data.length,
+				loading,
+			});
+			
 			if (token && data.length === 0 && !loading) {
+				console.log("[API Keys] Conditions met, fetching...");
 				fetchApiKeys();
+			} else {
+				console.log("[API Keys] Conditions not met:", {
+					hasToken: !!token,
+					dataEmpty: data.length === 0,
+					notLoading: !loading,
+				});
 			}
 		};
 
 		const unsubscribe = useAuthStore.subscribe((state) => {
+			console.log("[API Keys] Auth store changed, hasToken:", !!state.accessToken);
 			if (state.accessToken) {
 				// Add a small delay to ensure auth is stable
 				timeoutId = setTimeout(fetchIfAuthenticated, 100);
@@ -751,6 +795,21 @@ export function ApiKeysTable() {
 				</div>
 			</div>
 
+			{/* Error message */}
+			{error && (
+				<div className="mt-4 rounded-md border border-destructive/50 bg-destructive/10 p-4">
+					<p className="text-destructive text-sm">{error}</p>
+					<Button
+						className="mt-2"
+						onClick={() => fetchApiKeys(0)}
+						size="sm"
+						variant="outline"
+					>
+						Retry
+					</Button>
+				</div>
+			)}
+
 			{/* Table */}
 			<div className="mt-4 rounded-sm border">
 				<Table maxHeight="h-[400px]" stickyHeader>
@@ -769,10 +828,26 @@ export function ApiKeysTable() {
 								return (
 									<TableRow>
 										<TableCell
-											className="h-24 text-center"
+											className="h-24 text-center text-muted-foreground"
 											colSpan={columns.length}
 										>
-											Loading API keys...
+											<div className="flex flex-col items-center gap-2">
+												<div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+												<span>Loading API keys...</span>
+											</div>
+										</TableCell>
+									</TableRow>
+								);
+							}
+							
+							if (error) {
+								return (
+									<TableRow>
+										<TableCell
+											className="h-24 text-center text-muted-foreground"
+											colSpan={columns.length}
+										>
+											Unable to load API keys
 										</TableCell>
 									</TableRow>
 								);

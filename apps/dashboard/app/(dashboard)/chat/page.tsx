@@ -1,8 +1,19 @@
 "use client";
 
 import { Badge } from "@recurse/ui/components/badge";
-import { BookOpen, Brain, ChevronLeft, ChevronRight, Send } from "lucide-react";
+import { FileUploadDropzone } from "@recurse/ui/components/file-upload-dropzone";
+import {
+	BookOpen,
+	Brain,
+	ChevronLeft,
+	ChevronRight,
+	Loader2,
+	Paperclip,
+	Send,
+	X,
+} from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -42,6 +53,20 @@ type AnswerResponse = {
 	message?: string;
 };
 
+type UploadResponse = {
+	document_id: string;
+	job_id: string;
+	status: string;
+	message: string;
+};
+
+type AttachedFile = {
+	file: File;
+	status: "pending" | "uploading" | "uploaded" | "error";
+	documentId?: string;
+	error?: string;
+};
+
 export default function ChatPage() {
 	const [query, setQuery] = useState("");
 	const [useKb, setUseKb] = useState(true);
@@ -51,8 +76,11 @@ export default function ChatPage() {
 	const [sources, setSources] = useState<AnswerSource[] | null>(null);
 	const [versions, setVersions] = useState<string[] | null>(null);
 	const [currentDraftIndex, setCurrentDraftIndex] = useState(0);
+	const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
+	const [isUploading, setIsUploading] = useState(false);
 	const scrollRef = useRef<HTMLDivElement | null>(null);
 	const sourceRefs = useRef<Record<number, HTMLDivElement | null>>({});
+	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [highlightedSource, setHighlightedSource] = useState<number | null>(
 		null,
 	);
@@ -62,10 +90,99 @@ export default function ChatPage() {
 	}, [answer, versions]);
 
 	const canSubmit = useMemo(() => {
-		return query.trim().length > 0 && !loading;
-	}, [query, loading]);
+		return query.trim().length > 0 && !loading && !isUploading;
+	}, [query, loading, isUploading]);
 
 	const showPrompt = answer == null && !loading && error == null;
+
+	const uploadFile = useCallback(async (file: File): Promise<UploadResponse> => {
+		const { data } = await apiService.uploadFile<UploadResponse>(
+			"/documents/upload",
+			file,
+			{ title: file.name },
+		);
+		return data;
+	}, []);
+
+	const handleFilesDropped = useCallback(
+		async (files: File[]) => {
+			if (files.length === 0) return;
+
+			// Add files as pending
+			const newAttachedFiles: AttachedFile[] = files.map((file) => ({
+				file,
+				status: "pending" as const,
+			}));
+
+			setAttachedFiles((prev) => [...prev, ...newAttachedFiles]);
+			setIsUploading(true);
+
+			// Upload files
+			for (let i = 0; i < files.length; i++) {
+				const file = files[i];
+
+				setAttachedFiles((prev) =>
+					prev.map((af) =>
+						af.file === file ? { ...af, status: "uploading" as const } : af,
+					),
+				);
+
+				try {
+					const result = await uploadFile(file);
+					setAttachedFiles((prev) =>
+						prev.map((af) =>
+							af.file === file
+								? {
+										...af,
+										status: "uploaded" as const,
+										documentId: result.document_id,
+									}
+								: af,
+						),
+					);
+					toast.success(`Uploaded: ${file.name}`);
+				} catch (error) {
+					const message =
+						error instanceof ApiError ? error.message : "Upload failed";
+					setAttachedFiles((prev) =>
+						prev.map((af) =>
+							af.file === file
+								? { ...af, status: "error" as const, error: message }
+								: af,
+						),
+					);
+					toast.error(`Failed to upload: ${file.name}`, {
+						description: message,
+					});
+				}
+			}
+
+			setIsUploading(false);
+		},
+		[uploadFile],
+	);
+
+	const handleRemoveFile = useCallback((index: number) => {
+		setAttachedFiles((prev) => prev.filter((_, i) => i !== index));
+	}, []);
+
+	const handleUploadClick = useCallback(() => {
+		fileInputRef.current?.click();
+	}, []);
+
+	const handleFileInputChange = useCallback(
+		(e: React.ChangeEvent<HTMLInputElement>) => {
+			const files = e.target.files;
+			if (files && files.length > 0) {
+				handleFilesDropped(Array.from(files));
+			}
+			// Reset input so the same file can be selected again
+			if (fileInputRef.current) {
+				fileInputRef.current.value = "";
+			}
+		},
+		[handleFilesDropped],
+	);
 
 	const submit = useCallback(async () => {
 		if (!canSubmit) {
@@ -96,6 +213,9 @@ export default function ChatPage() {
 			setAnswer(data?.result ?? null);
 			setSources(Array.isArray(data?.sources) ? data?.sources : null);
 			setVersions(Array.isArray(data?.versions) ? data?.versions : null);
+
+			// Clear attached files after successful submission
+			setAttachedFiles([]);
 
 			// Reset scroll position on new content
 			setTimeout(() => {
@@ -185,165 +305,250 @@ export default function ChatPage() {
 		[handleCitationClick],
 	);
 
+	const getFileStatusIcon = (status: AttachedFile["status"]) => {
+		switch (status) {
+			case "uploading":
+				return <Loader2 className="size-3 animate-spin text-muted-foreground" />;
+			case "uploaded":
+				return null;
+			case "error":
+				return <X className="size-3 text-destructive" />;
+			default:
+				return <Paperclip className="size-3 text-muted-foreground" />;
+		}
+	};
+
 	return (
-		<div
+		<FileUploadDropzone
+			accept=".pdf,.txt,.md,.mdx,.json,.csv,.doc,.docx,.html"
 			className="flex flex-col"
-			style={{ minHeight: "calc(100vh - var(--fd-nav-height))" }}
+			disabled={isUploading}
+			dropMessage={isUploading ? "Uploading..." : "Drop files to upload"}
+			multiple
+			onFilesDropped={handleFilesDropped}
 		>
-			<div className="container mx-auto flex flex-1 flex-col p-8">
-				{/* Scrollable answer area with sources inside */}
-				<div className="min-h-0 flex-1">
-					<ScrollArea className="h-full">
-						<div className="relative p-6" ref={scrollRef}>
-							{showPrompt && (
-								<div className="text-muted-foreground text-sm">
-									Ask a question to get started.
-								</div>
-							)}
-							{loading && (
-								<div className="text-muted-foreground text-sm">Thinking…</div>
-							)}
-							{error && <div className="text-destructive text-sm">{error}</div>}
-
-							{hasContent && !loading && !error && (
-								<div className="space-y-6">
-									{/* Current draft content with clickable citations */}
-									<div className="whitespace-pre-wrap">
-										{renderAnswerWithCitations(currentDraft)}
+			<div
+				className="flex flex-col"
+				style={{ minHeight: "calc(100vh - var(--fd-nav-height))" }}
+			>
+				<div className="container mx-auto flex flex-1 flex-col p-8">
+					{/* Scrollable answer area with sources inside */}
+					<div className="min-h-0 flex-1">
+						<ScrollArea className="h-full">
+							<div className="relative p-6" ref={scrollRef}>
+								{showPrompt && (
+									<div className="text-muted-foreground text-sm">
+										Ask a question to get started.
 									</div>
+								)}
+								{loading && (
+									<div className="text-muted-foreground text-sm">Thinking…</div>
+								)}
+								{error && <div className="text-destructive text-sm">{error}</div>}
 
-									{/* Sources table */}
-									{Array.isArray(sources) && sources.length > 0 && (
-										<div className="mt-6">
-											<div className="mb-3 flex items-center gap-2">
-												<BookOpen className="size-4" />
-												<span className="font-medium">Context</span>
-											</div>
-											<div className="max-h-96 overflow-auto rounded-md border">
-												<Table className="w-full table-fixed">
-													<TableHeader>
-														<TableRow>
-															<TableHead className="w-1/4">Title</TableHead>
-															<TableHead className="w-1/2">Summary</TableHead>
-															<TableHead className="w-1/4">Type</TableHead>
-														</TableRow>
-													</TableHeader>
-													<TableBody>
-														{sources.map((s, index) => {
-															const cIndex =
-																typeof s.citation_index === "number"
-																	? s.citation_index
-																	: index + 1;
-															const isHighlighted =
-																highlightedSource === cIndex;
-															return (
-																<TableRow
-																	className={cn(
-																		isHighlighted && "bg-primary/10",
-																	)}
-																	key={s.id || `${index}`}
-																	ref={(el) => {
-																		sourceRefs.current[cIndex] = el;
-																	}}
-																>
-																	<TableCell className="max-w-0 truncate font-medium">
-																		{s.title || s.document_title || s.id}
-																	</TableCell>
-																	<TableCell className="max-w-0 truncate text-muted-foreground text-sm">
-																		{s.summary || s.document_summary || ""}
-																	</TableCell>
-																	<TableCell className="text-center">
-																		<Badge variant="outline">
-																			{s.type || "Document"}
-																		</Badge>
-																	</TableCell>
-																</TableRow>
-															);
-														})}
-													</TableBody>
-												</Table>
-											</div>
+								{hasContent && !loading && !error && (
+									<div className="space-y-6">
+										{/* Current draft content with clickable citations */}
+										<div className="whitespace-pre-wrap">
+											{renderAnswerWithCitations(currentDraft)}
 										</div>
+
+										{/* Sources table */}
+										{Array.isArray(sources) && sources.length > 0 && (
+											<div className="mt-6">
+												<div className="mb-3 flex items-center gap-2">
+													<BookOpen className="size-4" />
+													<span className="font-medium">Context</span>
+												</div>
+												<div className="max-h-96 overflow-auto rounded-md border">
+													<Table className="w-full table-fixed">
+														<TableHeader>
+															<TableRow>
+																<TableHead className="w-1/4">Title</TableHead>
+																<TableHead className="w-1/2">Summary</TableHead>
+																<TableHead className="w-1/4">Type</TableHead>
+															</TableRow>
+														</TableHeader>
+														<TableBody>
+															{sources.map((s, index) => {
+																const cIndex =
+																	typeof s.citation_index === "number"
+																		? s.citation_index
+																		: index + 1;
+																const isHighlighted =
+																	highlightedSource === cIndex;
+																return (
+																	<TableRow
+																		className={cn(
+																			isHighlighted && "bg-primary/10",
+																		)}
+																		key={s.id || `${index}`}
+																		ref={(el) => {
+																			sourceRefs.current[cIndex] = el;
+																		}}
+																	>
+																		<TableCell className="max-w-0 truncate font-medium">
+																			{s.title || s.document_title || s.id}
+																		</TableCell>
+																		<TableCell className="max-w-0 truncate text-muted-foreground text-sm">
+																			{s.summary || s.document_summary || ""}
+																		</TableCell>
+																		<TableCell className="text-center">
+																			<Badge variant="outline">
+																				{s.type || "Document"}
+																			</Badge>
+																		</TableCell>
+																	</TableRow>
+																);
+															})}
+														</TableBody>
+													</Table>
+												</div>
+											</div>
+										)}
+
+										{/* Draft navigation moved to footer */}
+									</div>
+								)}
+							</div>
+						</ScrollArea>
+					</div>
+
+					{/* Attached files preview */}
+					{attachedFiles.length > 0 && (
+						<div className="mb-2 flex flex-wrap gap-2">
+							{attachedFiles.map((af, index) => (
+								<div
+									className={cn(
+										"flex items-center gap-1.5 rounded-md border px-2 py-1 text-sm",
+										af.status === "uploaded" && "border-green-500/50 bg-green-500/10",
+										af.status === "error" && "border-destructive/50 bg-destructive/10",
+										af.status === "uploading" && "bg-muted/50",
+										af.status === "pending" && "bg-muted/50",
 									)}
-
-									{/* Draft navigation moved to footer */}
+									key={`${af.file.name}-${index}`}
+								>
+									{getFileStatusIcon(af.status)}
+									<span className="max-w-32 truncate">{af.file.name}</span>
+									<button
+										aria-label={`Remove ${af.file.name}`}
+										className="rounded-sm p-0.5 hover:bg-muted"
+										onClick={() => handleRemoveFile(index)}
+										type="button"
+									>
+										<X className="size-3" />
+									</button>
 								</div>
-							)}
+							))}
 						</div>
-					</ScrollArea>
-				</div>
+					)}
 
-				{/* Footer input area with KB switch and draft arrows */}
-				<form
-					className="mt-4"
-					onSubmit={(e) => {
-						e.preventDefault();
-						submit();
-					}}
-				>
-					<div className="flex items-center gap-3">
-						<div className="flex items-center gap-2">
-							<Switch
-								aria-label="Use knowledge base"
-								checked={useKb}
-								onCheckedChange={(v) => setUseKb(Boolean(v))}
+					{/* Footer input area with KB switch and draft arrows */}
+					<form
+						className="mt-4"
+						onSubmit={(e) => {
+							e.preventDefault();
+							submit();
+						}}
+					>
+						<div className="flex items-center gap-3">
+							<div className="flex items-center gap-2">
+								<Switch
+									aria-label="Use knowledge base"
+									checked={useKb}
+									onCheckedChange={(v) => setUseKb(Boolean(v))}
+								/>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Brain aria-hidden className="size-4" />
+									</TooltipTrigger>
+									<TooltipContent side="top" sideOffset={6}>
+										Use knowledge base
+									</TooltipContent>
+								</Tooltip>
+							</div>
+
+							{/* Hidden file input */}
+							<input
+								ref={fileInputRef}
+								accept=".pdf,.txt,.md,.mdx,.json,.csv,.doc,.docx,.html"
+								className="sr-only"
+								multiple
+								onChange={handleFileInputChange}
+								type="file"
 							/>
+
+							{/* Upload button */}
 							<Tooltip>
 								<TooltipTrigger asChild>
-									<Brain aria-hidden className="size-4" />
+									<Button
+										aria-label="Upload files"
+										disabled={isUploading}
+										onClick={handleUploadClick}
+										size="icon"
+										type="button"
+										variant="outline"
+									>
+										{isUploading ? (
+											<Loader2 className="size-4 animate-spin" />
+										) : (
+											<Paperclip className="size-4" />
+										)}
+									</Button>
 								</TooltipTrigger>
 								<TooltipContent side="top" sideOffset={6}>
-									Use knowledge base
+									{isUploading ? "Uploading..." : "Attach files"}
 								</TooltipContent>
 							</Tooltip>
+
+							<Input
+								aria-label="Ask a question"
+								disabled={loading}
+								onChange={(e) => setQuery(e.target.value)}
+								onKeyDown={onKeyDown}
+								placeholder="Ask something…"
+								value={query}
+							/>
+							<Button
+								aria-label="Send"
+								disabled={!canSubmit}
+								size="icon"
+								type="submit"
+							>
+								<Send className="size-4" />
+							</Button>
+							{Array.isArray(versions) && versions.length > 0 && (
+								<div className="ml-2 flex items-center gap-2">
+									<Button
+										aria-label="Previous draft"
+										onClick={() => {
+											const total = 1 + (versions?.length || 0);
+											setCurrentDraftIndex((i) => (i - 1 + total) % total);
+										}}
+										size="icon"
+										type="button"
+										variant="outline"
+									>
+										<ChevronLeft className="size-4" />
+									</Button>
+									<Button
+										aria-label="Next draft"
+										onClick={() => {
+											const total = 1 + (versions?.length || 0);
+											setCurrentDraftIndex((i) => (i + 1) % total);
+										}}
+										size="icon"
+										type="button"
+										variant="outline"
+									>
+										<ChevronRight className="size-4" />
+									</Button>
+								</div>
+							)}
 						</div>
-						<Input
-							aria-label="Ask a question"
-							disabled={loading}
-							onChange={(e) => setQuery(e.target.value)}
-							onKeyDown={onKeyDown}
-							placeholder="Ask something…"
-							value={query}
-						/>
-						<Button
-							aria-label="Send"
-							disabled={!canSubmit}
-							size="icon"
-							type="submit"
-						>
-							<Send className="size-4" />
-						</Button>
-						{Array.isArray(versions) && versions.length > 0 && (
-							<div className="ml-2 flex items-center gap-2">
-								<Button
-									aria-label="Previous draft"
-									onClick={() => {
-										const total = 1 + (versions?.length || 0);
-										setCurrentDraftIndex((i) => (i - 1 + total) % total);
-									}}
-									size="icon"
-									type="button"
-									variant="outline"
-								>
-									<ChevronLeft className="size-4" />
-								</Button>
-								<Button
-									aria-label="Next draft"
-									onClick={() => {
-										const total = 1 + (versions?.length || 0);
-										setCurrentDraftIndex((i) => (i + 1) % total);
-									}}
-									size="icon"
-									type="button"
-									variant="outline"
-								>
-									<ChevronRight className="size-4" />
-								</Button>
-							</div>
-						)}
-					</div>
-				</form>
+					</form>
+				</div>
 			</div>
-		</div>
+		</FileUploadDropzone>
 	);
 }

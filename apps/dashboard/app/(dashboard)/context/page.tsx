@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthStore } from "@/components/auth/auth-store";
-import { GenericTooltipLayout } from "@/components/graph-view/components/node-tooltip";
+import { GenericTooltipLayout } from "@shared/components/graph-view/components/node-tooltip";
 import { DefaultSpinner } from "@/components/loaders/default-spinner";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
@@ -221,7 +221,7 @@ export default function ContextPage() {
 									metadata={result.metadata}
 									showIcon={false}
 									summary={result.summary}
-									title={result.title || result.id}
+									title={result.title || "Untitled"}
 									type={result.type}
 								/>
 								{result.similarity_score ? (

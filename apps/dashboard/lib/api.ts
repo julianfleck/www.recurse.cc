@@ -1,10 +1,29 @@
 // Generic API service for querying the main API
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+// Default to localhost:8000 in development if env var is not set
+const API_BASE_URL =
+	process.env.NEXT_PUBLIC_API_BASE_URL ||
+	(process.env.NODE_ENV === "development" ? "http://localhost:8000" : "");
 
 if (!API_BASE_URL) {
 	throw new Error("NEXT_PUBLIC_API_BASE_URL environment variable is not set");
 }
+
+// Use proxy in development to avoid CORS issues
+// In production, the API should have proper CORS headers configured
+const getApiBaseUrl = () => {
+	// Check if we're in the browser and in development mode
+	const isDevelopment = process.env.NODE_ENV === "development";
+	const isBrowser = typeof window !== "undefined";
+
+	if (isBrowser && isDevelopment) {
+		// In browser during development, use the proxy route to avoid CORS
+		return "/api/proxy";
+	}
+
+	// In production or server-side, use the direct API URL
+	return API_BASE_URL;
+};
 
 // Global auth store getter (will be set when API service is initialized)
 let getAccessToken: (() => string | undefined) | null = null;
@@ -32,10 +51,14 @@ export class ApiError extends Error {
 }
 
 export class ApiService {
-	private readonly baseUrl: string;
+	private readonly getBaseUrl: () => string;
 
-	constructor(baseUrl: string) {
-		this.baseUrl = baseUrl;
+	constructor(baseUrlOrGetter: string | (() => string)) {
+		// Support both static string and dynamic getter for base URL
+		this.getBaseUrl =
+			typeof baseUrlOrGetter === "function"
+				? baseUrlOrGetter
+				: () => baseUrlOrGetter;
 	}
 
 	/**
@@ -62,7 +85,7 @@ export class ApiService {
 					).toString()}`
 				: "";
 
-			const url = `${this.baseUrl}${endpoint}${queryString}`;
+			const url = `${this.getBaseUrl()}${endpoint}${queryString}`;
 
 			const authToken = getAccessToken?.();
 			const headers: Record<string, string> = {
@@ -144,7 +167,7 @@ export class ApiService {
 	 */
 	async delete<T = unknown>(endpoint: string): Promise<ApiResponse<T>> {
 		try {
-			const url = `${this.baseUrl}${endpoint}`;
+			const url = `${this.getBaseUrl()}${endpoint}`;
 
 			const authToken = getAccessToken?.();
 			const headers: Record<string, string> = {
@@ -220,6 +243,98 @@ export class ApiService {
 	}
 
 	/**
+	 * Uploads a file to the API using multipart/form-data
+	 * @param endpoint - The API endpoint (without base URL)
+	 * @param file - The file to upload
+	 * @param additionalFields - Optional additional form fields
+	 * @returns Promise with the API response
+	 */
+	async uploadFile<T = unknown>(
+		endpoint: string,
+		file: File,
+		additionalFields?: Record<string, string>,
+	): Promise<ApiResponse<T>> {
+		try {
+			const url = `${this.getBaseUrl()}${endpoint}`;
+
+			const authToken = getAccessToken?.();
+			const headers: Record<string, string> = {};
+
+			if (authToken) {
+				const tokenParts = authToken.split(".");
+				if (tokenParts.length === JWT_PARTS_COUNT) {
+					try {
+						const jwtPayload = JSON.parse(atob(tokenParts[1]));
+						const nowInSeconds = Math.floor(
+							Date.now() / MILLISECONDS_PER_SECOND,
+						);
+
+						if (jwtPayload.exp && jwtPayload.exp < nowInSeconds) {
+							throw new ApiError("Token expired", 401);
+						}
+
+						headers.Authorization = `Bearer ${authToken}`;
+					} catch (_error) {
+						headers.Authorization = `Bearer ${authToken}`;
+					}
+				} else {
+					throw new ApiError("Invalid token format", 401);
+				}
+			} else {
+				const authError = new ApiError(
+					"No authentication token available",
+					401,
+				);
+				authError.name = "AuthenticationError";
+				throw authError;
+			}
+
+			const formData = new FormData();
+			formData.append("file", file);
+
+			if (additionalFields) {
+				for (const [key, value] of Object.entries(additionalFields)) {
+					formData.append(key, value);
+				}
+			}
+
+			const response = await fetch(url, {
+				method: "POST",
+				headers,
+				body: formData,
+				credentials: "include",
+				mode: "cors",
+			});
+
+			const data = await response.json();
+
+			if (!response.ok) {
+				throw new ApiError(
+					`API request failed: ${response.statusText}`,
+					response.status,
+					data,
+				);
+			}
+
+			return {
+				data,
+				status: response.status,
+				statusText: response.statusText,
+			};
+		} catch (error) {
+			if (error instanceof ApiError) {
+				throw error;
+			}
+
+			throw new ApiError(
+				`Network error: ${error instanceof Error ? error.message : "Unknown error"}`,
+				undefined,
+				error,
+			);
+		}
+	}
+
+	/**
 	 * Makes a POST request to the API
 	 * @param endpoint - The API endpoint (without base URL)
 	 * @param payload - The request payload
@@ -230,7 +345,7 @@ export class ApiService {
 		payload?: unknown,
 	): Promise<ApiResponse<T>> {
 		try {
-			const url = `${this.baseUrl}${endpoint}`;
+			const url = `${this.getBaseUrl()}${endpoint}`;
 
 			const authToken = getAccessToken?.();
 			const headers: Record<string, string> = {
@@ -313,4 +428,5 @@ export const setApiAuthGetter = (getter: () => string | undefined) => {
 };
 
 // Create and export a default instance
-export const apiService = new ApiService(API_BASE_URL);
+// Uses proxy in development (evaluated at request time), direct API URL in production
+export const apiService = new ApiService(getApiBaseUrl);

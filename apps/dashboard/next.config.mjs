@@ -11,6 +11,8 @@ const config = {
 				source: "/docs/:slug*.mdx",
 				destination: "/llms.mdx/:slug*",
 			},
+			// Note: API proxy is handled by /app/api/proxy/[...path]/route.ts
+			// This properly handles redirects and CORS
 		];
 	},
 };
