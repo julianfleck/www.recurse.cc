@@ -286,6 +286,10 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = useState({});
 	const [expanded, setExpanded] = useState<ExpandedState>({});
+	
+	// Refs to access current state in columns without causing re-renders
+	const expandedRef = useRef<ExpandedState>({});
+	expandedRef.current = expanded;
 
 	const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -492,7 +496,8 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 					const level = row.original.level;
 					const hasChildren = row.original.hasChildren;
 					const rowId = row.original.id;
-					const isExpanded = (expanded as Record<string, boolean>)[rowId] ?? false;
+					// Use ref to get current expanded state without causing column re-renders
+					const isExpanded = (expandedRef.current as Record<string, boolean>)[rowId] ?? false;
 					const { iconClosed } = getNodeIcons(rowType, {
 						size: "h-3.5 w-3.5",
 						strokeWidth: 1.5,
@@ -509,7 +514,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 								onClick={(e) => {
 									e.stopPropagation();
 									if (hasChildren) {
-										// Directly update expanded state instead of using row.toggleExpanded()
+										// Directly update expanded state
 										setExpanded((prev) => {
 											const prevRecord = prev as Record<string, boolean>;
 											return {
@@ -645,7 +650,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 				meta: { className: "w-10" },
 			},
 		],
-		[deleteDocument, deleteFrame, expanded, setExpanded],
+		[deleteDocument, deleteFrame],
 	);
 
 	// Wait for authentication before fetching
@@ -705,6 +710,12 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 			Object.keys(expandedRecord).filter((k) => expandedRecord[k])
 		);
 
+		console.log("[VisibleRows] Computing with:", {
+			flattenedDataCount: flattenedData.length,
+			expandedIds: Array.from(expandedSet),
+			level0Count: flattenedData.filter(r => r.level === 0).length,
+		});
+
 		for (const row of flattenedData) {
 			if (row.level === 0) {
 				// Always show top-level documents
@@ -730,6 +741,11 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 			}
 		}
 
+		console.log("[VisibleRows] Result:", {
+			visibleCount: visible.length,
+			level0Visible: visible.filter(r => r.level === 0).length,
+		});
+
 		return visible;
 	}, [flattenedData, expanded]);
 
@@ -744,7 +760,6 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 		getFilteredRowModel: getFilteredRowModel(),
 		onColumnVisibilityChange: setColumnVisibility,
 		onRowSelectionChange: setRowSelection,
-		// Note: We manage expansion manually via visibleRows, not through react-table
 		getRowId: (row) => row.id,
 		state: {
 			sorting,
