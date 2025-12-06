@@ -47,7 +47,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
-	Table,
 	TableBody,
 	TableCell,
 	TableHead,
@@ -55,6 +54,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { ApiError, apiService } from "@/lib/api";
+import { cn } from "@/lib/utils";
 
 // Types - API may return metadata either nested or at top level
 type MetadataFields = {
@@ -755,12 +755,9 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 
 			{/* Table - fills remaining height and scrolls internally */}
 			<div className="flex-1 min-h-0 rounded-sm border relative">
-				<Table
-					className="table-fixed w-full"
-					stickyHeader
-					containerClassName="absolute inset-0 overflow-auto"
-				>
-					<TableHeader sticky>
+				<div className="absolute inset-0 overflow-auto">
+					<table className={cn("w-full caption-bottom text-sm", "table-fixed")}>
+						<TableHeader sticky>
 						{table.getHeaderGroups().map((headerGroup) => (
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map((header) => (
@@ -859,7 +856,8 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 							);
 						})()}
 					</TableBody>
-					</Table>
+					</table>
+				</div>
 			</div>
 
 			{/* Pagination info */}
