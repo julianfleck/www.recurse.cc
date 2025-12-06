@@ -1,11 +1,7 @@
 "use client";
 
 import { Badge } from "@recurse/ui/components/badge";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from "@recurse/ui/components/tooltip";
+import { MouseFollowerTooltip } from "@recurse/ui/components/mouse-follower-tooltip";
 import type {
 	ColumnDef,
 	ColumnFiltersState,
@@ -474,60 +470,34 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 						strokeWidth: 1.5,
 					});
 
-					const normalized = node.metadata;
-					const tags = normalized?.tags ?? [];
-					const hypernyms = normalized?.hypernyms ?? [];
-					const hyponyms = normalized?.hyponyms ?? [];
-
-					const allItems = [
-						...tags.slice(0, 4).map((t: string) => t),
-						...hypernyms.slice(0, 3).map((h: string) => `↑${h}`),
-						...hyponyms.slice(0, 3).map((h: string) => `↓${h}`),
-					];
-
 					return (
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<div
-									className="flex items-center gap-1"
-									style={{ paddingLeft: `${row.depth * 1}rem` }}
+						<div
+							className="flex items-center gap-1"
+							style={{ paddingLeft: `${row.depth * 1}rem` }}
+						>
+							{row.getCanExpand() ? (
+								<button
+									type="button"
+									onClick={(e) => {
+										e.stopPropagation();
+										row.toggleExpanded();
+									}}
+									className="flex h-4 w-4 items-center justify-center rounded hover:bg-accent"
 								>
-									{row.getCanExpand() ? (
-										<button
-											type="button"
-											onClick={row.getToggleExpandedHandler()}
-											className="flex h-4 w-4 items-center justify-center rounded hover:bg-accent"
-										>
-											{row.getIsExpanded() ? (
-												<ChevronDownIcon className="h-3 w-3" />
-											) : (
-												<ChevronRightIcon className="h-3 w-3" />
-											)}
-										</button>
+									{row.getIsExpanded() ? (
+										<ChevronDownIcon className="h-3 w-3" />
 									) : (
-										<div className="w-4" /> // placeholder for alignment
+										<ChevronRightIcon className="h-3 w-3" />
 									)}
-									<span className="text-muted-foreground shrink-0">
-										{iconClosed}
-									</span>
-									<span className="truncate text-sm">{title}</span>
-								</div>
-							</TooltipTrigger>
-							<TooltipContent
-								avoidCollisions
-								className="max-h-[400px] max-w-xs overflow-auto whitespace-pre-wrap wrap-break-word"
-								collisionPadding={8}
-								sideOffset={8}
-							>
-								<GenericTooltipLayout
-									title={node.title}
-									type={node.type}
-									summary={node.summary ?? undefined}
-									metadata={allItems}
-									showIcon={false}
-								/>
-							</TooltipContent>
-						</Tooltip>
+								</button>
+							) : (
+								<div className="w-4" /> // placeholder for alignment
+							)}
+							<span className="text-muted-foreground shrink-0">
+								{iconClosed}
+							</span>
+							<span className="truncate text-sm">{title}</span>
+						</div>
 					);
 				},
 				meta: { className: "min-w-[200px]" },
@@ -834,29 +804,66 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 								return table.getRowModel().rows.map((row) => {
 									const rowData = row.original;
 									const isDocument = rowData.level === 0;
+
+									const normalized = rowData.metadata;
+									const tags = normalized?.tags ?? [];
+									const hypernyms = normalized?.hypernyms ?? [];
+									const hyponyms = normalized?.hyponyms ?? [];
+									const allItems = [
+										...tags.slice(0, 4).map((t: string) => t),
+										...hypernyms.slice(0, 3).map((h: string) => `↑${h}`),
+										...hyponyms.slice(0, 3).map((h: string) => `↓${h}`),
+									];
+
 									return (
 										<ContextMenu key={row.id}>
-											<ContextMenuTrigger asChild>
-												<TableRow
-													data-state={row.getIsSelected() && "selected"}
-													className={`group ${rowData.level > 0 ? "bg-muted/20" : ""}`}
-												>
-													{row.getVisibleCells().map((cell) => {
-														const columnClassName = (cell.column.columnDef.meta as { className?: string })?.className ?? "";
-														return (
-															<TableCell 
-																key={cell.id} 
-																className={columnClassName}
-															>
-																{flexRender(
-																	cell.column.columnDef.cell,
-																	cell.getContext(),
-																)}
-															</TableCell>
-														);
-													})}
-												</TableRow>
-											</ContextMenuTrigger>
+											<MouseFollowerTooltip
+												content={
+													<GenericTooltipLayout
+														title={rowData.title}
+														type={rowData.type}
+														summary={rowData.summary ?? undefined}
+														metadata={allItems}
+														showIcon={false}
+													/>
+												}
+											>
+												<ContextMenuTrigger asChild>
+													<TableRow
+														data-state={row.getIsSelected() && "selected"}
+														className={`group ${rowData.level > 0 ? "bg-muted/20" : ""}`}
+														onClick={(event) => {
+															// Ignore clicks on checkboxes, action buttons, or explicit opt-outs
+															const target = event.target as HTMLElement;
+															if (
+																target.closest(
+																	'button,[role="checkbox"],[data-row-click-ignore="true"]',
+																)
+															) {
+																return;
+															}
+															if (row.getCanExpand()) {
+																row.toggleExpanded();
+															}
+														}}
+													>
+														{row.getVisibleCells().map((cell) => {
+															const columnClassName = (cell.column.columnDef.meta as { className?: string })?.className ?? "";
+															return (
+																<TableCell 
+																	key={cell.id} 
+																	className={columnClassName}
+																>
+																	{flexRender(
+																		cell.column.columnDef.cell,
+																		cell.getContext(),
+																	)}
+																</TableCell>
+															);
+														})}
+													</TableRow>
+												</ContextMenuTrigger>
+											</MouseFollowerTooltip>
 											<ContextMenuContent>
 												<ContextMenuItem
 													variant="destructive"
