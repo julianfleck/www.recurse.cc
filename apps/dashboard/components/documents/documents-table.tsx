@@ -110,6 +110,22 @@ interface TableNode {
 	subRows: TableNode[];
 }
 
+function formatTypeLabel(rawType: string | undefined): string {
+	if (!rawType) return "—";
+
+	// If type contains a ":", take the part after it
+	const [, secondPart] = rawType.split(":", 2);
+	const base = (secondPart ?? rawType).replace(/_/g, " ").trim();
+
+	if (!base) return "—";
+
+	// Headline case: capitalize each word
+	return base
+		.split(/\s+/)
+		.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+		.join(" ");
+}
+
 function buildTree(documents: Document[]): TableNode[] {
 	return documents.map(doc => ({
 		id: doc.id,
@@ -503,6 +519,26 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 				meta: { className: "min-w-[200px]" },
 			},
 			{
+				accessorKey: "type",
+				header: "Type",
+				cell: ({ row }) => {
+					const type = row.getValue("type") as string | undefined;
+					const label = formatTypeLabel(type);
+
+					if (label === "—") {
+						return <span className="text-muted-foreground text-xs">—</span>;
+					}
+
+					return (
+						<Badge className="h-5 px-2 text-[10px]" variant="outline">
+							{label}
+						</Badge>
+					);
+				},
+				enableSorting: true,
+				meta: { className: "w-24" },
+			},
+			{
 				accessorKey: "created_at",
 				header: "Created",
 				cell: ({ row }) => {
@@ -514,7 +550,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 					return <span className="text-xs">{date.toLocaleDateString()}</span>;
 				},
 				enableSorting: true,
-				meta: { className: "w-24" },
+				meta: { className: "w-24 text-right" },
 			},
 			{
 				accessorKey: "updated_at",
@@ -528,52 +564,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 					return <span className="text-xs">{date.toLocaleDateString()}</span>;
 				},
 				enableSorting: true,
-				meta: { className: "w-24" },
-			},
-			{
-				accessorKey: "metadata",
-				header: "Metadata",
-				cell: ({ row }) => {
-					const normalized = row.original.metadata;
-					const tags = normalized?.tags ?? [];
-					const hypernyms = normalized?.hypernyms ?? [];
-					const hyponyms = normalized?.hyponyms ?? [];
-					
-					const allItems = [
-						...tags.slice(0,3).map((t: string) => ({ key: `t-${t}`, label: t, variant: "secondary" as const })),
-						...hypernyms.slice(0,2).map((h: string) => ({ key: `hyper-${h}`, label: `↑${h}`, variant: "outline" as const })),
-						...hyponyms.slice(0,2).map((h: string) => ({ key: `hypo-${h}`, label: `↓${h}`, variant: "outline" as const })),
-					];
-					
-					const totalCount = tags.length + hypernyms.length + hyponyms.length;
-					const shownCount = allItems.length;
-					const remaining = totalCount - shownCount;
-					
-					if (allItems.length === 0) {
-						return <span className="text-muted-foreground text-xs">—</span>;
-					}
-					
-					return (
-						<div className="flex items-center gap-1 overflow-hidden">
-							{allItems.map((item) => (
-								<Badge
-									key={item.key}
-									className="h-5 shrink-0 whitespace-nowrap px-1.5 text-[10px]"
-									variant={item.variant}
-								>
-									{item.label}
-								</Badge>
-							))}
-							{remaining > 0 && (
-								<Badge className="h-5 shrink-0 whitespace-nowrap px-1.5 text-[10px]" variant="outline">
-									+{remaining}
-								</Badge>
-							)}
-						</div>
-					);
-				},
-				enableSorting: false,
-				meta: { className: "w-72" },
+				meta: { className: "w-24 text-right" },
 			},
 			{
 				id: "actions",
