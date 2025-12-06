@@ -1,15 +1,16 @@
 "use client";
 
 import * as React from "react";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from "@recurse/ui/components/tooltip";
+import { createPortal } from "react-dom";
 
 type MouseFollowerTooltipProps = {
 	children: React.ReactNode;
 	content: React.ReactNode;
+	/**
+	 * Pixel offset from the pointer position (x, y).
+	 * Defaults to { x: 12, y: 16 } to avoid obscuring the cursor.
+	 */
+	offset?: { x?: number; y?: number };
 	/**
 	 * Optional controlled open state override.
 	 */
@@ -20,45 +21,90 @@ type MouseFollowerTooltipProps = {
 /**
  * MouseFollowerTooltip
  *
- * For now this is a thin convenience wrapper around the standard Tooltip that:
- * - Uses the full child element as the trigger (typically a table row)
- * - Positions the tooltip near the trigger with Radix's default placement
+ * Standalone mouse-following tooltip that:
+ * - Tracks pointer position on the trigger element
+ * - Renders a portal attached to document.body positioned in viewport space
+ * - Does NOT alter DOM structure of the child (important for tables)
  *
- * This keeps behavior predictable in complex layouts (nested scroll, transforms)
- * while still giving a "hover anywhere on the row to see details" experience.
+ * Styling/layout is provided by the caller via `content` (e.g. GenericTooltipLayout).
  */
 export function MouseFollowerTooltip({
 	children,
 	content,
+	offset,
 	open,
 	onOpenChange,
 }: MouseFollowerTooltipProps) {
 	const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
-	const isControlled = open !== undefined;
+	const [position, setPosition] = React.useState<{ x: number; y: number } | null>(
+		null,
+	);
+	const [mounted, setMounted] = React.useState(false);
 
+	React.useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	const isControlled = open !== undefined;
 	const resolvedOpen = isControlled ? open : uncontrolledOpen;
 
 	const handleOpenChange = (next: boolean) => {
 		if (!isControlled) {
 			setUncontrolledOpen(next);
 		}
+		if (!next) {
+			setPosition(null);
+		}
 		onOpenChange?.(next);
 	};
 
 	const child = React.isValidElement(children) ? children : <span>{children}</span>;
 
+	const patchedChild = React.cloneElement(child, {
+		onPointerEnter: (event: React.PointerEvent<HTMLElement>) => {
+			(child.props as { onPointerEnter?: (e: React.PointerEvent<HTMLElement>) => void })
+				.onPointerEnter?.(event);
+			handleOpenChange(true);
+		},
+		onPointerLeave: (event: React.PointerEvent<HTMLElement>) => {
+			(child.props as { onPointerLeave?: (e: React.PointerEvent<HTMLElement>) => void })
+				.onPointerLeave?.(event);
+			handleOpenChange(false);
+		},
+		onPointerMove: (event: React.PointerEvent<HTMLElement>) => {
+			(child.props as { onPointerMove?: (e: React.PointerEvent<HTMLElement>) => void })
+				.onPointerMove?.(event);
+			setPosition({ x: event.clientX, y: event.clientY });
+		},
+	});
+
+	const offsetX = offset?.x ?? 12;
+	const offsetY = offset?.y ?? 16;
+
 	return (
-		<Tooltip open={resolvedOpen} onOpenChange={handleOpenChange}>
-			<TooltipTrigger asChild>{child}</TooltipTrigger>
-			<TooltipContent
-				side="top"
-				align="start"
-				sideOffset={6}
-				className="max-h-[400px] max-w-xs overflow-auto whitespace-pre-wrap wrap-break-word"
-			>
-				{content}
-			</TooltipContent>
-		</Tooltip>
+		<>
+			{patchedChild}
+			{mounted &&
+				resolvedOpen &&
+				position &&
+				typeof document !== "undefined" &&
+				createPortal(
+					<div
+						style={{
+							position: "fixed",
+							left: position.x + offsetX,
+							top: position.y + offsetY,
+							zIndex: 60,
+							pointerEvents: "none",
+						}}
+					>
+						<div className="max-h-[400px] max-w-xs overflow-auto whitespace-pre-wrap wrap-break-word rounded-md border border-border bg-popover px-3 py-1.5 text-foreground text-xs shadow-md">
+							{content}
+						</div>
+					</div>,
+					document.body,
+				)}
+		</>
 	);
 }
 
