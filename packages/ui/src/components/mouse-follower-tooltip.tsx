@@ -35,7 +35,7 @@ type MouseFollowerTooltipProps = {
 export function MouseFollowerTooltip({
 	children,
 	content,
-	offset = 12,
+	offset = 0,
 	open: controlledOpen,
 	onOpenChange,
 }: MouseFollowerTooltipProps) {
@@ -44,30 +44,43 @@ export function MouseFollowerTooltip({
 		null,
 	);
 
-	const open = controlledOpen ?? uncontrolledOpen;
-	const setOpen = (next: boolean) => {
-		if (controlledOpen === undefined) {
+	const isControlled = controlledOpen !== undefined;
+	const open = isControlled ? controlledOpen : uncontrolledOpen;
+
+	const handleOpenChange = (next: boolean) => {
+		if (!isControlled) {
 			setUncontrolledOpen(next);
+		}
+		if (!next) {
+			setPosition(null);
 		}
 		onOpenChange?.(next);
 	};
 
+	// Ensure we don't wrap table rows / other semantic elements in extra DOM
+	const child = React.isValidElement(children) ? children : <span>{children}</span>;
+
+	const patchedChild = React.cloneElement(child, {
+		onPointerEnter: (event: React.PointerEvent<HTMLElement>) => {
+			(child.props as { onPointerEnter?: (e: React.PointerEvent<HTMLElement>) => void })
+				.onPointerEnter?.(event);
+			handleOpenChange(true);
+		},
+		onPointerLeave: (event: React.PointerEvent<HTMLElement>) => {
+			(child.props as { onPointerLeave?: (e: React.PointerEvent<HTMLElement>) => void })
+				.onPointerLeave?.(event);
+			handleOpenChange(false);
+		},
+		onPointerMove: (event: React.PointerEvent<HTMLElement>) => {
+			(child.props as { onPointerMove?: (e: React.PointerEvent<HTMLElement>) => void })
+				.onPointerMove?.(event);
+			setPosition({ x: event.clientX, y: event.clientY });
+		},
+	});
+
 	return (
-		<Tooltip open={open} onOpenChange={setOpen}>
-			<TooltipTrigger asChild>
-				<div
-					onPointerEnter={() => setOpen(true)}
-					onPointerLeave={() => {
-						setOpen(false);
-						setPosition(null);
-					}}
-					onPointerMove={(event) => {
-						setPosition({ x: event.clientX, y: event.clientY });
-					}}
-				>
-					{children}
-				</div>
-			</TooltipTrigger>
+		<Tooltip open={open} onOpenChange={handleOpenChange}>
+			<TooltipTrigger asChild>{patchedChild}</TooltipTrigger>
 
 			{position && (
 				<TooltipContent
