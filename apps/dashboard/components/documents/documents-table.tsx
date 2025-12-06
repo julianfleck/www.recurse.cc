@@ -1,6 +1,11 @@
 "use client";
 
 import { Badge } from "@recurse/ui/components/badge";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@recurse/ui/components/tooltip";
 import type {
 	ColumnDef,
 	ColumnFiltersState,
@@ -27,6 +32,7 @@ import {
 	UploadIcon,
 } from "lucide-react";
 import { getNodeIcons } from "@shared/components/graph-view/config/icon-config";
+import { GenericTooltipLayout } from "@shared/components/graph-view/components/node-tooltip";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useAuthStore } from "@/components/auth/auth-store";
@@ -460,38 +466,68 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 				accessorKey: "title",
 				header: "Title",
 				cell: ({ row }) => {
-					const title = row.original.title;
-					const rowType = row.original.type;
+					const node = row.original;
+					const title = node.title;
+					const rowType = node.type;
 					const { iconClosed } = getNodeIcons(rowType, {
 						size: "h-3.5 w-3.5",
 						strokeWidth: 1.5,
 					});
 
+					const normalized = node.metadata;
+					const tags = normalized?.tags ?? [];
+					const hypernyms = normalized?.hypernyms ?? [];
+					const hyponyms = normalized?.hyponyms ?? [];
+
+					const allItems = [
+						...tags.slice(0, 4).map((t: string) => t),
+						...hypernyms.slice(0, 3).map((h: string) => `↑${h}`),
+						...hyponyms.slice(0, 3).map((h: string) => `↓${h}`),
+					];
+
 					return (
-						<div 
-							className="flex items-center gap-1"
-							style={{ paddingLeft: `${row.depth * 1}rem` }}
-						>
-							{row.getCanExpand() ? (
-								<button
-									type="button"
-									onClick={row.getToggleExpandedHandler()}
-									className="flex h-4 w-4 items-center justify-center rounded hover:bg-accent"
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<div
+									className="flex items-center gap-1"
+									style={{ paddingLeft: `${row.depth * 1}rem` }}
 								>
-									{row.getIsExpanded() ? (
-										<ChevronDownIcon className="h-3 w-3" />
+									{row.getCanExpand() ? (
+										<button
+											type="button"
+											onClick={row.getToggleExpandedHandler()}
+											className="flex h-4 w-4 items-center justify-center rounded hover:bg-accent"
+										>
+											{row.getIsExpanded() ? (
+												<ChevronDownIcon className="h-3 w-3" />
+											) : (
+												<ChevronRightIcon className="h-3 w-3" />
+											)}
+										</button>
 									) : (
-										<ChevronRightIcon className="h-3 w-3" />
+										<div className="w-4" /> // placeholder for alignment
 									)}
-								</button>
-							) : (
-								<div className="w-4" /> // placeholder for alignment
-							)}
-							<span className="text-muted-foreground shrink-0">
-								{iconClosed}
-							</span>
-							<span className="truncate text-sm">{title}</span>
-						</div>
+									<span className="text-muted-foreground shrink-0">
+										{iconClosed}
+									</span>
+									<span className="truncate text-sm">{title}</span>
+								</div>
+							</TooltipTrigger>
+							<TooltipContent
+								avoidCollisions
+								className="max-h-[400px] max-w-xs overflow-auto whitespace-pre-wrap wrap-break-word"
+								collisionPadding={8}
+								sideOffset={8}
+							>
+								<GenericTooltipLayout
+									title={node.title}
+									type={node.type}
+									summary={node.summary ?? undefined}
+									metadata={allItems}
+									showIcon={false}
+								/>
+							</TooltipContent>
+						</Tooltip>
 					);
 				},
 				meta: { className: "min-w-[200px]" },
