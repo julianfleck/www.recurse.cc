@@ -1,4 +1,5 @@
 // Generic API service for querying the main API
+import { ensureValidAccessToken } from "@recurse/auth";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -8,10 +9,6 @@ if (!API_BASE_URL) {
 
 // Global auth store getter (will be set when API service is initialized)
 let getAccessToken: (() => string | undefined) | null = null;
-
-// JWT token constants
-const JWT_PARTS_COUNT = 3;
-const MILLISECONDS_PER_SECOND = 1000;
 
 export type ApiResponse<T = unknown> = {
   data: T;
@@ -66,33 +63,15 @@ export class ApiService {
 
       console.log(`[API] GET ${url}`, { params, endpoint });
 
-      const authToken = getAccessToken?.();
+      let authToken = getAccessToken?.();
+      authToken = await ensureValidAccessToken(authToken);
+
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
       };
 
       if (authToken) {
-        // Validate that it's a JWT token (3 parts separated by dots)
-        const tokenParts = authToken.split(".");
-        if (tokenParts.length === JWT_PARTS_COUNT) {
-          // Check if token is expired (basic check)
-          try {
-            const jwtPayload = JSON.parse(atob(tokenParts[1]));
-            const nowInSeconds = Math.floor(
-              Date.now() / MILLISECONDS_PER_SECOND
-            );
-
-            if (jwtPayload.exp && jwtPayload.exp < nowInSeconds) {
-              throw new ApiError("Token expired", 401);
-            }
-
-            headers.Authorization = `Bearer ${authToken}`;
-          } catch (_error) {
-            headers.Authorization = `Bearer ${authToken}`;
-          }
-        } else {
-          throw new ApiError("Invalid token format", 401);
-        }
+        headers.Authorization = `Bearer ${authToken}`;
       } else {
         const authError = new ApiError(
           "No authentication token available",
@@ -170,33 +149,15 @@ export class ApiService {
     try {
       const url = `${this.baseUrl}${endpoint}`;
 
-      const authToken = getAccessToken?.();
+      let authToken = getAccessToken?.();
+      authToken = await ensureValidAccessToken(authToken);
+
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
       };
 
       if (authToken) {
-        // Validate that it's a JWT token (3 parts separated by dots)
-        const tokenParts = authToken.split(".");
-        if (tokenParts.length === JWT_PARTS_COUNT) {
-          // Check if token is expired (basic check)
-          try {
-            const jwtPayload = JSON.parse(atob(tokenParts[1]));
-            const nowInSeconds = Math.floor(
-              Date.now() / MILLISECONDS_PER_SECOND
-            );
-
-            if (jwtPayload.exp && jwtPayload.exp < nowInSeconds) {
-              throw new ApiError("Token expired", 401);
-            }
-
-            headers.Authorization = `Bearer ${authToken}`;
-          } catch (_error) {
-            headers.Authorization = `Bearer ${authToken}`;
-          }
-        } else {
-          throw new ApiError("Invalid token format", 401);
-        }
+        headers.Authorization = `Bearer ${authToken}`;
       } else {
         const authError = new ApiError(
           "No authentication token available",
@@ -258,33 +219,15 @@ export class ApiService {
 
       console.log(`[API] POST ${url}`, { payload });
 
-      const authToken = getAccessToken?.();
+      let authToken = getAccessToken?.();
+      authToken = await ensureValidAccessToken(authToken);
+
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
       };
 
       if (authToken) {
-        // Validate that it's a JWT token (3 parts separated by dots)
-        const tokenParts = authToken.split(".");
-        if (tokenParts.length === JWT_PARTS_COUNT) {
-          // Check if token is expired (basic check)
-          try {
-            const jwtPayload = JSON.parse(atob(tokenParts[1]));
-            const nowInSeconds = Math.floor(
-              Date.now() / MILLISECONDS_PER_SECOND
-            );
-
-            if (jwtPayload.exp && jwtPayload.exp < nowInSeconds) {
-              throw new ApiError("Token expired", 401);
-            }
-
-            headers.Authorization = `Bearer ${authToken}`;
-          } catch (_error) {
-            headers.Authorization = `Bearer ${authToken}`;
-          }
-        } else {
-          throw new ApiError("Invalid token format", 401);
-        }
+        headers.Authorization = `Bearer ${authToken}`;
       } else {
         const authError = new ApiError(
           "No authentication token available",

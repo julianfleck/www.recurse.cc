@@ -1,5 +1,6 @@
 "use client";
 import { useAuth0 } from "@auth0/auth0-react";
+import { registerTokenRefresher } from "@recurse/auth";
 import { useEffect } from "react";
 import { setApiAuthGetter } from "@/lib/api";
 import { isOnAuthPage } from "@/lib/auth-utils";
@@ -47,37 +48,53 @@ export function AuthInit() {
 		};
 	}, []);
 
-	// Set up API auth getter immediately if we have a token in store
+	// Wire the dashboard's auth store into the shared API service
+	// so API calls always read the latest token from Zustand.
 	useEffect(() => {
 		if (accessTokenFromStore) {
-			if (process.env.NODE_ENV === "development") {
-			}
 			setApiAuthGetter(() => useAuthStore.getState().accessToken);
 		} else {
-			if (process.env.NODE_ENV === "development") {
-			}
 			setApiAuthGetter(emptyTokenGetter);
 		}
 	}, [accessTokenFromStore]);
+
+	// Register a shared token refresher so the API layer can refresh tokens
+	// when it detects that a JWT has expired.
+	useEffect(() => {
+		const options = audience
+			? { authorizationParams: { audience, scope: scopes } }
+			: undefined;
+
+		registerTokenRefresher(async () => {
+			const token = await getAccessTokenSilently(options as never);
+			const accessToken =
+				typeof token === "string"
+					? token
+					: ((token as unknown as { access_token?: string })?.access_token ??
+							"");
+			const normalizedUser = user
+				? ({
+						sub: user.sub || "",
+						name: user.name,
+						email: user.email,
+						picture: user.picture,
+					} as const)
+				: undefined;
+			setAuth(accessToken, "auth0", normalizedUser);
+			return accessToken;
+		});
+	}, [audience, scopes, getAccessTokenSilently, setAuth, user]);
 
 	useEffect(() => {
 		// Prefer SDK-based login when available; otherwise respect a client-side token set via email/password flow
 		const isReady = !isLoading;
 
-		// Debug logging for auth state
-		if (process.env.NODE_ENV === "development") {
-		}
-
 		if (isReady && isAuthenticated && !error) {
-			if (process.env.NODE_ENV === "development") {
-			}
 			const options = audience
 				? { authorizationParams: { audience, scope: scopes } }
 				: undefined;
 			getAccessTokenSilently(options as never)
 				.then((token) => {
-					if (process.env.NODE_ENV === "development") {
-					}
 					const accessToken =
 						typeof token === "string"
 							? token
@@ -110,9 +127,6 @@ export function AuthInit() {
 						// Missing refresh token is expected when requesting tokens with audience/scope not in initial login
 						// Auth0 will handle this by triggering a new login flow if needed
 						// Don't clear auth or redirect - let Auth0 handle it or use existing token if available
-						if (process.env.NODE_ENV === "development") {
-						}
-						// If we have a token in store, keep using it - don't clear auth
 						if (!(accessTokenFromStore || onAuthPage)) {
 							// Only redirect if we truly have no token at all
 							window.location.href = "/login";
@@ -120,8 +134,6 @@ export function AuthInit() {
 						return;
 					}
 
-					if (process.env.NODE_ENV === "development") {
-					}
 					// Clear auth state and redirect to login on other token refresh failures
 					clear();
 					// API auth getter will be cleared by the separate effect above
@@ -131,8 +143,6 @@ export function AuthInit() {
 					}
 				});
 		} else if (isReady && (!accessTokenFromStore || error)) {
-			if (process.env.NODE_ENV === "development") {
-			}
 			clear();
 			// API auth getter will be cleared by the separate effect above
 			// Redirect to login if there's an Auth0 error (but not when already on auth pages)
@@ -151,6 +161,7 @@ export function AuthInit() {
 		audience,
 		error,
 		onAuthPage,
+		scopes,
 	]);
 
 	return null;

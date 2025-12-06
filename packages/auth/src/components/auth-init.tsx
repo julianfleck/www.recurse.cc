@@ -1,13 +1,15 @@
 "use client";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
-import { isOnAuthPage } from "../lib/auth-utils";
+import { isOnAuthPage, registerTokenRefresher } from "../lib/auth-utils";
 import { useAuthStore } from "./auth-store";
 
 // Note: API auth getter setup should be done by apps that need it (like dashboard)
 // This shared AuthInit focuses on auth state management only
 
-export function AuthInit({ skipRedirect = false }: { skipRedirect?: boolean } = {}) {
+export function AuthInit({
+  skipRedirect = false,
+}: { skipRedirect?: boolean } = {}) {
   const { user, isAuthenticated, isLoading, getAccessTokenSilently, error } =
     useAuth0();
   const setAuth = useAuthStore((s) => s.setAuth);
@@ -26,11 +28,16 @@ export function AuthInit({ skipRedirect = false }: { skipRedirect?: boolean } = 
     console.error = (...args) => {
       // Suppress Auth0 "Missing Refresh Token" errors - these are expected when requesting tokens
       // with an audience/scope that wasn't included in the initial login
-      const errorMessage = args.find(arg => typeof arg === 'string') as string | undefined;
-      if (errorMessage && (
-        errorMessage.includes('Missing Refresh Token') ||
-        (errorMessage.includes('refresh') && errorMessage.includes('token') && errorMessage.includes('audience'))
-      )) {
+      const errorMessage = args.find(
+        (arg) => typeof arg === "string",
+      ) as string | undefined;
+      if (
+        errorMessage &&
+        (errorMessage.includes("Missing Refresh Token") ||
+          (errorMessage.includes("refresh") &&
+            errorMessage.includes("token") &&
+            errorMessage.includes("audience")))
+      ) {
         return; // Suppress this error silently
       }
       originalConsoleError.apply(console, args);
@@ -41,13 +48,37 @@ export function AuthInit({ skipRedirect = false }: { skipRedirect?: boolean } = 
     };
   }, []);
 
-  // Note: API auth getter setup is handled by individual apps if needed
-  // Dashboard uses its own AuthInit that sets up API service
+  // Register a shared token refresher so any API client that integrates with
+  // @recurse/auth can refresh tokens when they expire.
+  useEffect(() => {
+    const options = audience
+      ? { authorizationParams: { audience, scope: scopes } }
+      : undefined;
+
+    registerTokenRefresher(async () => {
+      const token = await getAccessTokenSilently(options as never);
+      const accessToken =
+        typeof token === "string"
+          ? token
+          : ((token as unknown as { access_token?: string })?.access_token ??
+              "");
+      const normalizedUser = user
+        ? ({
+            sub: user.sub || "",
+            name: user.name,
+            email: user.email,
+            picture: user.picture,
+          } as const)
+        : undefined;
+      setAuth(accessToken, "auth0", normalizedUser);
+      return accessToken;
+    });
+  }, [audience, scopes, getAccessTokenSilently, setAuth, user]);
 
   useEffect(() => {
     // Prefer SDK-based login when available; otherwise respect a client-side token set via email/password flow
     const isReady = !isLoading;
-    
+
     // Debug logging for auth state
     if (process.env.NODE_ENV === "development") {
       console.log("[AuthInit] Auth state:", {
@@ -59,7 +90,7 @@ export function AuthInit({ skipRedirect = false }: { skipRedirect?: boolean } = 
         error: error?.message,
       });
     }
-    
+
     if (isReady && isAuthenticated && !error) {
       if (process.env.NODE_ENV === "development") {
         console.log("[AuthInit] Auth0 authenticated, getting token silently...");
@@ -72,7 +103,11 @@ export function AuthInit({ skipRedirect = false }: { skipRedirect?: boolean } = 
           if (process.env.NODE_ENV === "development") {
             console.log("[AuthInit] Got token from Auth0, setting in store");
           }
-          const accessToken = typeof token === "string" ? token : (token as unknown as { access_token?: string })?.access_token ?? "";
+          const accessToken =
+            typeof token === "string"
+              ? token
+              : ((token as unknown as { access_token?: string })
+                  ?.access_token ?? "");
           const normalizedUser = user
             ? ({
                 sub: user.sub || "",
@@ -82,11 +117,13 @@ export function AuthInit({ skipRedirect = false }: { skipRedirect?: boolean } = 
               } as const)
             : undefined;
           setAuth(accessToken, "auth0", normalizedUser);
-          // API auth getter will be set up by the separate effect above
         })
         .catch((tokenError) => {
           if (process.env.NODE_ENV === "development") {
-            console.error("[AuthInit] Failed to get token from Auth0:", tokenError);
+            console.error(
+              "[AuthInit] Failed to get token from Auth0:",
+              tokenError,
+            );
           }
           // Clear auth state and redirect to login on token refresh failures
           clear();
@@ -97,7 +134,9 @@ export function AuthInit({ skipRedirect = false }: { skipRedirect?: boolean } = 
         });
     } else if (isReady && (!accessTokenFromStore || error)) {
       if (process.env.NODE_ENV === "development") {
-        console.log("[AuthInit] Not authenticated, has Auth0 error, or no store token, clearing auth");
+        console.log(
+          "[AuthInit] Not authenticated, has Auth0 error, or no store token, clearing auth",
+        );
       }
       clear();
       // Redirect to login if there's an Auth0 error (but not when already on auth pages or if skipRedirect)
