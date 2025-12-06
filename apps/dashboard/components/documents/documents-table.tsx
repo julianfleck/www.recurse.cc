@@ -754,9 +754,12 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 			)}
 
 			{/* Table - fills remaining height and scrolls internally */}
-			<div className="flex-1 min-h-0 rounded-sm border">
-				<div className="h-full overflow-auto">
-					<Table className="table-fixed w-full" stickyHeader>
+			<div className="flex-1 min-h-0 rounded-sm border relative">
+				<Table
+					className="table-fixed w-full"
+					stickyHeader
+					containerClassName="absolute inset-0 overflow-auto"
+				>
 					<TableHeader sticky>
 						{table.getHeaderGroups().map((headerGroup) => (
 							<TableRow key={headerGroup.id}>
@@ -857,7 +860,6 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 						})()}
 					</TableBody>
 					</Table>
-				</div>
 			</div>
 
 			{/* Pagination info */}
