@@ -211,6 +211,8 @@ export function GraphView({
     setFocusedNodeId,
     layoutMode,
     setLayoutMode,
+    showMetadata,
+    setShowMetadata,
   } = graphState;
 
   // Build a tree index once the hierarchical treeData is ready
@@ -227,6 +229,7 @@ export function GraphView({
     collapsingChildIds: collapsingChildIdsRef.current,
     allNodes: [], // Will be computed by the hook
     allLinks: [], // Will be computed by the hook
+    excludeMetadata: !showMetadata,
   });
   const {
     allNodes,
@@ -1936,6 +1939,8 @@ export function GraphView({
               }
               setHighlightedNodeId(id);
             }}
+            showMetadata={showMetadata}
+            onShowMetadataChange={setShowMetadata}
             treeData={treeData}
           />
         )}

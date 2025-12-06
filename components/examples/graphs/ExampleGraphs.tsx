@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { GraphView } from "@/components/graph-view";
+import { GraphView } from "../../graph-view";
 import recurseSteppedData from "./default-example.json" with { type: "json" };
 import codeDocumentationData from "./code-documentation.json" with {
   type: "json",

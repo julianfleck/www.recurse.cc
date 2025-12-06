@@ -3,9 +3,230 @@ title: Saving Content
 description: Upload and process content via the API
 ---
 
-# Saving Content
+## Upload Methods
 
-Learn how to upload documents, process them, and track their status through the API.
+### Upload a File
 
-[Content placeholder - to be written]
+Upload documents in supported formats (PDF, Markdown, HTML, etc.):
 
+```bash
+curl -X POST "https://api.recurse.dev/documents/upload" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -F "file=@document.pdf" \
+  -F "title=My Document"
+```
+
+Response:
+
+```json
+{
+  "document_id": "abc123...",
+  "job_id": "job456...",
+  "status": "processing",
+  "message": "Document uploaded and processing started"
+}
+```
+
+### Submit Raw Content
+
+Submit text content directly:
+
+```bash
+curl -X POST "https://api.recurse.dev/documents/" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "API Design Guide",
+    "content": "# Introduction\n\nThis guide covers...",
+    "content_type": "markdown"
+  }'
+```
+
+### Submit a URL
+
+Process content from a URL:
+
+```bash
+curl -X POST "https://api.recurse.dev/documents/" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://example.com/article",
+    "title": "Example Article"
+  }'
+```
+
+## Processing Pipeline
+
+When you submit content, it goes through several stages:
+
+1. **Parsing** - Extract text and structure from the source format
+2. **Chunking** - Split into manageable sections
+3. **Frame Extraction** - Identify claims, definitions, methods, etc.
+4. **Embedding** - Generate semantic embeddings for search
+5. **Graph Building** - Create relationships between frames
+
+## Track Processing Status
+
+Check the status of a document:
+
+```bash
+curl "https://api.recurse.dev/documents/{document_id}/processing-status" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+Response:
+
+```json
+{
+  "document_id": "abc123...",
+  "status": "completed",
+  "progress": 100,
+  "stages": {
+    "parsing": "completed",
+    "chunking": "completed", 
+    "frame_extraction": "completed",
+    "embedding": "completed",
+    "graph_building": "completed"
+  },
+  "frames_extracted": 15,
+  "processing_time_ms": 12500
+}
+```
+
+### Status Values
+
+| Status | Meaning |
+|--------|---------|
+| `pending` | Queued for processing |
+| `processing` | Currently being analyzed |
+| `completed` | Successfully processed |
+| `failed` | Processing encountered an error |
+| `partial` | Some frames extracted, others failed |
+
+## Check Job Status
+
+Track a specific processing job:
+
+```bash
+curl "https://api.recurse.dev/jobs/{job_id}" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## List Your Documents
+
+Get all documents in your knowledge base:
+
+```bash
+curl "https://api.recurse.dev/documents/" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+Response:
+
+```json
+{
+  "documents": [
+    {
+      "id": "abc123...",
+      "title": "API Design Guide",
+      "type": "article",
+      "status": "completed",
+      "added_at": "2024-01-15T10:30:00Z",
+      "frame_count": 15
+    }
+  ],
+  "total": 1
+}
+```
+
+## Get Document Details
+
+Retrieve a specific document:
+
+```bash
+curl "https://api.recurse.dev/documents/{document_id}" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Resume Failed Processing
+
+If processing fails, you can retry:
+
+```bash
+curl -X POST "https://api.recurse.dev/documents/{document_id}/resume-processing" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Delete a Document
+
+Remove a document and all its frames:
+
+```bash
+curl -X DELETE "https://api.recurse.dev/documents/{document_id}" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Supported Formats
+
+| Format | Extension | Notes |
+|--------|-----------|-------|
+| Markdown | `.md` | Best for structured content |
+| PDF | `.pdf` | Text extracted, images ignored |
+| HTML | `.html` | Cleaned and structured |
+| Plain Text | `.txt` | Minimal structure |
+| Word | `.docx` | Basic support |
+
+## Best Practices
+
+1. **Use Markdown when possible** - Best structure preservation
+2. **Include meaningful titles** - Helps with search and organization
+3. **Wait for completion** - Don't query content until processing finishes
+4. **Check for failures** - Monitor status and retry if needed
+5. **Batch uploads** - For multiple files, upload sequentially and track jobs
+
+## Example: Upload and Wait for Completion
+
+```python
+import requests
+import time
+
+# Upload document
+response = requests.post(
+    "https://api.recurse.dev/documents/upload",
+    headers={"Authorization": "Bearer YOUR_API_KEY"},
+    files={"file": open("document.md", "rb")},
+    data={"title": "My Document"}
+)
+doc_id = response.json()["document_id"]
+
+# Poll for completion
+while True:
+    status = requests.get(
+        f"https://api.recurse.dev/documents/{doc_id}/processing-status",
+        headers={"Authorization": "Bearer YOUR_API_KEY"}
+    ).json()
+    
+    if status["status"] == "completed":
+        print(f"Done! Extracted {status['frames_extracted']} frames")
+        break
+    elif status["status"] == "failed":
+        print(f"Failed: {status.get('error')}")
+        break
+    
+    time.sleep(2)  # Wait 2 seconds before checking again
+```
+
+## Next Steps
+
+<Cards>
+  <Card title="Retrieving Context" href="/guides/using-the-api/retrieving-context">
+    Search your content
+  </Card>
+  <Card title="Documents API Reference" href="/api-documentation/documents">
+    Complete endpoint docs
+  </Card>
+  <Card title="Jobs API Reference" href="/api-documentation/jobs">
+    Job tracking endpoints
+  </Card>
+</Cards>

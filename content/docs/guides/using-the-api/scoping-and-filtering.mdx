@@ -1,11 +1,227 @@
 ---
 title: Scoping and Filtering
-description: Refine your queries with scopes, filters, and advanced options
+description: Refine your queries with field sets, type filters, and advanced options
 ---
 
 # Scoping and Filtering
 
-Learn how to scope queries to specific sources, filter by metadata, and use advanced query options to get precise results.
+Refine your search queries using field sets, type filters, and advanced query syntax to get precise results.
 
-[Content placeholder - to be written]
+## Field Sets
 
+Control how much detail is returned using the `field_set` parameter:
+
+| Field Set | Includes | Use Case |
+|-----------|----------|----------|
+| `basic` | id, title, summary, gist, type | Quick lookups, citations |
+| `content` | basic + text | When you need the full content |
+| `metadata` | basic + tags, hypernyms, hyponyms | Categorization, filtering |
+| `all` | All available fields | Full context |
+
+```bash
+# Get basic fields (default)
+curl "https://api.recurse.dev/search/?query=...&field_set=basic"
+
+# Get full content
+curl "https://api.recurse.dev/search/?query=...&field_set=content"
+
+# Get semantic metadata
+curl "https://api.recurse.dev/search/?query=...&field_set=metadata"
+```
+
+### Metadata Example
+
+With `field_set=metadata`, results include semantic classification:
+
+```json
+{
+  "id": "abc123...",
+  "title": "Model Training",
+  "metadata": {
+    "tags": ["training", "models", "optimization"],
+    "hypernyms": ["machine learning", "AI"],
+    "hyponyms": ["gradient descent", "backpropagation"]
+  }
+}
+```
+
+### Frame Slots
+
+Some frame types include structured slot data in a `slots` object:
+
+```json
+{
+  "id": "claim123...",
+  "title": "Performance Claim",
+  "type": "claim",
+  "score": 0.85,
+  "slots": {
+    "confidence": "certain",
+    "strength": "strong"
+  },
+  "children": []
+}
+```
+
+## Query Syntax
+
+The search endpoint supports a powerful query syntax that combines natural language with structured filters.
+
+### Pure Semantic Search
+
+A plain text query performs semantic search:
+
+```bash
+curl "https://api.recurse.dev/search/?query=best+practices+for+API+design"
+```
+
+### Type Filters
+
+Filter by frame type using the `type:` prefix:
+
+```bash
+# Find only claims
+curl "https://api.recurse.dev/search/?query=type:claim"
+
+# Find only definitions  
+curl "https://api.recurse.dev/search/?query=type:definition"
+
+# Find sections
+curl "https://api.recurse.dev/search/?query=type:section"
+```
+
+### Combined Queries
+
+Combine semantic search with type filters:
+
+```bash
+# Find claims about performance
+curl "https://api.recurse.dev/search/?query=type:claim+performance+benchmarks"
+
+# Find definitions of technical terms
+curl "https://api.recurse.dev/search/?query=type:definition+machine+learning"
+```
+
+## Available Frame Types
+
+| Type | Description | Example |
+|------|-------------|---------|
+| `section` | Document sections with headers | Chapter, heading |
+| `claim` | Assertions that can be verified | "X improves Y by 20%" |
+| `definition` | Explanations of terms/concepts | "RAG is..." |
+| `example` | Illustrative instances | Code samples, case studies |
+| `method` | Processes and procedures | Step-by-step guides |
+| `supporting_evidence` | Data backing claims | Statistics, citations |
+
+## ID-Based Lookup
+
+Retrieve specific nodes by ID:
+
+```bash
+# Single ID
+curl "https://api.recurse.dev/search/?query=id:abc123"
+
+# Multiple IDs
+curl "https://api.recurse.dev/search/?query=id:abc123,def456,ghi789"
+```
+
+ID lookups bypass semantic search and return exact matches.
+
+## Hierarchical Search (Depth)
+
+Control how deep to search in the document hierarchy:
+
+```bash
+# Flat results (default for most queries)
+curl "https://api.recurse.dev/search/?query=...&depth=0"
+
+# Include one level of children
+curl "https://api.recurse.dev/search/?query=...&depth=1"
+
+# Include full subtree
+curl "https://api.recurse.dev/search/?query=...&depth=2"
+```
+
+Use `depth > 0` when you want to retrieve a section along with all its nested content.
+
+## Strict Mode
+
+For high-precision use cases, enable strict mode to filter out uncertain matches:
+
+```bash
+curl "https://api.recurse.dev/search/?query=...&strict=true"
+```
+
+In strict mode:
+- Results with low confidence are filtered out
+- Empty results are returned rather than uncertain matches
+- Best for fact-checking and precise retrieval
+
+## Relevance Scoring
+
+Every result includes a `score` field from 0 to 1:
+
+| Score Range | Interpretation |
+|-------------|----------------|
+| 0.7 - 1.0 | High confidence match |
+| 0.5 - 0.7 | Good match |
+| 0.35 - 0.5 | Partial match |
+| < 0.35 | Filtered out by default |
+
+## Response Metadata
+
+The response includes metadata about how your query was processed:
+
+```json
+{
+  "query": "semantic:API design",
+  "total_found": 15,
+  "returned_count": 5,
+  "search_time_ms": 145.2,
+  "filters_applied": ["semantic", "type"],
+  "cutoff_applied": "gap_detection"
+}
+```
+
+## Advanced Examples
+
+### Find High-Confidence Claims
+
+```bash
+curl "https://api.recurse.dev/search/?query=type:claim+performance&strict=true&limit=5"
+```
+
+### Get Full Document Section with Children
+
+```bash
+curl "https://api.recurse.dev/search/?query=id:section123&depth=2&field_set=content"
+```
+
+### Search with Children
+
+```bash
+curl "https://api.recurse.dev/search/?query=machine+learning&depth=1&field_set=basic&limit=10"
+```
+
+> **Note:** For citation-style output with `citation_index`, use the `/writing/answer` endpoint instead.
+
+## Best Practices
+
+1. **Start broad, then filter**: Begin with semantic search, add type filters to narrow down
+2. **Use appropriate field sets**: Request only the fields you need to reduce latency
+3. **Enable strict mode for facts**: When accuracy matters more than recall
+4. **Use pagination for large result sets**: Don't request more than you need
+
+## Next Steps
+
+<Cards>
+  <Card title="Retrieving Context" href="/guides/using-the-api/retrieving-context">
+    Response structure and grouping
+  </Card>
+  <Card title="Retrieving Graphs" href="/guides/using-the-api/retrieving-graphs">
+    Navigate relationships
+  </Card>
+  <Card title="Search API Reference" href="/api-documentation/search">
+    Complete API documentation
+  </Card>
+</Cards>

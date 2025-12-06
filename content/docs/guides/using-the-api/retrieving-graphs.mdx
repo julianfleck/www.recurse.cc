@@ -3,9 +3,231 @@ title: Retrieving Graphs
 description: Navigate and explore knowledge graphs via the API
 ---
 
-# Retrieving Graphs
+## Graph Structure
 
-Learn how to navigate knowledge graphs, explore relationships between nodes, and retrieve structured information about your content.
+```
+Document
+├── Section: "Introduction"
+│   ├── Definition: "What is RAG?"
+│   └── Claim: "RAG improves accuracy"
+├── Section: "Methods"
+│   ├── Method: "Implementation steps"
+│   └── Example: "Code sample"
+└── Section: "Results"
+    └── Supporting Evidence: "Performance data"
+```
 
-[Content placeholder - to be written]
+## Node Endpoints
 
+### Get Node by ID
+
+Retrieve a specific node with its data:
+
+```bash
+curl "https://api.recurse.dev/node/{node_id}" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Node Field Sets
+
+Like search, node endpoints support field sets:
+
+```bash
+# Basic fields
+curl "https://api.recurse.dev/node/{node_id}/basic"
+
+# Full content
+curl "https://api.recurse.dev/node/{node_id}/content"
+
+# With metadata
+curl "https://api.recurse.dev/node/{node_id}/metadata"
+
+# Everything
+curl "https://api.recurse.dev/node/{node_id}/all"
+```
+
+### Get Node Relationships
+
+See how a node connects to others:
+
+```bash
+curl "https://api.recurse.dev/node/{node_id}/relationships"
+```
+
+Response:
+
+```json
+{
+  "node_id": "abc123",
+  "relationships": {
+    "parents": ["doc789"],
+    "children": ["def456", "ghi012"],
+    "supports": ["claim345"],
+    "illustrates": ["section678"]
+  }
+}
+```
+
+## Tree Navigation
+
+### Get Children
+
+Retrieve all direct children of a node:
+
+```bash
+curl "https://api.recurse.dev/tree/children/{node_id}" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Get Parents
+
+Find the parent(s) of a node:
+
+```bash
+curl "https://api.recurse.dev/tree/parents/{node_id}"
+```
+
+### Get Root
+
+Navigate to the root document:
+
+```bash
+curl "https://api.recurse.dev/tree/root/{node_id}"
+```
+
+### Get Full Subtree
+
+Retrieve a node with all its descendants:
+
+```bash
+curl "https://api.recurse.dev/tree/{node_id}" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+Response:
+
+```json
+{
+  "id": "section123",
+  "title": "Introduction",
+  "type": "Frame:section",
+  "children": [
+    {
+      "id": "def456",
+      "title": "What is RAG?",
+      "type": "Frame:definition",
+      "children": []
+    },
+    {
+      "id": "claim789",
+      "title": "RAG improves accuracy",
+      "type": "Frame:claim",
+      "children": []
+    }
+  ]
+}
+```
+
+### Get Neighbors
+
+Find related nodes (siblings, parents, related content):
+
+```bash
+curl "https://api.recurse.dev/tree/neighbors/{node_id}"
+```
+
+## Depth Control
+
+Control how deep to traverse when fetching trees:
+
+```bash
+# Just the node itself
+curl "https://api.recurse.dev/tree/{node_id}?depth=0"
+
+# Node + direct children
+curl "https://api.recurse.dev/tree/{node_id}?depth=1"
+
+# Node + children + grandchildren
+curl "https://api.recurse.dev/tree/{node_id}?depth=2"
+```
+
+## Field Sets in Tree Queries
+
+Apply field sets to tree queries:
+
+```bash
+# Get subtree with full content
+curl "https://api.recurse.dev/tree/{node_id}?field_set=content&depth=2"
+```
+
+The field set applies to all nodes in the response.
+
+## Relationship Types
+
+Nodes are connected by semantic relationships:
+
+| Relationship | Meaning |
+|--------------|---------|
+| `CONTAINS` | Parent-child structure (document → section) |
+| `SUPPORTS` | Evidence supporting a claim |
+| `ILLUSTRATES` | Example demonstrating a concept |
+| `CITES` | Reference to external source |
+| `DEFINES` | Definition of a term |
+
+## Example: Build a Document Outline
+
+Fetch a document's structure for navigation:
+
+```bash
+# Get document with first level of children
+curl "https://api.recurse.dev/tree/{document_id}?depth=1&field_set=basic"
+```
+
+```json
+{
+  "id": "doc123",
+  "title": "ML Engineering Guide",
+  "type": "Document:article",
+  "children": [
+    {"id": "sec1", "title": "Introduction", "type": "Frame:section"},
+    {"id": "sec2", "title": "Methods", "type": "Frame:section"},
+    {"id": "sec3", "title": "Results", "type": "Frame:section"}
+  ]
+}
+```
+
+## Example: Find Supporting Evidence
+
+Given a claim, find its supporting evidence:
+
+```bash
+# Get claim with relationships
+curl "https://api.recurse.dev/node/{claim_id}/relationships"
+```
+
+Then fetch the supporting nodes:
+
+```bash
+curl "https://api.recurse.dev/search/?query=id:evidence1,evidence2&field_set=content"
+```
+
+## Best Practices
+
+1. **Use depth wisely**: Large trees with `depth=2+` can return lots of data
+2. **Choose appropriate field sets**: Use `basic` for navigation, `content` when you need the text
+3. **Cache document structures**: Document outlines rarely change
+4. **Navigate incrementally**: Fetch children on demand rather than entire trees
+
+## Next Steps
+
+<Cards>
+  <Card title="Retrieving Context" href="/guides/using-the-api/retrieving-context">
+    Search and retrieval
+  </Card>
+  <Card title="Tree API Reference" href="/api-documentation/tree">
+    Complete tree endpoints
+  </Card>
+  <Card title="Node API Reference" href="/api-documentation/node">
+    Complete node endpoints
+  </Card>
+</Cards>

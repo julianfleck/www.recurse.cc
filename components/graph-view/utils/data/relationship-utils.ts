@@ -7,7 +7,9 @@ import type {
 /**
  * Check if a node is metadata based on its type or ID
  */
-export const isMetadata = (idOrNode: string | DataNode): boolean => {
+export const isMetadata = (idOrNode: string | DataNode | null | undefined): boolean => {
+  if (!idOrNode) return false;
+
   const id = typeof idOrNode === "string" ? idOrNode : idOrNode.id;
   const node = typeof idOrNode === "string" ? null : idOrNode;
   const type = node?.type?.toLowerCase();

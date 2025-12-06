@@ -7,16 +7,14 @@ import { cn } from "@/lib/utils";
 interface TableProps extends React.ComponentProps<"table"> {
 	stickyHeader?: boolean;
 	maxHeight?: string;
-	containerClassName?: string;
 }
 
-function Table({ className, stickyHeader, maxHeight, containerClassName, ...props }: TableProps) {
+function Table({ className, stickyHeader, maxHeight, ...props }: TableProps) {
 	const containerClasses = cn(
 		"relative w-full",
 		stickyHeader && maxHeight
 			? `${maxHeight} overflow-auto`
 			: "overflow-x-auto",
-		containerClassName,
 	);
 
 	return (

@@ -1,0 +1,147 @@
+---
+title: Deleting Content
+description: Remove documents and nodes from your knowledge graph
+---
+
+# Deleting Content
+
+Remove content and individual nodes from your knowledge graph.
+
+Delete content and all its associated child nodes (sections, frames, metadata):
+
+```bash
+curl -X DELETE "https://api.recurse.dev/documents/{doc_id}" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+Response:
+
+```json
+{
+  "deletion_type": "full",
+  "document_id": "doc_ai_research_2024",
+  "deleted": {
+    "documents": 1,
+    "sections": 5,
+    "frames": 23,
+    "relationships": null,
+    "vault_files": 1
+  },
+  "preserved": {
+    "shared_frames": 2
+  },
+  "warnings": []
+}
+```
+
+> **Note:** Frames that are shared by other sources are automatically preserved when deleting content. Only frames exclusive to the deleted content are removed.
+
+### Dry Run Mode
+
+Preview what will be deleted without making changes:
+
+```bash
+curl -X DELETE "https://api.recurse.dev/documents/{doc_id}?dry_run=true" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Orphan Cleanup
+
+By default, orphaned nodes (nodes with no relationships) are automatically cleaned up after deletion:
+
+```bash
+# Cleanup enabled (default)
+curl -X DELETE "https://api.recurse.dev/documents/{doc_id}?cleanup_orphans=true" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+
+# Disable cleanup
+curl -X DELETE "https://api.recurse.dev/documents/{doc_id}?cleanup_orphans=false" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+Orphan cleanup removes nodes that have no relationships and disconnected metadata clusters.
+
+## Deleting Individual Nodes
+
+Delete a single node from the graph:
+
+```bash
+curl -X DELETE "https://api.recurse.dev/node/{node_id}/delete" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+Response:
+
+```json
+{
+  "node_id": "frame_claim_123",
+  "labels": ["Frame", "Claim"],
+  "deleted": {
+    "nodes": 1,
+    "relationships": 3
+  },
+  "warnings": []
+}
+```
+
+### Dry Run for Nodes
+
+Preview node deletion:
+
+```bash
+curl -X DELETE "https://api.recurse.dev/node/{node_id}/delete?dry_run=true" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Restrictions
+
+- Cannot delete authentication/identity nodes (User, Role, APIKey, Permission, Identity)
+- Document nodes must be deleted via `/documents/{id}` endpoint
+- Only nodes you own can be deleted
+
+## Query Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `dry_run` | boolean | `false` | Preview deletion without making changes |
+| `cleanup_orphans` | boolean | `true` | Remove orphaned nodes after deletion |
+
+## Examples
+
+### Delete Content
+
+```bash
+curl -X DELETE "https://api.recurse.dev/documents/doc_my_document" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Delete a Specific Frame
+
+```bash
+curl -X DELETE "https://api.recurse.dev/node/frame_claim_123/delete" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Preview Before Deleting
+
+```bash
+curl -X DELETE "https://api.recurse.dev/documents/{doc_id}?dry_run=true" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Next Steps
+
+<Cards>
+  <Card title="Saving Content" href="/guides/using-the-api/saving-content">
+    Upload and process documents
+  </Card>
+  <Card title="Retrieving Context" href="/guides/using-the-api/retrieving-context">
+    Search your knowledge base
+  </Card>
+  <Card title="Documents API Reference" href="/api-documentation/documents/doc_id-delete">
+    Complete endpoint documentation
+  </Card>
+  <Card title="Node API Reference" href="/api-documentation/node/node_id-delete-delete">
+    Node deletion endpoint details
+  </Card>
+</Cards>

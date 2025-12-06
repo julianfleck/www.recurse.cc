@@ -96,6 +96,8 @@ export type GraphState = {
   setHighlightSource: Dispatch<SetStateAction<"graph" | "sidepanel" | null>>;
   layoutMode: "force" | "hierarchical";
   setLayoutMode: Dispatch<SetStateAction<"force" | "hierarchical">>;
+  showMetadata: boolean;
+  setShowMetadata: Dispatch<SetStateAction<boolean>>;
 };
 
 export function useGraphState(): GraphState {
@@ -176,6 +178,7 @@ export function useGraphState(): GraphState {
   const [layoutMode, setLayoutMode] = useState<"force" | "hierarchical">(
     "force"
   );
+  const [showMetadata, setShowMetadata] = useState<boolean>(false);
 
   return {
     // Refs
@@ -242,5 +245,7 @@ export function useGraphState(): GraphState {
     setHighlightSource,
     layoutMode,
     setLayoutMode,
+    showMetadata,
+    setShowMetadata,
   };
 }

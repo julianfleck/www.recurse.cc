@@ -15,6 +15,8 @@ export type UseGraphDataParams = {
   collapsingChildIds: Set<string>;
   allNodes: DataNode[];
   allLinks: DataLink[];
+  /** When true, excludes metadata nodes (tags, hypernyms, hyponyms) from the visible set */
+  excludeMetadata?: boolean;
 };
 
 export type GraphDataResult = {
@@ -35,6 +37,7 @@ export function useGraphData({
   collapsingChildIds,
   allNodes,
   allLinks,
+  excludeMetadata = false,
 }: UseGraphDataParams): GraphDataResult {
   // Transform nodes and links for D3.js consumption
   const computedAllNodes = useMemo<DataNode[]>(() => {
@@ -70,6 +73,7 @@ export function useGraphData({
       expandedNodes,
       filteredNodeIds,
       collapsingChildIds,
+      excludeMetadata,
     });
   }, [
     finalAllNodes,
@@ -77,6 +81,7 @@ export function useGraphData({
     expandedNodes,
     filteredNodeIds,
     collapsingChildIds,
+    excludeMetadata,
   ]);
 
   // Filter nodes to only visible ones

@@ -424,7 +424,20 @@ export class GraphDataManager {
   }
 
   /**
+   * Helper to normalize type strings from API (e.g., "Document:technical_documentation" -> "document")
+   */
+  private normalizeType(type: string): string {
+    if (!type) return "unknown";
+    const lower = type.toLowerCase();
+    // Handle prefixed types like "Document:technical_documentation" or "Frame:section"
+    if (lower.startsWith("document:")) return "document";
+    if (lower.startsWith("frame:")) return lower.split(":")[1] || "section";
+    return lower;
+  }
+
+  /**
    * Load initial documents with their full tree structure
+   * Uses /search/document endpoint which returns nodes with nested children
    */
   async loadInitialDocuments(): Promise<{
     nodes: GraphNode[];
@@ -433,15 +446,15 @@ export class GraphDataManager {
     try {
       const _tStart =
         typeof performance !== "undefined" ? performance.now() : Date.now();
-      // Use unified search to fetch documents and their tree structure with sufficient depth
       if (!this.apiService) {
         throw new Error("API service not available");
       }
+      // Use /search/document which returns documents with nested children
       const res = await this.apiService.get("/search/document", {
         field_set: "metadata",
         depth: 2,
         min_score: 0,
-        limit: 5,
+        limit: 10,
         page: 1,
       });
       const _tAfterApi =
@@ -459,6 +472,7 @@ export class GraphDataManager {
         created_at?: string;
         updated_at?: string;
         index?: number | null;
+        hasChildren?: boolean;
       }): void => {
         if (seen.has(n.id)) {
           return;
@@ -472,7 +486,7 @@ export class GraphDataManager {
           created_at: n.created_at,
           updated_at: n.updated_at,
           index: typeof n.index === "number" ? n.index : undefined,
-          hasChildren: false,
+          hasChildren: n.hasChildren ?? false,
         });
       };
 
@@ -487,7 +501,6 @@ export class GraphDataManager {
         for (const v of values) {
           const title = v;
           const metaId = this.getOrRegisterMetaId(kind, title);
-          // Only create the node once
           if (!seen.has(metaId)) {
             ensureNode({ id: metaId, title, type: kind });
           }
@@ -502,7 +515,6 @@ export class GraphDataManager {
         const result: string[] = [];
 
         if (obj && typeof obj === "object") {
-          // Check metadata.tags, metadata.hypernyms, metadata.hyponyms
           const meta = (obj as { metadata?: unknown }).metadata;
           if (meta && typeof meta === "object") {
             const fromMetadata = (meta as Record<string, unknown>)[key];
@@ -515,7 +527,6 @@ export class GraphDataManager {
             }
           }
 
-          // Also check direct properties: data.tags, data.hypernyms, data.hyponyms
           const direct = (obj as Record<string, unknown>)[key];
           if (Array.isArray(direct)) {
             const validStrings = (direct as unknown[])
@@ -526,7 +537,6 @@ export class GraphDataManager {
           }
         }
 
-        // Normalize to lowercase for deduplication, but preserve original case for display
         const normalized = new Map<string, string>();
         for (const item of result) {
           const lower = item.toLowerCase();
@@ -538,11 +548,14 @@ export class GraphDataManager {
         return Array.from(normalized.values());
       };
 
+      // Walk through nodes with nested children structure
+      // Works for both: new API format with "children" and legacy format
       const walk = (sn: SearchNode, parentId?: string) => {
-        // Canonicalize metadata node ids to avoid duplicates
         const typeLower = (sn.type || "").toLowerCase();
         const idLower = (sn.id || "").toLowerCase();
         let nodeIdToUse: string = sn.id;
+        
+        // Canonicalize metadata node ids
         if (
           typeLower === "tag" ||
           typeLower === "hypernym" ||
@@ -558,10 +571,7 @@ export class GraphDataManager {
           let kind: "tag" | "hypernym" | "hyponym" | null = null;
           if (typeLower === "tag" || idLower.startsWith("tag")) {
             kind = "tag";
-          } else if (
-            typeLower === "hypernym" ||
-            idLower.startsWith("hypernym")
-          ) {
+          } else if (typeLower === "hypernym" || idLower.startsWith("hypernym")) {
             kind = "hypernym";
           } else if (typeLower === "hyponym" || idLower.startsWith("hyponym")) {
             kind = "hyponym";
@@ -576,18 +586,26 @@ export class GraphDataManager {
           }
         }
 
+        // Normalize the type for display
+        const normalizedType = this.normalizeType(sn.type || "");
+        
+        // Check if this node has children
+        const childNodes = Array.isArray(sn.children) ? sn.children : [];
+        const hasChildren = childNodes.length > 0;
+
         // Create/ensure owner node with canonical id
         ensureNode({
           ...sn,
           id: nodeIdToUse,
           title: sn.title ?? null,
-          type: sn.type ?? "",
+          type: normalizedType,
+          hasChildren,
         });
         if (parentId) {
           links.push({ source: parentId, target: nodeIdToUse });
         }
 
-        // Connect metadata arrays from sn.metadata (fallback to legacy arrays)
+        // Connect metadata arrays
         const tags = getMetaList(sn, "tags");
         const hypernyms = getMetaList(sn, "hypernyms");
         const hyponyms = getMetaList(sn, "hyponyms");
@@ -597,7 +615,6 @@ export class GraphDataManager {
         upsertMetadata(nodeIdToUse, "hyponym", hyponyms);
 
         // Recurse children
-        const childNodes = Array.isArray(sn.children) ? sn.children : [];
         for (const ch of childNodes) {
           walk(ch, nodeIdToUse);
         }
@@ -607,25 +624,91 @@ export class GraphDataManager {
       const responseData = res.data as { nodes?: unknown[] };
       const nodes_from_api = responseData?.nodes || [];
 
-      for (const root of nodes_from_api) {
-        walk(root as any, undefined);
+      // Type for document + citations format
+      type CitationNode = {
+        citation_index?: number;
+        id: string;
+        title: string;
+        summary?: string | null;
+        type: string;
+        section_index?: number;
+        children?: CitationNode[];
+      };
+
+      type DocumentCitationNode = {
+        document: {
+          id: string;
+          title: string;
+          url?: string | null;
+          type: string;
+          added_at?: string;
+          summary?: string | null;
+          tags?: string[];
+        };
+        citations: CitationNode[];
+      };
+
+      // Recursively convert CitationNode to SearchNode format
+      // This ensures all nested children at any depth are properly converted
+      const convertCitationToSearchNode = (citation: CitationNode): SearchNode => {
+        return {
+          id: citation.id,
+          title: citation.title,
+          type: citation.type,
+          summary: citation.summary,
+          index: citation.section_index,
+          // Recursively convert all children at any depth
+          children: citation.children?.map(convertCitationToSearchNode),
+        };
+      };
+
+      // Check if this is the document+citations format or direct nodes format
+      if (nodes_from_api.length > 0) {
+        const firstNode = nodes_from_api[0] as Record<string, unknown>;
+        
+        if ("document" in firstNode && "citations" in firstNode) {
+          // New format: document + citations (children nested in first citation)
+          for (const item of nodes_from_api) {
+            const docNode = item as DocumentCitationNode;
+            const doc = docNode.document;
+            const citations = docNode.citations || [];
+            
+            // Find the first citation (self-reference) which contains the children
+            const firstCitation = citations.find(c => c.id === doc.id);
+            const children = firstCitation?.children || [];
+            
+            // Create a SearchNode structure that walk() can process
+            // Use recursive conversion to handle children at any depth
+            const nodeForWalk: SearchNode = {
+              id: doc.id,
+              title: doc.title,
+              type: doc.type,
+              summary: doc.summary,
+              created_at: doc.added_at,
+              children: children.map(convertCitationToSearchNode),
+            };
+            
+            walk(nodeForWalk, undefined);
+          }
+        } else {
+          // Direct format: nodes with nested children (example graphs, legacy)
+          for (const root of nodes_from_api) {
+            walk(root as SearchNode, undefined);
+          }
+        }
       }
 
-      // Sort nodes for stable presentation: documents first, then by index/title
+      // Sort nodes: documents first, then by index/title
       nodes.sort((a, b) => {
         const at = (a.type || "").toLowerCase();
         const bt = (b.type || "").toLowerCase();
-        const aIsDoc =
-          at === "document" || at.startsWith("document:") || at === "folder";
-        const bIsDoc =
-          bt === "document" || bt.startsWith("document:") || bt === "folder";
+        const aIsDoc = at === "document" || at.startsWith("document:") || at === "folder";
+        const bIsDoc = bt === "document" || bt.startsWith("document:") || bt === "folder";
         if (aIsDoc !== bIsDoc) {
           return aIsDoc ? -1 : 1;
         }
-        const ai =
-          typeof a.index === "number" ? a.index : Number.NEGATIVE_INFINITY;
-        const bi =
-          typeof b.index === "number" ? b.index : Number.NEGATIVE_INFINITY;
+        const ai = typeof a.index === "number" ? a.index : Number.NEGATIVE_INFINITY;
+        const bi = typeof b.index === "number" ? b.index : Number.NEGATIVE_INFINITY;
         if (ai !== bi) {
           return ai - bi;
         }
@@ -634,21 +717,10 @@ export class GraphDataManager {
 
       const _tEnd =
         typeof performance !== "undefined" ? performance.now() : Date.now();
-      // Mark all nodes from initial load as fetched to prevent redundant fetchChildren calls
-      const allNodeIds = new Set<string>();
-      const collectNodeIds = (nodeList: SearchNode[]) => {
-        for (const node of nodeList) {
-          if (node.id) {
-            allNodeIds.add(node.id);
-          }
-          if (node.children && Array.isArray(node.children)) {
-            collectNodeIds(node.children);
-          }
-        }
-      };
-      collectNodeIds(nodes_from_api as any);
-      for (const nodeId of allNodeIds) {
-        this.fetchedNodes.add(nodeId);
+      
+      // Mark all node IDs as fetched
+      for (const node of nodes) {
+        this.fetchedNodes.add(node.id);
       }
 
       this.onDataUpdate?.({ nodes, links });
@@ -661,6 +733,7 @@ export class GraphDataManager {
 
   /**
    * Fetch children for a specific node
+   * Uses /search with id parameter which returns nodes with nested children
    */
   async fetchChildren(
     nodeId: string,
@@ -676,13 +749,11 @@ export class GraphDataManager {
     }
 
     try {
-      // Prefer unified search by id for consistency with initial load
+      // Use /search with id parameter to fetch children
       const res = await this.apiService.search({
         id: nodeId,
-        // Only fetch one level of children to avoid over-expansion
         depth: 1,
         field_set: "metadata",
-        // page/limit not relevant for id lookup
       });
 
       const newNodes: GraphNode[] = [];
@@ -698,6 +769,7 @@ export class GraphDataManager {
         created_at?: string;
         updated_at?: string;
         index?: number | null;
+        hasChildren?: boolean;
       }): void => {
         if (seen.has(n.id)) {
           return;
@@ -711,7 +783,7 @@ export class GraphDataManager {
           created_at: n.created_at,
           updated_at: n.updated_at,
           index: typeof n.index === "number" ? n.index : undefined,
-          hasChildren: false,
+          hasChildren: n.hasChildren ?? false,
         });
       };
 
@@ -740,7 +812,6 @@ export class GraphDataManager {
         const result: string[] = [];
 
         if (obj && typeof obj === "object") {
-          // Check metadata.tags, metadata.hypernyms, metadata.hyponyms
           const meta = (obj as { metadata?: unknown }).metadata;
           if (meta && typeof meta === "object") {
             const fromMetadata = (meta as Record<string, unknown>)[key];
@@ -752,7 +823,6 @@ export class GraphDataManager {
             }
           }
 
-          // Also check direct properties: data.tags, data.hypernyms, data.hyponyms
           const direct = (obj as Record<string, unknown>)[key];
           if (Array.isArray(direct)) {
             const validStrings = (direct as unknown[]).filter(
@@ -762,7 +832,6 @@ export class GraphDataManager {
           }
         }
 
-        // Normalize to lowercase for deduplication, but preserve original case for display
         const normalized = new Map<string, string>();
         for (const item of result) {
           const lower = item.toLowerCase();
@@ -775,11 +844,14 @@ export class GraphDataManager {
       };
 
       const rootId = nodeId;
+      
+      // Walk through nodes with nested children structure
       const walk = (sn: SearchNode, parentId?: string, depthLeft = 1) => {
-        // Canonicalize potential metadata node ids
         const typeLower = (sn.type || "").toLowerCase();
         const idLower = (sn.id || "").toLowerCase();
         let nodeIdToUse: string = sn.id;
+        
+        // Canonicalize metadata node ids
         if (
           typeLower === "tag" ||
           typeLower === "hypernym" ||
@@ -795,10 +867,7 @@ export class GraphDataManager {
           let kind: "tag" | "hypernym" | "hyponym" | null = null;
           if (typeLower === "tag" || idLower.startsWith("tag")) {
             kind = "tag";
-          } else if (
-            typeLower === "hypernym" ||
-            idLower.startsWith("hypernym")
-          ) {
+          } else if (typeLower === "hypernym" || idLower.startsWith("hypernym")) {
             kind = "hypernym";
           } else if (typeLower === "hyponym" || idLower.startsWith("hyponym")) {
             kind = "hyponym";
@@ -813,24 +882,34 @@ export class GraphDataManager {
           }
         }
 
+        // Normalize the type for display
+        const normalizedType = this.normalizeType(sn.type || "");
+        
+        // Check if this node has children
+        const childNodes = Array.isArray(sn.children) ? sn.children : [];
+        const hasChildren = childNodes.length > 0;
+
         ensureNode({
           ...sn,
           id: nodeIdToUse,
           title: sn.title ?? null,
-          type: sn.type ?? "",
+          type: normalizedType,
+          hasChildren,
         });
+        
         if (parentId) {
-          // Only treat direct children of the requested node as children
+          // Track direct children of the requested node
           if (parentId === rootId) {
             childrenIds.add(nodeIdToUse);
           }
           newLinks.push({ source: parentId, target: nodeIdToUse });
         }
+        
         upsertMetadata(nodeIdToUse, "tag", getMetaList(sn, "tags"));
         upsertMetadata(nodeIdToUse, "hypernym", getMetaList(sn, "hypernyms"));
         upsertMetadata(nodeIdToUse, "hyponym", getMetaList(sn, "hyponyms"));
 
-        const childNodes = Array.isArray(sn.children) ? sn.children : [];
+        // Recurse children up to depth limit
         if (depthLeft > 0) {
           for (const ch of childNodes) {
             walk(ch, nodeIdToUse, depthLeft - 1);
@@ -842,8 +921,74 @@ export class GraphDataManager {
       const responseData = res.data as { nodes?: unknown[] };
       const nodes_from_api = responseData?.nodes || [];
 
-      for (const root of nodes_from_api) {
-        walk(root as any, undefined, 1);
+      // Type for document + citations format
+      type CitationNode = {
+        citation_index?: number;
+        id: string;
+        title: string;
+        summary?: string | null;
+        type: string;
+        section_index?: number;
+        children?: CitationNode[];
+      };
+
+      type DocumentCitationNode = {
+        document: {
+          id: string;
+          title: string;
+          url?: string | null;
+          type: string;
+          added_at?: string;
+          summary?: string | null;
+        };
+        citations: CitationNode[];
+      };
+
+      // Recursively convert CitationNode to SearchNode format
+      // This ensures all nested children at any depth are properly converted
+      const convertCitationToSearchNode = (citation: CitationNode): SearchNode => {
+        return {
+          id: citation.id,
+          title: citation.title,
+          type: citation.type,
+          summary: citation.summary,
+          index: citation.section_index,
+          // Recursively convert all children at any depth
+          children: citation.children?.map(convertCitationToSearchNode),
+        };
+      };
+
+      // Check if this is the document+citations format or direct nodes format
+      if (nodes_from_api.length > 0) {
+        const firstNode = nodes_from_api[0] as Record<string, unknown>;
+        
+        if ("document" in firstNode && "citations" in firstNode) {
+          // New format: document + citations (children nested in first citation)
+          for (const item of nodes_from_api) {
+            const docNode = item as DocumentCitationNode;
+            const doc = docNode.document;
+            const citations = docNode.citations || [];
+            
+            // Find the first citation (self-reference) which contains the children
+            const firstCitation = citations.find(c => c.id === doc.id);
+            const children = firstCitation?.children || [];
+            
+            // Process children of this node with recursive conversion
+            for (const child of children) {
+              const childNode = convertCitationToSearchNode(child);
+              walk(childNode, nodeId, 1);
+            }
+          }
+        } else {
+          // Direct format: nodes with nested children (example graphs, legacy)
+          for (const root of nodes_from_api) {
+            const rootNode = root as SearchNode;
+            const childNodes = Array.isArray(rootNode.children) ? rootNode.children : [];
+            for (const child of childNodes) {
+              walk(child, nodeId, 1);
+            }
+          }
+        }
       }
 
       // Mark as fetched and track children
@@ -852,10 +997,8 @@ export class GraphDataManager {
 
       // Sort nodes by index then title
       newNodes.sort((a, b) => {
-        const ai =
-          typeof a.index === "number" ? a.index : Number.NEGATIVE_INFINITY;
-        const bi =
-          typeof b.index === "number" ? b.index : Number.NEGATIVE_INFINITY;
+        const ai = typeof a.index === "number" ? a.index : Number.NEGATIVE_INFINITY;
+        const bi = typeof b.index === "number" ? b.index : Number.NEGATIVE_INFINITY;
         if (ai !== bi) {
           return ai - bi;
         }

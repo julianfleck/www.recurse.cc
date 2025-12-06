@@ -1,5 +1,7 @@
 "use client";
 
+import { Label } from "@recurse/ui/components/label";
+import { Switch } from "@recurse/ui/components/switch";
 import { useCallback, useMemo, useState } from "react";
 import { getNodeIcons } from "../config/icon-config";
 import {
@@ -116,6 +118,9 @@ type GraphTreeSidebarProps = {
   allNodes?: DataNode[];
   allLinks?: DataLink[];
   onFilterIdsChange?: (ids: Set<string> | null) => void;
+  // Metadata toggle
+  showMetadata?: boolean;
+  onShowMetadataChange?: (show: boolean) => void;
 };
 
 type TreeNodeComponentProps = {
@@ -137,6 +142,8 @@ export function GraphTreeSidebar({
   allNodes = [],
   allLinks = [],
   onFilterIdsChange,
+  showMetadata = false,
+  onShowMetadataChange,
 }: GraphTreeSidebarProps) {
   // no debug output
   // No local expansion state; fully controlled by parent
@@ -245,8 +252,20 @@ export function GraphTreeSidebar({
           </TreeView>
         </TreeProvider>
       </div>
-      <div className="border-border border-t p-2 text-muted-foreground text-xs">
-        {visibleCount}
+      <div className="flex items-center justify-between border-border border-t p-2 text-muted-foreground text-xs">
+        <span>{visibleCount} nodes</span>
+        {onShowMetadataChange && (
+          <div className="flex items-center gap-2">
+            <Label className="text-muted-foreground text-xs" htmlFor="show-metadata">
+              Show metadata connections
+            </Label>
+            <Switch
+              checked={showMetadata}
+              id="show-metadata"
+              onCheckedChange={onShowMetadataChange}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

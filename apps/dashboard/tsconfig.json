@@ -18,7 +18,8 @@
 		"paths": {
 			"@/.source": ["./.source/index.ts"],
 			"@/*": ["./*"],
-			"@/lib/utils": ["./lib/cn.ts"]
+			"@/lib/utils": ["./lib/cn.ts"],
+			"@shared/*": ["../../*"]
 		},
 		"plugins": [
 			{

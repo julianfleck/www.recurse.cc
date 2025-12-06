@@ -10,6 +10,8 @@ export type VisibleNodesParams = {
   expandedNodes: Set<string>;
   filteredNodeIds?: Set<string> | null;
   collapsingChildIds?: Set<string>;
+  /** When true, excludes metadata nodes (tags, hypernyms, hyponyms) from the visible set */
+  excludeMetadata?: boolean;
 };
 
 /**
@@ -22,10 +24,46 @@ export function calculateVisibleNodeIds({
   expandedNodes,
   filteredNodeIds,
   collapsingChildIds = new Set(),
+  excludeMetadata = false,
 }: VisibleNodesParams): Set<string> {
-  // 1) Derive visible content nodes from treeData + expandedNodes (same rule as side panel)
+  // Filter out null/undefined nodes first
+  const validNodes = allNodes.filter(node => node && node.id);
+
+  // Separate content nodes from metadata nodes
+  const contentNodes = validNodes.filter(node => !isMetadata(node.id));
+  const metadataNodes = validNodes.filter(node => isMetadata(node.id));
+
+  // Separate parent-child links from metadata connection links
+  const contentLinks: DataLink[] = [];
+  const metadataLinks: DataLink[] = [];
+
+  for (const link of allLinks) {
+    if (!(link?.source && link.target)) {
+      continue;
+    }
+    const s = typeof link.source === "string" ? link.source : (link.source as any)?.id;
+    const t = typeof link.target === "string" ? link.target : (link.target as any)?.id;
+
+    // Skip links with null/undefined IDs
+    if (!s || !t) {
+      continue;
+    }
+
+    // If either end is metadata, it's a metadata connection link
+    if (isMetadata(s) || isMetadata(t)) {
+      metadataLinks.push(link);
+    } else {
+      // Both ends are content nodes - parent-child relationship
+      contentLinks.push(link);
+    }
+  }
+
+  // 1) Build tree only from content nodes and content links
+  const contentTree = buildTreeFromNodes(contentNodes, contentLinks);
+
+  // 2) Derive visible content nodes from tree + expandedNodes (same rule as side panel)
   const contentVisible = new Set<string>();
-  const walkTreeVisible = (
+  const walkContentTree = (
     nodes: Array<DataNode & { children?: DataNode[] }>
   ) => {
     for (const n of nodes) {
@@ -33,14 +71,12 @@ export function calculateVisibleNodeIds({
       contentVisible.add(id);
       const isExpanded = expandedNodes.has(id);
       if (isExpanded && Array.isArray(n.children) && n.children.length > 0) {
-        walkTreeVisible(n.children);
+        walkContentTree(n.children);
       }
     }
   };
 
-  // Build a local tree to avoid temporal-dead-zone issues with declaration order
-  const localTree = buildTreeFromNodes(allNodes, allLinks);
-  walkTreeVisible(Array.isArray(localTree) ? localTree : []);
+  walkContentTree(Array.isArray(contentTree) ? contentTree : []);
 
   // Apply filtered nodes when a filter is active.
   // - null/undefined: no filter
@@ -59,14 +95,34 @@ export function calculateVisibleNodeIds({
     }
   }
 
-  // 2) Compute metadata connections
-  const metaConnections = new Map<string, Set<string>>(); // metaId -> set(contentId)
-  for (const l of allLinks) {
+  // If excluding metadata, return only content nodes
+  if (excludeMetadata) {
+    // Ensure collapsing children remain rendered during animation
+    if (collapsingChildIds.size > 0) {
+      for (const id of collapsingChildIds) {
+        if (!isMetadata(id)) {
+          contentVisible.add(id);
+        }
+      }
+    }
+    return contentVisible;
+  }
+
+  // 3) Compute metadata connections from metadata links only
+  // metaId -> set(contentId) - tracks which content nodes each metadata node connects to
+  const metaConnections = new Map<string, Set<string>>();
+  for (const l of metadataLinks) {
     if (!(l?.source && l.target)) {
       continue;
     }
-    const s = typeof l.source === "string" ? l.source : l.source.id;
-    const t = typeof l.target === "string" ? l.target : l.target.id;
+    const s = typeof l.source === "string" ? l.source : (l.source as any)?.id;
+    const t = typeof l.target === "string" ? l.target : (l.target as any)?.id;
+
+    // Skip links with null/undefined IDs
+    if (!s || !t) {
+      continue;
+    }
+
     const sIsMeta = isMetadata(s);
     const tIsMeta = isMetadata(t);
     if (sIsMeta && !tIsMeta) {
@@ -83,26 +139,17 @@ export function calculateVisibleNodeIds({
     }
   }
 
-  const set = new Set<string>(contentVisible);
+  const result = new Set<string>(contentVisible);
 
-  // 3) Add shared metadata (degree > 1) connected to at least one visible content node
+  // 4) Add ONLY shared metadata (connected to multiple different content nodes)
+  // This shows metadata that creates meaningful connections between documents/sections.
   for (const [metaId, contents] of metaConnections.entries()) {
+    // Only include metadata with shared connections (degree > 1)
     if (contents.size > 1) {
-      for (const c of contents) {
-        if (contentVisible.has(c)) {
-          set.add(metaId);
-          break;
-        }
-      }
-    }
-  }
-
-  // 4) Add single-connection metadata only when its content parent is expanded
-  for (const [metaId, contents] of metaConnections.entries()) {
-    if (contents.size === 1) {
-      const parentId = Array.from(contents)[0];
-      if (expandedNodes.has(parentId) && contentVisible.has(parentId)) {
-        set.add(metaId);
+      // Check if this metadata node exists (should have been created by data manager)
+      const metaNodeExists = metadataNodes.some(node => node.id === metaId);
+      if (metaNodeExists) {
+        result.add(metaId);
       }
     }
   }
@@ -110,9 +157,9 @@ export function calculateVisibleNodeIds({
   // Ensure collapsing children remain rendered during animation
   if (collapsingChildIds.size > 0) {
     for (const id of collapsingChildIds) {
-      set.add(id);
+      result.add(id);
     }
   }
 
-  return set;
+  return result;
 }

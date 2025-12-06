@@ -10,12 +10,119 @@ The Recurse API gives you complete programmatic control over your knowledge base
 
 ## Overview
 
-[Content placeholder - to be written]
+The API follows RESTful conventions and returns JSON responses. All endpoints require authentication via API key or JWT token.
+
+```bash
+# Example: Search your knowledge base
+curl -X GET "https://api.recurse.dev/search/?query=machine+learning" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
 
 ## Key Capabilities
 
-- Save content programmatically
-- Retrieve context with precise queries
-- Navigate knowledge graphs
-- Scope and filter results
+### Content Management
+- **Save content** - Ingest documents, URLs, and raw text
+- **Track processing** - Monitor document analysis status
+- **Manage documents** - List, retrieve, and delete content
 
+### Search & Retrieval
+- **Semantic search** - Find content by meaning, not just keywords
+- **Type filtering** - Search specific frame types (claims, definitions, etc.)
+- **Field selection** - Control response detail with field sets
+
+### Graph Navigation
+- **Tree traversal** - Navigate parent/child relationships
+- **Neighbor discovery** - Find related content
+- **Relationship exploration** - Understand how content connects
+
+## Response Field Sets
+
+Control response verbosity with the `field_set` parameter:
+
+| Field Set | Includes | Best For |
+|-----------|----------|----------|
+| `basic` | id, title, summary, gist, type | Quick lookups, citations |
+| `content` | basic + text | Full content retrieval |
+| `metadata` | basic + tags, hypernyms, hyponyms | Categorization |
+| `all` | All available fields | Full context |
+
+See [Scoping and Filtering](/guides/using-the-api/scoping-and-filtering) for detailed field set documentation.
+
+## Response Structure
+
+Search results are grouped by document:
+
+```json
+{
+  "nodes": [
+    {
+      "document": {
+        "id": "doc123",
+        "title": "Guide to ML",
+        "type": "article"
+      },
+      "citations": [
+        {
+          "id": "frame456",
+          "title": "Training Models",
+          "relevance_score": 0.85,
+          "citation_index": 1
+        }
+      ]
+    }
+  ],
+  "total_found": 10,
+  "search_time_ms": 150
+}
+```
+
+## Getting Started
+
+<Cards>
+  <Card title="Saving Content" href="/guides/using-the-api/saving-content">
+    Ingest documents and URLs into your knowledge base
+  </Card>
+  <Card title="Retrieving Context" href="/guides/using-the-api/retrieving-context">
+    Search and retrieve relevant content
+  </Card>
+  <Card title="Scoping and Filtering" href="/guides/using-the-api/scoping-and-filtering">
+    Refine queries with filters and advanced options
+  </Card>
+  <Card title="Retrieving Graphs" href="/guides/using-the-api/retrieving-graphs">
+    Navigate knowledge graph relationships
+  </Card>
+</Cards>
+
+## Authentication
+
+Include your API key in the Authorization header:
+
+```bash
+curl -H "Authorization: Bearer rg_YOUR_API_KEY" \
+  "https://api.recurse.dev/search/?query=..."
+```
+
+Or use the `X-API-Key` header:
+
+```bash
+curl -H "X-API-Key: rg_YOUR_API_KEY" \
+  "https://api.recurse.dev/search/?query=..."
+```
+
+## Rate Limits
+
+API requests are rate-limited based on your plan. Monitor your usage at [Usage Analytics](/guides/using-the-ui/usage-analytics).
+
+## Next Steps
+
+<Cards>
+  <Card title="API Reference" href="/api-documentation">
+    Complete endpoint documentation
+  </Card>
+  <Card title="Quickstart" href="/getting-started/quickstart">
+    Get up and running quickly
+  </Card>
+  <Card title="Concepts" href="/concepts">
+    Understand frames, graphs, and schemas
+  </Card>
+</Cards>

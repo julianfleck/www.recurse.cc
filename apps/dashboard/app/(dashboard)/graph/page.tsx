@@ -1,10 +1,15 @@
 "use client";
 
+import { useAuthStore } from "@/components/auth/auth-store";
+import { apiService } from "@/lib/api";
+import {
+	type GraphViewData,
+	convertApiResponseToGraphData,
+} from "@/lib/api-to-graph-converter";
 import { FileUploadDropzone } from "@recurse/ui/components/file-upload-dropzone";
 import { GraphView } from "@shared/components/graph-view";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { apiService } from "@/lib/api";
 
 type UploadResponse = {
 	document_id: string;
@@ -15,6 +20,61 @@ type UploadResponse = {
 
 export default function Page() {
 	const [isUploading, setIsUploading] = useState(false);
+	const [graphData, setGraphData] = useState<GraphViewData | null>(null);
+
+	// Fetch documents data for the graph view
+	useEffect(() => {
+		const fetchDocuments = async () => {
+			try {
+				const accessToken = useAuthStore.getState().accessToken;
+				if (!accessToken) {
+					console.log("[GraphPage] No auth token, waiting...");
+					return;
+				}
+
+				console.log("[GraphPage] Fetching documents...");
+
+				// Use /documents endpoint with depth=5 to get full nested tree structure
+				// This returns documents with nested children at all levels
+				// The backend caches this response so it's fast
+				const response = await apiService.get<unknown>("/search/document", {
+					field_set: "metadata",
+					depth: 5,
+					min_score: 0,
+					limit: 50,
+					page: 1,
+				});
+
+				console.log("[GraphPage] Raw API response:", response.data);
+
+				// Convert API response to graph view format
+				// This properly converts nested children and generates links
+				// without creating separate metadata nodes
+				const converted = convertApiResponseToGraphData(response.data);
+
+				console.log("[GraphPage] Converted graph data:", converted);
+				console.log("[GraphPage] Nodes count:", converted.nodes.length);
+				console.log("[GraphPage] Links count:", converted.links.length);
+
+				setGraphData(converted);
+			} catch (error) {
+				console.error("[GraphPage] Failed to fetch documents:", error);
+				toast.error("Failed to load documents");
+			}
+		};
+
+		// Subscribe to auth store changes
+		const unsubscribe = useAuthStore.subscribe((state, prevState) => {
+			if (!prevState.accessToken && state.accessToken) {
+				fetchDocuments();
+			}
+		});
+
+		// Also check immediately in case auth is already ready
+		fetchDocuments();
+
+		return unsubscribe;
+	}, []);
 
 	const handleFilesDropped = useCallback(async (files: File[]) => {
 		if (files.length === 0) return;
@@ -51,9 +111,13 @@ export default function Page() {
 				);
 
 				try {
-					await apiService.uploadFile<UploadResponse>("/documents/upload", file, {
-						title: file.name,
-					});
+					await apiService.uploadFile<UploadResponse>(
+						"/documents/upload",
+						file,
+						{
+							title: file.name,
+						},
+					);
 					successCount++;
 				} catch (error) {
 					errorCount++;
@@ -97,6 +161,16 @@ export default function Page() {
 					{ id: toastId },
 				);
 			}
+
+			// Refresh the graph data after upload
+			const response = await apiService.get<unknown>("/documents", {
+				page: 1,
+				limit: 20,
+				field_set: "metadata",
+				depth: 5,
+			});
+			const converted = convertApiResponseToGraphData(response.data);
+			setGraphData(converted);
 		} finally {
 			setIsUploading(false);
 		}
@@ -113,7 +187,8 @@ export default function Page() {
 		>
 			<GraphView
 				className="h-full w-full"
-				depth={0}
+				data={graphData}
+				depth={3}
 				withSidebar={false}
 				zoomModifier=""
 			/>

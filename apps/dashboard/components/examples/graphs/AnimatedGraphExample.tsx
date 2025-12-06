@@ -8,7 +8,7 @@ import {
 	RotateCcw,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { GraphView } from "@/components/graph-view";
+import { GraphView } from "@shared/components/graph-view";
 
 type GraphNode = {
 	id: string;
