@@ -230,21 +230,23 @@ export function DocumentCountStatus() {
 		let timeoutId: NodeJS.Timeout;
 		let intervalId: NodeJS.Timeout;
 		let isMounted = true;
+		let hasFetched = false;
 
 		const fetchIfAuthenticated = () => {
-			if (!isMounted) {
+			if (!isMounted || hasFetched) {
 				return;
 			}
 
 			const token = useAuthStore.getState().accessToken;
-			if (token && !isLoading) {
+			if (token) {
+				hasFetched = true;
 				fetchDocumentCount();
 			}
 		};
 
 		const unsubscribe = useAuthStore.subscribe((state) => {
-			if (state.accessToken) {
-				// Add a small delay to ensure auth is stable
+			if (state.accessToken && !hasFetched) {
+				// Only fetch once when auth becomes available
 				timeoutId = setTimeout(fetchIfAuthenticated, 100);
 			}
 		});
@@ -252,9 +254,9 @@ export function DocumentCountStatus() {
 		// Check immediately with a small delay to ensure component is ready
 		timeoutId = setTimeout(fetchIfAuthenticated, 50);
 
-		// Set up interval for refreshing
+		// Set up interval for periodic refreshing (every 5 minutes)
 		intervalId = setInterval(() => {
-			if (isMounted) {
+			if (isMounted && useAuthStore.getState().accessToken) {
 				fetchDocumentCount();
 			}
 		}, DOCUMENT_COUNT_REFRESH_INTERVAL_MS);
@@ -273,7 +275,7 @@ export function DocumentCountStatus() {
 			}
 			unsubscribe();
 		};
-	}, [fetchDocumentCount, isLoading]);
+	}, [fetchDocumentCount]);
 
 	let displayText: string;
 	if (isLoading) {
