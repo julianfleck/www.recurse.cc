@@ -744,14 +744,13 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 		getFilteredRowModel: getFilteredRowModel(),
 		onColumnVisibilityChange: setColumnVisibility,
 		onRowSelectionChange: setRowSelection,
-		onExpandedChange: setExpanded,
+		// Note: We manage expansion manually via visibleRows, not through react-table
 		getRowId: (row) => row.id,
 		state: {
 			sorting,
 			columnFilters,
 			columnVisibility,
 			rowSelection,
-			expanded,
 		},
 	});
 
