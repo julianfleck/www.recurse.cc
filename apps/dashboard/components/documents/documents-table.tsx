@@ -106,7 +106,16 @@ interface TableNode {
 	created_at?: string;
 	updated_at?: string;
 	metadata?: MetadataFields;
+	/**
+	 * 0 = root level document, >0 = nested frame/node
+	 */
 	level: number;
+	/**
+	 * List of ancestor node IDs from root → direct parent.
+	 * Used for operations like bulk deletion where we want
+	 * to avoid duplicating work for children of selected parents.
+	 */
+	ancestorIds: string[];
 	subRows: TableNode[];
 }
 
@@ -136,12 +145,17 @@ function buildTree(documents: Document[]): TableNode[] {
 		created_at: doc.created_at,
 		updated_at: doc.updated_at,
 		metadata: normalizeMetadata(doc),
+		ancestorIds: [],
 		level: 0,
-		subRows: buildSubTree(doc.children ?? [], 1),
+		subRows: buildSubTree(doc.children ?? [], 1, [doc.id]),
 	}));
 }
 
-function buildSubTree(frames: Frame[], level: number): TableNode[] {
+function buildSubTree(
+	frames: Frame[],
+	level: number,
+	parentAncestorIds: string[],
+): TableNode[] {
 	return frames.map(frame => ({
 		id: frame.id,
 		title: frame.title,
@@ -151,8 +165,13 @@ function buildSubTree(frames: Frame[], level: number): TableNode[] {
 		created_at: frame.created_at,
 		updated_at: frame.updated_at,
 		metadata: normalizeMetadata(frame),
+		ancestorIds: parentAncestorIds,
 		level,
-		subRows: buildSubTree(frame.children ?? [], level + 1),
+		subRows: buildSubTree(
+			frame.children ?? [],
+			level + 1,
+			[...parentAncestorIds, frame.id],
+		),
 	}));
 }
 
@@ -403,7 +422,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 	const deleteFrame = useCallback(
 		async (frameId: string, frameName: string) => {
 			try {
-				await apiService.delete(`/node/${frameId}/delete`);
+				await apiService.delete(`/node/${frameId}`);
 				toast.success(`Frame "${frameName}" deleted successfully`);
 				fetchDocuments();
 			} catch (err) {
@@ -421,14 +440,15 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 	const deleteSelectedDocuments = async () => {
 		if (selectedCount === 0) return;
 
-		const selectedNodes = table.getSelectedRowModel().rows.map(row => row.original);
+		const nodesToDelete = getNodesToDelete();
 
 		const promises: Promise<unknown>[] = [];
 
-		for (const node of selectedNodes) {
-			const id = node.id;
-			const endpoint = node.level === 0 ? `/documents/${id}` : `/frames/${id}`;
-
+		for (const node of nodesToDelete) {
+			const isRootDocument = node.level === 0;
+			const endpoint = isRootDocument
+				? `/documents/${node.id}`
+				: `/node/${node.id}`;
 			promises.push(
 				apiService.delete(endpoint).catch((err: ApiError) => {
 					toast.error(`Failed to delete ${node.title}: ${err.message}`);
@@ -575,7 +595,12 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 					return (
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<Button className="h-6 w-6 p-0" size="sm" variant="ghost">
+								<Button
+									className="h-6 w-6 p-0"
+									data-row-click-ignore="true"
+									size="sm"
+									variant="ghost"
+								>
 									<MoreHorizontalIcon className="h-3.5 w-3.5" />
 									<span className="sr-only">Open menu</span>
 								</Button>
@@ -583,11 +608,14 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 							<DropdownMenuContent align="end">
 								<DropdownMenuItem
 									className="hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground"
-									onClick={() => {
+									data-row-click-ignore="true"
+									onClick={(event) => {
+										event.preventDefault();
+										event.stopPropagation();
 										if (isDocument) {
-											deleteDocument(rowData.id);
+											void deleteDocument(rowData.id);
 										} else {
-											deleteFrame(rowData.id, rowData.title);
+											void deleteFrame(rowData.id, rowData.title);
 										}
 									}}
 								>
@@ -677,7 +705,28 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 		},
 	});
 
+	/**
+	 * Compute the effective set of nodes that will be deleted.
+	 *
+	 * If a parent document is selected, we should not send separate delete
+	 * requests for its children – deleting the parent is sufficient and
+	 * the API will cascade. So we filter out any node whose ancestor is
+	 * already selected.
+	 */
+	const getNodesToDelete = () => {
+		const selectedNodes = table
+			.getSelectedRowModel()
+			.rows.map(row => row.original);
+
+		const selectedIds = new Set(selectedNodes.map(node => node.id));
+		return selectedNodes.filter(node => {
+			return !node.ancestorIds.some(ancestorId => selectedIds.has(ancestorId));
+		});
+	};
+
 	const selectedCount = Object.keys(rowSelection).length;
+	const nodesToDelete = getNodesToDelete();
+	const deleteCount = nodesToDelete.length;
 
 	return (
 		<div className="flex h-full w-full flex-col px-6">
@@ -698,7 +747,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 				</div>
 
 				<div className="flex shrink-0 items-center gap-2">
-					{selectedCount > 0 && (
+					{deleteCount > 0 && (
 						<Button
 							icon={<TrashIcon className="h-4 w-4" />}
 							iconSide="left"
@@ -706,7 +755,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 							size="sm"
 							variant="destructive"
 						>
-							Delete {selectedCount} doc{selectedCount > 1 ? "s" : ""}
+							Delete {deleteCount} item{deleteCount > 1 ? "s" : ""}
 						</Button>
 					)}
 					<Button
@@ -824,6 +873,10 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 														data-state={row.getIsSelected() && "selected"}
 														className={`group ${rowData.level > 0 ? "bg-muted/20" : ""}`}
 														onClick={(event) => {
+															// Only toggle on primary button (left click)
+															if (event.button !== 0) {
+																return;
+															}
 															// Ignore clicks on checkboxes, action buttons, or explicit opt-outs
 															const target = event.target as HTMLElement;
 															if (
@@ -858,11 +911,14 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 											<ContextMenuContent>
 												<ContextMenuItem
 													variant="destructive"
-													onClick={() => {
+													data-row-click-ignore="true"
+													onClick={(event) => {
+														event.preventDefault();
+														event.stopPropagation();
 														if (isDocument) {
-															deleteDocument(rowData.id);
+															void deleteDocument(rowData.id);
 														} else {
-															deleteFrame(rowData.id, rowData.title);
+															void deleteFrame(rowData.id, rowData.title);
 														}
 													}}
 												>
