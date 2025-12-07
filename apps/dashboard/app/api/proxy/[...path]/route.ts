@@ -1,7 +1,16 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-const API_BASE_URL =
+// Get API base URL and ensure HTTPS in production
+let API_BASE_URL =
 	process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+
+// In production, ensure we always use HTTPS
+if (process.env.NODE_ENV === "production" && API_BASE_URL.startsWith("http://")) {
+	console.warn(
+		"[Proxy] API_BASE_URL is HTTP in production, forcing HTTPS. Please update NEXT_PUBLIC_API_BASE_URL to use HTTPS.",
+	);
+	API_BASE_URL = API_BASE_URL.replace("http://", "https://");
+}
 
 /**
  * Proxy handler for API requests.
@@ -22,6 +31,16 @@ async function proxyRequest(
 		targetPath += "/";
 	}
 	const targetUrl = `${API_BASE_URL}/${targetPath}${queryString}`;
+	
+	// Debug logging in development
+	if (process.env.NODE_ENV === "development") {
+		console.log("[Proxy] Request:", {
+			method: request.method,
+			path: pathString,
+			targetUrl,
+			apiBaseUrl: API_BASE_URL,
+		});
+	}
 
 	// Forward headers, excluding host
 	const headers = new Headers();

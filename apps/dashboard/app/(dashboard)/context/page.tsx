@@ -249,9 +249,20 @@ export default function ContextPage() {
 	);
 
 	// Initial search on mount - only if authenticated and no manual search performed
+	// Ensure we're in the browser before making requests
 	useEffect(() => {
+		// Only run in browser, not during SSR
+		if (typeof window === "undefined") {
+			return;
+		}
+		
 		if (accessToken && !hasPerformedManualSearch) {
-			handleSearch("type:doc");
+			// Small delay to ensure everything is initialized
+			const timer = setTimeout(() => {
+				handleSearch("type:doc");
+			}, 100);
+			
+			return () => clearTimeout(timer);
 		}
 	}, [handleSearch, accessToken, hasPerformedManualSearch]);
 

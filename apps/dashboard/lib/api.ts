@@ -19,19 +19,18 @@ if (typeof window !== "undefined") {
 	});
 }
 
-// Use proxy in development to avoid CORS issues
-// In production, the API should have proper CORS headers configured
+// Always use proxy in browser to avoid CORS issues
+// The proxy handles server-side requests which don't have CORS restrictions
 const getApiBaseUrl = () => {
-	// Check if we're in the browser and in development mode
-	const isDevelopment = process.env.NODE_ENV === "development";
 	const isBrowser = typeof window !== "undefined";
 
-	if (isBrowser && isDevelopment) {
-		// In browser during development, use the proxy route to avoid CORS
+	if (isBrowser) {
+		// In browser, always use the proxy route to avoid CORS issues
+		// The proxy makes server-side requests which bypass CORS
 		return "/api/proxy";
 	}
 
-	// In production or server-side, use the direct API URL
+	// Server-side (SSR), use the direct API URL
 	return API_BASE_URL;
 };
 
@@ -94,11 +93,14 @@ function handleApiError(error: unknown): never {
 	const corsError = isCorsError(error);
 	const errorMessage = error instanceof Error ? error.message : "Unknown error";
 	
-	// Check for network errors that might be CORS-related
+	// Check for network errors that might be CORS-related or unsafe URL
 	const isNetworkError = errorMessage.includes("Failed to fetch") || 
 		errorMessage.includes("NetworkError") ||
 		errorMessage.includes("ERR_FAILED") ||
-		errorMessage.includes("ERR_BLOCKED_BY_CLIENT");
+		errorMessage.includes("ERR_BLOCKED_BY_CLIENT") ||
+		errorMessage.includes("Mixed Content") ||
+		errorMessage.includes("unsafe") ||
+		errorMessage.includes("insecure");
 	
 	if (corsError || isNetworkError) {
 		// CORS or network errors - provide helpful message
