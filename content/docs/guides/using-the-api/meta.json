@@ -3,21 +3,9 @@
   "icon": "code",
   "defaultOpen": false,
   "pages": [
-    {
-      "title": "Saving Content",
-      "description": "Add documents to your knowledge base by uploading files or submitting raw content. The system automatically analyzes your content, extracting structured frames (sections, claims, definitions, etc.) and building a navigable knowledge graph.",
-      "href": "saving-content"
-    },
-    {
-      "title": "Retrieving Context",
-      "description": "The `/search` endpoint is your primary interface for retrieving relevant context from your knowledge base. It combines semantic search with intelligent filtering and returns results as a clean, recursive node structure.",
-      "href": "retrieving-context"
-    },
-    {
-      "title": "Retrieving Graphs",
-      "description": "Your knowledge base is stored as a graph, where documents contain frames (sections, claims, definitions) connected by relationships. The tree and node endpoints let you navigate this structure.",
-      "href": "retrieving-graphs"
-    },
+    "saving-content",
+    "retrieving-context",
+    "retrieving-graphs",
     "scoping-and-filtering",
     "deleting-content"
   ]
