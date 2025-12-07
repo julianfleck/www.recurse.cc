@@ -18,11 +18,17 @@ _openapi:
           - If document has multiple owners, only the OWNS edge for the current
           scope is removed.
 
-          - If frames have incoming references from other documents, deletion is
-          blocked unless force=true.
+          - Frames with incoming references from other documents are PRESERVED
+          by default (for graph traversal).
 
-          - When fully deleted, associated Sections and Frames are removed and
-          the vault file is deleted.
+          - Use force=true to delete ALL frames, including those with external
+          references.
+
+          - When deleted, associated Sections and non-referenced Frames are
+          removed along with the vault file.
+
+          - Running ingestion jobs are automatically cancelled when a document
+          is deleted.
 ---
 
 {/* AUTO-GENERATED: fumadocs-openapi (safe to overwrite) */}
@@ -32,9 +38,25 @@ _openapi:
 
 Delete a document by ID with ownership checks, safety analysis, and optional dry-run.
 
-Behavior:
+**Behavior:**
 - If document has multiple owners, only the OWNS edge for the current scope is removed.
-- If frames have incoming references from other documents, deletion is blocked unless force=true.
-- When fully deleted, associated Sections and Frames are removed and the vault file is deleted.
+- Frames with incoming references from other documents are **preserved** by default (for graph traversal).
+- Use `force=true` to delete ALL frames, including those with external references.
+- When deleted, associated Sections and non-referenced Frames are removed along with the vault file.
+- Running ingestion jobs are automatically cancelled when a document is deleted.
+
+**Query Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `dry_run` | boolean | `false` | Preview deletion without making changes |
+| `force` | boolean | `false` | Delete ALL frames, including those with external references |
+| `cleanup_orphans` | boolean | `true` | Remove orphaned nodes after deletion |
+
+**Response includes:**
+- `deleted`: Counts of deleted documents, sections, frames, and vault files
+- `preserved`: Frames that were kept due to external references (when `force=false`)
+- `cancelled_jobs`: Any ingestion jobs that were cancelled
+- `warnings`: Messages about preserved frames or other notable conditions
 
 <APIPage document={"http://localhost:8000/openapi.json"} operations={[{"path":"/documents/{doc_id}","method":"delete"}]} webhooks={[]} hasHead={false} />

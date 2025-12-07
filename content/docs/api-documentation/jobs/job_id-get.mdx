@@ -192,4 +192,31 @@ done
 - **Detailed Results**: Comprehensive completion data
 - **Error Handling**: Clear error messages and retry logic
 
+## Cancelling Jobs
+
+Cancel a running job and all its associated tasks:
+
+```bash
+curl -X POST http://localhost:8000/jobs/{job_id}/cancel
+```
+
+**Response:**
+```json
+{
+  "job_id": "ingest_doc123_1234567890",
+  "status": "cancelled",
+  "tasks_cancelled": 5,
+  "task_details": [
+    {"task_id": "abc123", "task_type": "metadata", "status": "revoked"},
+    {"task_id": "def456", "task_type": "section_0", "status": "revoked"}
+  ],
+  "message": "Job cancelled. 5 task(s) revoked."
+}
+```
+
+**Notes:**
+- Jobs in terminal states (`completed`, `failed`, `cancelled`) cannot be cancelled
+- Tasks already executing may not be immediately terminated
+- Deleting a document automatically cancels any running ingestion jobs
+
 <APIPage document={"http://localhost:8000/openapi.json"} operations={[{"path":"/jobs/{job_id}","method":"get"}]} webhooks={[]} hasHead={false} />

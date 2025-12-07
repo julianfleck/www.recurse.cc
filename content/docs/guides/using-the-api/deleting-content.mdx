@@ -28,13 +28,15 @@ Response:
     "vault_files": 1
   },
   "preserved": {
-    "shared_frames": 2
+    "shared_frames": 2,
+    "shared_frame_ids": ["frame_abc123", "frame_def456"]
   },
-  "warnings": []
+  "cancelled_jobs": [],
+  "warnings": ["2 frame(s) with external references will be preserved. Use force=true to delete all frames."]
 }
 ```
 
-> **Note:** Frames that are shared by other sources are automatically preserved when deleting content. Only frames exclusive to the deleted content are removed.
+> **Note:** Frames that are referenced by other documents are automatically **preserved** when deleting content. This maintains graph connectivity so those frames can still be found via traversal from other documents. Only frames exclusive to the deleted document are removed.
 
 ### Dry Run Mode
 
@@ -44,6 +46,33 @@ Preview what will be deleted without making changes:
 curl -X DELETE "https://api.recurse.dev/documents/{doc_id}?dry_run=true" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
+
+### Force Deletion
+
+By default, frames that are referenced by other documents are preserved. Use `force=true` to delete **all** frames regardless of external references:
+
+```bash
+curl -X DELETE "https://api.recurse.dev/documents/{doc_id}?force=true" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+> **Warning:** Using `force=true` may break graph connectivity if other documents reference the deleted frames. Only use this when you want a complete cleanup.
+
+### Job Cancellation
+
+When you delete a document that is still being processed, any running ingestion jobs are automatically cancelled. This saves costs by stopping unnecessary processing.
+
+The response includes information about cancelled jobs:
+
+```json
+{
+  "cancelled_jobs": [
+    {"job_id": "ingest_abc123_1234567890", "tasks_revoked": 5}
+  ]
+}
+```
+
+You can also [manually cancel jobs](/api-documentation/jobs/job_id-get#cancelling-jobs) via the Jobs API.
 
 ### Orphan Cleanup
 
@@ -104,6 +133,7 @@ curl -X DELETE "https://api.recurse.dev/node/{node_id}/delete?dry_run=true" \
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `dry_run` | boolean | `false` | Preview deletion without making changes |
+| `force` | boolean | `false` | Delete ALL frames, including those with external references |
 | `cleanup_orphans` | boolean | `true` | Remove orphaned nodes after deletion |
 
 ## Examples
