@@ -10,6 +10,7 @@ import { useAuthStore } from "@/components/auth/auth-store";
 import { GenericTooltipLayout } from "@shared/components/graph-view/components/node-tooltip";
 import { DefaultSpinner } from "@/components/loaders/default-spinner";
 import { EmptyStateCard } from "@/components/ui/state-card";
+import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
