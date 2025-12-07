@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth0 } from "@auth0/auth0-react";
-import { AUTH0_CONNECTIONS } from "./auth-store";
+import { AUTH0_CONNECTIONS } from "../lib/auth-store";
 
 export function useSocialLogin() {
   const { loginWithRedirect, isLoading } = useAuth0();
