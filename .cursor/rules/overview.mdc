@@ -82,6 +82,11 @@ inventory:
     purpose: "Dashboard application (dashboard.recurse.cc) - fully migrated, uses Switzer font"
     status: "current"
 
+  - path: "apps/dashboard/invites.json"
+    kind: "data"
+    purpose: "Local invite token store with per-email, kebab-case natural word codes used by the dashboard auth invitation guard"
+    status: "current"
+
   - path: "apps/dashboard/components/ui/state-card.tsx"
     kind: "code"
     purpose: "Shared loading and empty-state card component for dashboard pages"
@@ -249,6 +254,10 @@ inventory:
     kind: "code"
     purpose: "CLI script that ingests RSS feeds from configuration.json, filters by tags/titles (wildcard matching), converts HTML ➜ MDX, and updates content/blog meta"
     status: "current"
+  - path: "scripts/generate-invite-tokens.ts"
+    kind: "code"
+    purpose: "CLI script that generates per-email invite tokens as kebab-case natural words and persists them to apps/dashboard/invites.json"
+    status: "current"
 
 conventions:
   software:
@@ -266,5 +275,5 @@ conventions:
   package_manager: "pnpm"
   workspace_type: "monorepo"
 
-last_updated: 2025-11-25T07:45:10Z
+last_updated: 2025-12-07T00:00:00Z
 ```

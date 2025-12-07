@@ -28,6 +28,7 @@ export * from './kbd';
 export * from './label';
 export * from './link-button';
 export * from './logo';
+export * from './mouse-follower-tooltip';
 export * from './navigation-menu';
 export * from './popover';
 export * from './progress';

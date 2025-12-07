@@ -1,0 +1,16 @@
+{
+  "invites": [
+    {
+      "email": "mozanganeh@gmail.com",
+      "token": "golden-rapid-pattern",
+      "createdAt": "2025-12-07T05:46:44.511Z",
+      "note": "Moh from cafe"
+    },
+    {
+      "email": "mail@julianfleck.net",
+      "token": "quiet-clever-weave",
+      "createdAt": "2025-12-07T05:48:01.015Z",
+      "note": "Test token"
+    }
+  ]
+}

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2025-12-07T00:00:00Z] — Feature: Per-email invite tokens backed by local JSON store
+
+**Context:** The dashboard signup flow used a single environment-based invite code, making it hard to manage per-user invitations and generate human-friendly tokens.
+**Changes:** Added a `scripts/generate-invite-tokens.ts` CLI that creates kebab-case natural word invite tokens per email and stores them in `apps/dashboard/invites.json`, and updated the dashboard auth routes to validate invite codes against this store (including email+token matching at signup).
+**Impact:** You can now generate and track per-email invite tokens locally while the existing multi-step signup flow continues to enforce invitation checks via the shared JSON store.
+**Files touched:** `scripts/generate-invite-tokens.ts`, `apps/dashboard/invites.json`, `apps/dashboard/app/api/auth/check-invite/route.ts`, `apps/dashboard/app/api/auth/signup/route.ts`, `.cursor/rules/overview.mdc`, `CHANGELOG.md`
+
 ## [2025-11-27T00:00:00Z] — Perf: Stabilize particles background and remove aurora
 
 **Context:** The www marketing site showed sluggish performance in some browsers due to heavy background animations (continuous WebGL aurora and dense canvas particles with full-speed rAF and O(N²) line drawing).

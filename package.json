@@ -13,7 +13,8 @@
     "lint": "pnpm --filter './apps/*' exec ultracite check",
     "fix": "pnpm --filter './apps/*' exec ultracite fix",
     "sync:blog": "pnpm tsx scripts/sync-substack-posts.ts",
-    "decode:blog": "pnpm tsx scripts/decode-blog-entities.ts"
+    "decode:blog": "pnpm tsx scripts/decode-blog-entities.ts",
+    "invites:generate": "pnpm tsx scripts/generate-invite-tokens.ts"
   },
   "devDependencies": {
     "shadcn": "^3.5.0",

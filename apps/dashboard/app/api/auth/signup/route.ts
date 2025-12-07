@@ -1,4 +1,16 @@
 import { NextResponse } from "next/server";
+import inviteStore from "@/invites.json";
+
+type InviteEntry = {
+	email: string;
+	token: string;
+	createdAt: string;
+	note?: string;
+};
+
+type InviteFile = {
+	invites: InviteEntry[];
+};
 
 export async function POST(request: Request) {
 	try {
@@ -15,14 +27,33 @@ export async function POST(request: Request) {
 			);
 		}
 
-		const invite = process.env.DASHBOARD_INVITE_CODE;
-		if (!invite) {
+		const store = inviteStore as InviteFile;
+		const invites = Array.isArray(store.invites) ? store.invites : [];
+
+		if (invites.length === 0) {
 			return NextResponse.json(
-				{ error: "Invitation code is not configured" },
+				{ error: "Invitation codes are not configured" },
 				{ status: 500 },
 			);
 		}
-		if (inviteCode !== invite) {
+
+		if (!inviteCode) {
+			return NextResponse.json(
+				{ error: "Invalid or missing invitation code" },
+				{ status: 401 },
+			);
+		}
+
+		const normalizedEmail = email.trim().toLowerCase();
+		const trimmedCode = inviteCode.trim();
+
+		const match = invites.find(
+			(entry) =>
+				entry.token === trimmedCode &&
+				entry.email.trim().toLowerCase() === normalizedEmail,
+		);
+
+		if (!match) {
 			return NextResponse.json(
 				{ error: "Invalid or missing invitation code" },
 				{ status: 401 },
