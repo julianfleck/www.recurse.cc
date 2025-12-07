@@ -356,6 +356,7 @@ export function ApiKeysTable() {
 	const [data, setData] = useState<ApiKey[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [hasFetchedOnce, setHasFetchedOnce] = useState(false);
 	const [sorting, setSorting] = useState<SortingState>([
 		{ id: "created_at", desc: true },
 	]);
@@ -390,6 +391,7 @@ export function ApiKeysTable() {
 			
 			// Check for session expired errors - don't retry, the auth layer handles logout
 			if (err instanceof AuthSessionExpiredError) {
+				setHasFetchedOnce(true); // Mark as attempted to prevent retry loop
 				setLoading(false);
 				return;
 			}
@@ -407,6 +409,7 @@ export function ApiKeysTable() {
 					description: "Please log in again to continue.",
 					duration: 5000,
 				});
+				setHasFetchedOnce(true); // Mark as attempted to prevent retry loop
 				setLoading(false);
 				return;
 			}
@@ -451,9 +454,11 @@ export function ApiKeysTable() {
 				});
 				setError("Failed to load API keys. Please try again later.");
 			}
+			setHasFetchedOnce(true); // Mark as attempted to prevent retry loop
 			setLoading(false);
 			return;
 		}
+		setHasFetchedOnce(true); // Mark as fetched successfully
 		setLoading(false);
 	}, []);
 
@@ -725,15 +730,17 @@ export function ApiKeysTable() {
 				hasToken: !!token,
 				dataLength: data.length,
 				loading,
+				hasFetchedOnce,
 			});
 			
-			if (token && data.length === 0 && !loading) {
+			// Only fetch if: we have a token, haven't fetched yet, and not currently loading
+			if (token && !hasFetchedOnce && !loading) {
 				console.log("[API Keys] Conditions met, fetching...");
 				fetchApiKeys();
 			} else {
 				console.log("[API Keys] Conditions not met:", {
 					hasToken: !!token,
-					dataEmpty: data.length === 0,
+					notFetchedYet: !hasFetchedOnce,
 					notLoading: !loading,
 				});
 			}
@@ -761,7 +768,7 @@ export function ApiKeysTable() {
 			}
 			unsubscribe();
 		};
-	}, [fetchApiKeys, data.length, loading]);
+	}, [fetchApiKeys, hasFetchedOnce, loading]);
 
 	const table = useReactTable({
 		data,

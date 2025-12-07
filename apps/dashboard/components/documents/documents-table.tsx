@@ -396,6 +396,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 			if (err instanceof AuthSessionExpiredError) {
 				// Session expired - auth layer will handle logout and redirect
 				// Just show a clean empty state, no error message needed
+				setHasFetchedOnce(true); // Mark as attempted to prevent retry loop
 				setLoading(false);
 				return;
 			}
@@ -414,6 +415,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 					description: "Please log in again to continue.",
 					duration: 5000,
 				});
+				setHasFetchedOnce(true); // Mark as attempted to prevent retry loop
 				setLoading(false);
 				return;
 			}
@@ -457,11 +459,13 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 						duration: 5000,
 					});
 				}
+				setHasFetchedOnce(true); // Mark as attempted to prevent retry loop
+				setError("Unable to connect to API. Please try again later.");
 				setLoading(false);
 				return;
 			}
 
-			// For non-retryable errors, show toast once
+			// For non-retryable errors, show toast once and mark as attempted
 			if (isAuthError) {
 				if (!hasShownNetworkErrorToast) {
 					hasShownNetworkErrorToast = true;
@@ -469,10 +473,12 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 						description: "Please try logging out and back in.",
 					});
 				}
+				setError("Authentication failed. Please try logging out and back in.");
 			} else if (err instanceof ApiError) {
 				toast.error("Failed to load documents", {
 					description: err.message,
 				});
+				setError(err.message);
 			} else {
 				if (!hasShownNetworkErrorToast) {
 					hasShownNetworkErrorToast = true;
@@ -480,7 +486,9 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 						description: "Please try again later.",
 					});
 				}
+				setError("Failed to load documents. Please try again later.");
 			}
+			setHasFetchedOnce(true); // Mark as attempted to prevent retry loop
 			setLoading(false);
 			return;
 		}
