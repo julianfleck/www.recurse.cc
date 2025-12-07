@@ -58,13 +58,9 @@ import {
 import { ApiError, apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { DefaultSpinner } from "@/components/loaders/default-spinner";
+import { formatTypeLabel, normalizeMetadata, type MetadataFields } from "@/lib/document-utils";
 
 // Types - API may return metadata either nested or at top level
-type MetadataFields = {
-	tags?: string[];
-	hypernyms?: string[];
-	hyponyms?: string[];
-};
 
 export type Frame = {
 	id: string;
@@ -129,22 +125,6 @@ interface TableNode {
 	 */
 	ancestorIds: string[];
 	subRows: TableNode[];
-}
-
-function formatTypeLabel(rawType: string | undefined): string {
-	if (!rawType) return "—";
-
-	// If type contains a ":", take the part after it
-	const [, secondPart] = rawType.split(":", 2);
-	const base = (secondPart ?? rawType).replace(/_/g, " ").trim();
-
-	if (!base) return "—";
-
-	// Headline case: capitalize each word
-	return base
-		.split(/\s+/)
-		.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-		.join(" ");
 }
 
 function buildTree(documents: Document[]): TableNode[] {
@@ -214,24 +194,6 @@ function sortByIndex<T extends { index?: number | null }>(items: T[]): T[] {
 		// If neither has an index, preserve original order.
 		return 0;
 	});
-}
-
-// Helper to normalize metadata from either nested or top-level location
-function normalizeMetadata(node: Document | Frame): MetadataFields | undefined {
-	// Check nested metadata first
-	if (node.metadata && (node.metadata.tags?.length || node.metadata.hypernyms?.length || node.metadata.hyponyms?.length)) {
-		return node.metadata;
-	}
-	// Check top-level fields
-	if (node.tags?.length || node.hypernyms?.length || node.hyponyms?.length) {
-		return {
-			tags: node.tags,
-			hypernyms: node.hypernyms,
-			hyponyms: node.hyponyms,
-		};
-	}
-	// Return nested metadata even if empty (for consistency)
-	return node.metadata;
 }
 
 type DocumentsApiResponse = {
@@ -329,9 +291,20 @@ let hasShownNetworkErrorToast = false;
 
 type DocumentsTableProps = {
 	onUploadClick?: () => void;
+	/**
+	 * Optional data to display. If provided, the table will use this data
+	 * instead of fetching from the API. Useful for displaying search results
+	 * or citations from other sources.
+	 */
+	data?: Document[];
+	/**
+	 * If true, the table will not fetch data automatically.
+	 * Use this when providing data via the `data` prop.
+	 */
+	disableAutoFetch?: boolean;
 };
 
-export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
+export function DocumentsTable({ onUploadClick, data: externalData, disableAutoFetch = false }: DocumentsTableProps) {
 	const [data, setData] = useState<Document[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -558,7 +531,10 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 		[fetchDocuments],
 	);
 
-	const treeData = useMemo(() => buildTree(data), [data]);
+	// Use external data if provided, otherwise use internal state
+	const displayData = externalData ?? data;
+
+	const treeData = useMemo(() => buildTree(displayData), [displayData]);
 
 	const deleteSelectedDocuments = async () => {
 		if (selectedCount === 0) return;
@@ -756,8 +732,16 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 		[deleteDocument, deleteFrame],
 	);
 
-	// Wait for authentication before fetching
+	// Wait for authentication before fetching (only if not using external data)
 	useEffect(() => {
+		// If using external data or auto-fetch is disabled, skip fetching
+		if (externalData !== undefined || disableAutoFetch) {
+			if (externalData !== undefined) {
+				setData(externalData);
+			}
+			return;
+		}
+
 		let timeoutId: NodeJS.Timeout;
 		let isMounted = true;
 
@@ -803,7 +787,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 			}
 			unsubscribe();
 		};
-	}, [fetchDocuments, hasFetchedOnce, loading]);
+	}, [fetchDocuments, hasFetchedOnce, loading, externalData, disableAutoFetch]);
 
 	const table = useReactTable({
 		data: treeData,
@@ -854,7 +838,8 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 
 	// While loading, replace the page content area entirely with a centered loader.
 	// This ensures we don't render headers, rows, or empty states underneath.
-	if (loading && !error) {
+	// Skip loading state if using external data
+	if (loading && !error && !externalData) {
 		return (
 			<div className="flex h-full w-full items-center justify-center px-6 py-10">
 				<DefaultSpinner text="Loading documents…" />
@@ -863,7 +848,8 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 	}
 
 	// When there's an error, show the error empty state
-	if (!loading && error) {
+	// Skip error state if using external data
+	if (!loading && error && !externalData) {
 		return (
 			<div className="flex h-full w-full items-center justify-center px-6 py-10">
 				<div className="flex flex-col items-center justify-center gap-4 text-muted-foreground">
@@ -888,7 +874,8 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 
 	// When there is no error and no rows, show a centered empty state that
 	// visually mirrors the loading layout (full-area placeholder instead of a table).
-	if (!loading && !error && !hasRows) {
+	// Skip empty state if using external data (let parent handle it)
+	if (!loading && !error && !hasRows && !externalData) {
 		return (
 			<div className="flex h-full w-full items-center justify-center px-6 py-10">
 				<div className="flex flex-col items-center justify-center gap-4 text-muted-foreground">
@@ -1012,7 +999,13 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 												<ContextMenuTrigger asChild>
 													<TableRow
 														data-state={row.getIsSelected() && "selected"}
-														className={`group ${rowData.level > 0 ? "bg-muted/20" : ""}`}
+														className={cn(
+															"group",
+															rowData.level > 0 && "bg-muted/20",
+															// Highlight cited frames, subdue non-cited ones
+															rowData.level > 0 && rowData.metadata?.is_cited && "opacity-100 brightness-110",
+															rowData.level > 0 && !rowData.metadata?.is_cited && "opacity-50",
+														)}
 														onClick={(event) => {
 															// Only toggle on primary button (left click)
 															if (event.button !== 0) {

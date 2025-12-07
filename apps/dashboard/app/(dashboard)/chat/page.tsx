@@ -1,8 +1,6 @@
 "use client";
 
-import { Badge } from "@recurse/ui/components/badge";
 import { FileUploadDropzone } from "@recurse/ui/components/file-upload-dropzone";
-import { useFileUpload } from "@recurse/ui/hooks/use-file-upload";
 import {
 	BookOpen,
 	Brain,
@@ -11,7 +9,6 @@ import {
 	Loader2,
 	Paperclip,
 	Send,
-	UploadIcon,
 	X,
 } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -21,37 +18,53 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
-import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ApiError, apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { DocumentsTable, type Document, type Frame } from "@/components/documents/documents-table";
 
 const HIGHLIGHT_DURATION_MS = 1600;
 
-type AnswerSource = {
+type Citation = {
+	citation_index: number;
 	id: string;
-	title?: string;
+	title: string;
+	summary?: string;
+	type: string;
+};
+
+type SourceDocument = {
+	id: string;
+	title: string;
 	type?: string;
 	summary?: string;
-	citation_index?: number;
-	document_title?: string;
-	document_summary?: string;
+	tags?: string[];
+	hypernyms?: string[];
+	hyponyms?: string[];
+	metadata?: {
+		tags?: string[];
+		hypernyms?: string[];
+		hyponyms?: string[];
+	};
+};
+
+type SourceGroup = {
+	document: SourceDocument;
+	citations: Citation[];
+};
+
+type AnswerSource = Citation & {
+	// Include document metadata for normalization
+	document?: SourceDocument;
 };
 
 type AnswerResponse = {
 	result?: string;
 	versions?: string[];
-	sources?: AnswerSource[];
+	sources?: SourceGroup[];
 	message?: string;
 };
 
@@ -75,7 +88,8 @@ export default function ChatPage() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [answer, setAnswer] = useState<string | null>(null);
-	const [sources, setSources] = useState<AnswerSource[] | null>(null);
+	const [sources, setSources] = useState<SourceGroup[] | null>(null);
+	const [documents, setDocuments] = useState<Document[] | null>(null);
 	const [versions, setVersions] = useState<string[] | null>(null);
 	const [currentDraftIndex, setCurrentDraftIndex] = useState(0);
 	const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
@@ -86,16 +100,6 @@ export default function ChatPage() {
 	const [highlightedSource, setHighlightedSource] = useState<number | null>(
 		null,
 	);
-	
-	// Hook for empty state upload button
-	const [{ files: emptyStateFiles }, { openFileDialog: openEmptyStateDialog, getInputProps: getEmptyStateInputProps }] = useFileUpload({
-		accept: ".pdf,.txt,.md,.mdx,.json,.csv,.doc,.docx,.html",
-		multiple: true,
-		onFilesAdded: (addedFiles) => {
-			const fileList = addedFiles.map(f => f.file as File);
-			handleFilesDropped(fileList);
-		},
-	});
 
 	const hasContent = useMemo(() => {
 		return Boolean(answer) || (Array.isArray(versions) && versions.length > 0);
@@ -204,6 +208,7 @@ export default function ChatPage() {
 		setError(null);
 		setAnswer(null);
 		setSources(null);
+		setDocuments(null);
 		setVersions(null);
 		setCurrentDraftIndex(0);
 
@@ -213,7 +218,7 @@ export default function ChatPage() {
 				use_knowledge_base: useKb,
 				cite_sources: true,
 				model: "openai/gpt-4o",
-				depth: 2,
+				depth: 5,
 			} as const;
 
 			// Use apiService to include Authorization header from auth store
@@ -223,7 +228,64 @@ export default function ChatPage() {
 			);
 
 			setAnswer(data?.result ?? null);
-			setSources(Array.isArray(data?.sources) ? data?.sources : null);
+			setSources(Array.isArray(data?.sources) ? data.sources : null);
+			
+			// Collect all cited frame IDs
+			const citedFrameIds = new Set<string>();
+			
+			// Build documents from source groups - the answer endpoint returns all candidates
+			const documentsMap = new Map<string, Document>();
+			
+			if (Array.isArray(data?.sources)) {
+				for (const sourceGroup of data.sources) {
+					// Mark all citations as cited
+					for (const citation of sourceGroup.citations) {
+						citedFrameIds.add(citation.id);
+					}
+					
+					const docId = sourceGroup.document.id;
+					
+					// Convert citations to Frame[] format
+					const frames: Frame[] = sourceGroup.citations.map((citation) => ({
+						id: citation.id,
+						title: citation.title,
+						type: citation.type,
+						summary: citation.summary || null,
+						index: citation.citation_index,
+						parent_id: docId,
+						metadata: {
+							citation_index: citation.citation_index,
+							is_cited: true,
+						},
+					}));
+					
+					// If document already exists, merge citations
+					if (documentsMap.has(docId)) {
+						const existingDoc = documentsMap.get(docId)!;
+						// Merge frames, avoiding duplicates by ID
+						const existingFrameIds = new Set(existingDoc.children?.map(f => f.id) ?? []);
+						const newFrames = frames.filter(f => !existingFrameIds.has(f.id));
+						existingDoc.children = [...(existingDoc.children ?? []), ...newFrames];
+					} else {
+						// Create new Document from sourceGroup.document with frames as children
+						const doc: Document = {
+							id: docId,
+							title: sourceGroup.document.title,
+							type: sourceGroup.document.type || "Document",
+							summary: sourceGroup.document.summary || null,
+							children: frames,
+							tags: sourceGroup.document.tags,
+							hypernyms: sourceGroup.document.hypernyms,
+							hyponyms: sourceGroup.document.hyponyms,
+							metadata: sourceGroup.document.metadata,
+						};
+						documentsMap.set(docId, doc);
+					}
+				}
+			}
+			
+			const convertedDocuments = Array.from(documentsMap.values());
+			setDocuments(convertedDocuments.length > 0 ? convertedDocuments : null);
 			setVersions(Array.isArray(data?.versions) ? data?.versions : null);
 
 			// Clear attached files after successful submission
@@ -349,22 +411,13 @@ export default function ChatPage() {
 						<ScrollArea className="h-full">
 							<div className="relative p-6" ref={scrollRef}>
 								{showPrompt && (
-									<div className="flex flex-col items-center justify-center gap-4 text-muted-foreground">
-										<div className="flex flex-col items-center justify-center">
-											<span className="text-sm">No documents yet.</span>
-											<span className="mt-1 text-xs">
-												Upload documents to start exploring your knowledge base.
+									<div className="text-muted-foreground">
+										<div className="flex flex-col">
+											<span className="text-base">Ask a question</span>
+											<span className="mt-1 text-sm">
+												Get answers from your knowledge base.
 											</span>
 										</div>
-										<Button
-											icon={<UploadIcon className="h-4 w-4" />}
-											onClick={openEmptyStateDialog}
-											size="sm"
-											variant="outline"
-										>
-											Upload Documents
-										</Button>
-										<input {...getEmptyStateInputProps({ className: "hidden" })} />
 									</div>
 								)}
 								{loading && (
@@ -378,62 +431,6 @@ export default function ChatPage() {
 										<div className="whitespace-pre-wrap">
 											{renderAnswerWithCitations(currentDraft)}
 										</div>
-
-										{/* Sources table */}
-										{Array.isArray(sources) && sources.length > 0 && (
-											<div className="mt-6">
-												<div className="mb-3 flex items-center gap-2">
-													<BookOpen className="size-4" />
-													<span className="font-medium">Context</span>
-												</div>
-												<div className="max-h-96 overflow-auto rounded-md border">
-													<Table className="w-full table-fixed">
-														<TableHeader>
-															<TableRow>
-																<TableHead className="w-1/4">Title</TableHead>
-																<TableHead className="w-1/2">Summary</TableHead>
-																<TableHead className="w-1/4">Type</TableHead>
-															</TableRow>
-														</TableHeader>
-														<TableBody>
-															{sources.map((s, index) => {
-																const cIndex =
-																	typeof s.citation_index === "number"
-																		? s.citation_index
-																		: index + 1;
-																const isHighlighted =
-																	highlightedSource === cIndex;
-																return (
-																	<TableRow
-																		className={cn(
-																			isHighlighted && "bg-primary/10",
-																		)}
-																		key={s.id || `${index}`}
-																		ref={(el) => {
-																			sourceRefs.current[cIndex] = el;
-																		}}
-																	>
-																		<TableCell className="max-w-0 truncate font-medium">
-																			{s.title || s.document_title || s.id}
-																		</TableCell>
-																		<TableCell className="max-w-0 truncate text-muted-foreground text-sm">
-																			{s.summary || s.document_summary || ""}
-																		</TableCell>
-																		<TableCell className="text-center">
-																			<Badge variant="outline">
-																				{s.type || "Document"}
-																			</Badge>
-																		</TableCell>
-																	</TableRow>
-																);
-															})}
-														</TableBody>
-													</Table>
-												</div>
-											</div>
-										)}
-
-										{/* Draft navigation moved to footer */}
 									</div>
 								)}
 							</div>
@@ -466,6 +463,19 @@ export default function ChatPage() {
 									</button>
 								</div>
 							))}
+						</div>
+					)}
+
+					{/* Sources table - positioned above input */}
+					{documents && documents.length > 0 && (
+						<div className="mb-4">
+							<div className="mb-3 flex items-center gap-2">
+								<BookOpen className="size-4" />
+								<span className="font-medium">Context</span>
+							</div>
+							<div className="h-96">
+								<DocumentsTable data={documents} disableAutoFetch />
+							</div>
 						</div>
 					)}
 
