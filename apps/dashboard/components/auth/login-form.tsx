@@ -3,7 +3,8 @@
 import { ArrowRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { AuthDivider, AuthShell, SocialButtons, useSocialLogin } from "@recurse/auth";
+import { AuthDivider, AuthShell, SocialButtons } from "@recurse/auth";
+import { useSocialLogin } from "./use-social-login";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { loginWithPassword } from "@/lib/auth-api";
