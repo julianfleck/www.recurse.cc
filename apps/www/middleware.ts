@@ -37,13 +37,22 @@ function addSecurityHeaders(response: NextResponse) {
 	return response;
 }
 
-// Note: SPA auth is client-side; avoid gating in middleware.
-// Keep middleware as a no-op to prevent redirect loops.
 export default function middleware(request: NextRequest) {
 	const response = NextResponse.next();
 	return addSecurityHeaders(response);
 }
 
 export const config = {
-	matcher: ["/dashboard/:path*"],
+	// Apply to all routes
+	matcher: [
+		/*
+		 * Match all request paths except for the ones starting with:
+		 * - api (API routes)
+		 * - _next/static (static files)
+		 * - _next/image (image optimization files)
+		 * - favicon.ico (favicon file)
+		 */
+		"/((?!api|_next/static|_next/image|favicon.ico).*)",
+	],
 };
+

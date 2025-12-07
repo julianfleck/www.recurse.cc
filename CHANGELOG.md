@@ -1,5 +1,15 @@
 # Changelog
 
+## [2025-12-07T20:19:19Z] — Security: Add HSTS and security headers to mitigate ISP SSL interception
+
+**Context:** Users behind Rogers (Canada) ISP are experiencing SSL errors due to deep packet inspection. Rogers performs DPI and may block connections based on trust scores, interfering with SSL/TLS connections.
+
+**Changes:** Implemented comprehensive security headers in middleware for all apps (www, docs, dashboard): HSTS with preload, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Content-Security-Policy, and Permissions-Policy. Created documentation guide for users experiencing ISP SSL issues.
+
+**Impact:** Security headers help prevent SSL downgrade attacks and make ISP interception more difficult. HSTS forces browsers to always use HTTPS, reducing vulnerability to man-in-the-middle attacks. Users can also follow client-side solutions documented in the guide.
+
+**Files touched:** `apps/www/middleware.ts`, `apps/docs/middleware.ts`, `apps/dashboard/middleware.ts`, `docs/research/2025-12-07/01-rogers-isp-ssl-interference.md`, `docs/planning/rogers-isp-ssl-solutions.md`, `CHANGELOG.md`
+
 ## [2025-12-07T05:58:20Z] — Security: Patch React Server Components RCE (CVE-2025-55182)
 
 **Context:** Vercel disclosed a critical React Server Components vulnerability (CVE-2025-55182) affecting React 19 and frameworks using it (including Next.js) that can lead to remote code execution via specially crafted requests when using vulnerable `react-server-dom-*` packages in affected Next.js versions [`https://vercel.com/changelog/cve-2025-55182`](https://vercel.com/changelog/cve-2025-55182).
