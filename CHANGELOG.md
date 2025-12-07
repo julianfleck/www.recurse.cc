@@ -1,5 +1,12 @@
 # Changelog
 
+## [2025-12-07T05:58:20Z] — Security: Patch React Server Components RCE (CVE-2025-55182)
+
+**Context:** Vercel disclosed a critical React Server Components vulnerability (CVE-2025-55182) affecting React 19 and frameworks using it (including Next.js) that can lead to remote code execution via specially crafted requests when using vulnerable `react-server-dom-*` packages in affected Next.js versions [`https://vercel.com/changelog/cve-2025-55182`](https://vercel.com/changelog/cve-2025-55182).
+**Changes:** Bumped all apps (`@recurse/www`, `docs.recurse.cc`, `@recurse/dashboard`) to `next@^15.5.7`, `react@^19.2.1`, and `react-dom@^19.2.1`, and aligned `eslint-config-next` to `^15.5.7` to ensure we are on framework builds that include the hardened RSC handling recommended by the advisory.
+**Impact:** All Next.js apps in this monorepo now depend on patched React/Next versions that address CVE-2025-55182, reducing exposure to RSC-based remote code execution while preserving the existing App Router setup.
+**Files touched:** `apps/www/package.json`, `apps/docs/package.json`, `apps/dashboard/package.json`, `.cursor/rules/overview.mdc`, `CHANGELOG.md`
+
 ## [2025-12-07T00:00:00Z] — Feature: Per-email invite tokens backed by local JSON store
 
 **Context:** The dashboard signup flow used a single environment-based invite code, making it hard to manage per-user invitations and generate human-friendly tokens.
