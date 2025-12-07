@@ -47,13 +47,74 @@ export type ApiResponse<T = unknown> = {
 export class ApiError extends Error {
 	status?: number;
 	details?: unknown;
+	isCorsError?: boolean;
 
-	constructor(message: string, status?: number, details?: unknown) {
+	constructor(message: string, status?: number, details?: unknown, isCorsError = false) {
 		super(message);
 		this.name = "ApiError";
 		this.status = status;
 		this.details = details;
+		this.isCorsError = isCorsError;
 	}
+}
+
+/**
+ * Detects if an error is CORS-related
+ */
+function isCorsError(error: unknown): boolean {
+	if (!(error instanceof Error)) {
+		return false;
+	}
+	
+	const errorMessage = error.message.toLowerCase();
+	const corsIndicators = [
+		"cors",
+		"access-control-allow-origin",
+		"preflight",
+		"blocked by cors policy",
+		"no 'access-control-allow-origin' header",
+	];
+	
+	return corsIndicators.some(indicator => errorMessage.includes(indicator));
+}
+
+/**
+ * Handles API errors consistently across all methods
+ */
+function handleApiError(error: unknown): never {
+	// Re-throw session expired errors without wrapping
+	if (error instanceof AuthSessionExpiredError) {
+		throw error;
+	}
+	if (error instanceof ApiError) {
+		throw error;
+	}
+
+	// Check for CORS errors
+	const corsError = isCorsError(error);
+	const errorMessage = error instanceof Error ? error.message : "Unknown error";
+	
+	// Check for network errors that might be CORS-related
+	const isNetworkError = errorMessage.includes("Failed to fetch") || 
+		errorMessage.includes("NetworkError") ||
+		errorMessage.includes("ERR_FAILED") ||
+		errorMessage.includes("ERR_BLOCKED_BY_CLIENT");
+	
+	if (corsError || isNetworkError) {
+		// CORS or network errors - provide helpful message
+		throw new ApiError(
+			"Unable to connect to API. The API server may be unavailable or there may be a CORS configuration issue.",
+			undefined,
+			error,
+			true,
+		);
+	}
+
+	throw new ApiError(
+		`Network error: ${errorMessage}`,
+		undefined,
+		error,
+	);
 }
 
 export class ApiService {
@@ -136,19 +197,7 @@ export class ApiService {
 				statusText: response.statusText,
 			};
 		} catch (error) {
-			// Re-throw session expired errors without wrapping
-			if (error instanceof AuthSessionExpiredError) {
-				throw error;
-			}
-			if (error instanceof ApiError) {
-				throw error;
-			}
-
-			throw new ApiError(
-				`Network error: ${error instanceof Error ? error.message : "Unknown error"}`,
-				undefined,
-				error,
-			);
+			handleApiError(error);
 		}
 	}
 
@@ -204,19 +253,7 @@ export class ApiService {
 				statusText: response.statusText,
 			};
 		} catch (error) {
-			// Re-throw session expired errors without wrapping
-			if (error instanceof AuthSessionExpiredError) {
-				throw error;
-			}
-			if (error instanceof ApiError) {
-				throw error;
-			}
-
-			throw new ApiError(
-				`Network error: ${error instanceof Error ? error.message : "Unknown error"}`,
-				undefined,
-				error,
-			);
+			handleApiError(error);
 		}
 	}
 
@@ -284,19 +321,7 @@ export class ApiService {
 				statusText: response.statusText,
 			};
 		} catch (error) {
-			// Re-throw session expired errors without wrapping
-			if (error instanceof AuthSessionExpiredError) {
-				throw error;
-			}
-			if (error instanceof ApiError) {
-				throw error;
-			}
-
-			throw new ApiError(
-				`Network error: ${error instanceof Error ? error.message : "Unknown error"}`,
-				undefined,
-				error,
-			);
+			handleApiError(error);
 		}
 	}
 
@@ -357,19 +382,7 @@ export class ApiService {
 				statusText: response.statusText,
 			};
 		} catch (error) {
-			// Re-throw session expired errors without wrapping
-			if (error instanceof AuthSessionExpiredError) {
-				throw error;
-			}
-			if (error instanceof ApiError) {
-				throw error;
-			}
-
-			throw new ApiError(
-				`Network error: ${error instanceof Error ? error.message : "Unknown error"}`,
-				undefined,
-				error,
-			);
+			handleApiError(error);
 		}
 	}
 }

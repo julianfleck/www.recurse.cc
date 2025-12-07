@@ -446,22 +446,33 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 				return;
 			}
 
+			// Check for CORS errors specifically
+			const isCorsError = err instanceof ApiError && err.isCorsError;
+			
 			// Check for network errors (Failed to fetch = CORS/mixed content/network issue)
-			const isNetworkError = errorMessage.includes("Failed to fetch") || 
+			const isNetworkError = isCorsError ||
+				errorMessage.includes("Failed to fetch") || 
 				errorMessage.includes("Network error") ||
-				errorMessage.includes("Mixed Content");
+				errorMessage.includes("Mixed Content") ||
+				errorMessage.includes("CORS");
 
 			if (isNetworkError) {
-				// Network errors shouldn't spam toasts - show once and stop
+				// Network/CORS errors shouldn't spam toasts - show once and stop
 				if (!hasShownNetworkErrorToast) {
 					hasShownNetworkErrorToast = true;
+					const errorDesc = isCorsError 
+						? "The API server may be unavailable or there may be a CORS configuration issue."
+						: "Please check your connection and try again.";
 					toast.error("Unable to connect to API", {
-						description: "Please check your connection and try again.",
+						description: errorDesc,
 						duration: 5000,
 					});
 				}
 				setHasFetchedOnce(true); // Mark as attempted to prevent retry loop
-				setError("Unable to connect to API. Please try again later.");
+				const errorMsg = isCorsError
+					? "Unable to connect to API. The server may be unavailable or there may be a CORS configuration issue."
+					: "Unable to connect to API. Please try again later.";
+				setError(errorMsg);
 				setLoading(false);
 				return;
 			}
