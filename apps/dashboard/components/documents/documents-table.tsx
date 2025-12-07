@@ -57,7 +57,6 @@ import {
 } from "@/components/ui/table";
 import { ApiError, apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import { EmptyStateCard } from "@/components/ui/state-card";
 import { DefaultSpinner } from "@/components/loaders/default-spinner";
 
 // Types - API may return metadata either nested or at top level
@@ -889,21 +888,6 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 				</div>
 			</div>
 
-			{/* Error message */}
-			{error && (
-				<div className="shrink-0 rounded-md border border-destructive/50 bg-destructive/10 p-4 mb-4">
-					<p className="text-destructive text-sm">{error}</p>
-					<Button
-						className="mt-2"
-						onClick={() => fetchDocuments(0)}
-						size="sm"
-						variant="outline"
-					>
-						Retry
-					</Button>
-				</div>
-			)}
-
 			{/* Table - fills remaining height and scrolls internally */}
 			<div className="flex-1 min-h-0 rounded-sm border overflow-auto relative">
 				<table className={cn("w-full caption-bottom text-sm", "table-fixed")}>
@@ -918,22 +902,6 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 					</TableHeader>
 					<TableBody>
 						{(() => {
-							if (error) {
-								return (
-									<TableRow>
-										<TableCell
-											className="h-64 align-middle"
-											colSpan={columns.length}
-										>
-											<EmptyStateCard
-												description="Something went wrong while loading your documents. Please try again."
-												title="Unable to load documents"
-											/>
-										</TableCell>
-									</TableRow>
-								);
-							}
-
 							if (table.getRowModel().rows?.length) {
 								return table.getRowModel().rows.map((row) => {
 									const rowData = row.original;

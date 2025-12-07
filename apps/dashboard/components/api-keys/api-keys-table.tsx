@@ -830,21 +830,6 @@ export function ApiKeysTable() {
 				</div>
 			</div>
 
-			{/* Error message */}
-			{error && (
-				<div className="mt-4 rounded-md border border-destructive/50 bg-destructive/10 p-4">
-					<p className="text-destructive text-sm">{error}</p>
-					<Button
-						className="mt-2"
-						onClick={() => fetchApiKeys(0)}
-						size="sm"
-						variant="outline"
-					>
-						Retry
-					</Button>
-				</div>
-			)}
-
 			{/* Table */}
 			<div className="mt-4 rounded-sm border">
 				<Table maxHeight="h-[400px]" stickyHeader>
