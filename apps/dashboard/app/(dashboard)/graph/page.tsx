@@ -8,8 +8,11 @@ import {
 } from "@/lib/api-to-graph-converter";
 import { FileUploadDropzone } from "@recurse/ui/components/file-upload-dropzone";
 import { GraphView } from "@shared/components/graph-view";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+
+// Track if we've shown a network error toast to prevent spam
+let hasShownNetworkErrorToast = false;
 
 type UploadResponse = {
 	document_id: string;
@@ -21,10 +24,16 @@ type UploadResponse = {
 export default function Page() {
 	const [isUploading, setIsUploading] = useState(false);
 	const [graphData, setGraphData] = useState<GraphViewData | null>(null);
+	const hasFetchedRef = useRef(false);
 
 	// Fetch documents data for the graph view
 	useEffect(() => {
 		const fetchDocuments = async () => {
+			// Prevent duplicate fetches
+			if (hasFetchedRef.current) {
+				return;
+			}
+
 			try {
 				const accessToken = useAuthStore.getState().accessToken;
 				if (!accessToken) {
@@ -32,6 +41,7 @@ export default function Page() {
 					return;
 				}
 
+				hasFetchedRef.current = true;
 				console.log("[GraphPage] Fetching documents...");
 
 				// Use /documents endpoint with depth=5 to get full nested tree structure
@@ -59,7 +69,23 @@ export default function Page() {
 				setGraphData(converted);
 			} catch (error) {
 				console.error("[GraphPage] Failed to fetch documents:", error);
-				toast.error("Failed to load documents");
+				const errorMessage = error instanceof Error ? error.message : "";
+				const isNetworkError = errorMessage.includes("Failed to fetch") || 
+					errorMessage.includes("Network error") ||
+					errorMessage.includes("Mixed Content");
+
+				// Only show toast once for network errors to prevent spam
+				if (isNetworkError) {
+					if (!hasShownNetworkErrorToast) {
+						hasShownNetworkErrorToast = true;
+						toast.error("Unable to connect to API", {
+							description: "Please check your connection and try again.",
+							duration: 5000,
+						});
+					}
+				} else {
+					toast.error("Failed to load documents");
+				}
 			}
 		};
 

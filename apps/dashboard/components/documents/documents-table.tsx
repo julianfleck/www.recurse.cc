@@ -324,6 +324,9 @@ const SortableTableHead = ({ header }: { header: any }) => {
 const MAX_RETRIES = 3;
 const INITIAL_BACKOFF_MS = 1000;
 
+// Track if we've already shown a network error toast to prevent spam
+let hasShownNetworkErrorToast = false;
+
 type DocumentsTableProps = {
 	onUploadClick?: () => void;
 };
@@ -440,22 +443,43 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 				return;
 			}
 
-			// For non-retryable errors, show toast and set error state
+			// Check for network errors (Failed to fetch = CORS/mixed content/network issue)
+			const isNetworkError = errorMessage.includes("Failed to fetch") || 
+				errorMessage.includes("Network error") ||
+				errorMessage.includes("Mixed Content");
+
+			if (isNetworkError) {
+				// Network errors shouldn't spam toasts - show once and stop
+				if (!hasShownNetworkErrorToast) {
+					hasShownNetworkErrorToast = true;
+					toast.error("Unable to connect to API", {
+						description: "Please check your connection and try again.",
+						duration: 5000,
+					});
+				}
+				setLoading(false);
+				return;
+			}
+
+			// For non-retryable errors, show toast once
 			if (isAuthError) {
-				toast.error("Authentication failed", {
-					description: "Please try logging out and back in.",
-				});
-				setError("Unable to authenticate. Please try logging out and back in.");
+				if (!hasShownNetworkErrorToast) {
+					hasShownNetworkErrorToast = true;
+					toast.error("Authentication failed", {
+						description: "Please try logging out and back in.",
+					});
+				}
 			} else if (err instanceof ApiError) {
 				toast.error("Failed to load documents", {
 					description: err.message,
 				});
-				setError(`Failed to load documents: ${err.message}`);
 			} else {
-				toast.error("Failed to load documents", {
-					description: "Please try again later.",
-				});
-				setError("Failed to load documents. Please try again later.");
+				if (!hasShownNetworkErrorToast) {
+					hasShownNetworkErrorToast = true;
+					toast.error("Failed to load documents", {
+						description: "Please try again later.",
+					});
+				}
 			}
 			setLoading(false);
 			return;

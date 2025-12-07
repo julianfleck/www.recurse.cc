@@ -1,19 +1,23 @@
 "use client";
 
+import { AuthSessionExpiredError } from "@recurse/auth";
 import { Badge } from "@recurse/ui/components/badge";
 import { AnimatePresence, motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { useAuthStore } from "@/components/auth/auth-store";
 import { GenericTooltipLayout } from "@shared/components/graph-view/components/node-tooltip";
 import { DefaultSpinner } from "@/components/loaders/default-spinner";
 import { EmptyStateCard } from "@/components/ui/state-card";
-import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { apiService } from "@/lib/api";
 import { isOnAuthPage } from "@/lib/auth-utils";
+
+// Track if we've shown a network error toast to prevent spam
+let hasShownNetworkErrorToast = false;
 
 type SearchResult = {
 	id: string;
@@ -57,7 +61,6 @@ export default function ContextPage() {
 	const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isLoadingNewResults, setIsLoadingNewResults] = useState(false);
-	const [error, setError] = useState<string | null>(null);
 	const [totalFound, setTotalFound] = useState<number | null>(null);
 	const [hasPerformedManualSearch, setHasPerformedManualSearch] =
 		useState(false);
@@ -94,7 +97,6 @@ export default function ContextPage() {
 				setIsLoading(true);
 			}
 
-			setError(null);
 			setTotalFound(null);
 
 			try {
@@ -114,6 +116,13 @@ export default function ContextPage() {
 				setSearchResults(nodes);
 				setTotalFound(response.data?.total_found || null);
 			} catch (err) {
+				// Check for session expired errors
+				if (err instanceof AuthSessionExpiredError) {
+					setSearchResults([]);
+					setTotalFound(null);
+					return;
+				}
+
 				// Handle authentication errors by redirecting to login (but not when already on auth pages)
 				if (err instanceof Error && err.name === "AuthenticationError") {
 					if (!isOnAuthPage()) {
@@ -121,8 +130,27 @@ export default function ContextPage() {
 					}
 					return;
 				}
-				// Search failed - handle error silently but show user-friendly message
-				setError(err instanceof Error ? err.message : "Search failed");
+
+				const errorMessage = err instanceof Error ? err.message : "Search failed";
+				const isNetworkError = errorMessage.includes("Failed to fetch") || 
+					errorMessage.includes("Network error") ||
+					errorMessage.includes("Mixed Content");
+
+				// Show toast for errors (but only once for network errors to prevent spam)
+				if (isNetworkError) {
+					if (!hasShownNetworkErrorToast) {
+						hasShownNetworkErrorToast = true;
+						toast.error("Unable to connect to API", {
+							description: "Please check your connection and try again.",
+							duration: 5000,
+						});
+					}
+				} else {
+					toast.error("Search failed", {
+						description: errorMessage,
+					});
+				}
+
 				setSearchResults([]);
 				setTotalFound(null);
 			} finally {
@@ -171,7 +199,6 @@ export default function ContextPage() {
 				}
 				setSearchResults([]);
 				setTotalFound(null);
-				setError(null);
 			}
 		},
 		[debouncedSearch],
@@ -312,11 +339,6 @@ export default function ContextPage() {
 						))}
 				</div>
 
-				{error && (
-					<div className="rounded-md border border-destructive/20 bg-destructive/10 p-3 text-destructive text-sm">
-						{error}
-					</div>
-				)}
 			</div>
 
 			{/* Results Count */}
