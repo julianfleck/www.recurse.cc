@@ -10,6 +10,15 @@ if (!API_BASE_URL) {
 	throw new Error("NEXT_PUBLIC_API_BASE_URL environment variable is not set");
 }
 
+// Debug: Log the API URL configuration on load
+if (typeof window !== "undefined") {
+	console.log("[API Config]", {
+		API_BASE_URL,
+		NODE_ENV: process.env.NODE_ENV,
+		envVar: process.env.NEXT_PUBLIC_API_BASE_URL,
+	});
+}
+
 // Use proxy in development to avoid CORS issues
 // In production, the API should have proper CORS headers configured
 const getApiBaseUrl = () => {
