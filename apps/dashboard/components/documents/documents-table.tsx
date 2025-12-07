@@ -70,6 +70,11 @@ export type Frame = {
 	id: string;
 	title: string;
 	type: string;
+	/**
+	 * Original position within the source document.
+	 * Used to keep sections ordered by their appearance.
+	 */
+	index?: number | null;
 	summary?: string | null;
 	text?: string | null;
 	parent_id?: string | null;
@@ -87,6 +92,11 @@ export type Document = {
 	id: string;
 	title: string;
 	type: string;
+	/**
+	 * Original position within the source document.
+	 * Used to keep documents/sections ordered by their appearance.
+	 */
+	index?: number | null;
 	summary?: string | null;
 	text?: string | null;
 	created_at?: string;
@@ -138,7 +148,7 @@ function formatTypeLabel(rawType: string | undefined): string {
 }
 
 function buildTree(documents: Document[]): TableNode[] {
-	return documents.map(doc => ({
+	return sortByIndex(documents).map(doc => ({
 		id: doc.id,
 		title: doc.title,
 		type: doc.type,
@@ -158,7 +168,7 @@ function buildSubTree(
 	level: number,
 	parentAncestorIds: string[],
 ): TableNode[] {
-	return frames.map(frame => ({
+	return sortByIndex(frames).map(frame => ({
 		id: frame.id,
 		title: frame.title,
 		type: frame.type,
@@ -175,6 +185,35 @@ function buildSubTree(
 			[...parentAncestorIds, frame.id],
 		),
 	}));
+}
+
+/**
+ * Sort helpers
+ *
+ * The API returns an `index` field that represents the original order
+ * of documents/sections in the source. We use this to keep the tree
+ * aligned with the document's appearance order.
+ */
+function sortByIndex<T extends { index?: number | null }>(items: T[]): T[] {
+	return [...items].sort((a, b) => {
+		const aIndex = a.index;
+		const bIndex = b.index;
+
+		const aHasIndex = typeof aIndex === "number";
+		const bHasIndex = typeof bIndex === "number";
+
+		if (aHasIndex && bHasIndex) {
+			if (aIndex === bIndex) return 0;
+			return aIndex - bIndex;
+		}
+
+		// Items with an index come before items without one.
+		if (aHasIndex && !bHasIndex) return -1;
+		if (!aHasIndex && bHasIndex) return 1;
+
+		// If neither has an index, preserve original order.
+		return 0;
+	});
 }
 
 // Helper to normalize metadata from either nested or top-level location
@@ -293,9 +332,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 	const [data, setData] = useState<Document[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const [sorting, setSorting] = useState<SortingState>([
-		{ id: "created_at", desc: true },
-	]);
+	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = useState({});
