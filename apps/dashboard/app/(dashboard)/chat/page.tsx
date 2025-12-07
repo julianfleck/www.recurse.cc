@@ -2,6 +2,7 @@
 
 import { Badge } from "@recurse/ui/components/badge";
 import { FileUploadDropzone } from "@recurse/ui/components/file-upload-dropzone";
+import { useFileUpload } from "@recurse/ui/hooks/use-file-upload";
 import {
 	BookOpen,
 	Brain,
@@ -10,6 +11,7 @@ import {
 	Loader2,
 	Paperclip,
 	Send,
+	UploadIcon,
 	X,
 } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -84,6 +86,16 @@ export default function ChatPage() {
 	const [highlightedSource, setHighlightedSource] = useState<number | null>(
 		null,
 	);
+	
+	// Hook for empty state upload button
+	const [{ files: emptyStateFiles }, { openFileDialog: openEmptyStateDialog, getInputProps: getEmptyStateInputProps }] = useFileUpload({
+		accept: ".pdf,.txt,.md,.mdx,.json,.csv,.doc,.docx,.html",
+		multiple: true,
+		onFilesAdded: (addedFiles) => {
+			const fileList = addedFiles.map(f => f.file as File);
+			handleFilesDropped(fileList);
+		},
+	});
 
 	const hasContent = useMemo(() => {
 		return Boolean(answer) || (Array.isArray(versions) && versions.length > 0);
@@ -337,8 +349,22 @@ export default function ChatPage() {
 						<ScrollArea className="h-full">
 							<div className="relative p-6" ref={scrollRef}>
 								{showPrompt && (
-									<div className="text-muted-foreground text-sm">
-										Ask a question to get started.
+									<div className="flex flex-col items-center justify-center gap-4 text-muted-foreground">
+										<div className="flex flex-col items-center justify-center">
+											<span className="text-sm">No documents yet.</span>
+											<span className="mt-1 text-xs">
+												Upload documents to start exploring your knowledge base.
+											</span>
+										</div>
+										<Button
+											icon={<UploadIcon className="h-4 w-4" />}
+											onClick={openEmptyStateDialog}
+											size="sm"
+											variant="outline"
+										>
+											Upload Documents
+										</Button>
+										<input {...getEmptyStateInputProps({ className: "hidden" })} />
 									</div>
 								)}
 								{loading && (

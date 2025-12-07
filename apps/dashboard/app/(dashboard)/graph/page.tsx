@@ -7,9 +7,12 @@ import {
 	convertApiResponseToGraphData,
 } from "@/lib/api-to-graph-converter";
 import { FileUploadDropzone } from "@recurse/ui/components/file-upload-dropzone";
+import { useFileUpload } from "@recurse/ui/hooks/use-file-upload";
 import { GraphView } from "@shared/components/graph-view";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { UploadIcon } from "lucide-react";
 
 // Track if we've shown a network error toast to prevent spam
 let hasShownNetworkErrorToast = false;
@@ -24,6 +27,8 @@ type UploadResponse = {
 export default function Page() {
 	const [isUploading, setIsUploading] = useState(false);
 	const [graphData, setGraphData] = useState<GraphViewData | null>(null);
+	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 	const hasFetchedRef = useRef(false);
 
 	// Fetch documents data for the graph view
@@ -42,6 +47,8 @@ export default function Page() {
 				}
 
 				hasFetchedRef.current = true;
+				setIsLoading(true);
+				setError(null);
 				console.log("[GraphPage] Fetching documents...");
 
 				// Use /documents endpoint with depth=5 to get full nested tree structure
@@ -86,6 +93,9 @@ export default function Page() {
 				} else {
 					toast.error("Failed to load documents");
 				}
+				setError(errorMessage || "Failed to load documents");
+			} finally {
+				setIsLoading(false);
 			}
 		};
 
@@ -201,6 +211,51 @@ export default function Page() {
 			setIsUploading(false);
 		}
 	}, []);
+
+	// Show empty state when no data and not loading
+	const hasNoData = !isLoading && (!graphData || graphData.nodes.length === 0);
+	
+	const [{ files }, { openFileDialog, getInputProps }] = useFileUpload({
+		accept: ".pdf,.txt,.md,.mdx,.json,.csv,.doc,.docx,.html",
+		multiple: true,
+		onFilesAdded: (addedFiles) => {
+			const fileList = addedFiles.map(f => f.file as File);
+			handleFilesDropped(fileList);
+		},
+	});
+
+	if (hasNoData) {
+		return (
+			<div className="flex h-[calc(100vh-var(--fd-nav-height))] w-full items-center justify-center px-6 py-10">
+				<div className="flex flex-col items-center justify-center gap-4 text-muted-foreground">
+					<div className="flex flex-col items-center justify-center">
+						{error ? (
+							<>
+								<span className="text-sm">Unable to load graph</span>
+								<span className="mt-1 text-xs">{error}</span>
+							</>
+						) : (
+							<>
+								<span className="text-sm">No documents yet.</span>
+								<span className="mt-1 text-xs">
+									Upload documents to start exploring your knowledge base.
+								</span>
+							</>
+						)}
+					</div>
+					<Button
+						icon={<UploadIcon className="h-4 w-4" />}
+						onClick={openFileDialog}
+						size="sm"
+						variant="outline"
+					>
+						Upload Documents
+					</Button>
+					<input {...getInputProps({ className: "hidden" })} />
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<FileUploadDropzone

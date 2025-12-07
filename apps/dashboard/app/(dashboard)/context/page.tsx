@@ -3,13 +3,13 @@
 import { AuthSessionExpiredError } from "@recurse/auth";
 import { Badge } from "@recurse/ui/components/badge";
 import { AnimatePresence, motion } from "framer-motion";
-import { Search } from "lucide-react";
+import { Search, UploadIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { useFileUpload } from "@recurse/ui/hooks/use-file-upload";
 import { useAuthStore } from "@/components/auth/auth-store";
 import { GenericTooltipLayout } from "@shared/components/graph-view/components/node-tooltip";
 import { DefaultSpinner } from "@/components/loaders/default-spinner";
-import { EmptyStateCard } from "@/components/ui/state-card";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
 import { Input } from "@/components/ui/input";
@@ -67,6 +67,76 @@ export default function ContextPage() {
 		useState(false);
 	const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 	const accessToken = useAuthStore((s) => s.accessToken);
+	
+	const [{ files }, { openFileDialog, getInputProps }] = useFileUpload({
+		accept: ".pdf,.txt,.md,.mdx,.json,.csv,.doc,.docx,.html",
+		multiple: true,
+		onFilesAdded: async (addedFiles) => {
+			const fileList = addedFiles.map(f => f.file as File);
+			const toastId = "file-upload";
+			const totalFiles = fileList.length;
+			let successCount = 0;
+			let errorCount = 0;
+
+			toast.loading(
+				<div className="flex items-center gap-2">
+					<span>
+						Uploading {totalFiles} file{totalFiles > 1 ? "s" : ""}...
+					</span>
+				</div>,
+				{ id: toastId },
+			);
+
+			for (let i = 0; i < fileList.length; i++) {
+				const file = fileList[i];
+				try {
+					await apiService.uploadFile("/documents/upload", file, {
+						title: file.name,
+					});
+					successCount++;
+				} catch (error) {
+					errorCount++;
+					console.error(`Failed to upload ${file.name}:`, error);
+				}
+			}
+
+			if (errorCount === 0) {
+				toast.success(
+					<div className="flex flex-col gap-1">
+						<span className="font-medium">
+							{successCount} file{successCount > 1 ? "s" : ""} uploaded
+						</span>
+						<span className="text-muted-foreground text-xs">
+							Processing started
+						</span>
+					</div>,
+					{ id: toastId },
+				);
+			} else if (successCount === 0) {
+				toast.error(
+					<div className="flex flex-col gap-1">
+						<span className="font-medium">Upload failed</span>
+						<span className="text-muted-foreground text-xs">
+							{errorCount} file{errorCount > 1 ? "s" : ""} failed to upload
+						</span>
+					</div>,
+					{ id: toastId },
+				);
+			} else {
+				toast.warning(
+					<div className="flex flex-col gap-1">
+						<span className="font-medium">
+							{successCount} of {totalFiles} files uploaded
+						</span>
+						<span className="text-muted-foreground text-xs">
+							{errorCount} file{errorCount > 1 ? "s" : ""} failed
+						</span>
+					</div>,
+					{ id: toastId },
+				);
+			}
+		},
+	});
 
 	// Cleanup timer on unmount
 	useEffect(() => {
@@ -205,6 +275,7 @@ export default function ContextPage() {
 		[debouncedSearch],
 	);
 
+
 	const renderContent = () => {
 		// Only show big loading spinner when we have no results yet
 		if (isLoading && searchResults.length === 0) {
@@ -277,15 +348,53 @@ export default function ContextPage() {
 			return (
 				<motion.div
 					animate={{ opacity: 1 }}
-					className="py-12"
+					className="flex flex-col items-center justify-center gap-4 py-12 text-muted-foreground"
 					exit={{ opacity: 0 }}
 					initial={{ opacity: 0 }}
 				>
-					<EmptyStateCard
-						description={`Try a different query, or broaden your search terms.`}
-						title={`No results found for "${searchTerm}"`}
-						variant="search"
-					/>
+					<div className="flex flex-col items-center justify-center">
+						<span className="text-sm">No results found for "{searchTerm}"</span>
+						<span className="mt-1 text-xs">
+							Try a different query, or broaden your search terms.
+						</span>
+					</div>
+					<Button
+						icon={<UploadIcon className="h-4 w-4" />}
+						onClick={openFileDialog}
+						size="sm"
+						variant="outline"
+					>
+						Upload Documents
+					</Button>
+					<input {...getInputProps({ className: "hidden" })} />
+				</motion.div>
+			);
+		}
+
+		// Initial empty state when no search has been performed
+		if (!searchTerm && !isLoading && searchResults.length === 0) {
+			return (
+				<motion.div
+					animate={{ opacity: 1 }}
+					className="flex flex-col items-center justify-center gap-4 py-12 text-muted-foreground"
+					exit={{ opacity: 0 }}
+					initial={{ opacity: 0 }}
+				>
+					<div className="flex flex-col items-center justify-center">
+						<span className="text-sm">No documents yet.</span>
+						<span className="mt-1 text-xs">
+							Upload documents to start exploring your knowledge base.
+						</span>
+					</div>
+					<Button
+						icon={<UploadIcon className="h-4 w-4" />}
+						onClick={openFileDialog}
+						size="sm"
+						variant="outline"
+					>
+						Upload Documents
+					</Button>
+					<input {...getInputProps({ className: "hidden" })} />
 				</motion.div>
 			);
 		}

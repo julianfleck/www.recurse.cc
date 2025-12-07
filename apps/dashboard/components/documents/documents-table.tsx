@@ -58,7 +58,6 @@ import {
 import { ApiError, apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { DefaultSpinner } from "@/components/loaders/default-spinner";
-import { EmptyStateCard } from "@/components/ui/state-card";
 
 // Types - API may return metadata either nested or at top level
 type MetadataFields = {
@@ -867,11 +866,22 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 	if (!loading && error) {
 		return (
 			<div className="flex h-full w-full items-center justify-center px-6 py-10">
-				<EmptyStateCard
-					description={error}
-					title="Unable to load documents"
-					variant="documents"
-				/>
+				<div className="flex flex-col items-center justify-center gap-4 text-muted-foreground">
+					<div className="flex flex-col items-center justify-center">
+						<span className="text-sm">Unable to load documents</span>
+						<span className="mt-1 text-xs">{error}</span>
+					</div>
+					{onUploadClick && (
+						<Button
+							icon={<UploadIcon className="h-4 w-4" />}
+							onClick={onUploadClick}
+							size="sm"
+							variant="outline"
+						>
+							Upload Documents
+						</Button>
+					)}
+				</div>
 			</div>
 		);
 	}
@@ -881,11 +891,23 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 	if (!loading && !error && !hasRows) {
 		return (
 			<div className="flex h-full w-full items-center justify-center px-6 py-10">
-				<div className="flex flex-col items-center justify-center text-muted-foreground">
-					<span className="text-sm">No documents yet.</span>
-					<span className="mt-1 text-xs">
-						Upload documents to start exploring your knowledge base.
-					</span>
+				<div className="flex flex-col items-center justify-center gap-4 text-muted-foreground">
+					<div className="flex flex-col items-center justify-center">
+						<span className="text-sm">No documents yet.</span>
+						<span className="mt-1 text-xs">
+							Upload documents to start exploring your knowledge base.
+						</span>
+					</div>
+					{onUploadClick && (
+						<Button
+							icon={<UploadIcon className="h-4 w-4" />}
+							onClick={onUploadClick}
+							size="sm"
+							variant="outline"
+						>
+							Upload Documents
+						</Button>
+					)}
 				</div>
 			</div>
 		);
