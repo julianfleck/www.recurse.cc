@@ -56,6 +56,8 @@ import {
 } from "@/components/ui/table";
 import { ApiError, apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { EmptyStateCard } from "@/components/ui/state-card";
+import { DefaultSpinner } from "@/components/loaders/default-spinner";
 
 // Types - API may return metadata either nested or at top level
 type MetadataFields = {
@@ -298,6 +300,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = useState({});
 	const [expanded, setExpanded] = useState<ExpandedState>({});
+	const [hasFetchedOnce, setHasFetchedOnce] = useState(false);
 	
 	// Refs to access current state in columns without causing re-renders
 	const expandedRef = useRef<ExpandedState>({});
@@ -381,6 +384,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 			setLoading(false);
 			return;
 		}
+		setHasFetchedOnce(true);
 		setLoading(false);
 	}, []);
 
@@ -651,7 +655,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 				loading,
 			});
 
-			if (token && data.length === 0 && !loading) {
+			if (token && !hasFetchedOnce && !loading) {
 				console.log("[Documents] Conditions met, fetching...");
 				fetchDocuments();
 			}
@@ -680,7 +684,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 			}
 			unsubscribe();
 		};
-	}, [fetchDocuments, data.length, loading]);
+	}, [fetchDocuments, hasFetchedOnce, loading]);
 
 	const table = useReactTable({
 		data: treeData,
@@ -724,9 +728,35 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 		});
 	};
 
+	const hasRows = table.getRowModel().rows?.length > 0;
 	const selectedCount = Object.keys(rowSelection).length;
 	const nodesToDelete = getNodesToDelete();
 	const deleteCount = nodesToDelete.length;
+
+	// While loading, replace the page content area entirely with a centered loader.
+	// This ensures we don't render headers, rows, or empty states underneath.
+	if (loading && !error) {
+		return (
+			<div className="flex h-full w-full items-center justify-center px-6 py-10">
+				<DefaultSpinner text="Loading documents…" />
+			</div>
+		);
+	}
+
+	// When there is no error and no rows, show a centered empty state that
+	// visually mirrors the loading layout (full-area placeholder instead of a table).
+	if (!loading && !error && !hasRows) {
+		return (
+			<div className="flex h-full w-full items-center justify-center px-6 py-10">
+				<div className="flex flex-col items-center justify-center text-muted-foreground">
+					<span className="text-sm">No documents yet.</span>
+					<span className="mt-1 text-xs">
+						Upload documents to start exploring your knowledge base.
+					</span>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="flex h-full w-full flex-col px-6">
@@ -811,30 +841,17 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 					</TableHeader>
 					<TableBody>
 						{(() => {
-							if (loading) {
-								return (
-									<TableRow>
-										<TableCell
-											className="h-24 text-center text-muted-foreground"
-											colSpan={columns.length}
-										>
-											<div className="flex flex-col items-center gap-2">
-												<div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-												<span>Loading documents...</span>
-											</div>
-										</TableCell>
-									</TableRow>
-								);
-							}
-
 							if (error) {
 								return (
 									<TableRow>
 										<TableCell
-											className="h-24 text-center text-muted-foreground"
+											className="h-64 align-middle"
 											colSpan={columns.length}
 										>
-											Unable to load documents
+											<EmptyStateCard
+												description="Something went wrong while loading your documents. Please try again."
+												title="Unable to load documents"
+											/>
 										</TableCell>
 									</TableRow>
 								);
@@ -931,16 +948,7 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 								});
 							}
 
-							return (
-								<TableRow>
-									<TableCell
-										className="h-24 text-center"
-										colSpan={columns.length}
-									>
-										No documents found. Upload some documents to get started.
-									</TableCell>
-								</TableRow>
-							);
+							return null;
 						})()}
 					</TableBody>
 				</table>

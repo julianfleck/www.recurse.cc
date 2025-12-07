@@ -81,7 +81,11 @@ inventory:
     kind: "code"
     purpose: "Dashboard application (dashboard.recurse.cc) - fully migrated, uses Switzer font"
     status: "current"
-  
+
+  - path: "apps/dashboard/components/ui/state-card.tsx"
+    kind: "code"
+    purpose: "Shared loading and empty-state card component for dashboard pages"
+    status: "current"
   - path: "apps/www/app/blog"
     kind: "code"
     purpose: "Marketing site blog routes (/blog listing + /blog/[...slug]) rendering Substack mirrors with Fumadocs MDX components"

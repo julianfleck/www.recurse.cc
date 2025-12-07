@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthStore } from "@/components/auth/auth-store";
 import { GenericTooltipLayout } from "@shared/components/graph-view/components/node-tooltip";
 import { DefaultSpinner } from "@/components/loaders/default-spinner";
+import { EmptyStateCard } from "@/components/ui/state-card";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
 import { Input } from "@/components/ui/input";
@@ -186,7 +187,7 @@ export default function ContextPage() {
 					exit={{ opacity: 0 }}
 					initial={{ opacity: 0 }}
 				>
-					<DefaultSpinner text="Searching..." />
+					<DefaultSpinner text="Searching your knowledge base…" />
 				</motion.div>
 			);
 		}
@@ -248,13 +249,15 @@ export default function ContextPage() {
 			return (
 				<motion.div
 					animate={{ opacity: 1 }}
-					className="py-12 text-center"
+					className="py-12"
 					exit={{ opacity: 0 }}
 					initial={{ opacity: 0 }}
 				>
-					<p className="text-muted-foreground">
-						No results found for "{searchTerm}"
-					</p>
+					<EmptyStateCard
+						description={`Try a different query, or broaden your search terms.`}
+						title={`No results found for "${searchTerm}"`}
+						variant="search"
+					/>
 				</motion.div>
 			);
 		}
