@@ -53,6 +53,7 @@ import {
 } from "@/components/ui/tooltip";
 import { ApiError, apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { EmptyStateCard } from "@/components/ui/state-card";
 
 // Constants
 const SECRET_KEY_VISIBLE_CHARS = 8;
@@ -791,6 +792,18 @@ export function ApiKeysTable() {
 
 	const selectedCount = Object.keys(rowSelection).length;
 
+	// When there's an error and not loading, show the error empty state
+	if (!loading && error) {
+		return (
+			<div className="mt-12 flex w-full items-center justify-center px-6 py-10">
+				<EmptyStateCard
+					description={error}
+					title="Unable to load API keys"
+				/>
+			</div>
+		);
+	}
+
 	return (
 		<div className="mt-12 w-full">
 			{/* Header with search and actions */}
@@ -862,19 +875,6 @@ export function ApiKeysTable() {
 												<div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
 												<span>Loading API keys...</span>
 											</div>
-										</TableCell>
-									</TableRow>
-								);
-							}
-							
-							if (error) {
-								return (
-									<TableRow>
-										<TableCell
-											className="h-24 text-center text-muted-foreground"
-											colSpan={columns.length}
-										>
-											Unable to load API keys
 										</TableCell>
 									</TableRow>
 								);

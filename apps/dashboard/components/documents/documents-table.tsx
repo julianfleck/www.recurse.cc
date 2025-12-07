@@ -58,6 +58,7 @@ import {
 import { ApiError, apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { DefaultSpinner } from "@/components/loaders/default-spinner";
+import { EmptyStateCard } from "@/components/ui/state-card";
 
 // Types - API may return metadata either nested or at top level
 type MetadataFields = {
@@ -847,6 +848,19 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 		return (
 			<div className="flex h-full w-full items-center justify-center px-6 py-10">
 				<DefaultSpinner text="Loading documents…" />
+			</div>
+		);
+	}
+
+	// When there's an error, show the error empty state
+	if (!loading && error) {
+		return (
+			<div className="flex h-full w-full items-center justify-center px-6 py-10">
+				<EmptyStateCard
+					description={error}
+					title="Unable to load documents"
+					variant="documents"
+				/>
 			</div>
 		);
 	}
