@@ -1,5 +1,6 @@
 "use client";
 
+import { AuthSessionExpiredError } from "@recurse/auth";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthStore } from "@/components/auth/auth-store";
 import { Status as KiboStatus } from "@/components/ui/kibo-ui/status";
@@ -193,6 +194,26 @@ export function DocumentCountStatus() {
 			);
 			setDocumentCount(response.data.pagination.total_count);
 		} catch (err) {
+			// Check for session expired errors - don't retry, the auth layer handles logout
+			if (err instanceof AuthSessionExpiredError) {
+				setIsLoading(false);
+				return;
+			}
+
+			// Check for Missing Refresh Token errors in the message
+			const errorMessage =
+				err instanceof Error ? err.message : "Failed to load document count";
+			const isMissingRefreshToken =
+				errorMessage.toLowerCase().includes("missing refresh token") ||
+				(errorMessage.toLowerCase().includes("refresh") &&
+					errorMessage.toLowerCase().includes("token"));
+
+			if (isMissingRefreshToken) {
+				// Session expired - auth layer should handle this
+				setIsLoading(false);
+				return;
+			}
+
 			// Handle authentication errors by redirecting to login (but not when already on auth pages)
 			if (err instanceof Error && err.name === "AuthenticationError") {
 				if (!isOnAuthPage()) {
@@ -200,9 +221,6 @@ export function DocumentCountStatus() {
 				}
 				return;
 			}
-
-			const errorMessage =
-				err instanceof Error ? err.message : "Failed to load document count";
 
 			// If it's an authentication error and we haven't retried yet, wait a bit and retry
 			if (

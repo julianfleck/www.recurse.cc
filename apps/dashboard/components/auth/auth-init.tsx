@@ -1,7 +1,11 @@
 "use client";
 import { useAuth0 } from "@auth0/auth0-react";
-import { registerTokenRefresher } from "@recurse/auth";
-import { useEffect } from "react";
+import {
+	isMissingRefreshTokenError,
+	registerTokenRefresher,
+} from "@recurse/auth";
+import { useCallback, useEffect, useRef } from "react";
+import { toast } from "sonner";
 import { setApiAuthGetter } from "@/lib/api";
 import { isOnAuthPage } from "@/lib/auth-utils";
 import { useAuthStore } from "./auth-store";
@@ -11,7 +15,7 @@ const emptyTokenGetter = (): undefined => {
 };
 
 export function AuthInit() {
-	const { user, isAuthenticated, isLoading, getAccessTokenSilently, error } =
+	const { user, isAuthenticated, isLoading, getAccessTokenSilently, logout, error } =
 		useAuth0();
 	const setAuth = useAuthStore((s) => s.setAuth);
 	const clear = useAuthStore((s) => s.clear);
@@ -19,8 +23,46 @@ export function AuthInit() {
 	const audience = process.env.NEXT_PUBLIC_AUTH0_AUDIENCE;
 	const scopes = "openid profile email offline_access";
 
+	// Track if we've already shown the session expired toast to prevent duplicates
+	const hasShownSessionExpiredToast = useRef(false);
+
 	// Don't redirect on auth pages
 	const onAuthPage = isOnAuthPage();
+
+	/**
+	 * Handle session expiration by clearing auth state and logging out.
+	 * Shows a toast notification and redirects to login.
+	 */
+	const handleSessionExpired = useCallback(
+		(showToast = true) => {
+			if (hasShownSessionExpiredToast.current) {
+				return; // Prevent duplicate handling
+			}
+			hasShownSessionExpiredToast.current = true;
+
+			// Clear local auth state
+			clear();
+			setApiAuthGetter(emptyTokenGetter);
+
+			// Show user-friendly toast
+			if (showToast && !onAuthPage) {
+				toast.error("Session expired", {
+					description: "Please log in again to continue.",
+					duration: 5000,
+				});
+			}
+
+			// Log out via Auth0 and redirect to login
+			if (!onAuthPage) {
+				logout({
+					logoutParams: {
+						returnTo: `${window.location.origin}/login`,
+					},
+				});
+			}
+		},
+		[clear, logout, onAuthPage],
+	);
 
 	// Suppress Auth0 console errors globally
 	useEffect(() => {
@@ -66,24 +108,32 @@ export function AuthInit() {
 			: undefined;
 
 		registerTokenRefresher(async () => {
-			const token = await getAccessTokenSilently(options as never);
-			const accessToken =
-				typeof token === "string"
-					? token
-					: ((token as unknown as { access_token?: string })?.access_token ??
-							"");
-			const normalizedUser = user
-				? ({
-						sub: user.sub || "",
-						name: user.name,
-						email: user.email,
-						picture: user.picture,
-					} as const)
-				: undefined;
-			setAuth(accessToken, "auth0", normalizedUser);
-			return accessToken;
+			try {
+				const token = await getAccessTokenSilently(options as never);
+				const accessToken =
+					typeof token === "string"
+						? token
+						: ((token as unknown as { access_token?: string })?.access_token ??
+								"");
+				const normalizedUser = user
+					? ({
+							sub: user.sub || "",
+							name: user.name,
+							email: user.email,
+							picture: user.picture,
+						} as const)
+					: undefined;
+				setAuth(accessToken, "auth0", normalizedUser);
+				return accessToken;
+			} catch (refreshError) {
+				// If we get a Missing Refresh Token error, the user needs to log in again
+				if (isMissingRefreshTokenError(refreshError)) {
+					handleSessionExpired();
+				}
+				throw refreshError;
+			}
 		});
-	}, [audience, scopes, getAccessTokenSilently, setAuth, user]);
+	}, [audience, scopes, getAccessTokenSilently, setAuth, user, handleSessionExpired]);
 
 	useEffect(() => {
 		// Prefer SDK-based login when available; otherwise respect a client-side token set via email/password flow
@@ -112,25 +162,10 @@ export function AuthInit() {
 					// API auth getter will be set up by the separate effect above
 				})
 				.catch((tokenError) => {
-					// Check if this is a "Missing Refresh Token" error - these are expected and should be handled gracefully
-					const errorMessage =
-						tokenError instanceof Error
-							? tokenError.message
-							: String(tokenError);
-					const isMissingRefreshToken =
-						errorMessage.includes("Missing Refresh Token") ||
-						(errorMessage.includes("refresh") &&
-							errorMessage.includes("token") &&
-							errorMessage.includes("audience"));
-
-					if (isMissingRefreshToken) {
-						// Missing refresh token is expected when requesting tokens with audience/scope not in initial login
-						// Auth0 will handle this by triggering a new login flow if needed
-						// Don't clear auth or redirect - let Auth0 handle it or use existing token if available
-						if (!(accessTokenFromStore || onAuthPage)) {
-							// Only redirect if we truly have no token at all
-							window.location.href = "/login";
-						}
+					// Check if this is a "Missing Refresh Token" error
+					if (isMissingRefreshTokenError(tokenError)) {
+						// Session expired - log user out and redirect to login
+						handleSessionExpired();
 						return;
 					}
 
@@ -162,6 +197,7 @@ export function AuthInit() {
 		error,
 		onAuthPage,
 		scopes,
+		handleSessionExpired,
 	]);
 
 	return null;

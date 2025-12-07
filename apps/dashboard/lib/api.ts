@@ -1,5 +1,5 @@
 // Generic API service for querying the main API
-import { ensureValidAccessToken } from "@recurse/auth";
+import { AuthSessionExpiredError, ensureValidAccessToken } from "@recurse/auth";
 
 // Default to localhost:8000 in development if env var is not set
 const API_BASE_URL =
@@ -127,6 +127,10 @@ export class ApiService {
 				statusText: response.statusText,
 			};
 		} catch (error) {
+			// Re-throw session expired errors without wrapping
+			if (error instanceof AuthSessionExpiredError) {
+				throw error;
+			}
 			if (error instanceof ApiError) {
 				throw error;
 			}
@@ -191,6 +195,10 @@ export class ApiService {
 				statusText: response.statusText,
 			};
 		} catch (error) {
+			// Re-throw session expired errors without wrapping
+			if (error instanceof AuthSessionExpiredError) {
+				throw error;
+			}
 			if (error instanceof ApiError) {
 				throw error;
 			}
@@ -267,6 +275,10 @@ export class ApiService {
 				statusText: response.statusText,
 			};
 		} catch (error) {
+			// Re-throw session expired errors without wrapping
+			if (error instanceof AuthSessionExpiredError) {
+				throw error;
+			}
 			if (error instanceof ApiError) {
 				throw error;
 			}
@@ -336,6 +348,10 @@ export class ApiService {
 				statusText: response.statusText,
 			};
 		} catch (error) {
+			// Re-throw session expired errors without wrapping
+			if (error instanceof AuthSessionExpiredError) {
+				throw error;
+			}
 			if (error instanceof ApiError) {
 				throw error;
 			}

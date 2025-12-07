@@ -1,5 +1,6 @@
 "use client";
 
+import { AuthSessionExpiredError } from "@recurse/auth";
 import { Badge } from "@recurse/ui/components/badge";
 import { MouseFollowerTooltip } from "@recurse/ui/components/mouse-follower-tooltip";
 import type {
@@ -389,6 +390,32 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 		} catch (err) {
 			console.error(`[Documents] Fetch error (attempt ${retryCount + 1}):`, err);
 
+			// Check for session expired errors - don't retry, the auth layer handles logout
+			if (err instanceof AuthSessionExpiredError) {
+				// Session expired - auth layer will handle logout and redirect
+				// Just show a clean empty state, no error message needed
+				setLoading(false);
+				return;
+			}
+
+			// Check for Missing Refresh Token errors in the message (from network errors)
+			const errorMessage = err instanceof Error ? err.message : "";
+			const isMissingRefreshToken =
+				errorMessage.toLowerCase().includes("missing refresh token") ||
+				(errorMessage.toLowerCase().includes("refresh") &&
+					errorMessage.toLowerCase().includes("token"));
+
+			if (isMissingRefreshToken) {
+				// Session expired - auth layer should handle this, don't retry
+				// Show toast for user feedback
+				toast.error("Session expired", {
+					description: "Please log in again to continue.",
+					duration: 5000,
+				});
+				setLoading(false);
+				return;
+			}
+
 			const isAuthError =
 				err instanceof ApiError && (err.status === 401 || err.status === 403);
 			const canRetry = retryCount < MAX_RETRIES && !retryTimeoutRef.current;
@@ -404,18 +431,31 @@ export function DocumentsTable({ onUploadClick }: DocumentsTableProps) {
 					if (useAuthStore.getState().accessToken) {
 						fetchDocuments(retryCount + 1);
 					} else {
-						setError("Authentication required. Please log in again.");
+						// No token available - show toast and don't set error state to prevent blinking
+						toast.error("Authentication required", {
+							description: "Please log in again.",
+						});
 						setLoading(false);
 					}
 				}, delay);
 				return;
 			}
 
+			// For non-retryable errors, show toast and set error state
 			if (isAuthError) {
+				toast.error("Authentication failed", {
+					description: "Please try logging out and back in.",
+				});
 				setError("Unable to authenticate. Please try logging out and back in.");
 			} else if (err instanceof ApiError) {
+				toast.error("Failed to load documents", {
+					description: err.message,
+				});
 				setError(`Failed to load documents: ${err.message}`);
 			} else {
+				toast.error("Failed to load documents", {
+					description: "Please try again later.",
+				});
 				setError("Failed to load documents. Please try again later.");
 			}
 			setLoading(false);

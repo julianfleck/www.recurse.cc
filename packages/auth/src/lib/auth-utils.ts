@@ -8,6 +8,35 @@ export function isOnAuthPage(): boolean {
 }
 
 /**
+ * Custom error class for authentication failures that require user re-login.
+ * This is thrown when refresh tokens are missing or invalid.
+ */
+export class AuthSessionExpiredError extends Error {
+  constructor(message = "Your session has expired. Please log in again.") {
+    super(message);
+    this.name = "AuthSessionExpiredError";
+  }
+}
+
+/**
+ * Check if an error is related to missing refresh tokens.
+ * Auth0 throws this when requesting tokens with an audience/scope that
+ * wasn't included in the initial login.
+ */
+export function isMissingRefreshTokenError(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+  const message = error.message.toLowerCase();
+  return (
+    message.includes("missing refresh token") ||
+    (message.includes("refresh") &&
+      message.includes("token") &&
+      (message.includes("audience") || message.includes("scope")))
+  );
+}
+
+/**
  * Decode the payload of a JWT token.
  * Returns null if the token is not a valid JWT or the payload can't be parsed.
  */
@@ -71,16 +100,32 @@ export function registerTokenRefresher(refresher: TokenRefresher): void {
  *   de-duplicating concurrent refreshes via a shared in-flight promise.
  * - If there's no refresher, we just return the current token and let callers
  *   handle authentication errors.
+ * - If the refresher throws a "Missing Refresh Token" error, we throw an
+ *   AuthSessionExpiredError to signal that the user needs to log in again.
  */
 export async function ensureValidAccessToken(
   currentToken?: string,
 ): Promise<string | undefined> {
+  // Helper to safely call the refresher and handle Missing Refresh Token errors
+  const safeRefresh = async (): Promise<string | undefined> => {
+    try {
+      return await tokenRefresher!();
+    } catch (error) {
+      if (isMissingRefreshTokenError(error)) {
+        // Clear the in-flight promise so future calls can retry if needed
+        refreshInFlight = null;
+        throw new AuthSessionExpiredError();
+      }
+      throw error;
+    }
+  };
+
   // No token at all – nothing we can validate; let the refresher try.
   if (!currentToken) {
     if (!tokenRefresher) {
       return undefined;
     }
-    return tokenRefresher();
+    return safeRefresh();
   }
 
   // If we don't have a refresher registered, just return what we have.
@@ -95,7 +140,7 @@ export async function ensureValidAccessToken(
 
   // Token appears expired – coordinate a single refresh across callers.
   if (!refreshInFlight) {
-    refreshInFlight = tokenRefresher().finally(() => {
+    refreshInFlight = safeRefresh().finally(() => {
       refreshInFlight = null;
     });
   }
