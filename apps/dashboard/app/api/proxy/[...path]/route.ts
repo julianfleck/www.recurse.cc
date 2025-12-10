@@ -25,13 +25,26 @@ async function proxyRequest(
 	const url = new URL(request.url);
 	const queryString = url.search;
 
-	// Build the target URL - ensure trailing slash to avoid redirects
+	// Build the target URL
+	// Only add trailing slash for GET requests to avoid redirects
+	// For POST/PUT/PATCH/DELETE, keep the path as-is because:
+	// 1. Redirects may strip Authorization headers (causing 401 errors)
+	// 2. These methods often have specific path requirements
 	let targetPath = pathString;
-	if (!targetPath.endsWith("/") && !queryString) {
+	if (request.method === "GET" && !targetPath.endsWith("/") && !queryString) {
 		targetPath += "/";
 	}
 	const targetUrl = `${API_BASE_URL}/${targetPath}${queryString}`;
 	
+	// Forward headers, excluding host
+	const headers = new Headers();
+	const hasAuth = request.headers.has("authorization");
+	for (const [key, value] of request.headers.entries()) {
+		if (key.toLowerCase() !== "host") {
+			headers.set(key, value);
+		}
+	}
+
 	// Debug logging in development
 	if (process.env.NODE_ENV === "development") {
 		console.log("[Proxy] Request:", {
@@ -39,69 +52,116 @@ async function proxyRequest(
 			path: pathString,
 			targetUrl,
 			apiBaseUrl: API_BASE_URL,
+			hasAuth,
+			contentType: request.headers.get("content-type"),
 		});
-	}
-
-	// Forward headers, excluding host
-	const headers = new Headers();
-	for (const [key, value] of request.headers.entries()) {
-		if (key.toLowerCase() !== "host") {
-			headers.set(key, value);
-		}
 	}
 
 	try {
 		// Handle different request methods
-		let body: BodyInit | null = null;
-		const contentType = request.headers.get("content-type") || "";
+		// Store body as Uint8Array so it can be reused for redirects
+		let bodyBytes: Uint8Array | null = null;
 
 		if (request.method !== "GET" && request.method !== "HEAD") {
-			if (contentType.includes("multipart/form-data")) {
-				// For file uploads, pass the body as-is
-				body = await request.blob();
-			} else if (contentType.includes("application/json")) {
-				body = await request.text();
-			} else {
-				body = await request.text();
-			}
+			const buffer = await request.arrayBuffer();
+			bodyBytes = new Uint8Array(buffer);
 		}
 
+		// Helper to get a fresh copy of the body for each fetch
+		const getBody = (): BodyInit | null => {
+			if (!bodyBytes) return null;
+			// Create a new Uint8Array view for each fetch to avoid "body already used" errors
+			return new Uint8Array(bodyBytes);
+		};
+
+		// Use manual redirect handling to preserve Authorization header
+		// When fetch follows redirects automatically, it may strip auth headers
 		const response = await fetch(targetUrl, {
 			method: request.method,
 			headers,
-			body,
-			// Follow redirects internally
-			redirect: "follow",
+			body: getBody(),
+			redirect: "manual",
 		});
 
-		// Get response body
-		const responseBody = await response.arrayBuffer();
+		// Handle redirects manually to preserve Authorization header
+		if (response.status >= 300 && response.status < 400) {
+			const location = response.headers.get("location");
+			if (location) {
+				console.log("[Proxy] Handling redirect:", {
+					from: targetUrl,
+					to: location,
+					status: response.status,
+				});
 
-		// Create response with proper headers
-		const responseHeaders = new Headers();
-		for (const [key, value] of response.headers.entries()) {
-			// Skip headers that shouldn't be forwarded
-			if (
-				!["transfer-encoding", "content-encoding", "connection"].includes(
-					key.toLowerCase(),
-				)
-			) {
-				responseHeaders.set(key, value);
+				// Follow the redirect with the same headers (including Authorization)
+				const redirectResponse = await fetch(location, {
+					method: request.method,
+					headers,
+					body: getBody(),
+					redirect: "manual",
+				});
+				
+				// If we get another redirect, follow it once more (max 2 redirects)
+				if (redirectResponse.status >= 300 && redirectResponse.status < 400) {
+					const location2 = redirectResponse.headers.get("location");
+					if (location2) {
+						const finalResponse = await fetch(location2, {
+							method: request.method,
+							headers,
+							body: getBody(),
+							redirect: "follow",
+						});
+						return createProxyResponse(finalResponse);
+					}
+				}
+				
+				return createProxyResponse(redirectResponse);
 			}
 		}
 
-		return new NextResponse(responseBody, {
-			status: response.status,
-			statusText: response.statusText,
-			headers: responseHeaders,
-		});
+		return createProxyResponse(response);
 	} catch (error) {
-		console.error("Proxy error:", error);
+		console.error("[Proxy] Error:", error);
 		return NextResponse.json(
 			{ error: "Proxy request failed", details: String(error) },
 			{ status: 502 },
 		);
 	}
+}
+
+/**
+ * Helper to create a NextResponse from a fetch Response
+ */
+async function createProxyResponse(response: Response): Promise<NextResponse> {
+	// Get response body
+	const responseBody = await response.arrayBuffer();
+
+	// Create response with proper headers
+	const responseHeaders = new Headers();
+	for (const [key, value] of response.headers.entries()) {
+		// Skip headers that shouldn't be forwarded
+		if (
+			!["transfer-encoding", "content-encoding", "connection"].includes(
+				key.toLowerCase(),
+			)
+		) {
+			responseHeaders.set(key, value);
+		}
+	}
+
+	// Log if we got an auth error
+	if (response.status === 401) {
+		console.error("[Proxy] Got 401 Unauthorized from API:", {
+			url: response.url,
+			status: response.status,
+		});
+	}
+
+	return new NextResponse(responseBody, {
+		status: response.status,
+		statusText: response.statusText,
+		headers: responseHeaders,
+	});
 }
 
 export async function GET(
