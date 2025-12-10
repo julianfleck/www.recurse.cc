@@ -27,12 +27,9 @@ export default function SettingsPage() {
 
 	const initialState = useMemo(
 		() => ({
-			defaultParsingModel:
-				PARSING_MODELS.find((m) => m.value === "gpt-4o")?.value ||
-				PARSING_MODELS[0]?.value ||
-				"",
+			defaultParsingModel: "",
 			parsingModelApiKey: "",
-			contextModel: PARSING_MODELS[0]?.value ?? "",
+			contextModel: "",
 			contextModelApiKey: "",
 			contextProvider: "openai",
 			embeddingModel: EMBEDDING_MODEL.value,
@@ -69,7 +66,7 @@ export default function SettingsPage() {
 	}, [authUser?.email]);
 
 	useEffect(() => {
-		if (state.provider !== "openrouter" || !state.parsingModelApiKey) {
+		if (!state.parsingModelApiKey) {
 			setFetchedModels([]);
 			setModelsError("");
 			return;
@@ -78,21 +75,29 @@ export default function SettingsPage() {
 		setLoadingModels(true);
 		setModelsError("");
 
-		fetch("https://openrouter.ai/api/v1/models", {
+		fetch("/api/models", {
+			method: "POST",
 			headers: {
-				Authorization: `Bearer ${state.parsingModelApiKey}`,
+				"Content-Type": "application/json",
 			},
+			body: JSON.stringify({
+				provider: state.provider,
+				apiKey: state.parsingModelApiKey,
+			}),
 		})
 			.then((res) => {
 				if (!res.ok) {
-					throw new Error(`Failed to fetch models: ${res.statusText}`);
+					return res.json().then((errorData) => {
+						throw new Error(errorData.error || `Failed to fetch models: ${res.statusText}`);
+					});
 				}
 				return res.json();
 			})
 			.then((data) => {
-				const models = data.data.map((m: { id: string; name: string }) => ({
-					value: m.id,
-					label: m.name,
+				// API returns { data: [{ value: string, label: string }] }
+				const models = (data.data || []).map((m: { value: string; label: string }) => ({
+					value: m.value,
+					label: m.label,
 				})) as ModelOption[];
 				setFetchedModels(models);
 			})
@@ -105,7 +110,7 @@ export default function SettingsPage() {
 	}, [state.provider, state.parsingModelApiKey]);
 
 	useEffect(() => {
-		if (state.contextProvider !== "openrouter" || !state.contextModelApiKey) {
+		if (!state.contextModelApiKey) {
 			setFetchedContextModels([]);
 			setContextModelsError("");
 			return;
@@ -114,21 +119,29 @@ export default function SettingsPage() {
 		setLoadingContextModels(true);
 		setContextModelsError("");
 
-		fetch("https://openrouter.ai/api/v1/models", {
+		fetch("/api/models", {
+			method: "POST",
 			headers: {
-				Authorization: `Bearer ${state.contextModelApiKey}`,
+				"Content-Type": "application/json",
 			},
+			body: JSON.stringify({
+				provider: state.contextProvider,
+				apiKey: state.contextModelApiKey,
+			}),
 		})
 			.then((res) => {
 				if (!res.ok) {
-					throw new Error(`Failed to fetch models: ${res.statusText}`);
+					return res.json().then((errorData) => {
+						throw new Error(errorData.error || `Failed to fetch models: ${res.statusText}`);
+					});
 				}
 				return res.json();
 			})
 			.then((data) => {
-				const models = data.data.map((m: { id: string; name: string }) => ({
-					value: m.id,
-					label: m.name,
+				// API returns { data: [{ value: string, label: string }] }
+				const models = (data.data || []).map((m: { value: string; label: string }) => ({
+					value: m.value,
+					label: m.label,
 				})) as ModelOption[];
 				setFetchedContextModels(models);
 			})
@@ -140,10 +153,8 @@ export default function SettingsPage() {
 			});
 	}, [state.contextProvider, state.contextModelApiKey]);
 
-	const currentModels =
-		state.provider === "openai" ? PARSING_MODELS : fetchedModels;
-	const currentContextModels =
-		state.contextProvider === "openai" ? PARSING_MODELS : fetchedContextModels;
+	const currentModels = fetchedModels;
+	const currentContextModels = fetchedContextModels;
 
 	const isDirty = useMemo(
 		() => JSON.stringify(state) !== JSON.stringify(baseline),
@@ -151,44 +162,30 @@ export default function SettingsPage() {
 	);
 
 	const parsingModelPlaceholder = useMemo(() => {
-		if (state.provider === "openrouter") {
-			if (!state.parsingModelApiKey) {
-				return "Enter API key to load models";
-			}
-			if (loadingModels) {
-				return "Loading models...";
-			}
-			if (modelsError) {
-				return "Error loading models";
-			}
+		if (!state.parsingModelApiKey) {
+			return "Enter API key to load models";
+		}
+		if (loadingModels) {
+			return "Loading models...";
+		}
+		if (modelsError) {
+			return "Error loading models";
 		}
 		return "Select model...";
-	}, [
-		state.provider,
-		state.parsingModelApiKey,
-		loadingModels,
-		modelsError,
-	]);
+	}, [state.parsingModelApiKey, loadingModels, modelsError]);
 
 	const contextModelPlaceholder = useMemo(() => {
-		if (state.contextProvider === "openrouter") {
-			if (!state.contextModelApiKey) {
-				return "Enter API key to load models";
-			}
-			if (loadingContextModels) {
-				return "Loading models...";
-			}
-			if (contextModelsError) {
-				return "Error loading models";
-			}
+		if (!state.contextModelApiKey) {
+			return "Enter API key to load models";
+		}
+		if (loadingContextModels) {
+			return "Loading models...";
+		}
+		if (contextModelsError) {
+			return "Error loading models";
 		}
 		return "Select model...";
-	}, [
-		state.contextProvider,
-		state.contextModelApiKey,
-		loadingContextModels,
-		contextModelsError,
-	]);
+	}, [state.contextModelApiKey, loadingContextModels, contextModelsError]);
 
 	const parsingModelOptions: ComboboxOption[] = useMemo(() => {
 		return currentModels.map((m) => ({
@@ -261,7 +258,7 @@ export default function SettingsPage() {
 								</div>
 								<div className="sm:col-span-2">
 									<div className="flex flex-col items-stretch gap-2 sm:flex-row">
-										<div className="flex items-center gap-2 sm:flex-1">
+										<div className="flex items-center gap-2 sm:flex-1 min-w-0">
 											<Combobox
 												options={providers}
 												value={state.provider}
@@ -277,10 +274,22 @@ export default function SettingsPage() {
 												placeholder="Select provider..."
 												emptyMessage="No providers found."
 												searchPlaceholder="Search providers..."
-												className="flex-1"
+												className="flex-1 min-w-0"
 											/>
 										</div>
-										<div className="flex items-center gap-2 sm:flex-1">
+										<Input
+											className="sm:flex-1"
+											id="parsing-model-api-key-inline"
+											onChange={(e) =>
+												setState((s) => ({
+													...s,
+													parsingModelApiKey: e.target.value,
+												}))
+											}
+											placeholder="Enter API key"
+											value={state.parsingModelApiKey}
+										/>
+										<div className="flex items-center gap-2 sm:flex-1 min-w-0">
 											<Combobox
 												options={parsingModelOptions}
 												value={state.defaultParsingModel}
@@ -296,26 +305,13 @@ export default function SettingsPage() {
 												emptyMessage="No models found."
 												searchPlaceholder="Search models..."
 												disabled={Boolean(
-													state.provider === "openrouter" &&
-														(!state.parsingModelApiKey ||
-															loadingModels ||
-															modelsError),
+													!state.parsingModelApiKey ||
+														loadingModels ||
+														modelsError,
 												)}
-												className="flex-1"
+												className="flex-1 min-w-0"
 											/>
 										</div>
-										<Input
-											className="sm:flex-1"
-											id="parsing-model-api-key-inline"
-											onChange={(e) =>
-												setState((s) => ({
-													...s,
-													parsingModelApiKey: e.target.value,
-												}))
-											}
-											placeholder="Enter API key"
-											value={state.parsingModelApiKey}
-										/>
 									</div>
 								</div>
 							</div>
@@ -353,7 +349,7 @@ export default function SettingsPage() {
 								</div>
 								<div className="sm:col-span-2">
 									<div className="flex flex-col items-stretch gap-2 sm:flex-row">
-										<div className="flex items-center gap-2 sm:flex-1">
+										<div className="flex items-center gap-2 sm:flex-1 min-w-0">
 											<Combobox
 												options={providers}
 												value={state.contextProvider}
@@ -369,10 +365,22 @@ export default function SettingsPage() {
 												placeholder="Select provider..."
 												emptyMessage="No providers found."
 												searchPlaceholder="Search providers..."
-												className="flex-1"
+												className="flex-1 min-w-0"
 											/>
 										</div>
-										<div className="flex items-center gap-2 sm:flex-1">
+										<Input
+											className="sm:flex-1"
+											id="context-model-api-key-inline"
+											onChange={(e) =>
+												setState((s) => ({
+													...s,
+													contextModelApiKey: e.target.value,
+												}))
+											}
+											placeholder="Enter API key"
+											value={state.contextModelApiKey}
+										/>
+										<div className="flex items-center gap-2 sm:flex-1 min-w-0">
 											<Combobox
 												options={contextModelOptions}
 												value={state.contextModel}
@@ -388,26 +396,13 @@ export default function SettingsPage() {
 												emptyMessage="No models found."
 												searchPlaceholder="Search models..."
 												disabled={Boolean(
-													state.contextProvider === "openrouter" &&
-														(!state.contextModelApiKey ||
-															loadingContextModels ||
-															contextModelsError),
+													!state.contextModelApiKey ||
+														loadingContextModels ||
+														contextModelsError,
 												)}
-												className="flex-1"
+												className="flex-1 min-w-0"
 											/>
 										</div>
-										<Input
-											className="sm:flex-1"
-											id="context-model-api-key-inline"
-											onChange={(e) =>
-												setState((s) => ({
-													...s,
-													contextModelApiKey: e.target.value,
-												}))
-											}
-											placeholder="Enter API key"
-											value={state.contextModelApiKey}
-										/>
 									</div>
 								</div>
 							</div>
