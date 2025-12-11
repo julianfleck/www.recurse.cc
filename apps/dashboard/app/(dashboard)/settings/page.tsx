@@ -5,7 +5,7 @@ import {
 	Combobox,
 	type ComboboxOption,
 } from "@recurse/ui/components/combobox";
-import { ChevronsUpDownIcon, HelpCircle } from "lucide-react";
+import { ChevronsUpDownIcon, HelpCircle, Info } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useAuthStore } from "@/components/auth/auth-store";
@@ -28,11 +28,10 @@ import {
 	DialogTitle,
 } from "@recurse/ui/components/dialog";
 import {
-	getModelApiKeys,
-	updateModelApiKey,
-	upsertModelApiKey,
-	type UserModelApiKey,
-} from "@/lib/model-api-keys";
+	getUserSettings,
+	updateUserSettings,
+	type UserSettings,
+} from "@/lib/user-settings";
 import { apiService } from "@/lib/api";
 import type { AvailableModel } from "@/lib/models/types";
 import { ModelCombobox } from "@/components/ui/model-combobox";
@@ -328,73 +327,45 @@ export default function SettingsPage() {
 		return [];
 	}, [currentContextModels, contextKeyIsPreview, state.contextModel]);
 
-	// Load existing API keys and settings from backend on mount
+	// Load existing settings from backend on mount
 	useEffect(() => {
 		async function loadSettings() {
 			try {
 				setLoadingKeys(true);
-				const keys = await getModelApiKeys();
+				const settings = await getUserSettings();
 
-			// Filter to only active keys
-			const activeKeys = keys.filter((k) => k.is_active);
-
-			// Try to load key IDs from localStorage (set when we save)
-			const savedParsingKeyId = typeof window !== "undefined" 
-				? localStorage.getItem("settings_parsing_key_id")
-				: null;
-			const savedContextKeyId = typeof window !== "undefined"
-				? localStorage.getItem("settings_context_key_id")
-				: null;
-
-			// Find keys by saved IDs first, then fall back to heuristics
-			let parsingKey = savedParsingKeyId
-				? activeKeys.find((k) => k.id === savedParsingKeyId && k.is_active)
-				: null;
-			let contextKey = savedContextKeyId
-				? activeKeys.find((k) => k.id === savedContextKeyId && k.is_active)
-				: null;
-
-			// Fallback: if saved IDs don't exist or keys are inactive, use heuristics
-			if (!parsingKey) {
-				const keysWithModels = activeKeys.filter((k) => k.model_pattern);
-				const keysWithoutModels = activeKeys.filter((k) => !k.model_pattern);
-
-				// For parsing model: prefer key with model_pattern, fallback to any active key
-				parsingKey =
-					keysWithModels.find((k) => k.provider === "openai") ||
-					keysWithModels[0] ||
-					keysWithoutModels.find((k) => k.provider === "openai") ||
-					keysWithoutModels[0];
-			}
-
-			if (!contextKey) {
-				const keysWithModels = activeKeys.filter((k) => k.model_pattern);
-				const keysWithoutModels = activeKeys.filter((k) => !k.model_pattern);
-
-				// For context model: prefer different key than parsing, or same if only one exists
-				contextKey =
-					keysWithModels.find(
-						(k) => k.id !== parsingKey?.id && k.provider === "openai",
-					) ||
-					keysWithModels.find((k) => k.id !== parsingKey?.id) ||
-					keysWithModels[0] ||
-					keysWithoutModels.find((k) => k.id !== parsingKey?.id) ||
-					keysWithoutModels[0];
-			}
-
-				// Update state with loaded keys
+				// Map new API structure to current state
 				const updates: Partial<typeof initialState> = {};
 
-				if (parsingKey) {
-					updates.provider = parsingKey.provider;
-					updates.parsingModelApiKey = parsingKey.key_preview;
-					updates.defaultParsingModel = parsingKey.model_pattern || "";
+				// Set models from new API structure
+				if (settings.models?.extraction) {
+					updates.defaultParsingModel = settings.models.extraction;
+				}
+				if (settings.models?.writing) {
+					updates.contextModel = settings.models.writing;
 				}
 
-				if (contextKey) {
-					updates.contextProvider = contextKey.provider;
-					updates.contextModelApiKey = contextKey.key_preview;
-					updates.contextModel = contextKey.model_pattern || "";
+				// Determine which provider keys to use
+				// Prefer openrouter if configured (covers all models), otherwise fall back to openai
+				const openrouterKey = settings.api_keys?.openrouter;
+				const openaiKey = settings.api_keys?.openai;
+
+				// For parsing model: use openrouter if configured, otherwise openai
+				if (openrouterKey?.configured && openrouterKey.preview) {
+					updates.provider = "openrouter";
+					updates.parsingModelApiKey = openrouterKey.preview;
+				} else if (openaiKey?.configured && openaiKey.preview) {
+					updates.provider = "openai";
+					updates.parsingModelApiKey = openaiKey.preview;
+				}
+
+				// For context model: use openrouter if configured, otherwise openai
+				if (openrouterKey?.configured && openrouterKey.preview) {
+					updates.contextProvider = "openrouter";
+					updates.contextModelApiKey = openrouterKey.preview;
+				} else if (openaiKey?.configured && openaiKey.preview) {
+					updates.contextProvider = "openai";
+					updates.contextModelApiKey = openaiKey.preview;
 				}
 
 				if (Object.keys(updates).length > 0) {
@@ -403,11 +374,6 @@ export default function SettingsPage() {
 						setBaseline(newState);
 						return newState;
 					});
-
-					// Try to load models for the keys we found
-					// Note: We can't use the preview key to fetch models, so we'll skip model loading
-					// The user will need to enter a new key if they want to change the model
-					// But if model_pattern is set, we at least know which model was selected
 				}
 			} catch (error) {
 				console.error("[Settings] Failed to load settings:", error);
@@ -459,136 +425,126 @@ export default function SettingsPage() {
 		setSaving(true);
 
 		try {
-			// Load keys once at the start to avoid stale data
-			const currentKeys = await getModelApiKeys();
+			// Build update request with only changed fields
+			const updateRequest: {
+				models?: { writing?: string; extraction?: string };
+				api_keys?: {
+					openrouter?: string;
+					openai?: string;
+					anthropic?: string;
+					google?: string;
+				};
+			} = {};
 
-			// Save parsing model settings if API key changed OR model changed
-			const parsingKeyChanged =
-				state.parsingModelApiKey !== baseline.parsingModelApiKey;
+			// Check for model changes
 			const parsingModelChanged =
 				state.defaultParsingModel !== baseline.defaultParsingModel;
-			if (
-				state.parsingModelApiKey &&
-				state.defaultParsingModel &&
-				(parsingKeyChanged || parsingModelChanged)
-			) {
-				// Key is a preview if it matches what was loaded from the backend
-				const isPreview =
-					(!!baseline.parsingModelApiKey && state.parsingModelApiKey === baseline.parsingModelApiKey) ||
-					(typeof state.parsingModelApiKey === "string" && state.parsingModelApiKey.length < 20);
-
-				// Find the existing key by provider + baseline model_pattern
-				const existingParsingKey = currentKeys.find(
-					(k) =>
-						k.provider === state.provider &&
-						k.is_active &&
-						(baseline.defaultParsingModel
-							? k.model_pattern === baseline.defaultParsingModel
-							: (!!baseline.parsingModelApiKey && state.parsingModelApiKey === baseline.parsingModelApiKey) &&
-								k.key_preview === state.parsingModelApiKey),
-				);
-
-				if (existingParsingKey) {
-					// Update existing key
-					await updateModelApiKey(existingParsingKey.id, {
-						...(isPreview ? {} : { api_key: state.parsingModelApiKey }),
-						model_pattern: state.defaultParsingModel,
-					});
-				} else if (!isPreview) {
-					// Create new key if we have a full API key and no existing key found
-					await upsertModelApiKey(
-						state.provider,
-						state.parsingModelApiKey,
-						state.defaultParsingModel,
-					);
-				}
-			}
-
-			// Save context model settings if API key changed OR model changed
-			const contextKeyChanged =
-				state.contextModelApiKey !== baseline.contextModelApiKey;
 			const contextModelChanged =
 				state.contextModel !== baseline.contextModel;
-			if (
-				state.contextModelApiKey &&
-				state.contextModel &&
-				(contextKeyChanged || contextModelChanged)
-			) {
-				// Key is a preview if it matches what was loaded from the backend
-			const isPreview =
-					(!!baseline.contextModelApiKey && state.contextModelApiKey === baseline.contextModelApiKey) ||
-					(typeof state.contextModelApiKey === "string" && state.contextModelApiKey.length < 20);
 
-				// Reload keys after parsing save to get fresh data
-				const refreshedKeys = await getModelApiKeys();
-
-				// Find the existing key by provider + baseline model_pattern
-				// This ensures we update the correct key even if parsing and context share the same API key
-				// Fallback to key_preview match if baseline model_pattern is not available
-				const existingContextKey = refreshedKeys.find(
-					(k) =>
-						k.provider === state.contextProvider &&
-						k.is_active &&
-						(baseline.contextModel
-							? k.model_pattern === baseline.contextModel
-							: (!!baseline.contextModelApiKey && state.contextModelApiKey === baseline.contextModelApiKey) &&
-								k.key_preview === state.contextModelApiKey),
-				);
-
-				if (existingContextKey) {
-					// Update existing key (it's fine if this is the same key as parsing - user can use same key for both)
-					await updateModelApiKey(existingContextKey.id, {
-						...(isPreview ? {} : { api_key: state.contextModelApiKey }),
-						model_pattern: state.contextModel,
-					});
-				} else if (!isPreview) {
-					// Create new key if we have a full API key and no existing key found
-					await upsertModelApiKey(
-						state.contextProvider,
-						state.contextModelApiKey,
-						state.contextModel,
-					);
+			if (parsingModelChanged || contextModelChanged) {
+				updateRequest.models = {};
+				if (parsingModelChanged && state.defaultParsingModel) {
+					updateRequest.models.extraction = state.defaultParsingModel;
+				}
+				if (contextModelChanged && state.contextModel) {
+					updateRequest.models.writing = state.contextModel;
 				}
 			}
 
-			// Reload keys to get updated previews
-			const keys = await getModelApiKeys();
-			const parsingKey = keys.find(
-				(k) =>
-					k.provider === state.provider &&
-					k.is_active &&
-					k.model_pattern === state.defaultParsingModel,
-			);
-			const contextKey = keys.find(
-				(k) =>
-					k.provider === state.contextProvider &&
-					k.is_active &&
-					k.model_pattern === state.contextModel,
-			);
+			// Check for API key changes
+			const parsingKeyChanged =
+				state.parsingModelApiKey !== baseline.parsingModelApiKey;
+			const contextKeyChanged =
+				state.contextModelApiKey !== baseline.contextModelApiKey;
 
-			// Store key IDs in localStorage so we can load them correctly next time
-			if (parsingKey) {
-				localStorage.setItem("settings_parsing_key_id", parsingKey.id);
-			}
-			if (contextKey) {
-				localStorage.setItem("settings_context_key_id", contextKey.id);
+			// Determine if keys are previews (not user-entered)
+			const parsingKeyIsPreview =
+				!!baseline.parsingModelApiKey &&
+				state.parsingModelApiKey === baseline.parsingModelApiKey;
+			const contextKeyIsPreview =
+				!!baseline.contextModelApiKey &&
+				state.contextModelApiKey === baseline.contextModelApiKey;
+
+			// Only include API keys if they changed and are not previews (user entered new key)
+			if (parsingKeyChanged && !parsingKeyIsPreview && state.parsingModelApiKey) {
+				if (!updateRequest.api_keys) {
+					updateRequest.api_keys = {};
+				}
+				// Map provider to API key field
+				if (state.provider === "openrouter") {
+					updateRequest.api_keys.openrouter = state.parsingModelApiKey;
+				} else if (state.provider === "openai") {
+					updateRequest.api_keys.openai = state.parsingModelApiKey;
+				}
 			}
 
-			// Update baseline with saved state (using previews if available)
-			setBaseline({
-				...state,
-				parsingModelApiKey: parsingKey?.key_preview || state.parsingModelApiKey,
-				contextModelApiKey: contextKey?.key_preview || state.contextModelApiKey,
-			});
+			if (contextKeyChanged && !contextKeyIsPreview && state.contextModelApiKey) {
+				if (!updateRequest.api_keys) {
+					updateRequest.api_keys = {};
+				}
+				// Map provider to API key field
+				if (state.contextProvider === "openrouter") {
+					updateRequest.api_keys.openrouter = state.contextModelApiKey;
+				} else if (state.contextProvider === "openai") {
+					updateRequest.api_keys.openai = state.contextModelApiKey;
+				}
+			}
+
+			// Only send request if there are changes
+			if (
+				Object.keys(updateRequest.models || {}).length > 0 ||
+				Object.keys(updateRequest.api_keys || {}).length > 0
+			) {
+				// Update settings via unified API
+				await updateUserSettings(updateRequest);
+
+				// Reload settings to get updated previews for all providers
+				const updatedSettings = await getUserSettings();
+
+				// Update baseline with new settings
+				const newBaseline = { ...state };
+
+				// Update models from response
+				if (updatedSettings.models?.extraction) {
+					newBaseline.defaultParsingModel = updatedSettings.models.extraction;
+				}
+				if (updatedSettings.models?.writing) {
+					newBaseline.contextModel = updatedSettings.models.writing;
+				}
+
+				// Update API key previews from response based on selected providers
+				if (state.provider === "openrouter" && updatedSettings.api_keys?.openrouter?.preview) {
+					newBaseline.parsingModelApiKey = updatedSettings.api_keys.openrouter.preview;
+				} else if (state.provider === "openai" && updatedSettings.api_keys?.openai?.preview) {
+					newBaseline.parsingModelApiKey = updatedSettings.api_keys.openai.preview;
+				} else {
+					// If provider doesn't have a configured key, clear the preview
+					newBaseline.parsingModelApiKey = "";
+				}
+
+				if (state.contextProvider === "openrouter" && updatedSettings.api_keys?.openrouter?.preview) {
+					newBaseline.contextModelApiKey = updatedSettings.api_keys.openrouter.preview;
+				} else if (state.contextProvider === "openai" && updatedSettings.api_keys?.openai?.preview) {
+					newBaseline.contextModelApiKey = updatedSettings.api_keys.openai.preview;
+				} else {
+					// If provider doesn't have a configured key, clear the preview
+					newBaseline.contextModelApiKey = "";
+				}
+
+				setBaseline(newBaseline);
+				// Update state to match baseline (so UI shows previews)
+				setState(newBaseline);
+			}
 
 			// Show success toast
 			toast.success("Settings saved successfully");
 		} catch (error) {
-			console.error("[Settings] Failed to save API keys:", error);
+			console.error("[Settings] Failed to save settings:", error);
 			const errorMessage =
 				error instanceof Error
 					? error.message
-					: "Failed to save API keys. Please try again.";
+					: "Failed to save settings. Please try again.";
 			toast.error("Failed to save settings", {
 				description: errorMessage,
 			});
@@ -876,7 +832,7 @@ export default function SettingsPage() {
 								</div>
 							</div>
 
-							{/* Embedding Model (disabled) */}
+							{/* Embedding Model */}
 							<div className="grid grid-cols-1 items-center gap-4 p-4 sm:grid-cols-3">
 								<div className="flex items-center justify-between gap-2">
 									<Label
@@ -893,7 +849,7 @@ export default function SettingsPage() {
 												type="button"
 												variant="ghost"
 											>
-												<HelpCircle className="size-4" />
+												<Info className="size-4" />
 											</Button>
 										</TooltipTrigger>
 										<TooltipContent
@@ -901,8 +857,7 @@ export default function SettingsPage() {
 											side="top"
 											sideOffset={4}
 										>
-											We currently support only one embedding model, but custom
-											providers are coming soon.
+											We currently support only one embedding model.
 										</TooltipContent>
 									</Tooltip>
 								</div>
