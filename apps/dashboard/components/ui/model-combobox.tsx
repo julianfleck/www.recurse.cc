@@ -14,6 +14,7 @@ import {
 import {
 	Dialog,
 	DialogContent,
+	DialogTitle,
 	DialogTrigger,
 } from "@recurse/ui/components/dialog";
 import {
@@ -362,8 +363,13 @@ export function ModelCombobox({
 				className="max-w-[min(800px,calc(100vw-2rem))] p-0 max-h-[80vh] flex flex-col"
 				variant="default"
 			>
+				<DialogTitle className="px-6 pt-6 pb-4 text-lg font-semibold">
+					{modelType === "parsing"
+						? "Select Parsing Model"
+						: "Select Context Model"}
+				</DialogTitle>
 				<div className="flex flex-col min-h-[500px] h-full overflow-hidden">
-					<div className="pl-4 pr-16 pt-4 pb-2 border-b shrink-0">
+					<div className="px-6 pt-4 border-t shrink-0">
 						<Tabs
 							value={activeTab}
 							onValueChange={(v) =>
@@ -386,7 +392,7 @@ export function ModelCombobox({
 							</TabsList>
 						</Tabs>
 					</div>
-					<div className="flex flex-col gap-2 p-4 sm:flex-row flex-1 min-h-0">
+					<div className="flex flex-col gap-2 p-6 sm:flex-row flex-1 min-h-0">
 						<div className="mb-2 w-full sm:mb-0 sm:w-[320px] sm:shrink-0">
 							<ModelCard model={activeModel} isEmpty={availableModels.length === 0} />
 						</div>
