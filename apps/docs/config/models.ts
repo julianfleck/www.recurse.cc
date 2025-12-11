@@ -10,8 +10,8 @@ export const PARSING_MODELS = [
 
 // Currently supported embedding model (display-only for now)
 export const EMBEDDING_MODEL = {
-	value: "e5-mistral-7b-instruct",
-	label: "E5-mistral-7b-instruct",
+	value: "google/gemini-embedding-001",
+	label: "Google Gemini Embedding 001",
 };
 
 export type ModelOption = (typeof PARSING_MODELS)[number];
