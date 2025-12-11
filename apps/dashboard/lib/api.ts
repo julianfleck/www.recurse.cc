@@ -78,15 +78,6 @@ function isCorsError(error: unknown): boolean {
 }
 
 /**
- * Masks a token for logging (shows first 10 and last 10 chars)
- */
-function maskToken(token: string | undefined): string {
-	if (!token) return "undefined";
-	if (token.length <= 20) return `${token.substring(0, 4)}...`;
-	return `${token.substring(0, 10)}...${token.substring(token.length - 10)}`;
-}
-
-/**
  * Handles API errors consistently across all methods
  */
 function handleApiError(error: unknown): never {
@@ -167,16 +158,6 @@ export class ApiService {
 
 			let authToken = getAccessToken?.();
 			authToken = await ensureValidAccessToken(authToken);
-
-			// Debug logging for authentication
-			console.log("[API GET] Auth Debug:", {
-				endpoint,
-				url,
-				hasToken: !!authToken,
-				tokenMasked: maskToken(authToken),
-				tokenLength: authToken?.length,
-				tokenFull: authToken, // Full token for debugging - remove in production
-			});
 
 			const headers: Record<string, string> = {
 				"Content-Type": "application/json",
@@ -362,16 +343,6 @@ export class ApiService {
 			let authToken = getAccessToken?.();
 			authToken = await ensureValidAccessToken(authToken);
 
-			// Debug logging for authentication
-			console.log("[API POST] Auth Debug:", {
-				endpoint,
-				url,
-				hasToken: !!authToken,
-				tokenMasked: maskToken(authToken),
-				tokenLength: authToken?.length,
-				tokenFull: authToken, // Full token for debugging - remove in production
-			});
-
 			const headers: Record<string, string> = {
 				"Content-Type": "application/json",
 			};
@@ -433,16 +404,6 @@ export class ApiService {
 			let authToken = getAccessToken?.();
 			authToken = await ensureValidAccessToken(authToken);
 
-			// Debug logging for authentication
-			console.log("[API PATCH] Auth Debug:", {
-				endpoint,
-				url,
-				hasToken: !!authToken,
-				tokenMasked: maskToken(authToken),
-				tokenLength: authToken?.length,
-				tokenFull: authToken, // Full token for debugging - remove in production
-			});
-
 			const headers: Record<string, string> = {
 				"Content-Type": "application/json",
 			};
@@ -495,22 +456,3 @@ export const setApiAuthGetter = (getter: () => string | undefined) => {
 // Create and export a default instance
 // Uses proxy in development (evaluated at request time), direct API URL in production
 export const apiService = new ApiService(getApiBaseUrl);
-
-// Debug helper: Expose token getter to window for curl testing (development only)
-if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
-	(window as unknown as { getApiToken?: () => Promise<string | undefined> }).getApiToken = async () => {
-		let token = getAccessToken?.();
-		if (token) {
-			// Import ensureValidAccessToken dynamically to avoid circular deps
-			const { ensureValidAccessToken } = await import("@recurse/auth");
-			token = await ensureValidAccessToken(token);
-		}
-		console.log("Current API Token:", token);
-		console.log("Curl command example:");
-		if (token) {
-			const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
-			console.log(`curl -H "Authorization: Bearer ${token}" ${apiBaseUrl}/api/v2/users/me/model-api-keys/`);
-		}
-		return token;
-	};
-}

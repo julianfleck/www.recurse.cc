@@ -38,38 +38,10 @@ async function proxyRequest(
 	
 	// Forward headers, excluding host
 	const headers = new Headers();
-	const hasAuth = request.headers.has("authorization");
-	const authHeader = request.headers.get("authorization");
-	
 	for (const [key, value] of request.headers.entries()) {
 		if (key.toLowerCase() !== "host") {
 			headers.set(key, value);
 		}
-	}
-
-	// Debug logging in development
-	if (process.env.NODE_ENV === "development") {
-		const maskToken = (token: string | null) => {
-			if (!token) return null;
-			if (token.startsWith("Bearer ")) {
-				const actualToken = token.substring(7);
-				if (actualToken.length <= 20) return `Bearer ${actualToken.substring(0, 4)}...`;
-				return `Bearer ${actualToken.substring(0, 10)}...${actualToken.substring(actualToken.length - 10)}`;
-			}
-			return token;
-		};
-		
-		console.log("[Proxy] Request:", {
-			method: request.method,
-			path: pathString,
-			targetUrl,
-			apiBaseUrl: API_BASE_URL,
-			hasAuth,
-			authHeaderMasked: maskToken(authHeader),
-			authHeaderFull: authHeader, // Full token for debugging - remove in production
-			contentType: request.headers.get("content-type"),
-			allHeaders: Object.fromEntries(request.headers.entries()),
-		});
 	}
 
 	try {
