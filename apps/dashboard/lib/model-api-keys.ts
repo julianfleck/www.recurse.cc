@@ -91,25 +91,42 @@ export async function upsertModelApiKey(
 	modelPattern?: string | null,
 ): Promise<string | null> {
 	try {
-		// First, try to find existing key for this provider
 		const keys = await getModelApiKeys();
-		const existingKey = keys.find(
+		const targetModelPattern = modelPattern || null;
+		
+		// First, try to find existing key for this provider + model_pattern combination
+		// This ensures we update the correct key when multiple keys exist for the same provider
+		let existingKey = keys.find(
 			(k) =>
 				k.provider === provider &&
-				k.model_pattern === (modelPattern || null) &&
+				k.model_pattern === targetModelPattern &&
 				k.is_active,
 		);
 
+		// If no exact match, try to find any key with this provider (for backwards compatibility)
+		// But only if there's exactly one active key for this provider
+		if (!existingKey) {
+			const providerKeys = keys.filter(
+				(k) => k.provider === provider && k.is_active,
+			);
+			if (providerKeys.length === 1) {
+				existingKey = providerKeys[0];
+			}
+		}
+
 		if (existingKey) {
-			// Update existing key
-			await updateModelApiKey(existingKey.id, { api_key: apiKey });
+			// Update existing key with both api_key and model_pattern
+			await updateModelApiKey(existingKey.id, {
+				api_key: apiKey,
+				model_pattern: targetModelPattern,
+			});
 			return existingKey.id;
 		}
 
 		// Create new key
 		const newKey = await createModelApiKey({
 			provider,
-			model_pattern: modelPattern || null,
+			model_pattern: targetModelPattern,
 			api_key: apiKey,
 			is_active: true,
 		});

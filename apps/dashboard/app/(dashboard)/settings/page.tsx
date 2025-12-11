@@ -33,6 +33,7 @@ import {
 } from "@recurse/ui/components/dialog";
 import {
 	getModelApiKeys,
+	updateModelApiKey,
 	upsertModelApiKey,
 	type UserModelApiKey,
 } from "@/lib/model-api-keys";
@@ -257,24 +258,44 @@ export default function SettingsPage() {
 				setLoadingKeys(true);
 				const keys = await getModelApiKeys();
 
-				// Filter to only active keys
-				const activeKeys = keys.filter((k) => k.is_active);
+			// Filter to only active keys
+			const activeKeys = keys.filter((k) => k.is_active);
 
-				// Find keys with model_pattern (these are tied to specific models)
-				// We'll use the first one for parsing, second for context (or same if only one)
-				// If multiple keys exist for same provider, prefer ones with model_pattern
+			// Try to load key IDs from localStorage (set when we save)
+			const savedParsingKeyId = typeof window !== "undefined" 
+				? localStorage.getItem("settings_parsing_key_id")
+				: null;
+			const savedContextKeyId = typeof window !== "undefined"
+				? localStorage.getItem("settings_context_key_id")
+				: null;
+
+			// Find keys by saved IDs first, then fall back to heuristics
+			let parsingKey = savedParsingKeyId
+				? activeKeys.find((k) => k.id === savedParsingKeyId && k.is_active)
+				: null;
+			let contextKey = savedContextKeyId
+				? activeKeys.find((k) => k.id === savedContextKeyId && k.is_active)
+				: null;
+
+			// Fallback: if saved IDs don't exist or keys are inactive, use heuristics
+			if (!parsingKey) {
 				const keysWithModels = activeKeys.filter((k) => k.model_pattern);
 				const keysWithoutModels = activeKeys.filter((k) => !k.model_pattern);
 
 				// For parsing model: prefer key with model_pattern, fallback to any active key
-				const parsingKey =
+				parsingKey =
 					keysWithModels.find((k) => k.provider === "openai") ||
 					keysWithModels[0] ||
 					keysWithoutModels.find((k) => k.provider === "openai") ||
 					keysWithoutModels[0];
+			}
+
+			if (!contextKey) {
+				const keysWithModels = activeKeys.filter((k) => k.model_pattern);
+				const keysWithoutModels = activeKeys.filter((k) => !k.model_pattern);
 
 				// For context model: prefer different key than parsing, or same if only one exists
-				const contextKey =
+				contextKey =
 					keysWithModels.find(
 						(k) => k.id !== parsingKey?.id && k.provider === "openai",
 					) ||
@@ -282,6 +303,7 @@ export default function SettingsPage() {
 					keysWithModels[0] ||
 					keysWithoutModels.find((k) => k.id !== parsingKey?.id) ||
 					keysWithoutModels[0];
+			}
 
 				// Update state with loaded keys
 				const updates: Partial<typeof initialState> = {};
@@ -361,34 +383,114 @@ export default function SettingsPage() {
 		setSaveError(null);
 
 		try {
-			// Save parsing model API key if changed and model is selected
+			// Load keys once at the start to avoid stale data
+			const currentKeys = await getModelApiKeys();
+			let updatedParsingKeyId: string | null = null;
+
+			// Save parsing model settings if API key changed OR model changed
+			const parsingKeyChanged =
+				state.parsingModelApiKey !== baseline.parsingModelApiKey;
+			const parsingModelChanged =
+				state.defaultParsingModel !== baseline.defaultParsingModel;
 			if (
 				state.parsingModelApiKey &&
-				state.parsingModelApiKey !== baseline.parsingModelApiKey &&
-				state.defaultParsingModel
+				state.defaultParsingModel &&
+				(parsingKeyChanged || parsingModelChanged)
 			) {
 				const isPreview =
-					state.parsingModelApiKey.includes("...") ||
-					state.parsingModelApiKey.length < 20;
-				if (!isPreview) {
-					await upsertModelApiKey(
+					typeof state.parsingModelApiKey === "string" &&
+					(state.parsingModelApiKey.includes("...") ||
+						state.parsingModelApiKey.length < 20);
+
+				// Find the existing key by provider + baseline model_pattern
+				// This ensures we update the correct key even if parsing and context share the same API key
+				// Fallback to key_preview match if baseline model_pattern is not available
+				const existingParsingKey = currentKeys.find(
+					(k) =>
+						k.provider === state.provider &&
+						k.is_active &&
+						(baseline.defaultParsingModel
+							? k.model_pattern === baseline.defaultParsingModel
+							: typeof state.parsingModelApiKey === "string" &&
+								state.parsingModelApiKey.includes("...") &&
+								k.key_preview === state.parsingModelApiKey),
+				);
+
+				if (existingParsingKey) {
+					// Update existing key
+					await updateModelApiKey(existingParsingKey.id, {
+						...(isPreview ? {} : { api_key: state.parsingModelApiKey }),
+						model_pattern: state.defaultParsingModel,
+					});
+					updatedParsingKeyId = existingParsingKey.id;
+				} else if (!isPreview) {
+					// Create new key if we have a full API key and no existing key found
+					const newKeyId = await upsertModelApiKey(
 						state.provider,
 						state.parsingModelApiKey,
 						state.defaultParsingModel,
 					);
+					if (newKeyId) {
+						updatedParsingKeyId = newKeyId;
+					}
 				}
 			}
 
-			// Save context model API key if changed and model is selected
+			// Save context model settings if API key changed OR model changed
+			const contextKeyChanged =
+				state.contextModelApiKey !== baseline.contextModelApiKey;
+			const contextModelChanged =
+				state.contextModel !== baseline.contextModel;
 			if (
 				state.contextModelApiKey &&
-				state.contextModelApiKey !== baseline.contextModelApiKey &&
-				state.contextModel
+				state.contextModel &&
+				(contextKeyChanged || contextModelChanged)
 			) {
 				const isPreview =
-					state.contextModelApiKey.includes("...") ||
-					state.contextModelApiKey.length < 20;
-				if (!isPreview) {
+					typeof state.contextModelApiKey === "string" &&
+					(state.contextModelApiKey.includes("...") ||
+						state.contextModelApiKey.length < 20);
+
+				// Reload keys after parsing save to get fresh data
+				const refreshedKeys = await getModelApiKeys();
+
+				// Find the existing key by provider + baseline model_pattern
+				// This ensures we update the correct key even if parsing and context share the same API key
+				// Fallback to key_preview match if baseline model_pattern is not available
+				const existingContextKey = refreshedKeys.find(
+					(k) =>
+						k.provider === state.contextProvider &&
+						k.is_active &&
+						(baseline.contextModel
+							? k.model_pattern === baseline.contextModel
+							: typeof state.contextModelApiKey === "string" &&
+								state.contextModelApiKey.includes("...") &&
+								k.key_preview === state.contextModelApiKey),
+				);
+
+				if (existingContextKey) {
+					// Ensure we're not updating the same key that was just updated for parsing
+					if (
+						updatedParsingKeyId &&
+						existingContextKey.id === updatedParsingKeyId
+					) {
+						console.error("[Settings] ERROR: Parsing and context keys are the same!", {
+							keyId: existingContextKey.id,
+							parsingModel: state.defaultParsingModel,
+							contextModel: state.contextModel,
+						});
+						throw new Error(
+							"Cannot update same key for both parsing and context models. Please ensure they use different model patterns.",
+						);
+					}
+
+					// Update existing key
+					await updateModelApiKey(existingContextKey.id, {
+						...(isPreview ? {} : { api_key: state.contextModelApiKey }),
+						model_pattern: state.contextModel,
+					});
+				} else if (!isPreview) {
+					// Create new key if we have a full API key and no existing key found
 					await upsertModelApiKey(
 						state.contextProvider,
 						state.contextModelApiKey,
@@ -403,14 +505,22 @@ export default function SettingsPage() {
 				(k) =>
 					k.provider === state.provider &&
 					k.is_active &&
-					(!k.model_pattern || k.model_pattern === state.defaultParsingModel),
+					k.model_pattern === state.defaultParsingModel,
 			);
 			const contextKey = keys.find(
 				(k) =>
 					k.provider === state.contextProvider &&
 					k.is_active &&
-					(!k.model_pattern || k.model_pattern === state.contextModel),
+					k.model_pattern === state.contextModel,
 			);
+
+			// Store key IDs in localStorage so we can load them correctly next time
+			if (parsingKey) {
+				localStorage.setItem("settings_parsing_key_id", parsingKey.id);
+			}
+			if (contextKey) {
+				localStorage.setItem("settings_context_key_id", contextKey.id);
+			}
 
 			// Update baseline with saved state (using previews if available)
 			setBaseline({
@@ -574,7 +684,9 @@ export default function SettingsPage() {
 													searchPlaceholder="Search models..."
 													disabled={Boolean(
 														!state.parsingModelApiKey ||
-															!parsingKeyValid ||
+															(typeof state.parsingModelApiKey === "string" &&
+																!state.parsingModelApiKey.includes("...") &&
+																!parsingKeyValid) ||
 															parsingKeyStatus === "validating" ||
 															loadingModels ||
 															modelsError,
@@ -706,7 +818,9 @@ export default function SettingsPage() {
 													searchPlaceholder="Search models..."
 													disabled={Boolean(
 														!state.contextModelApiKey ||
-															!contextKeyValid ||
+															(typeof state.contextModelApiKey === "string" &&
+																!state.contextModelApiKey.includes("...") &&
+																!contextKeyValid) ||
 															contextKeyStatus === "validating" ||
 															loadingContextModels ||
 															contextModelsError,
