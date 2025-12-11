@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { apiService } from "@/lib/api";
 import { isOnAuthPage } from "@/lib/auth-utils";
+import { UploadErrorToast } from "@/lib/upload-errors";
 
 // Track if we've shown a network error toast to prevent spam
 let hasShownNetworkErrorToast = false;
@@ -76,7 +77,7 @@ export default function ContextPage() {
 			const toastId = "file-upload";
 			const totalFiles = fileList.length;
 			let successCount = 0;
-			let errorCount = 0;
+			const errors: Array<{ file: File; error: unknown }> = [];
 
 			toast.loading(
 				<div className="flex items-center gap-2">
@@ -95,12 +96,16 @@ export default function ContextPage() {
 					});
 					successCount++;
 				} catch (error) {
-					errorCount++;
+					errors.push({ file, error });
 					console.error(`Failed to upload ${file.name}:`, error);
+					// Show individual error toast for each failed file
+					toast.error(<UploadErrorToast error={error} />, {
+						duration: 8000,
+					});
 				}
 			}
 
-			if (errorCount === 0) {
+			if (errors.length === 0) {
 				toast.success(
 					<div className="flex flex-col gap-1">
 						<span className="font-medium">
@@ -113,15 +118,20 @@ export default function ContextPage() {
 					{ id: toastId },
 				);
 			} else if (successCount === 0) {
-				toast.error(
-					<div className="flex flex-col gap-1">
-						<span className="font-medium">Upload failed</span>
-						<span className="text-muted-foreground text-xs">
-							{errorCount} file{errorCount > 1 ? "s" : ""} failed to upload
-						</span>
-					</div>,
-					{ id: toastId },
-				);
+				// All files failed - show a summary if we have multiple files
+				if (totalFiles > 1) {
+					toast.error(
+						<div className="flex flex-col gap-1">
+							<span className="font-medium">
+								All {totalFiles} file{totalFiles > 1 ? "s" : ""} failed to upload
+							</span>
+							<span className="text-muted-foreground text-xs">
+								See individual error messages above
+							</span>
+						</div>,
+						{ id: toastId },
+					);
+				}
 			} else {
 				toast.warning(
 					<div className="flex flex-col gap-1">
@@ -129,7 +139,7 @@ export default function ContextPage() {
 							{successCount} of {totalFiles} files uploaded
 						</span>
 						<span className="text-muted-foreground text-xs">
-							{errorCount} file{errorCount > 1 ? "s" : ""} failed
+							{errors.length} file{errors.length > 1 ? "s" : ""} failed - see error messages above
 						</span>
 					</div>,
 					{ id: toastId },

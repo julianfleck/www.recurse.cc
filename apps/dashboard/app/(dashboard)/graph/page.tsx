@@ -6,6 +6,7 @@ import {
 	type GraphViewData,
 	convertApiResponseToGraphData,
 } from "@/lib/api-to-graph-converter";
+import { UploadErrorToast } from "@/lib/upload-errors";
 import { FileUploadDropzone } from "@recurse/ui/components/file-upload-dropzone";
 import { useFileUpload } from "@recurse/ui/hooks/use-file-upload";
 import { GraphView } from "@shared/components/graph-view";
@@ -119,7 +120,7 @@ export default function Page() {
 		const toastId = "file-upload";
 		const totalFiles = files.length;
 		let successCount = 0;
-		let errorCount = 0;
+		const errors: Array<{ file: File; error: unknown }> = [];
 
 		// Show initial loading toast
 		toast.loading(
@@ -156,13 +157,17 @@ export default function Page() {
 					);
 					successCount++;
 				} catch (error) {
-					errorCount++;
+					errors.push({ file, error });
 					console.error(`Failed to upload ${file.name}:`, error);
+					// Show individual error toast for each failed file
+					toast.error(<UploadErrorToast error={error} />, {
+						duration: 8000,
+					});
 				}
 			}
 
-			// Show final result
-			if (errorCount === 0) {
+			// Show final result summary
+			if (errors.length === 0) {
 				toast.success(
 					<div className="flex flex-col gap-1">
 						<span className="font-medium">
@@ -175,15 +180,20 @@ export default function Page() {
 					{ id: toastId },
 				);
 			} else if (successCount === 0) {
-				toast.error(
-					<div className="flex flex-col gap-1">
-						<span className="font-medium">Upload failed</span>
-						<span className="text-muted-foreground text-xs">
-							{errorCount} file{errorCount > 1 ? "s" : ""} failed to upload
-						</span>
-					</div>,
-					{ id: toastId },
-				);
+				// All files failed - show a summary if we have multiple files
+				if (totalFiles > 1) {
+					toast.error(
+						<div className="flex flex-col gap-1">
+							<span className="font-medium">
+								All {totalFiles} file{totalFiles > 1 ? "s" : ""} failed to upload
+							</span>
+							<span className="text-muted-foreground text-xs">
+								See individual error messages above
+							</span>
+						</div>,
+						{ id: toastId },
+					);
+				}
 			} else {
 				toast.warning(
 					<div className="flex flex-col gap-1">
@@ -191,7 +201,7 @@ export default function Page() {
 							{successCount} of {totalFiles} files uploaded
 						</span>
 						<span className="text-muted-foreground text-xs">
-							{errorCount} file{errorCount > 1 ? "s" : ""} failed
+							{errors.length} file{errors.length > 1 ? "s" : ""} failed - see error messages above
 						</span>
 					</div>,
 					{ id: toastId },

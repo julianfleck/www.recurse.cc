@@ -59,8 +59,8 @@ export async function validateApiKey(
 		};
 	}
 
-	// Check if it's a preview key (contains "..." or is too short)
-	if (apiKey.includes("...") || apiKey.length < 20) {
+	// Don't validate keys that are too short (including preview keys from the backend)
+	if (apiKey.length < 20) {
 		return {
 			status: "idle",
 			message: "Enter a full API key to validate",

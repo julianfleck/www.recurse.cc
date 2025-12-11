@@ -56,10 +56,9 @@ export function ApiKeyValidationDialog({
 			return;
 		}
 
-		// Filter out keys that don't need validation (preview keys or empty)
+		// Filter out keys that don't need validation (too short or empty - includes preview keys from backend)
 		const validKeys = keysToValidate.filter((key) => {
 			if (!key.apiKey || key.apiKey.length < 20) return false;
-			if (key.apiKey.includes("...")) return false;
 			return true;
 		});
 

@@ -1,10 +1,6 @@
 "use client";
 
-import {
-	EMBEDDING_MODEL,
-	type ModelOption,
-	PARSING_MODELS,
-} from "@recurse/config/models";
+import { EMBEDDING_MODEL, PARSING_MODELS } from "@recurse/config/models";
 import {
 	Combobox,
 	type ComboboxOption,
@@ -37,6 +33,9 @@ import {
 	upsertModelApiKey,
 	type UserModelApiKey,
 } from "@/lib/model-api-keys";
+import { apiService } from "@/lib/api";
+import type { AvailableModel } from "@/lib/models/types";
+import { ModelCombobox } from "@/components/ui/model-combobox";
 
 export default function SettingsPage() {
 	// Seed defaults (could be loaded from API/local storage later)
@@ -60,7 +59,6 @@ export default function SettingsPage() {
 	const [state, setState] = useState(initialState);
 	const [baseline, setBaseline] = useState(initialState);
 	const [saving, setSaving] = useState(false);
-	const [saveError, setSaveError] = useState<string | null>(null);
 	const [loadingKeys, setLoadingKeys] = useState(true);
 	const [parsingKeyValid, setParsingKeyValid] = useState(false);
 	const [parsingKeyStatus, setParsingKeyStatus] = useState<"idle" | "validating" | "valid" | "invalid">("idle");
@@ -76,12 +74,12 @@ export default function SettingsPage() {
 
 	const [loadingModels, setLoadingModels] = useState(false);
 	const [modelsError, setModelsError] = useState("");
-	const [fetchedModels, setFetchedModels] = useState<ModelOption[]>([]);
+	const [fetchedModels, setFetchedModels] = useState<AvailableModel[]>([]);
 
 	const [loadingContextModels, setLoadingContextModels] = useState(false);
 	const [contextModelsError, setContextModelsError] = useState("");
 	const [fetchedContextModels, setFetchedContextModels] = useState<
-		ModelOption[]
+		AvailableModel[]
 	>([]);
 
 	useEffect(() => {
@@ -91,105 +89,134 @@ export default function SettingsPage() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [authUser?.email]);
 
+	// Fetch models that support structured output (for extraction/parsing)
 	useEffect(() => {
-		if (!state.parsingModelApiKey) {
-			setFetchedModels([]);
-			setModelsError("");
-			return;
-		}
+		let cancelled = false;
 
 		setLoadingModels(true);
 		setModelsError("");
 
-		fetch("/api/models", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				provider: state.provider,
-				apiKey: state.parsingModelApiKey,
-			}),
-		})
-			.then((res) => {
-				if (!res.ok) {
-					return res.json().then((errorData) => {
-						throw new Error(errorData.error || `Failed to fetch models: ${res.statusText}`);
-					});
-				}
-				return res.json();
-			})
-			.then((data) => {
-				// API returns { data: [{ value: string, label: string }] }
-				const models = (data.data || []).map((m: { value: string; label: string }) => ({
-					value: m.value,
-					label: m.label,
-				})) as ModelOption[];
+		// Use backend API that returns models with structured output support
+		apiService
+			.get<{ models: AvailableModel[]; total: number }>(
+				"/users/me/available-models",
+				{
+					supports_structured_output: true,
+				},
+			)
+			.then((response) => {
+				if (cancelled) return;
+				const models = (response.data.models || []).filter(
+					(m) => m.supports_structured_output,
+				);
 				setFetchedModels(models);
 			})
 			.catch((err) => {
-				setModelsError(err.message);
+				if (cancelled) return;
+				setModelsError(err.message || "Failed to load models");
+				setFetchedModels([]);
 			})
 			.finally(() => {
+				if (cancelled) return;
 				setLoadingModels(false);
 			});
-	}, [state.provider, state.parsingModelApiKey]);
 
+		return () => {
+			cancelled = true;
+		};
+	}, []);
+
+	// Fetch models for context/writing (same list, still filtered to those
+	// that support structured output so both fields stay in sync)
 	useEffect(() => {
-		if (!state.contextModelApiKey) {
-			setFetchedContextModels([]);
-			setContextModelsError("");
-			return;
-		}
+		let cancelled = false;
 
 		setLoadingContextModels(true);
 		setContextModelsError("");
 
-		fetch("/api/models", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				provider: state.contextProvider,
-				apiKey: state.contextModelApiKey,
-			}),
-		})
-			.then((res) => {
-				if (!res.ok) {
-					return res.json().then((errorData) => {
-						throw new Error(errorData.error || `Failed to fetch models: ${res.statusText}`);
-					});
-				}
-				return res.json();
-			})
-			.then((data) => {
-				// API returns { data: [{ value: string, label: string }] }
-				const models = (data.data || []).map((m: { value: string; label: string }) => ({
-					value: m.value,
-					label: m.label,
-				})) as ModelOption[];
+		apiService
+			.get<{ models: AvailableModel[]; total: number }>(
+				"/users/me/available-models",
+				{
+					supports_structured_output: true,
+				},
+			)
+			.then((response) => {
+				if (cancelled) return;
+				const models = (response.data.models || []).filter(
+					(m) => m.supports_structured_output,
+				);
 				setFetchedContextModels(models);
 			})
 			.catch((err) => {
-				setContextModelsError(err.message);
+				if (cancelled) return;
+				setContextModelsError(err.message || "Failed to load models");
+				setFetchedContextModels([]);
 			})
 			.finally(() => {
+				if (cancelled) return;
 				setLoadingContextModels(false);
 			});
-	}, [state.contextProvider, state.contextModelApiKey]);
+
+		return () => {
+			cancelled = true;
+		};
+	}, []);
 
 	const currentModels = fetchedModels;
 	const currentContextModels = fetchedContextModels;
 
-	const isDirty = useMemo(
-		() => JSON.stringify(state) !== JSON.stringify(baseline),
-		[state, baseline],
-	);
+	// A key is a "preview" if it matches what was loaded from the backend (baseline)
+	// The backend always returns preview keys in the key_preview field
+	const parsingKeyIsPreview = !!baseline.parsingModelApiKey && 
+		state.parsingModelApiKey === baseline.parsingModelApiKey;
+	const contextKeyIsPreview = !!baseline.contextModelApiKey && 
+		state.contextModelApiKey === baseline.contextModelApiKey;
+
+	// Compute if there are actual saveable changes
+	const canSave = useMemo(() => {
+		// Check for any differences from baseline
+		const hasChanges = JSON.stringify(state) !== JSON.stringify(baseline);
+		if (!hasChanges) return false;
+
+		// Check parsing key: if changed, must be validated and model selected
+		const parsingKeyChanged = state.parsingModelApiKey !== baseline.parsingModelApiKey;
+		if (parsingKeyChanged) {
+			// If key was cleared (user clicked edit but didn't enter anything), can't save
+			if (!state.parsingModelApiKey) return false;
+			// New key must be validated
+			if (parsingKeyStatus !== "valid") return false;
+			// Model must be selected for new key
+			if (!state.defaultParsingModel) return false;
+		}
+
+		// Check context key: if changed, must be validated and model selected
+		const contextKeyChanged = state.contextModelApiKey !== baseline.contextModelApiKey;
+		if (contextKeyChanged) {
+			// If key was cleared (user clicked edit but didn't enter anything), can't save
+			if (!state.contextModelApiKey) return false;
+			// New key must be validated
+			if (contextKeyStatus !== "valid") return false;
+			// Model must be selected for new key
+			if (!state.contextModel) return false;
+		}
+
+		// If only model changed (key is preview), that's valid
+		const parsingModelChanged = state.defaultParsingModel !== baseline.defaultParsingModel;
+		const contextModelChanged = state.contextModel !== baseline.contextModel;
+		
+		// At least one meaningful change must exist
+		return parsingKeyChanged || contextKeyChanged || parsingModelChanged || contextModelChanged ||
+			state.email !== baseline.email || state.password !== baseline.password;
+	}, [state, baseline, parsingKeyStatus, contextKeyStatus]);
 
 	const parsingModelPlaceholder = useMemo(() => {
 		if (!state.parsingModelApiKey) {
 			return "← Enter API key";
+		}
+		// Preview key - show appropriate message
+		if (parsingKeyIsPreview) {
+			return "Select model";
 		}
 		if (state.parsingModelApiKey.length < 20) {
 			return "← Enter full API key";
@@ -216,6 +243,10 @@ export default function SettingsPage() {
 		if (!state.contextModelApiKey) {
 			return "← Enter API key";
 		}
+		// Preview key - show appropriate message
+		if (contextKeyIsPreview) {
+			return "Select model";
+		}
 		if (state.contextModelApiKey.length < 20) {
 			return "← Enter full API key";
 		}
@@ -237,19 +268,65 @@ export default function SettingsPage() {
 		return "← Enter API key";
 	}, [state.contextModelApiKey, contextKeyStatus, loadingContextModels, contextModelsError]);
 
-	const parsingModelOptions: ComboboxOption[] = useMemo(() => {
-		return currentModels.map((m) => ({
-			value: m.value,
-			label: m.label,
-		}));
-	}, [currentModels]);
+	const parsingModelsForUI: AvailableModel[] = useMemo(() => {
+		// If we have fetched models from the backend, use those
+		if (currentModels.length > 0) {
+			return currentModels;
+		}
 
-	const contextModelOptions: ComboboxOption[] = useMemo(() => {
-		return currentContextModels.map((m) => ({
-			value: m.value,
-			label: m.label,
-		}));
-	}, [currentContextModels]);
+		// If we have a preview key (can't fetch models), use fallback list
+		if (parsingKeyIsPreview) {
+			const fallbackModels: AvailableModel[] = PARSING_MODELS.map((m) => ({
+				id: m.value,
+				name: m.label,
+			}));
+
+			// Include currently selected model if not in fallback list
+			if (
+				state.defaultParsingModel &&
+				!fallbackModels.some((m) => m.id === state.defaultParsingModel)
+			) {
+				fallbackModels.unshift({
+					id: state.defaultParsingModel,
+					name: state.defaultParsingModel,
+				});
+			}
+
+			return fallbackModels;
+		}
+
+		return [];
+	}, [currentModels, parsingKeyIsPreview, state.defaultParsingModel]);
+
+	const contextModelsForUI: AvailableModel[] = useMemo(() => {
+		// If we have fetched models from the backend, use those
+		if (currentContextModels.length > 0) {
+			return currentContextModels;
+		}
+
+		// If we have a preview key (can't fetch models), use fallback list
+		if (contextKeyIsPreview) {
+			const fallbackModels: AvailableModel[] = PARSING_MODELS.map((m) => ({
+				id: m.value,
+				name: m.label,
+			}));
+
+			// Include currently selected model if not in fallback list
+			if (
+				state.contextModel &&
+				!fallbackModels.some((m) => m.id === state.contextModel)
+			) {
+				fallbackModels.unshift({
+					id: state.contextModel,
+					name: state.contextModel,
+				});
+			}
+
+			return fallbackModels;
+		}
+
+		return [];
+	}, [currentContextModels, contextKeyIsPreview, state.contextModel]);
 
 	// Load existing API keys and settings from backend on mount
 	useEffect(() => {
@@ -351,7 +428,7 @@ export default function SettingsPage() {
 		// Check parsing model: if API key is provided (and not a preview), model must be selected
 		const hasParsingKey =
 			state.parsingModelApiKey &&
-			!state.parsingModelApiKey.includes("...") &&
+			!parsingKeyIsPreview &&
 			state.parsingModelApiKey.length >= 20;
 		if (hasParsingKey && !state.defaultParsingModel) {
 			errors.push("Parsing Model: Please select a model for your API key");
@@ -360,14 +437,14 @@ export default function SettingsPage() {
 		// Check context model: if API key is provided (and not a preview), model must be selected
 		const hasContextKey =
 			state.contextModelApiKey &&
-			!state.contextModelApiKey.includes("...") &&
+			!contextKeyIsPreview &&
 			state.contextModelApiKey.length >= 20;
 		if (hasContextKey && !state.contextModel) {
 			errors.push("Context Model: Please select a model for your API key");
 		}
 
 		return errors;
-	}, [state]);
+	}, [state, parsingKeyIsPreview, contextKeyIsPreview]);
 
 	// Handle save button click
 	const handleSave = useCallback(async () => {
@@ -380,12 +457,10 @@ export default function SettingsPage() {
 		}
 
 		setSaving(true);
-		setSaveError(null);
 
 		try {
 			// Load keys once at the start to avoid stale data
 			const currentKeys = await getModelApiKeys();
-			let updatedParsingKeyId: string | null = null;
 
 			// Save parsing model settings if API key changed OR model changed
 			const parsingKeyChanged =
@@ -397,22 +472,19 @@ export default function SettingsPage() {
 				state.defaultParsingModel &&
 				(parsingKeyChanged || parsingModelChanged)
 			) {
+				// Key is a preview if it matches what was loaded from the backend
 				const isPreview =
-					typeof state.parsingModelApiKey === "string" &&
-					(state.parsingModelApiKey.includes("...") ||
-						state.parsingModelApiKey.length < 20);
+					(!!baseline.parsingModelApiKey && state.parsingModelApiKey === baseline.parsingModelApiKey) ||
+					(typeof state.parsingModelApiKey === "string" && state.parsingModelApiKey.length < 20);
 
 				// Find the existing key by provider + baseline model_pattern
-				// This ensures we update the correct key even if parsing and context share the same API key
-				// Fallback to key_preview match if baseline model_pattern is not available
 				const existingParsingKey = currentKeys.find(
 					(k) =>
 						k.provider === state.provider &&
 						k.is_active &&
 						(baseline.defaultParsingModel
 							? k.model_pattern === baseline.defaultParsingModel
-							: typeof state.parsingModelApiKey === "string" &&
-								state.parsingModelApiKey.includes("...") &&
+							: (!!baseline.parsingModelApiKey && state.parsingModelApiKey === baseline.parsingModelApiKey) &&
 								k.key_preview === state.parsingModelApiKey),
 				);
 
@@ -422,17 +494,13 @@ export default function SettingsPage() {
 						...(isPreview ? {} : { api_key: state.parsingModelApiKey }),
 						model_pattern: state.defaultParsingModel,
 					});
-					updatedParsingKeyId = existingParsingKey.id;
 				} else if (!isPreview) {
 					// Create new key if we have a full API key and no existing key found
-					const newKeyId = await upsertModelApiKey(
+					await upsertModelApiKey(
 						state.provider,
 						state.parsingModelApiKey,
 						state.defaultParsingModel,
 					);
-					if (newKeyId) {
-						updatedParsingKeyId = newKeyId;
-					}
 				}
 			}
 
@@ -446,10 +514,10 @@ export default function SettingsPage() {
 				state.contextModel &&
 				(contextKeyChanged || contextModelChanged)
 			) {
-				const isPreview =
-					typeof state.contextModelApiKey === "string" &&
-					(state.contextModelApiKey.includes("...") ||
-						state.contextModelApiKey.length < 20);
+				// Key is a preview if it matches what was loaded from the backend
+			const isPreview =
+					(!!baseline.contextModelApiKey && state.contextModelApiKey === baseline.contextModelApiKey) ||
+					(typeof state.contextModelApiKey === "string" && state.contextModelApiKey.length < 20);
 
 				// Reload keys after parsing save to get fresh data
 				const refreshedKeys = await getModelApiKeys();
@@ -463,28 +531,12 @@ export default function SettingsPage() {
 						k.is_active &&
 						(baseline.contextModel
 							? k.model_pattern === baseline.contextModel
-							: typeof state.contextModelApiKey === "string" &&
-								state.contextModelApiKey.includes("...") &&
+							: (!!baseline.contextModelApiKey && state.contextModelApiKey === baseline.contextModelApiKey) &&
 								k.key_preview === state.contextModelApiKey),
 				);
 
 				if (existingContextKey) {
-					// Ensure we're not updating the same key that was just updated for parsing
-					if (
-						updatedParsingKeyId &&
-						existingContextKey.id === updatedParsingKeyId
-					) {
-						console.error("[Settings] ERROR: Parsing and context keys are the same!", {
-							keyId: existingContextKey.id,
-							parsingModel: state.defaultParsingModel,
-							contextModel: state.contextModel,
-						});
-						throw new Error(
-							"Cannot update same key for both parsing and context models. Please ensure they use different model patterns.",
-						);
-					}
-
-					// Update existing key
+					// Update existing key (it's fine if this is the same key as parsing - user can use same key for both)
 					await updateModelApiKey(existingContextKey.id, {
 						...(isPreview ? {} : { api_key: state.contextModelApiKey }),
 						model_pattern: state.contextModel,
@@ -537,7 +589,6 @@ export default function SettingsPage() {
 				error instanceof Error
 					? error.message
 					: "Failed to save API keys. Please try again.";
-			setSaveError(errorMessage);
 			toast.error("Failed to save settings", {
 				description: errorMessage,
 			});
@@ -614,10 +665,12 @@ export default function SettingsPage() {
 															typeof value === "string" ? value : value[0];
 														setState((s) => {
 															// Only copy if provider matches context provider and parsing key is empty
+															// Context key is not a preview if it differs from baseline
+															const contextIsNotPreview = s.contextModelApiKey !== baseline.contextModelApiKey;
 															const shouldCopy =
 																providerValue === s.contextProvider &&
 																s.contextModelApiKey &&
-																!s.contextModelApiKey.includes("...") &&
+																contextIsNotPreview &&
 																s.contextModelApiKey.length >= 20 &&
 																!s.parsingModelApiKey;
 															return {
@@ -640,10 +693,7 @@ export default function SettingsPage() {
 												className="sm:flex-1"
 												id="parsing-model-api-key-inline"
 												provider={state.provider}
-												isPreview={
-													!!state.parsingModelApiKey &&
-													state.parsingModelApiKey.includes("...")
-												}
+												isPreview={parsingKeyIsPreview}
 												onValidationChange={(isValid, status) => {
 													setParsingKeyValid(isValid);
 													setParsingKeyStatus(status);
@@ -668,24 +718,20 @@ export default function SettingsPage() {
 												value={state.parsingModelApiKey}
 											/>
 											<div className="flex items-center gap-2 sm:flex-1 min-w-0">
-												<Combobox
-													options={parsingModelOptions}
+												<ModelCombobox
+													models={parsingModelsForUI}
 													value={state.defaultParsingModel}
-													onValueChange={(value) => {
-														const modelValue =
-															typeof value === "string" ? value : value[0];
+													onValueChange={(modelId) => {
 														setState((s) => ({
 															...s,
-															defaultParsingModel: modelValue,
+															defaultParsingModel: modelId,
 														}));
 													}}
 													placeholder={parsingModelPlaceholder}
-													emptyMessage="No models found."
-													searchPlaceholder="Search models..."
 													disabled={Boolean(
 														!state.parsingModelApiKey ||
-															(typeof state.parsingModelApiKey === "string" &&
-																!state.parsingModelApiKey.includes("...") &&
+															// Disable if key is not preview AND not valid
+															(!parsingKeyIsPreview &&
 																!parsingKeyValid) ||
 															parsingKeyStatus === "validating" ||
 															loadingModels ||
@@ -748,10 +794,12 @@ export default function SettingsPage() {
 															typeof value === "string" ? value : value[0];
 														setState((s) => {
 															// Only copy if provider matches parsing provider and context key is empty
+															// Parsing key is not a preview if it differs from baseline
+															const parsingIsNotPreview = s.parsingModelApiKey !== baseline.parsingModelApiKey;
 															const shouldCopy =
 																providerValue === s.provider &&
 																s.parsingModelApiKey &&
-																!s.parsingModelApiKey.includes("...") &&
+																parsingIsNotPreview &&
 																s.parsingModelApiKey.length >= 20 &&
 																!s.contextModelApiKey;
 															return {
@@ -774,10 +822,7 @@ export default function SettingsPage() {
 												className="sm:flex-1"
 												id="context-model-api-key-inline"
 												provider={state.contextProvider}
-												isPreview={
-													!!state.contextModelApiKey &&
-													state.contextModelApiKey.includes("...")
-												}
+												isPreview={contextKeyIsPreview}
 												onValidationChange={(isValid, status) => {
 													setContextKeyValid(isValid);
 													setContextKeyStatus(status);
@@ -802,24 +847,20 @@ export default function SettingsPage() {
 												value={state.contextModelApiKey}
 											/>
 											<div className="flex items-center gap-2 sm:flex-1 min-w-0">
-												<Combobox
-													options={contextModelOptions}
+												<ModelCombobox
+													models={contextModelsForUI}
 													value={state.contextModel}
-													onValueChange={(value) => {
-														const modelValue =
-															typeof value === "string" ? value : value[0];
+													onValueChange={(modelId) => {
 														setState((s) => ({
 															...s,
-															contextModel: modelValue,
+															contextModel: modelId,
 														}));
 													}}
 													placeholder={contextModelPlaceholder}
-													emptyMessage="No models found."
-													searchPlaceholder="Search models..."
 													disabled={Boolean(
 														!state.contextModelApiKey ||
-															(typeof state.contextModelApiKey === "string" &&
-																!state.contextModelApiKey.includes("...") &&
+															// Disable if key is not preview AND not valid
+															(!contextKeyIsPreview &&
 																!contextKeyValid) ||
 															contextKeyStatus === "validating" ||
 															loadingContextModels ||
@@ -932,12 +973,9 @@ export default function SettingsPage() {
 				</div>
 
 				{/* Footer */}
-				<div className="mt-10 flex flex-col items-end gap-2">
-					{saveError && (
-						<div className="text-sm text-destructive">{saveError}</div>
-					)}
+				<div className="mt-10 flex justify-end">
 					<Button
-						disabled={!isDirty || saving || loadingKeys}
+						disabled={!canSave || saving || loadingKeys}
 						onClick={handleSave}
 						type="button"
 					>

@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/tooltip";
 import { ApiError, apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { UploadErrorToast, getUploadError, formatErrorDescription, parseApiError } from "@/lib/upload-errors";
 import { DocumentsTable, type Document, type Frame } from "@/components/documents/documents-table";
 
 const HIGHLIGHT_DURATION_MS = 1600;
@@ -158,17 +159,17 @@ export default function ChatPage() {
 					);
 					toast.success(`Uploaded: ${file.name}`);
 				} catch (error) {
-					const message =
-						error instanceof ApiError ? error.message : "Upload failed";
+					const errorDef = getUploadError(error);
+					const errorMessage = formatErrorDescription(errorDef, parseApiError(error).message);
 					setAttachedFiles((prev) =>
 						prev.map((af) =>
 							af.file === file
-								? { ...af, status: "error" as const, error: message }
+								? { ...af, status: "error" as const, error: errorMessage }
 								: af,
 						),
 					);
-					toast.error(`Failed to upload: ${file.name}`, {
-						description: message,
+					toast.error(<UploadErrorToast error={error} />, {
+						duration: 8000,
 					});
 				}
 			}

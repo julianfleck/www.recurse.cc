@@ -54,26 +54,16 @@ export async function POST(request: Request) {
 					error instanceof Error ? error.message : "Failed to connect to OpenAI API";
 			}
 		} else if (provider === "openrouter") {
-			// Test OpenRouter key by making a minimal completion request
-			// OpenRouter API is compatible with OpenAI's API structure
-			// Optional headers HTTP-Referer and X-Title are recommended for app attribution
+			// Test OpenRouter key by fetching models (doesn't cost tokens)
+			// This validates the API key works without making a completion request
 			try {
 				const response = await fetch(
-					"https://openrouter.ai/api/v1/chat/completions",
+					"https://openrouter.ai/api/v1/models",
 					{
-						method: "POST",
+						method: "GET",
 						headers: {
 							Authorization: `Bearer ${apiKey}`,
-							"Content-Type": "application/json",
-							"HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-							"X-Title": "Recurse.cc",
 						},
-						body: JSON.stringify({
-							model: "openai/gpt-3.5-turbo",
-							messages: [{ role: "user", content: "Hi" }],
-							max_tokens: 1,
-							stream: false,
-						}),
 					},
 				);
 
