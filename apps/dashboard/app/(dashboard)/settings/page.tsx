@@ -10,8 +10,10 @@ import {
 	type ComboboxOption,
 } from "@recurse/ui/components/combobox";
 import { ChevronsUpDownIcon, HelpCircle } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { useAuthStore } from "@/components/auth/auth-store";
+import { ApiKeyInput } from "@/components/ui/api-key-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,6 +22,19 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@recurse/ui/components/dialog";
+import {
+	getModelApiKeys,
+	upsertModelApiKey,
+	type UserModelApiKey,
+} from "@/lib/model-api-keys";
 
 export default function SettingsPage() {
 	// Seed defaults (could be loaded from API/local storage later)
@@ -42,6 +57,15 @@ export default function SettingsPage() {
 
 	const [state, setState] = useState(initialState);
 	const [baseline, setBaseline] = useState(initialState);
+	const [saving, setSaving] = useState(false);
+	const [saveError, setSaveError] = useState<string | null>(null);
+	const [loadingKeys, setLoadingKeys] = useState(true);
+	const [parsingKeyValid, setParsingKeyValid] = useState(false);
+	const [parsingKeyStatus, setParsingKeyStatus] = useState<"idle" | "validating" | "valid" | "invalid">("idle");
+	const [contextKeyValid, setContextKeyValid] = useState(false);
+	const [contextKeyStatus, setContextKeyStatus] = useState<"idle" | "validating" | "valid" | "invalid">("idle");
+	const [showValidationDialog, setShowValidationDialog] = useState(false);
+	const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
 	const providers: ComboboxOption[] = [
 		{ value: "openai", label: "OpenAI" },
@@ -163,29 +187,53 @@ export default function SettingsPage() {
 
 	const parsingModelPlaceholder = useMemo(() => {
 		if (!state.parsingModelApiKey) {
-			return "Enter API key to load models";
+			return "← Enter API key";
 		}
-		if (loadingModels) {
-			return "Loading models...";
+		if (state.parsingModelApiKey.length < 20) {
+			return "← Enter full API key";
 		}
-		if (modelsError) {
-			return "Error loading models";
+		if (parsingKeyStatus === "validating") {
+			return "⏳ Verifying key...";
 		}
-		return "Select model...";
-	}, [state.parsingModelApiKey, loadingModels, modelsError]);
+		if (parsingKeyStatus === "invalid") {
+			return "❌ Invalid API key";
+		}
+		if (parsingKeyStatus === "valid" && loadingModels) {
+			return "✓ Key valid, loading models...";
+		}
+		if (parsingKeyStatus === "valid" && modelsError) {
+			return "✓ Key valid, error loading models";
+		}
+		if (parsingKeyStatus === "valid") {
+			return "✓ Key valid — select model";
+		}
+		return "← Enter API key";
+	}, [state.parsingModelApiKey, parsingKeyStatus, loadingModels, modelsError]);
 
 	const contextModelPlaceholder = useMemo(() => {
 		if (!state.contextModelApiKey) {
-			return "Enter API key to load models";
+			return "← Enter API key";
 		}
-		if (loadingContextModels) {
-			return "Loading models...";
+		if (state.contextModelApiKey.length < 20) {
+			return "← Enter full API key";
 		}
-		if (contextModelsError) {
-			return "Error loading models";
+		if (contextKeyStatus === "validating") {
+			return "⏳ Verifying key...";
 		}
-		return "Select model...";
-	}, [state.contextModelApiKey, loadingContextModels, contextModelsError]);
+		if (contextKeyStatus === "invalid") {
+			return "❌ Invalid API key";
+		}
+		if (contextKeyStatus === "valid" && loadingContextModels) {
+			return "✓ Key valid, loading models...";
+		}
+		if (contextKeyStatus === "valid" && contextModelsError) {
+			return "✓ Key valid, error loading models";
+		}
+		if (contextKeyStatus === "valid") {
+			return "✓ Key valid — select model";
+		}
+		return "← Enter API key";
+	}, [state.contextModelApiKey, contextKeyStatus, loadingContextModels, contextModelsError]);
 
 	const parsingModelOptions: ComboboxOption[] = useMemo(() => {
 		return currentModels.map((m) => ({
@@ -201,10 +249,137 @@ export default function SettingsPage() {
 		}));
 	}, [currentContextModels]);
 
-	const handleSave = () => {
-		// For now, we just update the baseline. Integration with backend will come later.
-		setBaseline(state);
-	};
+	// Load existing API keys from backend on mount
+	useEffect(() => {
+		async function loadApiKeys() {
+			try {
+				setLoadingKeys(true);
+				// Keys will be loaded when user selects provider/model
+				// For now, just mark as loaded
+			} catch (error) {
+				console.error("[Settings] Failed to load API keys:", error);
+				// Don't show error to user - they can still enter keys manually
+			} finally {
+				setLoadingKeys(false);
+			}
+		}
+
+		loadApiKeys();
+	}, []);
+
+	// Validate that API keys have corresponding model selections
+	const validateBeforeSave = useCallback(() => {
+		const errors: string[] = [];
+
+		// Check parsing model: if API key is provided (and not a preview), model must be selected
+		const hasParsingKey =
+			state.parsingModelApiKey &&
+			!state.parsingModelApiKey.includes("...") &&
+			state.parsingModelApiKey.length >= 20;
+		if (hasParsingKey && !state.defaultParsingModel) {
+			errors.push("Parsing Model: Please select a model for your API key");
+		}
+
+		// Check context model: if API key is provided (and not a preview), model must be selected
+		const hasContextKey =
+			state.contextModelApiKey &&
+			!state.contextModelApiKey.includes("...") &&
+			state.contextModelApiKey.length >= 20;
+		if (hasContextKey && !state.contextModel) {
+			errors.push("Context Model: Please select a model for your API key");
+		}
+
+		return errors;
+	}, [state]);
+
+	// Handle save button click
+	const handleSave = useCallback(async () => {
+		// Validate before saving
+		const validationErrors = validateBeforeSave();
+		if (validationErrors.length > 0) {
+			setValidationErrors(validationErrors);
+			setShowValidationDialog(true);
+			return;
+		}
+
+		setSaving(true);
+		setSaveError(null);
+
+		try {
+			// Save parsing model API key if changed and model is selected
+			if (
+				state.parsingModelApiKey &&
+				state.parsingModelApiKey !== baseline.parsingModelApiKey &&
+				state.defaultParsingModel
+			) {
+				const isPreview =
+					state.parsingModelApiKey.includes("...") ||
+					state.parsingModelApiKey.length < 20;
+				if (!isPreview) {
+					await upsertModelApiKey(
+						state.provider,
+						state.parsingModelApiKey,
+						state.defaultParsingModel,
+					);
+				}
+			}
+
+			// Save context model API key if changed and model is selected
+			if (
+				state.contextModelApiKey &&
+				state.contextModelApiKey !== baseline.contextModelApiKey &&
+				state.contextModel
+			) {
+				const isPreview =
+					state.contextModelApiKey.includes("...") ||
+					state.contextModelApiKey.length < 20;
+				if (!isPreview) {
+					await upsertModelApiKey(
+						state.contextProvider,
+						state.contextModelApiKey,
+						state.contextModel,
+					);
+				}
+			}
+
+			// Reload keys to get updated previews
+			const keys = await getModelApiKeys();
+			const parsingKey = keys.find(
+				(k) =>
+					k.provider === state.provider &&
+					k.is_active &&
+					(!k.model_pattern || k.model_pattern === state.defaultParsingModel),
+			);
+			const contextKey = keys.find(
+				(k) =>
+					k.provider === state.contextProvider &&
+					k.is_active &&
+					(!k.model_pattern || k.model_pattern === state.contextModel),
+			);
+
+			// Update baseline with saved state (using previews if available)
+			setBaseline({
+				...state,
+				parsingModelApiKey: parsingKey?.key_preview || state.parsingModelApiKey,
+				contextModelApiKey: contextKey?.key_preview || state.contextModelApiKey,
+			});
+
+			// Show success toast
+			toast.success("Settings saved successfully");
+		} catch (error) {
+			console.error("[Settings] Failed to save API keys:", error);
+			const errorMessage =
+				error instanceof Error
+					? error.message
+					: "Failed to save API keys. Please try again.";
+			setSaveError(errorMessage);
+			toast.error("Failed to save settings", {
+				description: errorMessage,
+			});
+		} finally {
+			setSaving(false);
+		}
+	}, [state, baseline, validateBeforeSave]);
 
 	return (
 		<div
@@ -265,11 +440,23 @@ export default function SettingsPage() {
 												onValueChange={(value) => {
 													const providerValue =
 														typeof value === "string" ? value : value[0];
-													setState((s) => ({
-														...s,
-														provider: providerValue,
-														defaultParsingModel: "",
-													}));
+													setState((s) => {
+														// Only copy if provider matches context provider and parsing key is empty
+														const shouldCopy =
+															providerValue === s.contextProvider &&
+															s.contextModelApiKey &&
+															!s.contextModelApiKey.includes("...") &&
+															s.contextModelApiKey.length >= 20 &&
+															!s.parsingModelApiKey;
+														return {
+															...s,
+															provider: providerValue,
+															defaultParsingModel: "",
+															...(shouldCopy && {
+																parsingModelApiKey: s.contextModelApiKey,
+															}),
+														};
+													});
 												}}
 												placeholder="Select provider..."
 												emptyMessage="No providers found."
@@ -277,15 +464,30 @@ export default function SettingsPage() {
 												className="flex-1 min-w-0"
 											/>
 										</div>
-										<Input
+										<ApiKeyInput
 											className="sm:flex-1"
 											id="parsing-model-api-key-inline"
-											onChange={(e) =>
-												setState((s) => ({
-													...s,
-													parsingModelApiKey: e.target.value,
-												}))
-											}
+											provider={state.provider}
+											onValidationChange={(isValid, status) => {
+												setParsingKeyValid(isValid);
+												setParsingKeyStatus(status);
+											}}
+											onChange={(e) => {
+												const newKey = e.target.value;
+												setState((s) => {
+													// Only copy if providers match and context key is empty
+													const shouldCopy =
+														s.provider === s.contextProvider &&
+														!s.contextModelApiKey;
+													return {
+														...s,
+														parsingModelApiKey: newKey,
+														...(shouldCopy && {
+															contextModelApiKey: newKey,
+														}),
+													};
+												});
+											}}
 											placeholder="Enter API key"
 											value={state.parsingModelApiKey}
 										/>
@@ -306,6 +508,8 @@ export default function SettingsPage() {
 												searchPlaceholder="Search models..."
 												disabled={Boolean(
 													!state.parsingModelApiKey ||
+														!parsingKeyValid ||
+														parsingKeyStatus === "validating" ||
 														loadingModels ||
 														modelsError,
 												)}
@@ -356,11 +560,23 @@ export default function SettingsPage() {
 												onValueChange={(value) => {
 													const providerValue =
 														typeof value === "string" ? value : value[0];
-													setState((s) => ({
-														...s,
-														contextProvider: providerValue,
-														contextModel: "",
-													}));
+													setState((s) => {
+														// Only copy if provider matches parsing provider and context key is empty
+														const shouldCopy =
+															providerValue === s.provider &&
+															s.parsingModelApiKey &&
+															!s.parsingModelApiKey.includes("...") &&
+															s.parsingModelApiKey.length >= 20 &&
+															!s.contextModelApiKey;
+														return {
+															...s,
+															contextProvider: providerValue,
+															contextModel: "",
+															...(shouldCopy && {
+																contextModelApiKey: s.parsingModelApiKey,
+															}),
+														};
+													});
 												}}
 												placeholder="Select provider..."
 												emptyMessage="No providers found."
@@ -368,15 +584,30 @@ export default function SettingsPage() {
 												className="flex-1 min-w-0"
 											/>
 										</div>
-										<Input
+										<ApiKeyInput
 											className="sm:flex-1"
 											id="context-model-api-key-inline"
-											onChange={(e) =>
-												setState((s) => ({
-													...s,
-													contextModelApiKey: e.target.value,
-												}))
-											}
+											provider={state.contextProvider}
+											onValidationChange={(isValid, status) => {
+												setContextKeyValid(isValid);
+												setContextKeyStatus(status);
+											}}
+											onChange={(e) => {
+												const newKey = e.target.value;
+												setState((s) => {
+													// Only copy if providers match and parsing key is empty
+													const shouldCopy =
+														s.provider === s.contextProvider &&
+														!s.parsingModelApiKey;
+													return {
+														...s,
+														contextModelApiKey: newKey,
+														...(shouldCopy && {
+															parsingModelApiKey: newKey,
+														}),
+													};
+												});
+											}}
 											placeholder="Enter API key"
 											value={state.contextModelApiKey}
 										/>
@@ -397,6 +628,8 @@ export default function SettingsPage() {
 												searchPlaceholder="Search models..."
 												disabled={Boolean(
 													!state.contextModelApiKey ||
+														!contextKeyValid ||
+														contextKeyStatus === "validating" ||
 														loadingContextModels ||
 														contextModelsError,
 												)}
@@ -498,12 +731,49 @@ export default function SettingsPage() {
 				</div>
 
 				{/* Footer */}
-				<div className="mt-10 flex justify-end">
-					<Button disabled={!isDirty} onClick={handleSave} type="button">
-						Save changes
+				<div className="mt-10 flex flex-col items-end gap-2">
+					{saveError && (
+						<div className="text-sm text-destructive">{saveError}</div>
+					)}
+					<Button
+						disabled={!isDirty || saving || loadingKeys}
+						onClick={handleSave}
+						type="button"
+					>
+						{saving ? "Saving..." : "Save changes"}
 					</Button>
 				</div>
 			</div>
+
+			{/* Validation Dialog */}
+			<Dialog open={showValidationDialog} onOpenChange={setShowValidationDialog}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Missing Model Selection</DialogTitle>
+						<DialogDescription>
+							You've provided API keys but haven't selected corresponding models.
+							Please select a model for each API key you've entered.
+						</DialogDescription>
+					</DialogHeader>
+					<div className="py-4">
+						<ul className="list-disc list-inside space-y-2">
+							{validationErrors.map((error, idx) => (
+								<li key={idx} className="text-sm text-muted-foreground">
+									{error}
+								</li>
+							))}
+						</ul>
+					</div>
+					<DialogFooter>
+						<Button
+							variant="outline"
+							onClick={() => setShowValidationDialog(false)}
+						>
+							Go Back
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }
