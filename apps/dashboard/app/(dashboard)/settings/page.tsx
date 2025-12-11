@@ -17,6 +17,7 @@ import { ApiKeyInput } from "@/components/ui/api-key-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
 	Tooltip,
 	TooltipContent,
@@ -249,22 +250,76 @@ export default function SettingsPage() {
 		}));
 	}, [currentContextModels]);
 
-	// Load existing API keys from backend on mount
+	// Load existing API keys and settings from backend on mount
 	useEffect(() => {
-		async function loadApiKeys() {
+		async function loadSettings() {
 			try {
 				setLoadingKeys(true);
-				// Keys will be loaded when user selects provider/model
-				// For now, just mark as loaded
+				const keys = await getModelApiKeys();
+
+				// Filter to only active keys
+				const activeKeys = keys.filter((k) => k.is_active);
+
+				// Find keys with model_pattern (these are tied to specific models)
+				// We'll use the first one for parsing, second for context (or same if only one)
+				// If multiple keys exist for same provider, prefer ones with model_pattern
+				const keysWithModels = activeKeys.filter((k) => k.model_pattern);
+				const keysWithoutModels = activeKeys.filter((k) => !k.model_pattern);
+
+				// For parsing model: prefer key with model_pattern, fallback to any active key
+				const parsingKey =
+					keysWithModels.find((k) => k.provider === "openai") ||
+					keysWithModels[0] ||
+					keysWithoutModels.find((k) => k.provider === "openai") ||
+					keysWithoutModels[0];
+
+				// For context model: prefer different key than parsing, or same if only one exists
+				const contextKey =
+					keysWithModels.find(
+						(k) => k.id !== parsingKey?.id && k.provider === "openai",
+					) ||
+					keysWithModels.find((k) => k.id !== parsingKey?.id) ||
+					keysWithModels[0] ||
+					keysWithoutModels.find((k) => k.id !== parsingKey?.id) ||
+					keysWithoutModels[0];
+
+				// Update state with loaded keys
+				const updates: Partial<typeof initialState> = {};
+
+				if (parsingKey) {
+					updates.provider = parsingKey.provider;
+					updates.parsingModelApiKey = parsingKey.key_preview;
+					updates.defaultParsingModel = parsingKey.model_pattern || "";
+				}
+
+				if (contextKey) {
+					updates.contextProvider = contextKey.provider;
+					updates.contextModelApiKey = contextKey.key_preview;
+					updates.contextModel = contextKey.model_pattern || "";
+				}
+
+				if (Object.keys(updates).length > 0) {
+					setState((prev) => {
+						const newState = { ...prev, ...updates };
+						setBaseline(newState);
+						return newState;
+					});
+
+					// Try to load models for the keys we found
+					// Note: We can't use the preview key to fetch models, so we'll skip model loading
+					// The user will need to enter a new key if they want to change the model
+					// But if model_pattern is set, we at least know which model was selected
+				}
 			} catch (error) {
-				console.error("[Settings] Failed to load API keys:", error);
+				console.error("[Settings] Failed to load settings:", error);
 				// Don't show error to user - they can still enter keys manually
 			} finally {
 				setLoadingKeys(false);
 			}
 		}
 
-		loadApiKeys();
+		loadSettings();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	// Validate that API keys have corresponding model selections
@@ -432,91 +487,103 @@ export default function SettingsPage() {
 									</Tooltip>
 								</div>
 								<div className="sm:col-span-2">
-									<div className="flex flex-col items-stretch gap-2 sm:flex-row">
-										<div className="flex items-center gap-2 sm:flex-1 min-w-0">
-											<Combobox
-												options={providers}
-												value={state.provider}
-												onValueChange={(value) => {
-													const providerValue =
-														typeof value === "string" ? value : value[0];
+									{loadingKeys ? (
+										<div className="flex flex-col items-stretch gap-2 sm:flex-row">
+											<Skeleton className="h-9 sm:flex-1" />
+											<Skeleton className="h-9 sm:flex-1" />
+											<Skeleton className="h-9 sm:flex-1" />
+										</div>
+									) : (
+										<div className="flex flex-col items-stretch gap-2 sm:flex-row">
+											<div className="flex items-center gap-2 sm:flex-1 min-w-0">
+												<Combobox
+													options={providers}
+													value={state.provider}
+													onValueChange={(value) => {
+														const providerValue =
+															typeof value === "string" ? value : value[0];
+														setState((s) => {
+															// Only copy if provider matches context provider and parsing key is empty
+															const shouldCopy =
+																providerValue === s.contextProvider &&
+																s.contextModelApiKey &&
+																!s.contextModelApiKey.includes("...") &&
+																s.contextModelApiKey.length >= 20 &&
+																!s.parsingModelApiKey;
+															return {
+																...s,
+																provider: providerValue,
+																defaultParsingModel: "",
+																...(shouldCopy && {
+																	parsingModelApiKey: s.contextModelApiKey,
+																}),
+															};
+														});
+													}}
+													placeholder="Select provider..."
+													emptyMessage="No providers found."
+													searchPlaceholder="Search providers..."
+													className="flex-1 min-w-0"
+												/>
+											</div>
+											<ApiKeyInput
+												className="sm:flex-1"
+												id="parsing-model-api-key-inline"
+												provider={state.provider}
+												isPreview={
+													!!state.parsingModelApiKey &&
+													state.parsingModelApiKey.includes("...")
+												}
+												onValidationChange={(isValid, status) => {
+													setParsingKeyValid(isValid);
+													setParsingKeyStatus(status);
+												}}
+												onChange={(e) => {
+													const newKey = e.target.value;
 													setState((s) => {
-														// Only copy if provider matches context provider and parsing key is empty
+														// Only copy if providers match and context key is empty
 														const shouldCopy =
-															providerValue === s.contextProvider &&
-															s.contextModelApiKey &&
-															!s.contextModelApiKey.includes("...") &&
-															s.contextModelApiKey.length >= 20 &&
-															!s.parsingModelApiKey;
+															s.provider === s.contextProvider &&
+															!s.contextModelApiKey;
 														return {
 															...s,
-															provider: providerValue,
-															defaultParsingModel: "",
+															parsingModelApiKey: newKey,
 															...(shouldCopy && {
-																parsingModelApiKey: s.contextModelApiKey,
+																contextModelApiKey: newKey,
 															}),
 														};
 													});
 												}}
-												placeholder="Select provider..."
-												emptyMessage="No providers found."
-												searchPlaceholder="Search providers..."
-												className="flex-1 min-w-0"
+												placeholder="Enter API key"
+												value={state.parsingModelApiKey}
 											/>
+											<div className="flex items-center gap-2 sm:flex-1 min-w-0">
+												<Combobox
+													options={parsingModelOptions}
+													value={state.defaultParsingModel}
+													onValueChange={(value) => {
+														const modelValue =
+															typeof value === "string" ? value : value[0];
+														setState((s) => ({
+															...s,
+															defaultParsingModel: modelValue,
+														}));
+													}}
+													placeholder={parsingModelPlaceholder}
+													emptyMessage="No models found."
+													searchPlaceholder="Search models..."
+													disabled={Boolean(
+														!state.parsingModelApiKey ||
+															!parsingKeyValid ||
+															parsingKeyStatus === "validating" ||
+															loadingModels ||
+															modelsError,
+													)}
+													className="flex-1 min-w-0"
+												/>
+											</div>
 										</div>
-										<ApiKeyInput
-											className="sm:flex-1"
-											id="parsing-model-api-key-inline"
-											provider={state.provider}
-											onValidationChange={(isValid, status) => {
-												setParsingKeyValid(isValid);
-												setParsingKeyStatus(status);
-											}}
-											onChange={(e) => {
-												const newKey = e.target.value;
-												setState((s) => {
-													// Only copy if providers match and context key is empty
-													const shouldCopy =
-														s.provider === s.contextProvider &&
-														!s.contextModelApiKey;
-													return {
-														...s,
-														parsingModelApiKey: newKey,
-														...(shouldCopy && {
-															contextModelApiKey: newKey,
-														}),
-													};
-												});
-											}}
-											placeholder="Enter API key"
-											value={state.parsingModelApiKey}
-										/>
-										<div className="flex items-center gap-2 sm:flex-1 min-w-0">
-											<Combobox
-												options={parsingModelOptions}
-												value={state.defaultParsingModel}
-												onValueChange={(value) => {
-													const modelValue =
-														typeof value === "string" ? value : value[0];
-													setState((s) => ({
-														...s,
-														defaultParsingModel: modelValue,
-													}));
-												}}
-												placeholder={parsingModelPlaceholder}
-												emptyMessage="No models found."
-												searchPlaceholder="Search models..."
-												disabled={Boolean(
-													!state.parsingModelApiKey ||
-														!parsingKeyValid ||
-														parsingKeyStatus === "validating" ||
-														loadingModels ||
-														modelsError,
-												)}
-												className="flex-1 min-w-0"
-											/>
-										</div>
-									</div>
+									)}
 								</div>
 							</div>
 
@@ -552,91 +619,103 @@ export default function SettingsPage() {
 									</Tooltip>
 								</div>
 								<div className="sm:col-span-2">
-									<div className="flex flex-col items-stretch gap-2 sm:flex-row">
-										<div className="flex items-center gap-2 sm:flex-1 min-w-0">
-											<Combobox
-												options={providers}
-												value={state.contextProvider}
-												onValueChange={(value) => {
-													const providerValue =
-														typeof value === "string" ? value : value[0];
+									{loadingKeys ? (
+										<div className="flex flex-col items-stretch gap-2 sm:flex-row">
+											<Skeleton className="h-9 sm:flex-1" />
+											<Skeleton className="h-9 sm:flex-1" />
+											<Skeleton className="h-9 sm:flex-1" />
+										</div>
+									) : (
+										<div className="flex flex-col items-stretch gap-2 sm:flex-row">
+											<div className="flex items-center gap-2 sm:flex-1 min-w-0">
+												<Combobox
+													options={providers}
+													value={state.contextProvider}
+													onValueChange={(value) => {
+														const providerValue =
+															typeof value === "string" ? value : value[0];
+														setState((s) => {
+															// Only copy if provider matches parsing provider and context key is empty
+															const shouldCopy =
+																providerValue === s.provider &&
+																s.parsingModelApiKey &&
+																!s.parsingModelApiKey.includes("...") &&
+																s.parsingModelApiKey.length >= 20 &&
+																!s.contextModelApiKey;
+															return {
+																...s,
+																contextProvider: providerValue,
+																contextModel: "",
+																...(shouldCopy && {
+																	contextModelApiKey: s.parsingModelApiKey,
+																}),
+															};
+														});
+													}}
+													placeholder="Select provider..."
+													emptyMessage="No providers found."
+													searchPlaceholder="Search providers..."
+													className="flex-1 min-w-0"
+												/>
+											</div>
+											<ApiKeyInput
+												className="sm:flex-1"
+												id="context-model-api-key-inline"
+												provider={state.contextProvider}
+												isPreview={
+													!!state.contextModelApiKey &&
+													state.contextModelApiKey.includes("...")
+												}
+												onValidationChange={(isValid, status) => {
+													setContextKeyValid(isValid);
+													setContextKeyStatus(status);
+												}}
+												onChange={(e) => {
+													const newKey = e.target.value;
 													setState((s) => {
-														// Only copy if provider matches parsing provider and context key is empty
+														// Only copy if providers match and parsing key is empty
 														const shouldCopy =
-															providerValue === s.provider &&
-															s.parsingModelApiKey &&
-															!s.parsingModelApiKey.includes("...") &&
-															s.parsingModelApiKey.length >= 20 &&
-															!s.contextModelApiKey;
+															s.provider === s.contextProvider &&
+															!s.parsingModelApiKey;
 														return {
 															...s,
-															contextProvider: providerValue,
-															contextModel: "",
+															contextModelApiKey: newKey,
 															...(shouldCopy && {
-																contextModelApiKey: s.parsingModelApiKey,
+																parsingModelApiKey: newKey,
 															}),
 														};
 													});
 												}}
-												placeholder="Select provider..."
-												emptyMessage="No providers found."
-												searchPlaceholder="Search providers..."
-												className="flex-1 min-w-0"
+												placeholder="Enter API key"
+												value={state.contextModelApiKey}
 											/>
+											<div className="flex items-center gap-2 sm:flex-1 min-w-0">
+												<Combobox
+													options={contextModelOptions}
+													value={state.contextModel}
+													onValueChange={(value) => {
+														const modelValue =
+															typeof value === "string" ? value : value[0];
+														setState((s) => ({
+															...s,
+															contextModel: modelValue,
+														}));
+													}}
+													placeholder={contextModelPlaceholder}
+													emptyMessage="No models found."
+													searchPlaceholder="Search models..."
+													disabled={Boolean(
+														!state.contextModelApiKey ||
+															!contextKeyValid ||
+															contextKeyStatus === "validating" ||
+															loadingContextModels ||
+															contextModelsError,
+													)}
+													className="flex-1 min-w-0"
+												/>
+											</div>
 										</div>
-										<ApiKeyInput
-											className="sm:flex-1"
-											id="context-model-api-key-inline"
-											provider={state.contextProvider}
-											onValidationChange={(isValid, status) => {
-												setContextKeyValid(isValid);
-												setContextKeyStatus(status);
-											}}
-											onChange={(e) => {
-												const newKey = e.target.value;
-												setState((s) => {
-													// Only copy if providers match and parsing key is empty
-													const shouldCopy =
-														s.provider === s.contextProvider &&
-														!s.parsingModelApiKey;
-													return {
-														...s,
-														contextModelApiKey: newKey,
-														...(shouldCopy && {
-															parsingModelApiKey: newKey,
-														}),
-													};
-												});
-											}}
-											placeholder="Enter API key"
-											value={state.contextModelApiKey}
-										/>
-										<div className="flex items-center gap-2 sm:flex-1 min-w-0">
-											<Combobox
-												options={contextModelOptions}
-												value={state.contextModel}
-												onValueChange={(value) => {
-													const modelValue =
-														typeof value === "string" ? value : value[0];
-													setState((s) => ({
-														...s,
-														contextModel: modelValue,
-													}));
-												}}
-												placeholder={contextModelPlaceholder}
-												emptyMessage="No models found."
-												searchPlaceholder="Search models..."
-												disabled={Boolean(
-													!state.contextModelApiKey ||
-														!contextKeyValid ||
-														contextKeyStatus === "validating" ||
-														loadingContextModels ||
-														contextModelsError,
-												)}
-												className="flex-1 min-w-0"
-											/>
-										</div>
-									</div>
+									)}
 								</div>
 							</div>
 
@@ -697,15 +776,19 @@ export default function SettingsPage() {
 									Email address
 								</Label>
 								<div className="sm:col-span-2">
-									<Input
-										id="email"
-										onChange={(e) =>
-											setState((s) => ({ ...s, email: e.target.value }))
-										}
-										placeholder="you@example.com"
-										type="email"
-										value={state.email}
-									/>
+									{loadingKeys ? (
+										<Skeleton className="h-9" />
+									) : (
+										<Input
+											id="email"
+											onChange={(e) =>
+												setState((s) => ({ ...s, email: e.target.value }))
+											}
+											placeholder="you@example.com"
+											type="email"
+											value={state.email}
+										/>
+									)}
 								</div>
 							</div>
 
@@ -715,15 +798,19 @@ export default function SettingsPage() {
 									Passwort
 								</Label>
 								<div className="sm:col-span-2">
-									<Input
-										id="password"
-										onChange={(e) =>
-											setState((s) => ({ ...s, password: e.target.value }))
-										}
-										placeholder="Set a new password"
-										type="password"
-										value={state.password}
-									/>
+									{loadingKeys ? (
+										<Skeleton className="h-9" />
+									) : (
+										<Input
+											id="password"
+											onChange={(e) =>
+												setState((s) => ({ ...s, password: e.target.value }))
+											}
+											placeholder="Set a new password"
+											type="password"
+											value={state.password}
+										/>
+									)}
 								</div>
 							</div>
 						</div>
