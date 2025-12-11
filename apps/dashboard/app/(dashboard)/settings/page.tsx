@@ -719,6 +719,7 @@ export default function SettingsPage() {
 											/>
 											<div className="flex items-center gap-2 sm:flex-1 min-w-0">
 												<ModelCombobox
+													modelType="parsing"
 													models={parsingModelsForUI}
 													value={state.defaultParsingModel}
 													onValueChange={(modelId) => {
@@ -848,6 +849,7 @@ export default function SettingsPage() {
 											/>
 											<div className="flex items-center gap-2 sm:flex-1 min-w-0">
 												<ModelCombobox
+													modelType="context"
 													models={contextModelsForUI}
 													value={state.contextModel}
 													onValueChange={(modelId) => {

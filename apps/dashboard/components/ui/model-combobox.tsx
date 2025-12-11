@@ -16,7 +16,15 @@ import {
 	DialogContent,
 	DialogTrigger,
 } from "@recurse/ui/components/dialog";
+import {
+	Tabs,
+	TabsContent,
+	TabsList,
+	TabsTrigger,
+} from "@recurse/ui/components/tabs";
+import { Sparkles, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import type { AvailableModel } from "@/lib/models/types";
 
@@ -29,6 +37,7 @@ type ModelComboboxProps = {
 	searchPlaceholder?: string;
 	disabled?: boolean;
 	className?: string;
+	modelType?: "parsing" | "context";
 };
 
 function formatPrice(value?: string): string {
@@ -88,12 +97,12 @@ function parseMarkdownLinks(text: string): React.ReactNode {
 	return parts.length > 0 ? parts : text;
 }
 
-function ModelCard({ model }: { model: AvailableModel | null }) {
-	if (!model) {
+function ModelCard({ model, isEmpty }: { model: AvailableModel | null; isEmpty?: boolean }) {
+	if (!model || isEmpty) {
 		return (
-			<div className="flex h-full flex-col justify-center gap-2 rounded-md border bg-muted/40 p-4 text-muted-foreground">
-				<p className="font-medium text-base">Model details</p>
-				<p className="text-sm">Hover a model on the right to see its details.</p>
+			<div className="flex h-full min-h-[400px] flex-col justify-center gap-2 rounded-md border bg-muted/40 p-4 text-muted-foreground">
+				<p className="font-medium text-base">No models found</p>
+				<p className="text-sm">Try adjusting your search or switch to the "All" tab.</p>
 			</div>
 		);
 	}
@@ -123,9 +132,14 @@ function ModelCard({ model }: { model: AvailableModel | null }) {
 			</div>
 
 			{model.description ? (
-				<p className="mb-4 mt-3 line-clamp-4 text-sm leading-relaxed text-muted-foreground">
-					{parseMarkdownLinks(model.description)}
-				</p>
+				<ScrollArea className="mb-4 mt-3 flex-1 min-h-0 relative">
+					<div className="pr-4 pb-6">
+						<p className="text-sm leading-relaxed text-muted-foreground">
+							{parseMarkdownLinks(model.description)}
+						</p>
+					</div>
+					<div className="absolute bottom-0 left-0 right-0 h-12 bg-linear-to-t from-muted/40 via-muted/20 to-transparent pointer-events-none" />
+				</ScrollArea>
 			) : (
 				<div className="mb-4 mt-3" />
 			)}
@@ -161,14 +175,18 @@ export function ModelCombobox({
 	searchPlaceholder = "Search models…",
 	disabled,
 	className,
+	modelType = "parsing",
 }: ModelComboboxProps) {
 	const [open, setOpen] = React.useState(false);
 	const [hoveredId, setHoveredId] = React.useState<string | null>(null);
+	const [activeTab, setActiveTab] = React.useState<
+		"recommended" | "free" | "all"
+	>("recommended");
 	const commandListRef = React.useRef<HTMLDivElement>(null);
 	const dialogContentRef = React.useRef<HTMLDivElement>(null);
 
 	// Only show models that support structured output and aren't deprecated
-	const availableModels = React.useMemo(
+	const baseModels = React.useMemo(
 		() =>
 			models.filter(
 				(m) =>
@@ -177,6 +195,60 @@ export function ModelCombobox({
 			),
 		[models],
 	);
+
+	// Filter models based on tab selection
+	const availableModels = React.useMemo(() => {
+		if (activeTab === "all") {
+			return baseModels;
+		}
+
+		if (activeTab === "free") {
+			return baseModels.filter((m) => m.is_free);
+		}
+
+		// Recommended: filter by keywords in description
+		if (modelType === "parsing") {
+			// For parsing models, look for structured output, JSON, schema, or parsing-related terms
+			const keywords = [
+				"json",
+				"schema",
+				"parsing",
+				"extract",
+				"deepseek",
+				"kimi",
+				"minimax",
+				"doubao",
+				"yi",
+			];
+			return baseModels.filter((m) => {
+				const desc = m.description?.toLowerCase() || "";
+				const name = m.name?.toLowerCase() || "";
+				const searchText = `${desc} ${name}`;
+				
+				// Exclude "structured output" from general search unless it's a specific capability
+				// but check for other keywords
+				return keywords.some((keyword) => searchText.includes(keyword));
+			});
+		} else {
+			// For context models, look for reasoning-related terms
+			const keywords = ["reasoning", "think", "reason", "logic", "rational"];
+			return baseModels.filter((m) => {
+				const desc = m.description?.toLowerCase() || "";
+				const name = m.name?.toLowerCase() || "";
+				const searchText = `${desc} ${name}`;
+				return keywords.some((keyword) => searchText.includes(keyword));
+			});
+		}
+	}, [baseModels, activeTab, modelType]);
+
+	// Create a lookup map for filter function
+	const modelLookup = React.useMemo(() => {
+		const map = new Map<string, AvailableModel>();
+		availableModels.forEach((model) => {
+			map.set(model.name.toLowerCase(), model);
+		});
+		return map;
+	}, [availableModels]);
 
 	const selectedModel = React.useMemo(
 		() => availableModels.find((m) => m.id === value),
@@ -193,6 +265,19 @@ export function ModelCombobox({
 	}, [hoveredId, availableModels, selectedModel]);
 
 	const displayText = selectedModel ? selectedModel.name : placeholder;
+
+	// Focus input when dialog opens
+	React.useEffect(() => {
+		if (open) {
+			// Small delay to ensure DOM is ready and animation has started
+			setTimeout(() => {
+				const input = document.querySelector('[cmdk-input]') as HTMLInputElement;
+				if (input) {
+					input.focus();
+				}
+			}, 50);
+		}
+	}, [open]);
 
 	// Scroll to selected item when dialog opens
 	React.useEffect(() => {
@@ -274,44 +359,94 @@ export function ModelCombobox({
 			</DialogTrigger>
 			<DialogContent
 				ref={dialogContentRef}
-				className="max-w-[min(800px,calc(100vw-2rem))] p-0"
+				className="max-w-[min(800px,calc(100vw-2rem))] p-0 max-h-[80vh] flex flex-col"
 				variant="default"
 			>
-				<div className="flex flex-col gap-2 p-4 sm:flex-row sm:p-6">
-					<div className="mb-2 w-full sm:mb-0 sm:w-[320px] sm:shrink-0">
-						<ModelCard model={activeModel} />
+				<div className="flex flex-col min-h-[500px] h-full overflow-hidden">
+					<div className="pl-4 pr-16 pt-4 pb-2 border-b shrink-0">
+						<Tabs
+							value={activeTab}
+							onValueChange={(v) =>
+								setActiveTab(v as "recommended" | "free" | "all")
+							}
+						>
+							<TabsList className="grid w-full grid-cols-3">
+								<TabsTrigger value="recommended">
+									<Sparkles className="size-4" />
+									Recommended
+								</TabsTrigger>
+								<TabsTrigger value="free">
+									<IconCircleCheckFilled className="size-4 text-emerald-500" />
+									Free
+								</TabsTrigger>
+								<TabsTrigger value="all">
+									<List className="size-4" />
+									All
+								</TabsTrigger>
+							</TabsList>
+						</Tabs>
 					</div>
-					<div className="min-w-0 flex-1 rounded-md border">
-						<Command value={selectedModel?.name || ""}>
-							<CommandInput placeholder={searchPlaceholder} />
-							<CommandList ref={commandListRef}>
-								<CommandEmpty>{emptyMessage}</CommandEmpty>
-								<CommandGroup>
-									{availableModels.map((model) => {
-										const isSelected = model.id === value;
-										return (
-											<CommandItem
-												key={model.id}
-												value={model.name}
-												data-model-id={model.id}
-												onSelect={() => {
-													onValueChange?.(model.id);
-													setOpen(false);
-												}}
-												onMouseEnter={() => setHoveredId(model.id)}
-											>
-												{isSelected ? (
-													<IconCircleCheckFilled className="mr-2 h-4 w-4 shrink-0 text-primary" />
-												) : (
-													<IconCircle className="mr-2 h-4 w-4 shrink-0 text-muted-foreground" />
-												)}
-												<span className="truncate">{model.name}</span>
-											</CommandItem>
-										);
-									})}
-								</CommandGroup>
-							</CommandList>
-						</Command>
+					<div className="flex flex-col gap-2 p-4 sm:flex-row flex-1 min-h-0">
+						<div className="mb-2 w-full sm:mb-0 sm:w-[320px] sm:shrink-0">
+							<ModelCard model={activeModel} isEmpty={availableModels.length === 0} />
+						</div>
+						<div className="min-w-0 flex-1 flex flex-col rounded-md border overflow-hidden min-h-0">
+							<Command
+								value={selectedModel?.name || ""}
+								className="flex flex-col h-full min-h-0 overflow-hidden"
+								filter={(value, search) => {
+									// Custom filter that searches both name and description
+									const model = modelLookup.get(value.toLowerCase());
+									if (!model) return 0;
+
+									if (!search) return 1; // Show all if no search
+
+									const searchLower = search.toLowerCase();
+									const nameMatch = model.name
+										.toLowerCase()
+										.includes(searchLower);
+									const descMatch = model.description
+										?.toLowerCase()
+										.includes(searchLower);
+									const idMatch = model.id.toLowerCase().includes(searchLower);
+
+									if (nameMatch || descMatch || idMatch) {
+										// Prioritize name matches
+										return nameMatch ? 2 : 1;
+									}
+									return 0;
+								}}
+							>
+								<CommandInput placeholder={searchPlaceholder} />
+								<CommandList ref={commandListRef} className="flex-1 min-h-0 overflow-y-auto max-h-none">
+									<CommandEmpty>{emptyMessage}</CommandEmpty>
+									<CommandGroup>
+										{availableModels.map((model) => {
+											const isSelected = model.id === value;
+											return (
+												<CommandItem
+													key={model.id}
+													value={model.name}
+													data-model-id={model.id}
+													onSelect={() => {
+														onValueChange?.(model.id);
+														setOpen(false);
+													}}
+													onMouseEnter={() => setHoveredId(model.id)}
+												>
+													{isSelected ? (
+														<IconCircleCheckFilled className="mr-2 h-4 w-4 shrink-0 text-primary" />
+													) : (
+														<IconCircle className="mr-2 h-4 w-4 shrink-0 text-muted-foreground" />
+													)}
+													<span className="truncate">{model.name}</span>
+												</CommandItem>
+											);
+										})}
+									</CommandGroup>
+								</CommandList>
+							</Command>
+						</div>
 					</div>
 				</div>
 			</DialogContent>
