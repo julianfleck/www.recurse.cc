@@ -11,12 +11,12 @@ import {
 	CommandItem,
 	CommandList,
 } from "@recurse/ui/components/command";
-import { Button } from "@/components/ui/button";
 import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
+	Dialog,
+	DialogContent,
+	DialogTrigger,
+} from "@recurse/ui/components/dialog";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { AvailableModel } from "@/lib/models/types";
 
@@ -164,6 +164,8 @@ export function ModelCombobox({
 }: ModelComboboxProps) {
 	const [open, setOpen] = React.useState(false);
 	const [hoveredId, setHoveredId] = React.useState<string | null>(null);
+	const commandListRef = React.useRef<HTMLDivElement>(null);
+	const dialogContentRef = React.useRef<HTMLDivElement>(null);
 
 	// Only show models that support structured output and aren't deprecated
 	const availableModels = React.useMemo(
@@ -192,9 +194,68 @@ export function ModelCombobox({
 
 	const displayText = selectedModel ? selectedModel.name : placeholder;
 
+	// Scroll to selected item when dialog opens
+	React.useEffect(() => {
+		if (!open || !value || !selectedModel) return;
+
+		// Use requestAnimationFrame for better timing with dialog animations
+		const scrollToSelected = () => {
+			// Try multiple containers
+			const containers = [
+				dialogContentRef.current,
+				commandListRef.current,
+				document.querySelector('[data-slot="dialog-content"]'),
+			].filter(Boolean) as HTMLElement[];
+
+			for (const container of containers) {
+				// Strategy 1: Find by data attribute
+				let selectedElement = container.querySelector(
+					`[data-model-id="${value}"]`,
+				) as HTMLElement;
+
+				// Strategy 2: Find by cmdk-item with matching text content
+				if (!selectedElement && selectedModel.name) {
+					const items = container.querySelectorAll('[cmdk-item]');
+					for (const item of Array.from(items)) {
+						const itemElement = item as HTMLElement;
+						const text = itemElement.textContent?.trim() || '';
+						if (text.includes(selectedModel.name)) {
+							selectedElement = itemElement;
+							break;
+						}
+					}
+				}
+
+				// Strategy 3: Find by IconCircleCheckFilled icon (selected state)
+				if (!selectedElement) {
+					// Look for the check icon - Tabler icons use specific class names
+					const checkIcon = container.querySelector(
+						'svg[class*="IconCircleCheckFilled"], svg[class*="icon-circle-check-filled"], [data-selected="true"]',
+					);
+					if (checkIcon) {
+						selectedElement = checkIcon.closest('[cmdk-item]') as HTMLElement;
+					}
+				}
+
+				if (selectedElement) {
+					selectedElement.scrollIntoView({
+						behavior: "smooth",
+						block: "center",
+					});
+					return; // Success, stop trying other containers
+				}
+			}
+		};
+
+		// Wait for dialog to fully open and DOM to be ready
+		requestAnimationFrame(() => {
+			setTimeout(scrollToSelected, 100);
+		});
+	}, [open, value, selectedModel]);
+
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger asChild>
+		<Dialog open={open} onOpenChange={setOpen}>
+			<DialogTrigger asChild>
 				<Button
 					variant="outline"
 					role="combobox"
@@ -210,19 +271,20 @@ export function ModelCombobox({
 					</span>
 					<ChevronsUpDownIcon className="h-4 w-4 shrink-0 opacity-50" />
 				</Button>
-			</PopoverTrigger>
-			<PopoverContent
-				align="start"
-				className="w-[min(640px,calc(100vw-3rem))] p-0"
+			</DialogTrigger>
+			<DialogContent
+				ref={dialogContentRef}
+				className="max-w-[min(800px,calc(100vw-2rem))] p-0"
+				variant="default"
 			>
-				<div className="flex flex-col gap-2 p-2 sm:flex-row">
+				<div className="flex flex-col gap-2 p-4 sm:flex-row sm:p-6">
 					<div className="mb-2 w-full sm:mb-0 sm:w-[320px] sm:shrink-0">
 						<ModelCard model={activeModel} />
 					</div>
-					<div className="min-w-0 flex-1">
-						<Command>
+					<div className="min-w-0 flex-1 rounded-md border">
+						<Command value={selectedModel?.name || ""}>
 							<CommandInput placeholder={searchPlaceholder} />
-							<CommandList>
+							<CommandList ref={commandListRef}>
 								<CommandEmpty>{emptyMessage}</CommandEmpty>
 								<CommandGroup>
 									{availableModels.map((model) => {
@@ -231,6 +293,7 @@ export function ModelCombobox({
 											<CommandItem
 												key={model.id}
 												value={model.name}
+												data-model-id={model.id}
 												onSelect={() => {
 													onValueChange?.(model.id);
 													setOpen(false);
@@ -251,8 +314,8 @@ export function ModelCombobox({
 						</Command>
 					</div>
 				</div>
-			</PopoverContent>
-		</Popover>
+			</DialogContent>
+		</Dialog>
 	);
 }
 
