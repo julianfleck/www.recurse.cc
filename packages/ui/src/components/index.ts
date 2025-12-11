@@ -39,6 +39,7 @@ export * from './select';
 export * from './spinner';
 export * from './switch';
 export * from './table';
+export * from './tabs';
 export * from './text-animate';
 export * from './theme-provider';
 export * from './theme-toggle';
